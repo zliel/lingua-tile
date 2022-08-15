@@ -1,6 +1,9 @@
 import './App.css';
 import {createTheme, CssBaseline, ThemeProvider, Typography} from "@mui/material";
 import {useState} from "react";
+import {useRoutes} from "react-router"
+import NavBar from "./Components/NavBar";
+import {BrowserRouter} from "react-router-dom";
 
 const lightTheme = createTheme({
   palette: {
@@ -37,11 +40,19 @@ const darkTheme = createTheme({
 function App() {
 
   const [theme, setTheme] = useState(lightTheme)
+  const handleTheme = () => theme === lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+
+  const AppRoutes = () => useRoutes([
+    { path: "/", element: <Typography variant={"h6"} color={"inherit"}>Hello</Typography>},
+  ])
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Typography variant={"h1"} color={"primary.dark"}>Hello!</Typography>
+      <BrowserRouter>
+        <NavBar onThemeSwitch={handleTheme} />
+        <AppRoutes />
+      </BrowserRouter>
     </ThemeProvider>
   );
 }
