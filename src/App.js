@@ -1,9 +1,10 @@
 import './App.css';
-import {createTheme, CssBaseline, ThemeProvider, Typography} from "@mui/material";
+import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import {useState} from "react";
 import {useRoutes} from "react-router"
 import NavBar from "./Components/NavBar";
 import {BrowserRouter} from "react-router-dom";
+import Home from "./Routes/Home";
 
 const lightTheme = createTheme({
   palette: {
@@ -43,7 +44,8 @@ function App() {
   const handleTheme = () => theme === lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
 
   const AppRoutes = () => useRoutes([
-    { path: "/", element: <Typography variant={"h6"} color={"inherit"}>Hello</Typography>},
+    { path: "/", element: <Home/>},
+    { path: "/home", element: <Home/>},
   ])
 
   return (
