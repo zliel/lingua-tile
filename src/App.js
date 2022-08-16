@@ -6,6 +6,7 @@ import NavBar from "./Components/NavBar";
 import {BrowserRouter} from "react-router-dom";
 import Home from "./Routes/Home";
 import Translate from "./Routes/Translate";
+import About from "./Routes/About";
 
 const lightTheme = createTheme({
   palette: {
@@ -47,6 +48,7 @@ function App() {
   const AppRoutes = () => useRoutes([
     { path: "/", element: <Home/>},
     { path: "/home", element: <Home/>},
+    { path: "/about", element: <About />},
     { path: "/translate", element: <Translate />}
   ])
 
