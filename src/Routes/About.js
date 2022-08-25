@@ -3,7 +3,7 @@ import {Grid, List, ListItem, ListItemText, Typography} from "@mui/material";
 
 function About() {
     return (
-        <Grid container alignSelf={"center"} justify={"center"} gap={2} direction={"column"}>
+        <Grid container alignSelf={"center"} justify={"center"} gap={2} direction={"column"} width={"80%"}>
             <Grid item sm>
                 <Typography variant={"h4"} color={"primary"}>
                     About LinguaTile
