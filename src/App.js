@@ -41,9 +41,16 @@ const darkTheme = createTheme({
 })
 
 function App() {
-
-  const [theme, setTheme] = useState(lightTheme)
-  const handleTheme = () => theme === lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+  const initialTheme = localStorage.getItem("theme") === "dark" ? darkTheme : lightTheme
+  const [theme, setTheme] = useState(initialTheme)
+  const handleTheme = () => {
+    theme === lightTheme ? setTheme(darkTheme) : setTheme(lightTheme)
+    if (theme === lightTheme) {
+      localStorage.setItem("theme", "dark")
+    } else {
+      localStorage.setItem("theme", "light")
+    }
+  }
 
   const AppRoutes = () => useRoutes([
     { path: "/", element: <Home/>},
