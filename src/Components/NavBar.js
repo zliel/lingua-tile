@@ -11,7 +11,7 @@ function NavBar(props) {
         <AppBar position={"static"}>
             <Toolbar>
                 <Typography variant={"h6"} sx={{paddingRight: "10px"}}>
-                    LinguaTile
+                    <Link to={"/home"} style={{textDecoration: "none", color: theme.palette.primary.contrastText}}>LinguaTile</Link>
                 </Typography>
                 <Box sx={{flexGrow: 1}}>
                     {pages.map((page) =>
