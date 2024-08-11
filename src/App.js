@@ -8,6 +8,7 @@ import {BrowserRouter} from "react-router-dom";
 import Home from "./Routes/Home";
 import Translate from "./Routes/Translate";
 import About from "./Routes/About";
+import Login from "./Routes/Login"
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -61,7 +62,8 @@ function App() {
     { path: "/", element: <Home/>},
     { path: "/home", element: <Home/>},
     { path: "/about", element: <About />},
-    { path: "/translate", element: <Translate />}
+    { path: "/translate", element: <Translate />},
+    { path: "/login", element: <Login />}
   ])
 
   return (
