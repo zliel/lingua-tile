@@ -8,7 +8,7 @@ function About() {
     const secondaryHeaderColor = theme.palette.mode === "light" ? theme.palette.secondary.main : theme.palette.secondary.dark
     return (
         <Grid container alignSelf={"center"} justify={"center"} align={"center"} gap={2} direction={"column"}
-              width={"80%"}>
+              width={"70%"} margin={"auto"}>
             <Grid item sm>
                 <Typography variant={"h4"} color={primaryHeaderColor}>
                     About LinguaTile
