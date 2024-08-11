@@ -23,7 +23,7 @@ function NavBar(props) {
                     <Icon>
                         <LightMode />
                     </Icon>
-                    <Switch onChange={props.onThemeSwitch} color={"default"}/>
+                    <Switch onChange={props.onThemeSwitch} color={"default"} checked={localStorage.getItem("theme") === "dark"} />
                     <Icon>
                         <DarkMode />
                     </Icon>
