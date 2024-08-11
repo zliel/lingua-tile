@@ -1,5 +1,6 @@
 import './App.css';
-import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
+import {createTheme, CssBaseline, ThemeProvider, alpha, getContrastRatio} from "@mui/material";
+
 import {useState} from "react";
 import {useRoutes} from "react-router"
 import NavBar from "./Components/NavBar";
@@ -8,33 +9,39 @@ import Home from "./Routes/Home";
 import Translate from "./Routes/Translate";
 import About from "./Routes/About";
 
+const purpleBase = "#8c00cc"
+const greenBase = "#18b201"
 const lightTheme = createTheme({
   palette: {
     primary: {
-      light: "#85bb5c",
-      main: "#558b2f",
-      dark: "#255d00"
+      light: alpha(purpleBase, 0.5),
+      main: alpha(purpleBase, 0.7),
+      dark: alpha(purpleBase, 0.9),
+      contrastText: getContrastRatio(alpha(purpleBase, 0.7), "#fff") >= 4.5 ? "#fff" : "#000"
     },
     secondary: {
-      light: "#ff77a8",
-      main: "#ed4079",
-      dark: "#b5004d"
+      light: alpha(greenBase, 0.5),
+        main: alpha(greenBase, 0.7),
+        dark: alpha(greenBase, 0.9),
+        contrastText: getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5 ? "#fff" : "#000"
     },
+    mode: "light"
   }
 })
 
 const darkTheme = createTheme({
   palette: {
     primary: {
-      light: "#2f8b65",
-      // main: "#216b4a",
-      main: "#1ccc82",
-      dark: "#164f30"
+      light: alpha(purpleBase, 0.5),
+      main: alpha(purpleBase, 0.7),
+      dark: alpha(purpleBase, 0.9),
+      contrastText: getContrastRatio(alpha(purpleBase, 0.7), "#fff") >= 4.5 ? "#fff" : "#000"
     },
     secondary: {
-      light: "#9c0095",
-      main: "#F4ABC4",
-      dark: "#492679"
+      light: alpha(greenBase, 0.5),
+      main: alpha(greenBase, 0.7),
+      dark: alpha(greenBase, 0.9),
+      contrastText: getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5 ? "#fff" : "#000"
     },
     mode: "dark"
   }

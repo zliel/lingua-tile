@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
-import {Grid, TextField} from "@mui/material";
+import {Grid, TextField, Typography} from "@mui/material";
 import axios from "axios";
 
 function TranslationForm() {
@@ -21,27 +21,32 @@ function TranslationForm() {
     }
 
     return (
-        <Grid container alignSelf={"center"} justify={"center"} direction={"column"} gap={2} paddingTop={"0.5em"}>
-            <Grid item>
-                <TextField id={"src-text-input"}
-                                   name={"src-text"}
-                                   label={"Source Text"}
-                                   type={"text"}
-                                   value={srcText}
-                                   onChange={handleInputChange}
-                />
+        <>
+            <Typography variant={"h5"} textAlign={"center"}>Translate Text</Typography>
+            <Typography variant={"body1"} textAlign={"center"}>Enter text in the box below to translate it from English to Japanese or from Japanese to English</Typography>
+            <Grid container alignItems={"center"} justifyContent={"center"} direction={"row"} gap={12} paddingTop={"1.5em"}>
+                <Grid item>
+                    <TextField id={"src-text-input"}
+                                       name={"src-text"}
+                                       label={"Source Text"}
+                                       type={"text"}
+                                       value={srcText}
+                                       onChange={handleInputChange}
+                    />
+
+                </Grid>
+                <Grid item>
+                    <TextField id={"translated-text-output"}
+                               name={"translated-text"}
+                               label={"Translated Text"}
+                               type={"text"}
+                               value={translatedText}
+                               inputProps={{readOnly: true}}
+                               color={"secondary"}
+                    />
+                </Grid>
             </Grid>
-            <Grid item>
-                <TextField id={"translated-text-output"}
-                           name={"translated-text"}
-                           label={"Translated Text"}
-                           type={"text"}
-                           value={translatedText}
-                           inputProps={{readOnly: true}}
-                           color={"secondary"}
-                />
-            </Grid>
-        </Grid>
+        </>
     );
 }
 
