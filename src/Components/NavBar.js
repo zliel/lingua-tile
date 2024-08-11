@@ -8,7 +8,7 @@ function NavBar(props) {
     const pages = [{name: "Home", endpoint: "/home"}, {name: "About Us", endpoint: "/about"}, {name: "Login", endpoint: "/login"}, {name: "Translate", endpoint: "/translate"}]
     const theme = useTheme();
     return (
-        <AppBar position={"static"}>
+        <AppBar position={"static"} enableColorOnDark>
             <Toolbar>
                 <Typography variant={"h6"} sx={{paddingRight: "10px"}}>
                     <Link to={"/home"} style={{textDecoration: "none", color: theme.palette.primary.contrastText}}>LinguaTile</Link>
