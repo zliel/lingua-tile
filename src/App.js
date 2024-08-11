@@ -13,12 +13,14 @@ const lightTheme = createTheme({
     primary: {
       light: "#b41afc",
       main: "#8a00ca",
-      dark: "#5000c1"
+      dark: "#5000c1",
+      contrastText: "#fff"
     },
     secondary: {
       light: "#61fc1a",
       main: "#18b201",
-      dark: "#007803"
+      dark: "#007803",
+        contrastText: "#fff"
     },
   }
 })
@@ -28,12 +30,14 @@ const darkTheme = createTheme({
     primary: {
       light: "#b41afc",
       main: "#8a00ca",
-      dark: "#5000c1"
+      dark: "#5000c1",
+      contrastText: "#fff"
     },
     secondary: {
       light: "#61fc1a",
       main: "#18b201",
-      dark: "#007803"
+      dark: "#007803",
+      contrastText: "#fff"
     },
     mode: "dark"
   }
