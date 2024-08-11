@@ -3,6 +3,8 @@ import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 
 
 function Login() {
+    const [username, setUsername] = React.useState("")
+    const [password, setPassword] = React.useState("")
 
     return (
         <Box sx={{height: "50vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -11,10 +13,20 @@ function Login() {
                     <Typography variant={"h4"}>Login</Typography>
                 </Grid>
                 <Grid item>
-                    <TextField label={"Username"} variant={"outlined"} fullWidth />
+                    <TextField label={"Username"}
+                               variant={"outlined"}
+                               fullWidth
+                               onChange={(e) => setUsername(e.target.value)}
+                    />
                 </Grid>
                 <Grid item>
-                    <TextField label={"Password"} type={"password"} variant={"outlined"} fullWidth />
+                    <TextField label={"Password"}
+                               type={"password"}
+                               variant={"outlined"}
+                               color={"secondary"}
+                               fullWidth
+                               onChange={(e) => setPassword(e.target.value)}
+                    />
                 </Grid>
                 <Grid item>
                     <Button variant={"contained"} color={"primary"}>Login</Button>
