@@ -1,11 +1,22 @@
 import React from 'react';
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
+import axios from "axios";
+import CryptoJS from "crypto-js";
 
 
 function Login() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
 
+    const handleLogin = () => {
+        const encryptedPassword = CryptoJS.AES.encrypt(password, "linguaTileAes-secret_key").toString()
+        axios.post("http://127.0.0.1:8000/api/login", {username : username, password : encryptedPassword})
+            .then(response => {
+                console.log(` Response: ${response.data}`)
+            }).catch(error => {
+                console.error(error)
+        })
+    }
     return (
         <Box sx={{height: "50vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Grid container direction={"column"} spacing={2} alignItems={"center"}>
@@ -29,7 +40,7 @@ function Login() {
                     />
                 </Grid>
                 <Grid item>
-                    <Button variant={"contained"} color={"primary"}>Login</Button>
+                    <Button variant={"contained"} color={"primary"} onClick={handleLogin}>Login</Button>
                 </Grid>
             </Grid>
         </Box>
