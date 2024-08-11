@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
-import {Grid, TextField} from "@mui/material";
+import {Grid, TextField, Typography} from "@mui/material";
 import axios from "axios";
 
 function TranslationForm() {
