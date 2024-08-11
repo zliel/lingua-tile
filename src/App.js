@@ -11,14 +11,14 @@ import About from "./Routes/About";
 const lightTheme = createTheme({
   palette: {
     primary: {
-      light: "#85bb5c",
-      main: "#558b2f",
-      dark: "#255d00"
+      light: "#b41afc",
+      main: "#8a00ca",
+      dark: "#5000c1"
     },
     secondary: {
-      light: "#ff77a8",
-      main: "#ed4079",
-      dark: "#b5004d"
+      light: "#61fc1a",
+      main: "#18b201",
+      dark: "#007803"
     },
   }
 })
@@ -26,15 +26,14 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     primary: {
-      light: "#2f8b65",
-      // main: "#216b4a",
-      main: "#1ccc82",
-      dark: "#164f30"
+      light: "#b41afc",
+      main: "#8a00ca",
+      dark: "#5000c1"
     },
     secondary: {
-      light: "#9c0095",
-      main: "#F4ABC4",
-      dark: "#492679"
+      light: "#61fc1a",
+      main: "#18b201",
+      dark: "#007803"
     },
     mode: "dark"
   }
