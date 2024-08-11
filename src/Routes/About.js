@@ -49,9 +49,8 @@ function About() {
             </Grid>
 
             <Grid item sm>
-                <Typography variant={"h5"} color={"primary"}>Why the green and pink color scheme?</Typography>
-                <Typography variant={"h6"} color={"secondary"}>I used a color palette generator and liked the two colors together.
-                    It's only temporary, until I find another palette that I like more.
+                <Typography variant={"h5"} color={"primary"}>Why the green and purple color scheme?</Typography>
+                <Typography variant={"h6"} color={"secondary"}>My two favorite colors are green and purple, and I thought they looked nice together. I also wanted to practice using Material-UI's theming system.
                 </Typography>
             </Grid>
 
