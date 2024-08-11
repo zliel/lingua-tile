@@ -10,7 +10,7 @@ function Login() {
 
     const handleLogin = () => {
         const encryptedPassword = CryptoJS.AES.encrypt(password, "linguaTileAes-secret_key").toString()
-        axios.post("http://127.0.0.1:8000/api/login", {username : username, password : encryptedPassword})
+        axios.post("http://127.0.0.1:8000/api/auth/login", {username : username, password : encryptedPassword})
             .then(response => {
                 console.log(` Response: ${response.data}`)
             }).catch(error => {
