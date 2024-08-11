@@ -3,7 +3,7 @@ import {Grid, List, ListItem, ListItemText, Typography} from "@mui/material";
 
 function About() {
     return (
-        <Grid container alignSelf={"center"} justify={"center"} gap={2} direction={"column"} width={"80%"}>
+        <Grid container alignSelf={"center"} justify={"center"} align={"center"} gap={2} direction={"column"} width={"80%"}>
             <Grid item sm>
                 <Typography variant={"h4"} color={"primary"}>
                     About LinguaTile
@@ -27,23 +27,23 @@ function About() {
                 <Typography variant={"h6"} color={"secondary"}>Front End</Typography>
                 <List>
                     <ListItem>
-                        <ListItemText primary={"ReactJS"}/>
+                        <ListItemText primary={"ReactJS"} sx={{textAlign: "center"}}/>
                     </ListItem>
                     <ListItem>
-                        <ListItemText primary={"React-Router"}/>
+                        <ListItemText primary={"React-Router"} sx={{textAlign: "center"}}/>
                     </ListItem>
                     <ListItem>
-                        <ListItemText primary={"Material-UI"}/>
+                        <ListItemText primary={"Material-UI"} sx={{textAlign: "center"}}/>
                     </ListItem>
                 </List>
 
                 <Typography variant={"h6"} color={"secondary"}>Back End</Typography>
                 <List>
                     <ListItem>
-                        <ListItemText primary={"Spring Boot"} />
+                        <ListItemText primary={"FastAPI"} sx={{textAlign: "center"}}/>
                     </ListItem>
                     <ListItem>
-                        <ListItemText primary={"Redis"} secondary={"To store translations for optimization"}/>
+                        <ListItemText primary={"Redis"} secondary={"To store translations for optimization"} sx={{textAlign: "center"}}/>
                     </ListItem>
                 </List>
             </Grid>
