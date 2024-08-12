@@ -10,6 +10,7 @@ import Translate from "./Routes/Translate";
 import About from "./Routes/About";
 import Login from "./Routes/Login";
 import Signup from "./Routes/Signup";
+import Profile from "./Routes/Profile";
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -65,7 +66,8 @@ function App() {
         {path: "/about", element: <About/>},
         {path: "/translate", element: <Translate/>},
         {path: "/login", element: <Login/>},
-        {path: "/signup", element: <Signup/>}
+        {path: "/signup", element: <Signup/>},
+        {path: "/profile", element: <Profile />}
     ])
 
     return (
