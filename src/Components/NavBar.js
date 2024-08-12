@@ -8,13 +8,13 @@ import AuthContext from '../AuthContext';
 
 function NavBar(props) {
     const {auth, logout} = React.useContext(AuthContext);
-    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"}, {
-        name: "Translate",
-        endpoint: "/translate"
-    }]
+    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"},
+        {name: "Translate", endpoint: "/translate"}
+    ];
     const navigate = useNavigate();
 
     if (auth.isLoggedIn) {
+        pages.push({name: "Profile", endpoint: "/profile"});
         pages.push({name: "Logout", endpoint: "/logout", action: () => logout(() => navigate("/"))});
     } else {
         pages.push({name: "Login", endpoint: "/login"});
