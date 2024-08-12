@@ -11,6 +11,7 @@ import About from "./Routes/About";
 import Login from "./Routes/Login";
 import Signup from "./Routes/Signup";
 import Profile from "./Routes/Profile";
+import UpdateProfile from "./Routes/UpdateProfile";
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -67,7 +68,8 @@ function App() {
         {path: "/translate", element: <Translate/>},
         {path: "/login", element: <Login/>},
         {path: "/signup", element: <Signup/>},
-        {path: "/profile", element: <Profile />}
+        {path: "/profile", element: <Profile />},
+        {path: "/update-profile", element: <UpdateProfile />}
     ])
 
     return (
