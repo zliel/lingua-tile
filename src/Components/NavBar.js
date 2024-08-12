@@ -3,9 +3,18 @@ import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mu
 import {useTheme} from "@mui/material/styles";
 import {DarkMode, LightMode} from "@mui/icons-material";
 import {Link} from "react-router-dom"
+import AuthContext from '../AuthContext';
 
 function NavBar(props) {
-    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"}, {name: "Login", endpoint: "/login"}, {name: "Signup", endpoint: "/signup"}, {name: "Translate", endpoint: "/translate"}]
+    const { auth, logout } = React.useContext(AuthContext);
+    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"}, {name: "Translate", endpoint: "/translate"}]
+
+    if (auth.isLoggedIn) {
+        pages.push({name: "Logout", endpoint: "/logout", action: logout});
+    } else {
+        pages.push({name: "Login", endpoint: "/login"});
+        pages.push({name: "Signup", endpoint: "/signup"});
+    }
     const theme = useTheme();
     return (
         <AppBar position={"static"} enableColorOnDark>
@@ -15,7 +24,7 @@ function NavBar(props) {
                 </Typography>
                 <Box sx={{flexGrow: 1}}>
                     {pages.map((page) =>
-                        <Button variant={"text"} key={page.name} color={"inherit"} size={"small"}>
+                        <Button variant={"text"} key={page.name} color={"inherit"} size={"small"} onClick={page.action ? page.action : null}>
                             <Link to={page.endpoint} style={{textDecoration: "none", color: theme.palette.primary.contrastText}} key={page.endpoint}>{page.name}</Link>
                         </Button>
                     )}
