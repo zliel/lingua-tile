@@ -1,20 +1,23 @@
 import React from 'react';
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
-import CryptoJS from "crypto-js";
+import AuthContext from '../AuthContext';
 
 
 function Login() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
+    const { login } = React.useContext(AuthContext);
 
     const handleLogin = () => {
-        const encryptedPassword = CryptoJS.AES.encrypt(password, "linguaTileAes-secret_key").toString()
-        axios.post("http://127.0.0.1:8000/api/auth/login", {username : username, password : encryptedPassword})
+        axios.post("http://127.0.0.1:8000/api/auth/login", {username : username, password : password})
             .then(response => {
-                console.log(` Response: ${response.data}`)
+                console.dir(response.data);
+
+                const token = response.data.token;
+                login(token);
             }).catch(error => {
-                console.error(error)
+                console.error(error);
         })
     }
     return (
