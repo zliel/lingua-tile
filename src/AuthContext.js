@@ -12,14 +12,16 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (token) => {
+    const login = (token, callback) => {
         localStorage.setItem('token', token);
         setAuth({ token, isLoggedIn: true });
+        if (callback) callback();
     };
 
-    const logout = () => {
+    const logout = (callback) => {
         localStorage.removeItem('token');
         setAuth({ token: null, isLoggedIn: false });
+        if (callback) callback();
     };
 
     return (
