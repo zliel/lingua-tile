@@ -8,18 +8,18 @@ import AuthContext from '../AuthContext';
 function Login() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
-    const { login } = React.useContext(AuthContext);
+    const {login} = React.useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        axios.post("http://127.0.0.1:8000/api/auth/login", {username : username, password : password})
+        axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
             .then(response => {
                 console.dir(response.data);
 
                 const token = response.data.token;
                 login(token, () => navigate('/home'));
             }).catch(error => {
-                console.error(error);
+            console.error(error);
         })
     }
     return (

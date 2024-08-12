@@ -18,7 +18,7 @@ function Signup() {
             setMessage("Passwords do not match")
             return
         }
-        axios.post("http://127.0.0.1:8000/api/users/signup", {username : username, password : password})
+        axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
             .then(response => {
                 console.log(` Response: ${response.data}`)
             }).catch(error => {
@@ -42,7 +42,7 @@ function Signup() {
                 color="inherit"
                 onClick={handleClose}
             >
-                <CloseIcon fontSize="small" />
+                <CloseIcon fontSize="small"/>
             </IconButton>
         </>
     );
@@ -73,12 +73,12 @@ function Signup() {
                 </Grid>
                 <Grid item>
                     <TextField label={"Confirm Password"}
-                                 type={"password"}
-                                 variant={"outlined"}
-                                 color={"secondary"}
-                                 fullWidth
-                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                 required
+                               type={"password"}
+                               variant={"outlined"}
+                               color={"secondary"}
+                               fullWidth
+                               onChange={(e) => setConfirmPassword(e.target.value)}
+                               required
                     />
                 </Grid>
                 <Grid item>
@@ -87,11 +87,11 @@ function Signup() {
             </Grid>
             <Snackbar
                 open={open}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                 autoHideDuration={3000}
                 message={message}
                 action={action}>
-                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{ width: '100%' }}>
+                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
                     {message}
                 </Alert>
             </Snackbar>

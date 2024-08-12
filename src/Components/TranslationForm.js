@@ -23,15 +23,17 @@ function TranslationForm() {
     return (
         <>
             <Typography variant={"h5"} textAlign={"center"}>Translate Text</Typography>
-            <Typography variant={"body1"} textAlign={"center"}>Enter text in the box below to translate it from English to Japanese or from Japanese to English</Typography>
-            <Grid container alignItems={"center"} justifyContent={"center"} direction={"row"} gap={12} paddingTop={"1.5em"}>
+            <Typography variant={"body1"} textAlign={"center"}>Enter text in the box below to translate it from English
+                to Japanese or from Japanese to English</Typography>
+            <Grid container alignItems={"center"} justifyContent={"center"} direction={"row"} gap={12}
+                  paddingTop={"1.5em"}>
                 <Grid item>
                     <TextField id={"src-text-input"}
-                                       name={"src-text"}
-                                       label={"Source Text"}
-                                       type={"text"}
-                                       value={srcText}
-                                       onChange={handleInputChange}
+                               name={"src-text"}
+                               label={"Source Text"}
+                               type={"text"}
+                               value={srcText}
+                               onChange={handleInputChange}
                     />
 
                 </Grid>
