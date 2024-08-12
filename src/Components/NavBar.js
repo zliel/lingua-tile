@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from "react-router-dom";
 import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {DarkMode, LightMode} from "@mui/icons-material";
@@ -8,9 +9,10 @@ import AuthContext from '../AuthContext';
 function NavBar(props) {
     const { auth, logout } = React.useContext(AuthContext);
     const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"}, {name: "Translate", endpoint: "/translate"}]
+    const navigate = useNavigate();
 
     if (auth.isLoggedIn) {
-        pages.push({name: "Logout", endpoint: "/logout", action: logout});
+        pages.push({name: "Logout", endpoint: "/logout", action: () => logout(() => navigate("/")) });
     } else {
         pages.push({name: "Login", endpoint: "/login"});
         pages.push({name: "Signup", endpoint: "/signup"});
