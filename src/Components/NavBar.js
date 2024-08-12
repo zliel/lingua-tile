@@ -5,7 +5,7 @@ import {DarkMode, LightMode} from "@mui/icons-material";
 import {Link} from "react-router-dom"
 
 function NavBar(props) {
-    const pages = [{name: "Home", endpoint: "/home"}, {name: "About Us", endpoint: "/about"}, {name: "Login", endpoint: "/login"}, {name: "Translate", endpoint: "/translate"}]
+    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"}, {name: "Login", endpoint: "/login"}, {name: "Signup", endpoint: "/signup"}, {name: "Translate", endpoint: "/translate"}]
     const theme = useTheme();
     return (
         <AppBar position={"static"} enableColorOnDark>
