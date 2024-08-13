@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from "react-router-dom";
 import {Alert, Box, Grid, Typography, TextField, Button, Snackbar} from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,6 +12,7 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = React.useState("")
     const [open, setOpen] = React.useState(false)
     const [message, setMessage] = React.useState("")
+    const navigate = useNavigate()
 
 
     const isValidPassword = () => {
@@ -51,7 +53,8 @@ function Signup() {
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
             .then(response => {
-                console.log(` Response: ${response.data}`)
+                console.log(response)
+                navigate("/login")
             }).catch(error => {
             console.error(error)
         })
