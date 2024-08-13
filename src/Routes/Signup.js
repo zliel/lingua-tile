@@ -53,6 +53,7 @@ function Signup() {
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
             .then(response => {
+                console.log(response)
                 navigate("/login")
             }).catch(error => {
             console.error(error)
