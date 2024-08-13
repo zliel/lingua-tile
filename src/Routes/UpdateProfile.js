@@ -1,14 +1,18 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Box, Typography, Button, Grid, TextField} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField, Alert, Snackbar} from '@mui/material';
 import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 function UpdateProfile() {
     const {auth, logout} = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();
+    const [open, setOpen] = React.useState(false)
+    const [message, setMessage] = React.useState("")
 
     useEffect(() => {
         // Fetch user data
@@ -46,6 +50,26 @@ function UpdateProfile() {
         }
     }
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    const action = (
+        <>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small"/>
+            </IconButton>
+        </>
+    );
 
 
     if (!auth.isLoggedIn) {
@@ -68,6 +92,16 @@ function UpdateProfile() {
                 </Grid>
             </Grid>
             <Typography variant={"body1"} color={"error"} gutterBottom>Note that after saving changes, you will need to log back in.</Typography>
+            <Snackbar
+                open={open}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                autoHideDuration={3000}
+                message={message}
+                action={action}>
+                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
