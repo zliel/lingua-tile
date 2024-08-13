@@ -14,41 +14,35 @@ function Signup() {
 
 
     const isValidPassword = () => {
-        if (password.length < 8) {
-            setOpen(true)
-            setMessage("Password must be at least 8 characters long")
-            return false
-        } else if (password.length > 64) {
-            setOpen(true)
-            setMessage("Password must be less than or equal to 64 characters long")
-            return false
-        } else if (password !== confirmPassword) {
-            setOpen(true)
-            setMessage("Passwords do not match")
-            return false
-        } else if (!password.match(/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)) {
-            setOpen(true)
-            setMessage("Password must only include letters, numbers, special characters, and spaces")
-            return false
-        } else if (!password.match(/[a-z]/)) {
-            setOpen(true)
-            setMessage("Password must include at least one lowercase letter")
-            return false
-        } else if (!password.match(/[A-Z]/)) {
-            setOpen(true)
-            setMessage("Password must include at least one uppercase letter")
-            return false
-        } else if (!password.match(/[0-9]/)) {
-            setOpen(true)
-            setMessage("Password must include at least one number")
-            return false
-        } else if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
-            setOpen(true)
-            setMessage("Password must include at least one special character")
-            return false
+        const conditions = {
+            length: password.length >= 8 && password.length <= 64,
+            match: password === confirmPassword,
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/.test(password),
+            lowercase: /[a-z]/.test(password),
+            uppercase: /[A-Z]/.test(password),
+            number: /[0-9]/.test(password),
+            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
+
+        const messages = {
+            length: "Password must be between 8 and 64 characters long",
+            match: "Passwords do not match",
+            validChars: "Password must only include letters, numbers, special characters, and spaces",
+            lowercase: "Password must include at least one lowercase letter",
+            uppercase: "Password must include at least one uppercase letter",
+            number: "Password must include at least one number",
+            specialChar: "Password must include at least one special character"
+        };
+
+        for (const [key, isValid] of Object.entries(conditions)) {
+            if (!isValid) {
+                setOpen(true);
+                setMessage(messages[key]);
+                return false;
+            }
         }
 
-        return true
+        return true;
     }
 
     const handleLogin = () => {
