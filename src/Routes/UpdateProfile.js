@@ -42,7 +42,7 @@ function UpdateProfile() {
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/.test(password),
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
