@@ -42,22 +42,22 @@ function UpdateProfile() {
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            match: password === confirmPassword,
             validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
-            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+            match: password === confirmPassword,
         };
 
         const messages = {
             length: "Password must be between 8 and 64 characters long",
-            match: "Passwords do not match",
             validChars: "Password must only include letters, numbers, special characters, and spaces",
             lowercase: "Password must include at least one lowercase letter",
             uppercase: "Password must include at least one uppercase letter",
             number: "Password must include at least one number",
-            specialChar: "Password must include at least one special character"
+            specialChar: "Password must include at least one special character",
+            match: "Passwords do not match",
         };
 
         for (const [key, isValid] of Object.entries(conditions)) {
