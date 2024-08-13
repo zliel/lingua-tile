@@ -11,8 +11,11 @@ function UpdateProfile() {
     const [username, setUsername] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();
+    const [password, setPassword] = React.useState("")
+    const [confirmPassword, setConfirmPassword] = React.useState("")
     const [open, setOpen] = React.useState(false)
     const [message, setMessage] = React.useState("")
+
 
     useEffect(() => {
         // Fetch user data
@@ -85,7 +88,10 @@ function UpdateProfile() {
                     <TextField variant={"outlined"} label="New Username" value={user.username || ''} onChange={(e) => setUser({...user, username: e.target.value})}/>
                 </Grid>
                 <Grid item>
-                    <TextField variant={"outlined"} label="New Password" value={user.password || ''} onChange={(e) => setUser({...user, password: e.target.value})}/>
+                    <TextField variant={"outlined"} label="New Password" value={password || ''} onChange={(e) => setPassword(e.target.value)}/>
+                </Grid>
+                <Grid item>
+                    <TextField variant={"outlined"} label="Confirm New Password" value={confirmPassword || ''} onChange={(e) => setConfirmPassword(e.target.value)}/>
                 </Grid>
                 <Grid item>
                     <Button variant="contained" color="secondary" onClick={handleSave} size={"small"}>Save Changes</Button>
