@@ -86,6 +86,11 @@ function UpdateProfile() {
 
                 user.password = password;
             }
+
+            if (user.username === '') {
+                user.username = username;
+            }
+
             await axios.put(`http://127.0.0.1:8000/api/users/update/${user._id}`, user, {
                 headers: {
                     'Authorization': `Bearer ${auth.token}`
