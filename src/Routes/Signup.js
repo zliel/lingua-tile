@@ -4,14 +4,14 @@ import {Alert, Box, Grid, Typography, TextField, Button, Snackbar} from "@mui/ma
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
+import {useSnackbar} from "../Contexts/SnackbarContext";
 
 
 function Signup() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [message, setMessage] = React.useState("")
+    const { showSnackbar } = useSnackbar();
     const navigate = useNavigate()
 
 
@@ -38,8 +38,7 @@ function Signup() {
 
         for (const [key, isValid] of Object.entries(conditions)) {
             if (!isValid) {
-                setOpen(true);
-                setMessage(messages[key]);
+                showSnackbar(messages[key], 'error');
                 return false;
             }
         }
@@ -59,27 +58,6 @@ function Signup() {
             console.error(error)
         })
     }
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const action = (
-        <>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small"/>
-            </IconButton>
-        </>
-    );
 
     return (
         <Box sx={{height: "50vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -119,16 +97,6 @@ function Signup() {
                     <Button variant={"contained"} color={"primary"} onClick={handleLogin}>Login</Button>
                 </Grid>
             </Grid>
-            <Snackbar
-                open={open}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                autoHideDuration={3000}
-                message={message}
-                action={action}>
-                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
-                    {message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }

@@ -3,8 +3,7 @@ import {Box, Typography, Button, Grid, TextField, Alert, Snackbar} from '@mui/ma
 import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import {useSnackbar} from '../Contexts/SnackbarContext';
 
 function UpdateProfile() {
     const {auth, logout} = useContext(AuthContext);
@@ -13,8 +12,7 @@ function UpdateProfile() {
     const navigate = useNavigate();
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [message, setMessage] = React.useState("")
+    const { showSnackbar } = useSnackbar();
 
 
     useEffect(() => {
@@ -62,8 +60,7 @@ function UpdateProfile() {
 
         for (const [key, isValid] of Object.entries(conditions)) {
             if (!isValid) {
-                setOpen(true);
-                setMessage(messages[key]);
+                showSnackbar(messages[key], 'error');
                 return false;
             }
         }
@@ -97,27 +94,6 @@ function UpdateProfile() {
         }
     }
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const action = (
-        <>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small"/>
-            </IconButton>
-        </>
-    );
-
 
     if (!auth.isLoggedIn) {
         return <Typography variant="h6" textAlign="center">Please log in to update your profile.</Typography>;
@@ -147,16 +123,6 @@ function UpdateProfile() {
             </Grid>
             <Typography variant={"body1"} color={"error"} gutterBottom>Note that after saving changes, you will need to
                 log back in.</Typography>
-            <Snackbar
-                open={open}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                autoHideDuration={3000}
-                message={message}
-                action={action}>
-                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
-                    {message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }
