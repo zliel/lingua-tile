@@ -87,10 +87,22 @@ function UpdateProfile() {
                     'Authorization': `Bearer ${auth.token}`
                 }
             });
+
+            showSnackbar('Profile updated successfully', 'success');
             // Invalidate the token
             logout(() => navigate('/login'));
         } catch (error) {
             console.error('Error updating user', error);
+            if (error.response.status === 401) {
+                showSnackbar("Invalid token. Please log in again.", "error");
+                logout(() => navigate('/login'));
+            } else if (error.response.status === 403) {
+                showSnackbar("Unauthorized to update user", "error");
+            } else if (error.response.status === 404) {
+                showSnackbar("User not found", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
         }
     }
 
