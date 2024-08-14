@@ -24,6 +24,7 @@ function Login() {
                 console.dir(response.data);
 
                 const token = response.data.token;
+                showSnackbar("Login successful", "success");
                 login(token, () => navigate('/home'));
             }).catch(error => {
             console.error(error);
