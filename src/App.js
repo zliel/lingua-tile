@@ -12,6 +12,7 @@ import Login from "./Routes/Login";
 import Signup from "./Routes/Signup";
 import Profile from "./Routes/Profile";
 import UpdateProfile from "./Routes/UpdateProfile";
+import {SnackbarProvider} from "./Contexts/SnackbarContext";
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -74,11 +75,13 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <BrowserRouter>
-                <NavBar onThemeSwitch={handleTheme}/>
-                <AppRoutes/>
-            </BrowserRouter>
+            <SnackbarProvider>
+                <CssBaseline/>
+                <BrowserRouter>
+                    <NavBar onThemeSwitch={handleTheme}/>
+                    <AppRoutes/>
+                </BrowserRouter>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 }
