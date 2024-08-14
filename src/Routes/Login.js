@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
 import AuthContext from '../AuthContext';
+import {useSnackbar} from "../Contexts/SnackbarContext";
 
 
 function Login() {
@@ -10,6 +11,7 @@ function Login() {
     const [password, setPassword] = React.useState("")
     const {login} = React.useContext(AuthContext);
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     const handleLogin = () => {
         axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
