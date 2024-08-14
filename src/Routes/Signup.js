@@ -11,7 +11,7 @@ function Signup() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const { showSnackbar } = useSnackbar();
+    const {showSnackbar} = useSnackbar();
     const navigate = useNavigate()
 
 
@@ -55,11 +55,17 @@ function Signup() {
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
             .then(response => {
-                console.log(response)
+
                 showSnackbar("Account created successfully", "success")
                 navigate("/login")
+
             }).catch(error => {
-            console.error(error)
+
+            if (error.response.status === 400) {
+                showSnackbar("Username already exists", "error")
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error")
+            }
         })
     }
 
