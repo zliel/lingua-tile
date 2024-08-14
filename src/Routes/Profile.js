@@ -36,7 +36,7 @@ function Profile() {
         if (auth.isLoggedIn) {
             fetchUserData();
         }
-    }, [auth, logout, navigate]);
+    }, [auth, logout, navigate, showSnackbar]);
 
     const handleUpdate = () => {
         // Redirect to update profile page
