@@ -11,7 +11,7 @@ function Login() {
     const [password, setPassword] = React.useState("")
     const {login} = React.useContext(AuthContext);
     const navigate = useNavigate();
-    const { showSnackbar } = useSnackbar();
+    const {showSnackbar} = useSnackbar();
 
     const handleLogin = () => {
         if (username === "" || password === "") {
@@ -21,13 +21,13 @@ function Login() {
 
         axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
             .then(response => {
-                console.dir(response.data);
 
                 const token = response.data.token;
                 showSnackbar("Login successful", "success");
                 login(token, () => navigate('/home'));
+
             }).catch(error => {
-            console.error(error);
+
             if (error.response.status === 401 || error.response.status === 404) {
                 showSnackbar("Invalid username or password", "error");
             } else {

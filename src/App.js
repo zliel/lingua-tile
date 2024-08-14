@@ -69,8 +69,8 @@ function App() {
         {path: "/translate", element: <Translate/>},
         {path: "/login", element: <Login/>},
         {path: "/signup", element: <Signup/>},
-        {path: "/profile", element: <Profile />},
-        {path: "/update-profile", element: <UpdateProfile />}
+        {path: "/profile", element: <Profile/>},
+        {path: "/update-profile", element: <UpdateProfile/>}
     ])
 
     return (

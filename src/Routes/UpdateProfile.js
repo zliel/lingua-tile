@@ -12,7 +12,7 @@ function UpdateProfile() {
     const navigate = useNavigate();
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const { showSnackbar } = useSnackbar();
+    const {showSnackbar} = useSnackbar();
 
 
     useEffect(() => {
@@ -27,7 +27,6 @@ function UpdateProfile() {
                 setUsername(response.data.username);
                 setUser(response.data)
             } catch (error) {
-                console.error('Error fetching user data', error);
                 logout(() => navigate('/home'));
             }
         };
@@ -91,8 +90,9 @@ function UpdateProfile() {
             showSnackbar('Profile updated successfully', 'success');
             // Invalidate the token
             logout(() => navigate('/login'));
+
         } catch (error) {
-            console.error('Error updating user', error);
+
             if (error.response.status === 401) {
                 showSnackbar("Invalid token. Please log in again.", "error");
                 logout(() => navigate('/login'));
