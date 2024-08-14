@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Box, Typography, Button, Grid, TextField, Alert, Snackbar} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField} from '@mui/material';
 import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
@@ -39,11 +39,11 @@ function UpdateProfile() {
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]*$/.test(password),
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
-            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+            specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
             match: password === confirmPassword,
         };
 

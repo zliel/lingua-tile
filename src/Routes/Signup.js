@@ -1,8 +1,6 @@
 import React from 'react';
 import {useNavigate} from "react-router-dom";
-import {Alert, Box, Grid, Typography, TextField, Button, Snackbar} from "@mui/material";
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
 import {useSnackbar} from "../Contexts/SnackbarContext";
 
@@ -18,11 +16,11 @@ function Signup() {
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]*$/.test(password),
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
-            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+            specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
             match: password === confirmPassword
         };
 
