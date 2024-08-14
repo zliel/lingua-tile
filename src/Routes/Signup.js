@@ -49,6 +49,9 @@ function Signup() {
     const handleLogin = () => {
         if (!isValidPassword()) {
             return
+        } else if (username === "") {
+            showSnackbar("Please enter a username", "error")
+            return
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
             .then(response => {
