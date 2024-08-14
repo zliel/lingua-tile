@@ -1,13 +1,13 @@
 import React, {useContext, useState, useEffect} from 'react';
 import {Box, Typography, Button, Grid} from '@mui/material';
-import AuthContext from '../AuthContext';
+import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
-import ConfirmationDialog from "../Components/ConfirmationDialog";
+import {useAuth} from '../Contexts/AuthContext';
 
 function Profile() {
-    const {auth, logout} = useContext(AuthContext);
+    const {auth, logout} = useAuth();
     const [username, setUsername] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();

@@ -2,14 +2,14 @@ import React from 'react';
 import {useNavigate} from "react-router-dom";
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
-import AuthContext from '../AuthContext';
+import {useAuth} from "../Contexts/AuthContext";
 import {useSnackbar} from "../Contexts/SnackbarContext";
 
 
 function Login() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
-    const {login} = React.useContext(AuthContext);
+    const {login} = useAuth();
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
 
