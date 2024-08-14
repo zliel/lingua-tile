@@ -4,6 +4,7 @@ import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
+import ConfirmationDialog from "../Components/ConfirmationDialog";
 
 function Profile() {
     const {auth, logout} = useContext(AuthContext);
@@ -11,6 +12,7 @@ function Profile() {
     const [user, setUser] = useState({});
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     useEffect(() => {
         // Fetch user data
@@ -43,7 +45,11 @@ function Profile() {
         navigate('/update-profile');
     };
 
-    const handleDelete = async () => {
+    const handleDelete = () => {
+        setDialogOpen(true);
+    }
+
+    const handleDeleteConfirmation = async () => {
         try {
             await axios.delete(`http://127.0.0.1:8000/api/users/delete/${user._id}`, {
                 headers: {
@@ -63,6 +69,8 @@ function Profile() {
                 showSnackbar(`Error: ${error.response.data.detail}`, "error");
             }
         }
+
+        setDialogOpen(false);
     };
 
     if (!auth.isLoggedIn) {
@@ -78,9 +86,15 @@ function Profile() {
                     <Button variant="contained" color="primary" onClick={handleUpdate}>Update Profile</Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" color="secondary" onClick={handleDelete}>Delete Profile</Button>
+                    <Button variant="contained" color="warning" onClick={handleDelete}>Delete Profile</Button>
                 </Grid>
             </Grid>
+            <ConfirmationDialog open={dialogOpen}
+                                onClose={() => setDialogOpen(false)}
+                                onConfirm={handleDeleteConfirmation}
+                                title={"Delete Profile"}
+                                message={"Are you sure you want to delete your profile?"}
+            />
         </Box>
     );
 }
