@@ -27,6 +27,12 @@ function Login() {
                 login(token, () => navigate('/home'));
             }).catch(error => {
             console.error(error);
+            if (error.response.status === 401 || error.response.status === 404) {
+                showSnackbar("Invalid username or password", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
+
         })
     }
     return (
