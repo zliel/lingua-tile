@@ -44,7 +44,7 @@ function Signup() {
         return true;
     }
 
-    const handleLogin = () => {
+    const handleSignup = () => {
         if (!isValidPassword()) {
             return
         } else if (username === "") {
@@ -52,7 +52,7 @@ function Signup() {
             return
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
-            .then(response => {
+            .then(() => {
 
                 showSnackbar("Account created successfully", "success")
                 navigate("/login")
@@ -102,7 +102,7 @@ function Signup() {
                     />
                 </Grid>
                 <Grid item>
-                    <Button variant={"contained"} color={"primary"} onClick={handleLogin}>Login</Button>
+                    <Button variant={"contained"} color={"primary"} onClick={handleSignup}>Login</Button>
                 </Grid>
             </Grid>
         </Box>
