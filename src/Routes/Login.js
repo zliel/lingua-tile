@@ -14,6 +14,11 @@ function Login() {
     const { showSnackbar } = useSnackbar();
 
     const handleLogin = () => {
+        if (username === "" || password === "") {
+            showSnackbar("Please enter a username and password", "error");
+            return
+        }
+
         axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
             .then(response => {
                 console.dir(response.data);
