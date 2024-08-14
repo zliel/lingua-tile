@@ -3,12 +3,14 @@ import {Box, Typography, Button, Grid} from '@mui/material';
 import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import {useSnackbar} from '../Contexts/SnackbarContext';
 
 function Profile() {
     const {auth, logout} = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();
+    const {showSnackbar} = useSnackbar();
 
     useEffect(() => {
         // Fetch user data
@@ -22,7 +24,11 @@ function Profile() {
                 setUsername(response.data.username);
                 setUser(response.data)
             } catch (error) {
-                console.error('Error fetching user data', error);
+                if (error.response.status === 401) {
+                    showSnackbar("Session expired. Please log in again.", "error");
+                } else {
+                    showSnackbar(`Error: ${error.response.data.detail}`, "error");
+                }
                 logout(() => navigate('/home'));
             }
         };
@@ -30,7 +36,7 @@ function Profile() {
         if (auth.isLoggedIn) {
             fetchUserData();
         }
-    }, [auth, logout, navigate]);
+    }, [auth, logout, navigate, showSnackbar]);
 
     const handleUpdate = () => {
         // Redirect to update profile page
@@ -44,9 +50,18 @@ function Profile() {
                     'Authorization': `Bearer ${auth.token}`
                 }
             });
+            showSnackbar("Profile deleted successfully", "success");
             logout(() => navigate('/home'));
         } catch (error) {
-            console.error('Error deleting user', error);
+            if (error.response.status === 401) {
+                showSnackbar("Session expired. Please log in again.", "error");
+            } else if (error.response.status === 403) {
+                showSnackbar("You do not have permission to delete this profile.", "error");
+            } else if (error.response.status === 404) {
+                showSnackbar("Profile not found.", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
         }
     };
 

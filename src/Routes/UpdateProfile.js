@@ -1,10 +1,9 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Box, Typography, Button, Grid, TextField, Alert, Snackbar} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField} from '@mui/material';
 import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+import {useSnackbar} from '../Contexts/SnackbarContext';
 
 function UpdateProfile() {
     const {auth, logout} = useContext(AuthContext);
@@ -13,8 +12,7 @@ function UpdateProfile() {
     const navigate = useNavigate();
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [message, setMessage] = React.useState("")
+    const {showSnackbar} = useSnackbar();
 
 
     useEffect(() => {
@@ -29,7 +27,6 @@ function UpdateProfile() {
                 setUsername(response.data.username);
                 setUser(response.data)
             } catch (error) {
-                console.error('Error fetching user data', error);
                 logout(() => navigate('/home'));
             }
         };
@@ -42,11 +39,11 @@ function UpdateProfile() {
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]*$/.test(password),
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
-            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+            specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
             match: password === confirmPassword,
         };
 
@@ -62,8 +59,7 @@ function UpdateProfile() {
 
         for (const [key, isValid] of Object.entries(conditions)) {
             if (!isValid) {
-                setOpen(true);
-                setMessage(messages[key]);
+                showSnackbar(messages[key], 'error');
                 return false;
             }
         }
@@ -90,33 +86,25 @@ function UpdateProfile() {
                     'Authorization': `Bearer ${auth.token}`
                 }
             });
+
+            showSnackbar('Profile updated successfully', 'success');
             // Invalidate the token
             logout(() => navigate('/login'));
+
         } catch (error) {
-            console.error('Error updating user', error);
+
+            if (error.response.status === 401) {
+                showSnackbar("Invalid token. Please log in again.", "error");
+                logout(() => navigate('/login'));
+            } else if (error.response.status === 403) {
+                showSnackbar("Unauthorized to update user", "error");
+            } else if (error.response.status === 404) {
+                showSnackbar("User not found", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
         }
     }
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const action = (
-        <>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small"/>
-            </IconButton>
-        </>
-    );
 
 
     if (!auth.isLoggedIn) {
@@ -147,16 +135,6 @@ function UpdateProfile() {
             </Grid>
             <Typography variant={"body1"} color={"error"} gutterBottom>Note that after saving changes, you will need to
                 log back in.</Typography>
-            <Snackbar
-                open={open}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                autoHideDuration={3000}
-                message={message}
-                action={action}>
-                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
-                    {message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }

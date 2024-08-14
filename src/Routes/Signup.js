@@ -1,28 +1,26 @@
 import React from 'react';
 import {useNavigate} from "react-router-dom";
-import {Alert, Box, Grid, Typography, TextField, Button, Snackbar} from "@mui/material";
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
+import {useSnackbar} from "../Contexts/SnackbarContext";
 
 
 function Signup() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
     const [confirmPassword, setConfirmPassword] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [message, setMessage] = React.useState("")
+    const {showSnackbar} = useSnackbar();
     const navigate = useNavigate()
 
 
     const isValidPassword = () => {
         const conditions = {
             length: password.length >= 8 && password.length <= 64,
-            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]*$/.test(password),
+            validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(password),
             lowercase: /[a-z]/.test(password),
             uppercase: /[A-Z]/.test(password),
             number: /[0-9]/.test(password),
-            specialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+            specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
             match: password === confirmPassword
         };
 
@@ -38,8 +36,7 @@ function Signup() {
 
         for (const [key, isValid] of Object.entries(conditions)) {
             if (!isValid) {
-                setOpen(true);
-                setMessage(messages[key]);
+                showSnackbar(messages[key], 'error');
                 return false;
             }
         }
@@ -47,39 +44,28 @@ function Signup() {
         return true;
     }
 
-    const handleLogin = () => {
+    const handleSignup = () => {
         if (!isValidPassword()) {
+            return
+        } else if (username === "") {
+            showSnackbar("Please enter a username", "error")
             return
         }
         axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
-            .then(response => {
-                console.log(response)
+            .then(() => {
+
+                showSnackbar("Account created successfully", "success")
                 navigate("/login")
+
             }).catch(error => {
-            console.error(error)
+
+            if (error.response.status === 400) {
+                showSnackbar("Username already exists", "error")
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error")
+            }
         })
     }
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const action = (
-        <>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small"/>
-            </IconButton>
-        </>
-    );
 
     return (
         <Box sx={{height: "50vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -116,19 +102,9 @@ function Signup() {
                     />
                 </Grid>
                 <Grid item>
-                    <Button variant={"contained"} color={"primary"} onClick={handleLogin}>Login</Button>
+                    <Button variant={"contained"} color={"primary"} onClick={handleSignup}>Login</Button>
                 </Grid>
             </Grid>
-            <Snackbar
-                open={open}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                autoHideDuration={3000}
-                message={message}
-                action={action}>
-                <Alert onClose={handleClose} severity="error" variant={"filled"} sx={{width: '100%'}}>
-                    {message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }
