@@ -78,9 +78,9 @@ const AdminUserTable = () => {
     };
 
     return (
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
             <Typography variant="h4" gutterBottom>Users Table</Typography>
-            <TableContainer>
+            <TableContainer  sx={{ maxWidth: "80%", borderRadius: 2, border: `1px solid` }}>
                 <Table>
                     <TableHead>
                         <TableRow>
