@@ -13,6 +13,8 @@ import Signup from "./Routes/Signup";
 import Profile from "./Routes/Profile";
 import UpdateProfile from "./Routes/UpdateProfile";
 import {SnackbarProvider} from "./Contexts/SnackbarContext";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import AdminUserTable from "./Routes/AdminUserTable";
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -70,7 +72,8 @@ function App() {
         {path: "/login", element: <Login/>},
         {path: "/signup", element: <Signup/>},
         {path: "/profile", element: <Profile/>},
-        {path: "/update-profile", element: <UpdateProfile/>}
+        {path: "/update-profile", element: <UpdateProfile/>},
+        {path: "/admin-users", element: <ProtectedRoute><AdminUserTable /></ProtectedRoute>}
     ])
 
     return (
