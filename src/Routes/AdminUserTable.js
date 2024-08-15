@@ -103,9 +103,7 @@ const AdminUserTable = () => {
                                     ) : (
                                         <Button variant="contained" color="primary" onClick={() => handleEdit(user)}>Update</Button>
                                     )}
-                                    <Box sx={{ display: 'inline-block', ml: 1 }}>
-                                        <Button variant="contained" color="warning" onClick={() => handleDelete(user._id)}>Delete</Button>
-                                    </Box>
+                                        <Button sx={{ml: 1}} variant="contained" color="error" onClick={() => handleDelete(user._id)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
