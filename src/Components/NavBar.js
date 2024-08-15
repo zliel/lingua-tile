@@ -4,10 +4,10 @@ import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mu
 import {useTheme} from "@mui/material/styles";
 import {DarkMode, LightMode} from "@mui/icons-material";
 import {Link} from "react-router-dom"
-import AuthContext from '../AuthContext';
+import {useAuth} from "../Contexts/AuthContext";
 
 function NavBar(props) {
-    const {auth, logout} = React.useContext(AuthContext);
+    const {auth, logout} = useAuth();
     const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"},
         {name: "Translate", endpoint: "/translate"}
     ];

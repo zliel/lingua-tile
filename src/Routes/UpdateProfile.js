@@ -1,17 +1,17 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, Typography, Button, Grid, TextField} from '@mui/material';
-import AuthContext from '../AuthContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
+import {useAuth} from '../Contexts/AuthContext';
 
 function UpdateProfile() {
-    const {auth, logout} = useContext(AuthContext);
+    const {auth, logout} = useAuth();
     const [username, setUsername] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();
-    const [password, setPassword] = React.useState("")
-    const [confirmPassword, setConfirmPassword] = React.useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
     const {showSnackbar} = useSnackbar();
 
 
