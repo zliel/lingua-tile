@@ -27,6 +27,21 @@ const AdminUserTable = () => {
         fetchUsers();
     }, [auth.token, showSnackbar]);
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (editingUserId) {
+                if (event.key === 'Escape') {
+                    setEditingUserId(null);
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [editingUserId]);
+
     const handleEdit = (user) => {
         setEditingUserId(user._id);
         setEditedUser(user);
