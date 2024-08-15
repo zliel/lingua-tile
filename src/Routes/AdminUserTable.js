@@ -46,6 +46,11 @@ const AdminUserTable = () => {
     };
 
     const handleDelete = async (userId) => {
+        // In this situation I think that use the built-in window.confirm is a better option than the ConfirmationDialog component, as it
+        // avoids overcomplicating the delete method.
+        if (!window.confirm('Are you sure you want to delete this user?')) {
+            return;
+        }
         try {
             await axios.delete(`http://127.0.0.1:8000/api/users/delete/${userId}`, {
                 headers: { Authorization: `Bearer ${auth.token}` }
