@@ -96,7 +96,10 @@ const AdminUserTable = () => {
                                 </TableCell>
                                 <TableCell>
                                     {editingUserId === user._id ? (
+                                        <>
                                         <Button variant="contained" color="primary"  onClick={handleUpdate}>Save</Button>
+                                        <Button sx={{ml: 1}} variant="contained" color="warning" onClick={() => setEditingUserId(null)}>Cancel</Button>
+                                        </>
                                     ) : (
                                         <Button variant="contained" color="primary" onClick={() => handleEdit(user)}>Update</Button>
                                     )}
