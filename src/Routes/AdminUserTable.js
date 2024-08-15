@@ -72,7 +72,7 @@ const AdminUserTable = () => {
                     </TableHead>
                     <TableBody>
                         {users.map(user => (
-                            <TableRow key={user._id}>
+                            <TableRow key={user._id} onDoubleClick={(e) => handleEdit(user)}>
                                 <TableCell>{user._id}</TableCell>
                                 <TableCell>
                                     {editingUserId === user._id ? (
