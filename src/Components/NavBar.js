@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
@@ -8,10 +8,15 @@ import {useAuth} from "../Contexts/AuthContext";
 
 function NavBar(props) {
     const {auth, logout} = useAuth();
+    const theme = useTheme();
+    const navigate = useNavigate();
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
     const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"},
         {name: "Translate", endpoint: "/translate"}
     ];
-    const navigate = useNavigate();
+
 
     if (auth.isLoggedIn) {
         pages.push({name: "Profile", endpoint: "/profile"});
@@ -20,7 +25,7 @@ function NavBar(props) {
         pages.push({name: "Login", endpoint: "/login"});
         pages.push({name: "Signup", endpoint: "/signup"});
     }
-    const theme = useTheme();
+
     return (
         <AppBar position={"static"} enableColorOnDark>
             <Toolbar>
