@@ -105,6 +105,10 @@ const AdminCardTable = () => {
     }
 
     const handleAddCard = async (newCard) => {
+        if (!newCard.front_text || !newCard.back_text) {
+            showSnackbar('Front and back text are required', 'error');
+            return;
+        }
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
                 headers: { Authorization: `Bearer ${auth.token}` }
