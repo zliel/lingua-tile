@@ -172,6 +172,7 @@ const AdminCardTable = () => {
                                     {editingCardId === card._id ? (
                                         <Autocomplete
                                             multiple
+                                            disableCloseOnSelect
                                             options={Object.keys(lessonGroups).flatMap(section => lessonGroups[section])}
                                             groupBy={(option) => sections.find(section => section._id === option.section_id)?.name || 'Ungrouped'}
                                             getOptionLabel={(option) => option.title}
