@@ -74,8 +74,8 @@ function App() {
         {path: "/signup", element: <Signup/>},
         {path: "/profile", element: <Profile/>},
         {path: "/update-profile", element: <UpdateProfile/>},
-        {path: "/admin-users", element: <ProtectedRoute><AdminUserTable /></ProtectedRoute>},
-        {path: "/admin-cards", element: <ProtectedRoute><AdminCardTable /></ProtectedRoute>}
+        {path: "/admin-users", element: <ProtectedRoute><AdminUserTable/></ProtectedRoute>},
+        {path: "/admin-cards", element: <ProtectedRoute><AdminCardTable/></ProtectedRoute>}
     ])
 
     return (
