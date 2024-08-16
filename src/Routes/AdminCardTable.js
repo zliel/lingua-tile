@@ -15,6 +15,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import NewCardForm from '../Components/NewCardForm';
 
 const AdminCardTable = () => {
     const {auth} = useAuth();
@@ -103,11 +104,24 @@ const AdminCardTable = () => {
         }
     }
 
+    const handleAddCard = async (newCard) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
+                headers: { Authorization: `Bearer ${auth.token}` }
+            });
+            setCards([...cards, response.data]);
+            showSnackbar('Card added successfully', 'success');
+        } catch (error) {
+            showSnackbar('Failed to add card', 'error');
+        }
+    }
+
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
             <Typography variant="h4" gutterBottom>Cards Table</Typography>
+            <NewCardForm lessons={lessons} lessonGroups={lessonGroups} sections={sections} onSubmit={handleAddCard} />
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{ minWidth: 700 }}>
                     <TableHead>
