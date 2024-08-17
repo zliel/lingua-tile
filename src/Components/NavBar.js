@@ -10,20 +10,34 @@ function NavBar(props) {
     const {auth, logout} = useAuth();
     const theme = useTheme();
     const navigate = useNavigate();
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorElMenu, setAnchorElMenu] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
 
     const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"},
         {name: "Translate", endpoint: "/translate"}
     ];
 
 
-    if (auth.isLoggedIn) {
-        pages.push({name: "Profile", endpoint: "/profile"});
-        pages.push({name: "Logout", endpoint: "/logout", action: () => logout(() => navigate("/"))});
-    } else {
-        pages.push({name: "Login", endpoint: "/login"});
-        pages.push({name: "Signup", endpoint: "/signup"});
+    const handleMenuOpen = (event) => {
+        setAnchorElMenu(event.currentTarget);
+    }
+
+    const handleMenuClose = () => {
+        setAnchorElMenu(null);
+    }
+
+
+    const handleProfileMenuOpen = (event) => {
+        setAnchorElUser(event.currentTarget);
+    }
+
+    const handleProfileMenuClose = () => {
+        setAnchorElUser(null);
+    }
+
+    const handleLogout = () => {
+        logout(() => navigate("/"));
+        handleProfileMenuClose()
     }
 
     return (
