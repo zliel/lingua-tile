@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
-    Box, Button,
+    AppBar,
+    Avatar,
+    Box,
+    Button,
     Icon,
     IconButton,
-    Menu, MenuItem,
+    Menu,
+    MenuItem,
     Stack,
     Switch,
     Toolbar,
@@ -13,7 +16,6 @@ import {
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {DarkMode, LightMode, Menu as MenuIcon} from "@mui/icons-material";
-import {Link} from "react-router-dom"
 import {useAuth} from "../Contexts/AuthContext";
 
 function NavBar(props) {
@@ -54,11 +56,12 @@ function NavBar(props) {
         <AppBar position={"sticky"} enableColorOnDark>
             <Toolbar>
                 <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleMenuOpen}>
-                    <MenuIcon />
+                    <MenuIcon/>
                 </IconButton>
                 <Menu anchorEl={anchorElMenu} open={Boolean(anchorElMenu)} onClose={handleMenuClose}>
                     {pages.map((page) => (
-                        <MenuItem key={page.name} component={Link} to={page.endpoint} onClick={page.action ? page.action : handleMenuClose}>
+                        <MenuItem key={page.name} component={Link} to={page.endpoint}
+                                  onClick={page.action ? page.action : handleMenuClose}>
                             {page.name}
                         </MenuItem>
                     ))}
@@ -74,21 +77,23 @@ function NavBar(props) {
                     </Icon>
                     <Switch onChange={props.onThemeSwitch} color={"default"}
                             checked={localStorage.getItem("theme") === "dark"}
-                            sx={{ mt: 0.7}}
+                            sx={{mt: 0.7}}
                     />
-                    <Icon sx={{ mr: 1.5}}>
+                    <Icon sx={{mr: 1.5}}>
                         <DarkMode/>
                     </Icon>
                     {auth.isLoggedIn ? (
                         <>
-                            <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
-                                <Avatar sx={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.contrastText}}>{auth.username ? auth.username[0] : "?"}</Avatar>
+                            <IconButton onClick={handleProfileMenuOpen} sx={{mt: 0.5}}>
+                                <Avatar sx={{
+                                    backgroundColor: theme.palette.secondary.main,
+                                    color: theme.palette.primary.contrastText
+                                }}>{auth.username ? auth.username[0] : "?"}</Avatar>
                             </IconButton>
                             <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleProfileMenuClose}>
-                                <>
-                                    <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">My Profile</MenuItem>
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                                </>
+                                <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">My
+                                    Profile</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </>
                     ) : (
