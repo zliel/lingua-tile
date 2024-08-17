@@ -22,9 +22,9 @@ function Login() {
         axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
             .then(response => {
 
-                const token = response.data.token;
+                const data = response.data;
                 showSnackbar("Login successful", "success");
-                login(token, () => navigate('/home'));
+                login(data, () => navigate('/home'));
 
             }).catch(error => {
 

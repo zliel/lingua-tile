@@ -6,26 +6,7 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({children}) => {
-    const [auth, setAuth] = useState({token: '', isLoggedIn: false, isAdmin: false});
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setAuth({token, isLoggedIn: true, isAdmin: false});
-        }
-    }, []);
-
-    const login = (token, callback) => {
-        localStorage.setItem('token', token);
-        setAuth({token, isLoggedIn: true, isAdmin: false});
-        if (callback) callback();
-    };
-
-    const logout = (callback) => {
-        localStorage.removeItem('token');
-        setAuth({token: '', isLoggedIn: false, isAdmin: false});
-        if (callback) callback();
-    };
+    const [auth, setAuth] = useState({token: '', isLoggedIn: false, isAdmin: false, username: ""});
 
     const checkAdmin = useCallback(async () => {
         try {
@@ -42,10 +23,37 @@ export const AuthProvider = ({children}) => {
                 });
             });
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             return Promise.resolve(false);
         }
     }, [auth.token]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        if (token) {
+            checkAdmin().then(isAdmin => {
+                setAuth({token: token, isLoggedIn: true, isAdmin: isAdmin, username: username});
+            });
+        }
+    }, [checkAdmin]);
+
+    const login = (data, callback) => {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.username);
+        setAuth({token: data.token, isLoggedIn: true, isAdmin: data.isAdmin, username: data.username});
+        if (callback) callback();
+    };
+
+    const logout = (callback) => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        setAuth({token: '', isLoggedIn: false, isAdmin: false, username: ""});
+        if (callback) callback();
+    };
+
+
+
 
     return (
         <AuthContext.Provider value={{auth, login, logout, checkAdmin}}>
