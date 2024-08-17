@@ -74,15 +74,16 @@ function NavBar(props) {
                     </Icon>
                     <Switch onChange={props.onThemeSwitch} color={"default"}
                             checked={localStorage.getItem("theme") === "dark"}
-                            sx={{ mt: 1}}
+                            sx={{ mt: 0.7}}
                     />
-                    <Icon>
+                    <Icon sx={{ mr: 1.5}}>
                         <DarkMode/>
                     </Icon>
                     {auth.isLoggedIn ? (
                         <>
                             <IconButton onClick={handleProfileMenuOpen} color="inherit">
                                 <Avatar>{auth.username ? auth.username[0] : "?"}</Avatar>
+                            <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
                             </IconButton>
                             <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleProfileMenuClose}>
                                 <>
