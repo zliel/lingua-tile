@@ -81,9 +81,8 @@ function NavBar(props) {
                     </Icon>
                     {auth.isLoggedIn ? (
                         <>
-                            <IconButton onClick={handleProfileMenuOpen} color="inherit">
-                                <Avatar>{auth.username ? auth.username[0] : "?"}</Avatar>
                             <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
+                                <Avatar sx={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.contrastText}}>{auth.username ? auth.username[0] : "?"}</Avatar>
                             </IconButton>
                             <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleProfileMenuClose}>
                                 <>
