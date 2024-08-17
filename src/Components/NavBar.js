@@ -94,7 +94,7 @@ function NavBar(props) {
                                 <Avatar sx={{
                                     backgroundColor: theme.palette.secondary.main,
                                     color: theme.palette.primary.contrastText
-                                }}>{auth.username ? auth.username[0] : "?"}</Avatar>
+                                }}>{auth.username ? auth.username[0].toUpperCase() : "?"}</Avatar>
                             </IconButton>
                             <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleProfileMenuClose}>
                                 <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">My
