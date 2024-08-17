@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mui/material";
+import {
+    Box, Button,
     Icon,
     IconButton,
     Menu, MenuItem,
@@ -60,16 +62,7 @@ function NavBar(props) {
                     <Link to={"/home"}
                           style={{textDecoration: "none", color: theme.palette.primary.contrastText}}>LinguaTile</Link>
                 </Typography>
-                <Box sx={{flexGrow: 1}}>
-                    {pages.map((page) =>
-                        <Button variant={"text"} key={page.name} color={"inherit"} size={"small"}
-                                onClick={page.action ? page.action : null}>
-                            <Link to={page.endpoint}
-                                  style={{textDecoration: "none", color: theme.palette.primary.contrastText}}
-                                  key={page.endpoint}>{page.name}</Link>
-                        </Button>
-                    )}
-                </Box>
+                <Box sx={{flexGrow: 1}}/>
                 <Stack direction={"row"}>
                     <Icon>
                         <LightMode/>
