@@ -1,11 +1,16 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {AppBar, Box, Button, Icon, Stack, Switch, Toolbar, Typography} from "@mui/material";
 import {
+    AppBar, Avatar,
     Box, Button,
     Icon,
     IconButton,
     Menu, MenuItem,
+    Stack,
+    Switch,
+    Toolbar,
+    Typography
+} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {DarkMode, LightMode, Menu as MenuIcon} from "@mui/icons-material";
 import {Link} from "react-router-dom"
@@ -72,6 +77,27 @@ function NavBar(props) {
                     <Icon>
                         <DarkMode/>
                     </Icon>
+                    {auth.isLoggedIn ? (
+                        <>
+                            <IconButton onClick={handleProfileMenuOpen} color="inherit">
+                                <Avatar>{auth.username ? auth.username[0] : "?"}</Avatar>
+                            </IconButton>
+                            <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleProfileMenuClose}>
+                                <>
+                                    <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">My Profile</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                </>
+                            </Menu>
+                        </>
+                    ) : (
+                        <>
+                            <Button component={Link} to="/login" color={"inherit"}>Login</Button>
+                            <Button component={Link} to="/signup" color={"inherit"}>Sign Up</Button>
+                        </>
+                    )
+
+                    }
+
                 </Stack>
             </Toolbar>
         </AppBar>
