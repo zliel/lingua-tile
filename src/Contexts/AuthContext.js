@@ -8,25 +8,6 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState({token: '', isLoggedIn: false, isAdmin: false});
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setAuth({token, isLoggedIn: true, isAdmin: false});
-        }
-    }, []);
-
-    const login = (token, callback) => {
-        localStorage.setItem('token', token);
-        setAuth({token, isLoggedIn: true, isAdmin: false});
-        if (callback) callback();
-    };
-
-    const logout = (callback) => {
-        localStorage.removeItem('token');
-        setAuth({token: '', isLoggedIn: false, isAdmin: false});
-        if (callback) callback();
-    };
-
     const checkAdmin = useCallback(async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/auth/check-admin', {
@@ -42,10 +23,34 @@ export const AuthProvider = ({children}) => {
                 });
             });
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             return Promise.resolve(false);
         }
     }, [auth.token]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            checkAdmin().then(isAdmin => {
+                setAuth({token, isLoggedIn: true, isAdmin: isAdmin});
+            });
+        }
+    }, [checkAdmin]);
+
+    const login = (data, callback) => {
+        localStorage.setItem('token', data.token);
+        setAuth({token: data.token, isLoggedIn: true, isAdmin: data.isAdmin});
+        if (callback) callback();
+    };
+
+    const logout = (callback) => {
+        localStorage.removeItem('token');
+        setAuth({token: '', isLoggedIn: false, isAdmin: false});
+        if (callback) callback();
+    };
+
+
+
 
     return (
         <AuthContext.Provider value={{auth, login, logout, checkAdmin}}>
