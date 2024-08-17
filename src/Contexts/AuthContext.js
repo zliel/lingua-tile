@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({children}) => {
-    const [auth, setAuth] = useState({token: '', isLoggedIn: false, isAdmin: false});
+    const [auth, setAuth] = useState({token: '', isLoggedIn: false, isAdmin: false, username: ""});
 
     const checkAdmin = useCallback(async () => {
         try {
@@ -30,22 +30,24 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
         if (token) {
             checkAdmin().then(isAdmin => {
-                setAuth({token, isLoggedIn: true, isAdmin: isAdmin});
+                setAuth({token: token, isLoggedIn: true, isAdmin: isAdmin, username: username});
             });
         }
     }, [checkAdmin]);
 
     const login = (data, callback) => {
         localStorage.setItem('token', data.token);
-        setAuth({token: data.token, isLoggedIn: true, isAdmin: data.isAdmin});
+        localStorage.setItem('username', data.username);
+        setAuth({token: data.token, isLoggedIn: true, isAdmin: data.isAdmin, username: data.username});
         if (callback) callback();
     };
 
     const logout = (callback) => {
         localStorage.removeItem('token');
-        setAuth({token: '', isLoggedIn: false, isAdmin: false});
+        setAuth({token: '', isLoggedIn: false, isAdmin: false, username: ""});
         if (callback) callback();
     };
 
