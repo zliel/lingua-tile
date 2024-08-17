@@ -29,6 +29,12 @@ function NavBar(props) {
         {name: "Translate", endpoint: "/translate"}
     ];
 
+    const adminPages = [{name: "User Table", endpoint: "/admin-users"}, {name: "Card Table", endpoint: "/admin-cards"}];
+
+    if (auth.isAdmin) {
+        pages.push(...adminPages);
+    }
+
 
     const handleMenuOpen = (event) => {
         setAnchorElMenu(event.currentTarget);
