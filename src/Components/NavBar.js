@@ -68,7 +68,7 @@ function NavBar(props) {
                           style={{textDecoration: "none", color: theme.palette.primary.contrastText}}>LinguaTile</Link>
                 </Typography>
                 <Box sx={{flexGrow: 1}}/>
-                <Stack direction={"row"}>
+                <Stack direction={"row"} alignItems={"center"}>
                     <Icon>
                         <LightMode/>
                     </Icon>
