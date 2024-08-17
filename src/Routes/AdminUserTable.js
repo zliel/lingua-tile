@@ -127,7 +127,7 @@ const AdminUserTable = () => {
                                         user.completedLessons
                                     )}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell sx={{whiteSpace: 'noWrap'}}>
                                     {editingUserId === user._id ? (
                                         <>
                                             <Button variant="contained" color="primary"
