@@ -92,7 +92,7 @@ function NavBar(props) {
                         <>
                             <IconButton onClick={handleProfileMenuOpen} sx={{mt: 0.5}}>
                                 <Avatar sx={{
-                                    backgroundColor: theme.palette.secondary.main,
+                                    backgroundColor: theme.palette.secondary.dark,
                                     color: theme.palette.primary.contrastText
                                 }}>{auth.username ? auth.username[0].toUpperCase() : "?"}</Avatar>
                             </IconButton>
