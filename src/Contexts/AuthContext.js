@@ -47,6 +47,7 @@ export const AuthProvider = ({children}) => {
 
     const logout = (callback) => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         setAuth({token: '', isLoggedIn: false, isAdmin: false, username: ""});
         if (callback) callback();
     };
