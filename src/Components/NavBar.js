@@ -27,7 +27,7 @@ function NavBar(props) {
     }
 
     return (
-        <AppBar position={"static"} enableColorOnDark>
+        <AppBar position={"sticky"} enableColorOnDark>
             <Toolbar>
                 <Typography variant={"h6"} sx={{paddingRight: "10px"}}>
                     <Link to={"/home"}
