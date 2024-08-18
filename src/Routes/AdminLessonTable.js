@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
+import NewLessonForm from '../Components/NewLessonForm';
 import axios from 'axios';
 import {
     Autocomplete,
@@ -96,11 +97,24 @@ const AdminLessonTable = () => {
         }
     }
 
+    const handleAddLesson = async (lesson) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/lessons/create', lesson, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+
+            setLessons([...lessons, response.data]);
+            showSnackbar('Lesson added successfully', 'success');
+        } catch (error) {
+            showSnackbar('Failed to add lesson', 'error');
+        }
+    }
+
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
             <Typography variant="h4" gutterBottom>Lesson Table</Typography>
-
+            <NewLessonForm cards={cards} sections={sections} onSubmit={handleAddLesson}/>
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{minWidth: 700}}>
                     <TableHead>
