@@ -25,11 +25,16 @@ function NavBar(props) {
     const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const pages = [{name: "Home", endpoint: "/home"}, {name: "About", endpoint: "/about"},
+    const pages = [
+        {name: "Home", endpoint: "/home"},
+        {name: "About", endpoint: "/about"},
         {name: "Translate", endpoint: "/translate"}
     ];
 
-    const adminPages = [{name: "User Table", endpoint: "/admin-users"}, {name: "Card Table", endpoint: "/admin-cards"}];
+    const adminPages = [
+        {name: "User Table", endpoint: "/admin-users"},
+        {name: "Card Table", endpoint: "/admin-cards"},
+        {name: "Lesson Table", endpoint: "/admin-lessons"}];
 
     if (auth.isAdmin) {
         pages.push(...adminPages);
