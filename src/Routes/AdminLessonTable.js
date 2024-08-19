@@ -145,7 +145,7 @@ const AdminLessonTable = () => {
                                             getOptionLabel={(option) => option.name}
                                             value={sections.find(section => section._id === lesson.section_id)}
                                             onChange={(event, newValue) => {
-                                                setEditedLesson({...editedLesson, section_id: newValue._id});
+                                                setEditedLesson({...editedLesson, section_id: newValue?._id ? newValue._id : ''});
                                             }}
                                             renderInput={(params) => <TextField {...params} label="Section"
                                                                                 variant="outlined"/>}
