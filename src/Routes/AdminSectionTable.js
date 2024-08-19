@@ -66,9 +66,9 @@ const AdminSectionTable = () => {
         }
     }
 
-    const handleDelete = async () => {
+    const handleDelete = async (sectionId) => {
         try {
-            await axios.put(`http://127.0.0.1:8000/api/sections/delete/${editingSectionId}`, editedSection, {
+            await axios.delete(`http://127.0.0.1:8000/api/sections/delete/${sectionId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
             setSections(sections.filter(section => section._id !== editingSectionId));
@@ -84,6 +84,7 @@ const AdminSectionTable = () => {
 
             <Typography variant="h4" gutterBottom>Cards Table</Typography>
 
+            <Typography variant="h4" gutterBottom>Sections Table</Typography>
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{minWidth: 700}}>
                     <TableHead>
@@ -103,12 +104,15 @@ const AdminSectionTable = () => {
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap'
                                 }}>
-                                     {section._id}
+                                    {section._id}
                                 </TableCell>
                                 <TableCell sx={{whiteSpace: 'noWrap', minWidth: 150}}>
                                     {editingSectionId === section._id ? (
                                         <TextField value={editedSection.name}
-                                                   onChange={(e) => setEditedSection({...editedSection, name: e.target.value})}/>
+                                                   onChange={(e) => setEditedSection({
+                                                       ...editedSection,
+                                                       name: e.target.value
+                                                   })}/>
                                     ) : (
                                         <Typography sx={{minWidth: 150}}>
                                             {section.name}
@@ -124,7 +128,10 @@ const AdminSectionTable = () => {
                                             getOptionLabel={(option) => option.title}
                                             value={editedSection.lesson_ids.map(lessonId => lessons.find(lesson => lesson._id === lessonId))}
                                             onChange={(event, newValue) => {
-                                                setEditedSection({...editedSection, lesson_ids: newValue.map(option => option._id)});
+                                                setEditedSection({
+                                                    ...editedSection,
+                                                    lesson_ids: newValue.map(option => option._id)
+                                                });
                                             }}
                                             renderInput={(params) => (
                                                 <TextField
