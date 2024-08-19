@@ -50,7 +50,7 @@ const AdminSectionTable = () => {
         setEditedSection(section);
     };
 
-    const handleUpdate = async (sectionId) => {
+    const handleUpdate = async () => {
         try {
             await axios.put(`http://127.0.0.1:8000/api/sections/update/${editingSectionId}`, editedSection, {
                 headers: {Authorization: `Bearer ${auth.token}`}
