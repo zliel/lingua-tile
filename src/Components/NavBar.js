@@ -34,7 +34,9 @@ function NavBar(props) {
     const adminPages = [
         {name: "User Table", endpoint: "/admin-users"},
         {name: "Card Table", endpoint: "/admin-cards"},
-        {name: "Lesson Table", endpoint: "/admin-lessons"}];
+        {name: "Lesson Table", endpoint: "/admin-lessons"},
+        {name: "Section Table", endpoint: "/admin-sections"}
+    ];
 
     if (auth.isAdmin) {
         pages.push(...adminPages);
