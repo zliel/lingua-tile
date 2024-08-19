@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import axios from 'axios';
 
 const NewSectionForm = ({ lessons, onSubmit }) => {
     const [newSection, setNewSection] = useState({name: '', lesson_ids: []})
