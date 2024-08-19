@@ -82,9 +82,8 @@ const AdminSectionTable = () => {
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
-            <Typography variant="h4" gutterBottom>Cards Table</Typography>
-
             <Typography variant="h4" gutterBottom>Sections Table</Typography>
+            <NewSectionForm lessons={lessons} onSubmit={handleAddSection}/>
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{minWidth: 700}}>
                     <TableHead>
