@@ -15,6 +15,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import NewSectionForm from "../Components/NewSectionForm";
 
 const AdminSectionTable = () => {
     const {auth} = useAuth();
@@ -75,6 +76,19 @@ const AdminSectionTable = () => {
             showSnackbar('Section deleted successfully', 'success');
         } catch (error) {
             showSnackbar('Failed to delete section', 'error');
+        }
+    }
+
+    const handleAddSection = async (section) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/sections/create', section, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+
+            setSections([...sections, response.data]);
+            showSnackbar('Lesson added successfully', 'success');
+        } catch (error) {
+            showSnackbar('Failed to add lesson', 'error');
         }
     }
 
@@ -163,7 +177,7 @@ const AdminSectionTable = () => {
                                             onClick={() => handleDelete(section._id)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
-                            ))}
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
