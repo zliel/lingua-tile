@@ -24,7 +24,9 @@ export const AuthProvider = ({children}) => {
                 });
             });
         } catch (error) {
-            // console.error(error);
+            if (error.response.status === 401) {
+                logout();
+            }
             return Promise.resolve(false);
         }
     }, [auth.token]);
