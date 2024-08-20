@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
+import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query'
 import {
     Box,
     Button,
@@ -22,20 +23,15 @@ const AdminUserTable = () => {
     const [editingUserId, setEditingUserId] = useState(null);
     const [editedUser, setEditedUser] = useState({});
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/users/admin/all', {
-                    headers: {Authorization: `Bearer ${auth.token}`}
-                });
-                setUsers(response.data);
-            } catch (error) {
-                showSnackbar('Failed to fetch users', 'error');
-            }
-        };
-
-        fetchUsers();
-    }, [auth.token, showSnackbar]);
+    const { data: users = [], isLoading, isError } = useQuery({
+        queryKey: ['users', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/users/admin/all', {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+            return response.data
+        }
+    });
 
     useEffect(() => {
         const handleKeyDown = (event) => {
