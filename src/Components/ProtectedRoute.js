@@ -19,12 +19,7 @@ const ProtectedRoute = ({ children }) => {
             }
             return false;
         },
-        enabled: !!auth.token,
-        onSuccess: (data) => {
-            if (!auth.isLoggedIn || !data) {
-                showSnackbar("You are not authorized to view that page", "error");
-            }
-        }
+        enabled: !!auth.token
     });
 
     useEffect(() => {
