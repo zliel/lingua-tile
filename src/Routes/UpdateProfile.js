@@ -35,9 +35,34 @@ function UpdateProfile() {
                 showSnackbar(`Error: ${error.response.data.detail}`, "error");
             }
         }
-    }, [auth, logout, navigate]);
 
     });
+
+    const updateMutation = useMutation({
+        mutationFn: async (updatedUser) => {
+            await axios.put(`http://127.0.0.1:8000/api/users/update/${user._id}`, updatedUser, {
+                headers: {
+                    'Authorization': `Bearer ${auth.token}`
+                }
+            });
+        },
+        onSuccess: () => {
+            showSnackbar("Profile updated successfully", "success");
+            logout(() => navigate('/login'));
+        },
+        onError: (error) => {
+            if (error.response.status === 401) {
+                showSnackbar("Invalid token. Please log in again.", "error");
+                logout(() => navigate('/login'));
+            } else if (error.response.status === 403) {
+                showSnackbar("Unauthorized to update user", "error");
+            } else if (error.response.status === 404) {
+                showSnackbar("User not found", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
+        }
+    })
 
     const isValidPassword = () => {
         const conditions = {
@@ -71,42 +96,17 @@ function UpdateProfile() {
     }
 
     const handleSave = async () => {
-        try {
-            if (password !== '') {
-                if (!isValidPassword()) {
-                    return;
-                }
-
-                user.password = password;
+        if (password !== '') {
+            if (!isValidPassword()) {
+                return;
             }
 
-            if (user.username === '') {
-                user.username = username;
-            }
-
-            await axios.put(`http://127.0.0.1:8000/api/users/update/${user._id}`, user, {
-                headers: {
-                    'Authorization': `Bearer ${auth.token}`
-                }
-            });
-
-            showSnackbar('Profile updated successfully', 'success');
-            // Invalidate the token
-            logout(() => navigate('/login'));
-
-        } catch (error) {
-
-            if (error.response.status === 401) {
-                showSnackbar("Invalid token. Please log in again.", "error");
-                logout(() => navigate('/login'));
-            } else if (error.response.status === 403) {
-                showSnackbar("Unauthorized to update user", "error");
-            } else if (error.response.status === 404) {
-                showSnackbar("User not found", "error");
-            } else {
-                showSnackbar(`Error: ${error.response.data.detail}`, "error");
-            }
+            user.password = password;
         }
+
+
+        const updatedUser = { ...user, username, password: password || undefined };
+        updateMutation.mutate(updatedUser);
     }
 
 
