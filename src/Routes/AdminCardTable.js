@@ -34,7 +34,7 @@ const AdminCardTable = () => {
 
             return response.data;
         },
-        onError: (error) => {
+        onError: () => {
             showSnackbar('Failed to fetch cards', 'error');
         }
     })
