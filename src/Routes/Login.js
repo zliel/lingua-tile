@@ -18,8 +18,7 @@ function Login() {
         mutationFn: (credentials) => axios.post("http://127.0.0.1:8000/api/auth/login", credentials),
         onSuccess: (response) => {
             showSnackbar("Login successful", "success");
-            login(response.data.token);
-            navigate("/");
+            login(response.data, () => navigate("/"));
         },
         onError: (error) => {
             if (error.response.status === 401) {
