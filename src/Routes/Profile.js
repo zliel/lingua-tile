@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Box, Typography, Button, Grid} from '@mui/material';
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from 'axios';
-import {useQuery, useMutation} from '@tanstack/react-query'
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import {useAuth} from '../Contexts/AuthContext';
@@ -12,6 +12,7 @@ function Profile() {
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
     const [dialogOpen, setDialogOpen] = useState(false);
+    const queryClient = useQueryClient();
 
     const { data: user, isError, isLoading } = useQuery({
         queryKey: ['user', auth.token],
@@ -31,10 +32,6 @@ function Profile() {
         }
     })
 
-        if (auth.isLoggedIn) {
-            fetchUserData();
-        }
-    }, [auth, logout, navigate, showSnackbar]);
 
     const handleUpdate = () => {
         // Redirect to update profile page
@@ -53,6 +50,7 @@ function Profile() {
         },
         onSuccess: () => {
             showSnackbar("Profile deleted successfully", "success");
+            queryClient.invalidateQueries(['user', auth.token]);
             logout(() => navigate('/home'));
         },
         onError: (error) => {
