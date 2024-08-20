@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }) => {
             showSnackbar("You are not authorized to view that page", "error");
             navigate('/home');
         }
-    }, [isError, isLoading, isAdmin, navigate]);
+    }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
 
     if (isLoading) {
         return (<>
