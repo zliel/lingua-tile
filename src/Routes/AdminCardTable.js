@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
-import {useQuery, useMutation} from '@tanstack/react-query';
+import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
 import {
     Autocomplete,
     Box,
@@ -23,6 +23,7 @@ const AdminCardTable = () => {
     const {showSnackbar} = useSnackbar();
     const [editingCardId, setEditingCardId] = useState(null);
     const [editedCard, setEditedCard] = useState({});
+    const queryClient = useQueryClient();
 
     const { data: cards = [], isLoading: isLoadingCards, isError: isErrorCards} = useQuery({
         queryKey: ['cards', auth.token],
@@ -66,30 +67,44 @@ const AdminCardTable = () => {
         setEditedCard(card);
     };
 
-    const handleUpdate = async () => {
-        try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/cards/update/${editingCardId}`, editedCard, {
+    const updateMutation = useMutation({
+        mutationFn: async () => {
+            console.dir(editedCard);
+            await axios.put(`http://127.0.0.1:8000/api/cards/update/${editingCardId}`, editedCard, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            console.dir(response.data)
-
-
+        },
+        onSuccess: () => {
             showSnackbar('Card updated successfully', 'success');
-        } catch (error) {
+            queryClient.invalidateQueries(['cards', auth.token]);
+            setEditingCardId(null);
+        },
+        onError: () => {
             showSnackbar('Failed to update card', 'error');
         }
+    })
+
+    const handleUpdate = async () => {
+        updateMutation.mutate();
     }
 
-    const handleDelete = async (cardId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (cardId) => {
             await axios.delete(`http://127.0.0.1:8000/api/cards/delete/${cardId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            // setCards(cards.filter(card => card._id !== cardId));
+        },
+        onSuccess: () => {
             showSnackbar('Card deleted successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to delete card', 'error');
+            queryClient.invalidateQueries(['cards', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to delete card', 'error')
         }
+    })
+
+    const handleDelete = async (cardId) => {
+        deleteMutation.mutate(cardId);
     }
 
     const handleAddCard = async (newCard) => {
@@ -179,7 +194,8 @@ const AdminCardTable = () => {
                                             options={Object.keys(lessonGroups.groupedLessons).flatMap(section => lessonGroups.groupedLessons[section])}
                                             groupBy={(option) => lessonGroups.sections.find(section => section._id === option.section_id)?.name || 'Ungrouped'}
                                             getOptionLabel={(option) => option.title}
-                                            value={lessonGroups.lessons.filter(lesson => editedCard.lesson_ids?.includes(lesson._id))}
+                                            value={editedCard.lesson_ids.map(lessonId => lessonGroups.lessons.find(lesson => lesson._id === lessonId))}
+                                            isOptionEqualToValue={(option, value) => option._id === value._id}
                                             onChange={(event, newValue) => {
                                                 setEditedCard({
                                                     ...editedCard,
