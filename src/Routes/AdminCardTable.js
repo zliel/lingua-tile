@@ -107,20 +107,28 @@ const AdminCardTable = () => {
         deleteMutation.mutate(cardId);
     }
 
+    const addMutation = useMutation({
+        mutationFn: async (newCard) => {
+            await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+        },
+        onSuccess: () => {
+            showSnackbar('Card added successfully', 'success');
+            queryClient.invalidateQueries(['cards', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to add card', 'error');
+        }
+    })
+
     const handleAddCard = async (newCard) => {
         if (!newCard.front_text || !newCard.back_text) {
             showSnackbar('Front and back text are required', 'error');
             return;
         }
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
-                headers: {Authorization: `Bearer ${auth.token}`}
-            });
-            // setCards([...cards, response.data]);
-            showSnackbar('Card added successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to add card', 'error');
-        }
+
+        addMutation.mutate(newCard);
     }
 
     if (isLoadingCards || isLoadingLessonGroups) {
