@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Box, Typography, Button, Grid, TextField} from '@mui/material';
 import axios from 'axios';
 import {useQuery, useMutation} from '@tanstack/react-query'
@@ -112,6 +112,14 @@ function UpdateProfile() {
 
     if (!auth.isLoggedIn) {
         return <Typography variant="h6" textAlign="center">Please log in to update your profile.</Typography>;
+    }
+
+    if (isLoading) {
+        return <Typography variant="h6" textAlign="center">Loading profile data...</Typography>;
+    }
+
+    if (isError) {
+        return <Typography variant="h6" textAlign="center">Failed to load profile data.</Typography>;
     }
 
     return (
