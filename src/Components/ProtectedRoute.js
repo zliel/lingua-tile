@@ -27,10 +27,10 @@ const ProtectedRoute = ({ children }) => {
         }
     });
 
-        if (auth.token) {
-            verifyAdmin();
-        } else {
-            setLoading(false);
+    useEffect(() => {
+        if (isError || (!isLoading && !isAdmin)) {
+            showSnackbar("You are not authorized to view that page", "error");
+            navigate('/home');
         }
     }, [isError, isLoading, isAdmin, navigate]);
 
