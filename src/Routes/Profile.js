@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Box, Typography, Button, Grid} from '@mui/material';
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from 'axios';
-import {useQuery} from '@tanstack/react-query'
+import {useQuery, useMutation} from '@tanstack/react-query'
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import {useAuth} from '../Contexts/AuthContext';
@@ -45,16 +45,17 @@ function Profile() {
         setDialogOpen(true);
     }
 
-    const handleDeleteConfirmation = async () => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async () => {
             await axios.delete(`http://127.0.0.1:8000/api/users/delete/${user._id}`, {
-                headers: {
-                    'Authorization': `Bearer ${auth.token}`
-                }
-            });
+                headers: { 'Authorization': `Bearer ${auth.token}` }
+            })
+        },
+        onSuccess: () => {
             showSnackbar("Profile deleted successfully", "success");
             logout(() => navigate('/home'));
-        } catch (error) {
+        },
+        onError: (error) => {
             if (error.response.status === 401) {
                 showSnackbar("Session expired. Please log in again.", "error");
             } else if (error.response.status === 403) {
@@ -65,7 +66,10 @@ function Profile() {
                 showSnackbar(`Error: ${error.response.data.detail}`, "error");
             }
         }
+    })
 
+    const handleDeleteConfirmation = async () => {
+        deleteMutation.mutate();
         setDialogOpen(false);
     };
 
