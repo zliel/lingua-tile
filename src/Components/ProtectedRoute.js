@@ -5,27 +5,29 @@ import {useSnackbar} from "../Contexts/SnackbarContext";
 import {Typography} from "@mui/material";
 import {useQuery} from "@tanstack/react-query";
 
-
 const ProtectedRoute = ({ children }) => {
     const { auth, checkAdmin } = useAuth();
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
+    const token = auth.token || localStorage.getItem('token');
     const { data: isAdmin, isLoading, isError } = useQuery({
-        queryKey: ['checkAdmin', auth.token],
+        queryKey: ['checkAdmin', token],
         queryFn: async () => {
-            if (auth.token) {
+            if (token) {
                 return await checkAdmin();
             }
             return false;
         },
-        enabled: !!auth.token
+        enabled: !!token
     });
 
     useEffect(() => {
-        if (isError || (!isLoading && !isAdmin)) {
-            showSnackbar("You are not authorized to view that page", "error");
-            navigate('/home');
+        if (!isLoading) {
+            if (isError || !isAdmin) {
+                showSnackbar("You are not authorized to view that page", "error");
+                navigate('/home');
+            }
         }
     }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
 
