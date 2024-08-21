@@ -95,16 +95,18 @@ const AdminUserTable = () => {
         if (!window.confirm('Are you sure you want to delete this user?')) {
             return;
         }
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/users/delete/${userId}`, {
-                headers: {Authorization: `Bearer ${auth.token}`}
-            });
-            setUsers(users.filter(user => user.id !== userId));
-            showSnackbar('User deleted successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to delete user', 'error');
-        }
+
+        deleteMutation.mutate(userId);
+        setEditingUserId(null);
     };
+
+    if (isLoading) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isError) {
+        return <Typography variant="h6" textAlign="center">Error loading users.</Typography>
+    }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
