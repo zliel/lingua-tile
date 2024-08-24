@@ -49,20 +49,24 @@ const AdminSectionTable = () => {
         setEditedSection(section);
     };
 
-    const handleUpdate = async () => {
-        try {
+    const updateMutation = useMutation({
+        mutationFn: async (sectionId) => {
             await axios.put(`http://127.0.0.1:8000/api/sections/update/${editingSectionId}`, editedSection, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-
-            setSections(sections.map(section => section._id === editingSectionId ? editedSection : section));
+        },
+        onSuccess: () => {
             setEditingSectionId(null);
-
+            queryClient.invalidateQueries('sections');
             showSnackbar('Section updated successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to update section', 'error');
         }
+    });
+
+    const handleUpdate = () => {
+        updateMutation.mutate();
     }
 
     const handleDelete = async (sectionId) => {
