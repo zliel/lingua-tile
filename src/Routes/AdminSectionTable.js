@@ -21,8 +21,6 @@ import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 const AdminSectionTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [lessons, setLessons] = useState([]);
-    const [sections, setSections] = useState([])
     const [editingSectionId, setEditingSectionId] = useState(null);
     const [editedSection, setEditedSection] = useState({});
     const queryClient = useQueryClient();
@@ -109,6 +107,13 @@ const AdminSectionTable = () => {
         addMutation.mutate(section);
     }
 
+    if (isLoadingLessons || isLoadingSections) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isErrorLessons || isErrorSections) {
+        return <Typography variant="h6" textAlign="center">Failed to fetch data</Typography>
+    }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
