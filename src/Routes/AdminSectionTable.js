@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
@@ -16,82 +16,104 @@ import {
     Typography
 } from '@mui/material';
 import NewSectionForm from "../Components/NewSectionForm";
+import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 
 const AdminSectionTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [lessons, setLessons] = useState([]);
-    const [sections, setSections] = useState([])
     const [editingSectionId, setEditingSectionId] = useState(null);
     const [editedSection, setEditedSection] = useState({});
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchLessonsAndSections = async () => {
-            try {
-                const [lessonsResponse, sectionsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/lessons/all'),
-                    axios.get('http://127.0.0.1:8000/api/sections/all')
-                ]);
+    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+        queryKey: ['lessons', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/lessons/all')
 
-                const lessons = lessonsResponse.data;
-                const sections = sectionsResponse.data;
+            return response.data;
+        }
+    });
 
-                setLessons(lessons);
-                setSections(sections);
-            } catch (error) {
-                showSnackbar('Failed to fetch lessons or sections', 'error');
-            }
-        };
+    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+        queryKey: ['sections', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/sections/all')
 
-        fetchLessonsAndSections();
-    }, [showSnackbar]);
+            return response.data;
+        }
+    });
 
     const handleEdit = (section) => {
         setEditingSectionId(section._id);
         setEditedSection(section);
     };
 
-    const handleUpdate = async () => {
-        try {
+    const updateMutation = useMutation({
+        mutationFn: async (sectionId) => {
             await axios.put(`http://127.0.0.1:8000/api/sections/update/${editingSectionId}`, editedSection, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-
-            setSections(sections.map(section => section._id === editingSectionId ? editedSection : section));
+        },
+        onSuccess: () => {
             setEditingSectionId(null);
-
+            queryClient.invalidateQueries('sections');
             showSnackbar('Section updated successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to update section', 'error');
         }
+    });
+
+    const handleUpdate = () => {
+        updateMutation.mutate();
     }
 
-    const handleDelete = async (sectionId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (sectionId) => {
             await axios.delete(`http://127.0.0.1:8000/api/sections/delete/${sectionId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setSections(sections.filter(section => section._id !== editingSectionId));
+        },
+        onSuccess: () => {
+            setEditingSectionId(null);
+            queryClient.invalidateQueries('sections');
             showSnackbar('Section deleted successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to delete section', 'error');
         }
+    });
+
+    const handleDelete = async (sectionId) => {
+        deleteMutation.mutate(sectionId);
     }
+
+    const addMutation = useMutation({
+        mutationFn: async (section) => {
+            await axios.post('http://127.0.0.1:8000/api/sections/create', section, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries('sections');
+            showSnackbar('Section added successfully', 'success');
+        },
+        onError: () => {
+            showSnackbar('Failed to add section', 'error');
+        }
+    })
 
     const handleAddSection = async (section) => {
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/sections/create', section, {
-                headers: {Authorization: `Bearer ${auth.token}`}
-            });
-
-            setSections([...sections, response.data]);
-            showSnackbar('Lesson added successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to add lesson', 'error');
-        }
+        addMutation.mutate(section);
     }
 
+    if (isLoadingLessons || isLoadingSections) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isErrorLessons || isErrorSections) {
+        return <Typography variant="h6" textAlign="center">Failed to fetch data</Typography>
+    }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>

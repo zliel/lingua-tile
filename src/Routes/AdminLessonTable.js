@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import NewLessonForm from '../Components/NewLessonForm';
 import axios from 'axios';
+import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 import {
     Autocomplete,
     Box,
@@ -20,94 +21,109 @@ import {
 const AdminLessonTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [cards, setCards] = useState([]);
-    const [lessons, setLessons] = useState([]);
     const [editingLessonId, setEditingLessonId] = useState(null);
     const [editedLesson, setEditedLesson] = useState({});
-    const [sections, setSections] = useState([])
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchCards = async () => {
-            try {
-                console.log(`Sending token: ${auth.token}`);
-                const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
-                    headers: {Authorization: `Bearer ${auth.token}`}
-                })
+    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+        queryKey: ['lessons', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/lessons/all');
 
-                setCards(response.data);
-            } catch (error) {
-                showSnackbar('Failed to fetch cards', 'error');
-            }
+            return response.data;
         }
+    });
 
-        if (auth.token) fetchCards();
-    }, [auth.token, showSnackbar]);
+    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+        queryKey: ['sections', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/sections/all');
 
-    useEffect(() => {
-        const fetchLessonsAndSections = async () => {
-            try {
-                const [lessonsResponse, sectionsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/lessons/all'),
-                    axios.get('http://127.0.0.1:8000/api/sections/all')
-                ]);
+            return response.data;
+        }
+    })
 
-                const lessons = lessonsResponse.data;
-                const sections = sectionsResponse.data;
+    const { data: cards = [], isLoadingCards, isErrorCards } = useQuery({
+        queryKey: ['cards', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
 
-
-                setLessons(lessons);
-                setSections(sections);
-
-            } catch (error) {
-                showSnackbar('Failed to fetch lessons or sections', 'error');
-            }
-        };
-
-        fetchLessonsAndSections();
-    }, [showSnackbar]);
-
+            return response.data;
+        }
+    });
 
     const handleEdit = (card) => {
         setEditingLessonId(card._id);
         setEditedLesson(card);
     };
 
-    const handleUpdate = async () => {
-        try {
+    const updateMutation = useMutation({
+        mutationFn: async () => {
             await axios.put(`http://127.0.0.1:8000/api/lessons/update/${editedLesson._id}`, editedLesson, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-            setLessons(lessons.map(lesson => lesson._id === editedLesson._id ? editedLesson : lesson));
+        },
+        onSuccess: () => {
             setEditingLessonId(null);
-        } catch (error) {
+            queryClient.invalidateQueries('lessons');
+            showSnackbar('Lesson updated successfully', 'success');
+        },
+        onError: () => {
             showSnackbar('Failed to update lesson', 'error');
         }
+    })
+
+    const handleUpdate = async () => {
+        updateMutation.mutate();
     }
 
-    const handleDelete = async (lessonId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (lessonId) => {
             await axios.delete(`http://127.0.0.1:8000/api/lessons/delete/${lessonId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setLessons(lessons.filter(lesson => lesson._id !== lessonId));
+        },
+        onSuccess: () => {
+            setEditingLessonId(null);
+            queryClient.invalidateQueries('lessons');
             showSnackbar('Lesson deleted successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to delete lesson', 'error');
         }
+    })
+
+    const handleDelete = async (lessonId) => {
+        deleteMutation.mutate(lessonId);
     }
 
-    const handleAddLesson = async (lesson) => {
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/lessons/create', lesson, {
+    const addMutation = useMutation({
+        mutationFn: async (lesson) => {
+            await axios.post('http://127.0.0.1:8000/api/lessons/create', lesson, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-            setLessons([...lessons, response.data]);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries('lessons');
             showSnackbar('Lesson added successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to add lesson', 'error');
         }
+    })
+
+    const handleAddLesson = async (lesson) => {
+        addMutation.mutate(lesson)
+    }
+
+    if (isLoadingLessons || isLoadingSections || isLoadingCards) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isErrorLessons || isErrorSections || isErrorCards) {
+        return <Typography variant="h6" textAlign="center">Failed to fetch data</Typography>
     }
 
     return (
