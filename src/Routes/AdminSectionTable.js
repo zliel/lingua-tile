@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
@@ -69,16 +69,24 @@ const AdminSectionTable = () => {
         updateMutation.mutate();
     }
 
-    const handleDelete = async (sectionId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (sectionId) => {
             await axios.delete(`http://127.0.0.1:8000/api/sections/delete/${sectionId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setSections(sections.filter(section => section._id !== editingSectionId));
+        },
+        onSuccess: () => {
+            setEditingSectionId(null);
+            queryClient.invalidateQueries('sections');
             showSnackbar('Section deleted successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to delete section', 'error');
         }
+    });
+
+    const handleDelete = async (sectionId) => {
+        deleteMutation.mutate(sectionId);
     }
 
     const handleAddSection = async (section) => {
