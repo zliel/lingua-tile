@@ -24,27 +24,25 @@ const AdminSectionTable = () => {
     const [sections, setSections] = useState([])
     const [editingSectionId, setEditingSectionId] = useState(null);
     const [editedSection, setEditedSection] = useState({});
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchLessonsAndSections = async () => {
-            try {
-                const [lessonsResponse, sectionsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/lessons/all'),
-                    axios.get('http://127.0.0.1:8000/api/sections/all')
-                ]);
+    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+        queryKey: ['lessons', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/lessons/all')
 
-                const lessons = lessonsResponse.data;
-                const sections = sectionsResponse.data;
+            return response.data;
+        }
+    });
 
-                setLessons(lessons);
-                setSections(sections);
-            } catch (error) {
-                showSnackbar('Failed to fetch lessons or sections', 'error');
-            }
-        };
+    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+        queryKey: ['sections', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/sections/all')
 
-        fetchLessonsAndSections();
-    }, [showSnackbar]);
+            return response.data;
+        }
+    });
 
     const handleEdit = (section) => {
         setEditingSectionId(section._id);
