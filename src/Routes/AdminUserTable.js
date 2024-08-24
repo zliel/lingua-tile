@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
+import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query'
 import {
     Box,
     Button,
@@ -18,24 +19,19 @@ import {
 const AdminUserTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [users, setUsers] = useState([]);
     const [editingUserId, setEditingUserId] = useState(null);
     const [editedUser, setEditedUser] = useState({});
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/users/admin/all', {
-                    headers: {Authorization: `Bearer ${auth.token}`}
-                });
-                setUsers(response.data);
-            } catch (error) {
-                showSnackbar('Failed to fetch users', 'error');
-            }
-        };
-
-        fetchUsers();
-    }, [auth.token, showSnackbar]);
+    const { data: users = [], isLoading, isError } = useQuery({
+        queryKey: ['users', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/users/admin/all', {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+            return response.data
+        }
+    });
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -57,18 +53,41 @@ const AdminUserTable = () => {
         setEditedUser(user);
     };
 
-    const handleUpdate = async () => {
-        try {
-            await axios.put(`http://127.0.0.1:8000/api/users/update/${editingUserId}`, editedUser, {
+    const updateMutation = useMutation({
+        mutationFn: async (userId) => {
+            await axios.put(`http://127.0.0.1:8000/api/users/update/${userId}`, editedUser, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setUsers(users.map(user => (user.id === editingUserId ? editedUser : user)));
-            setEditingUserId(null);
+        },
+        onSuccess: () => {
             showSnackbar('User updated successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to update user', 'error');
+            queryClient.invalidateQueries(['users', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to update user', 'error')
         }
-    };
+    })
+
+    const handleUpdate = (userId) => {
+        updateMutation.mutate(userId);
+        setEditingUserId(null);
+    }
+
+    const deleteMutation = useMutation({
+        mutationFn: async (userId) => {
+            await axios.delete(`http://127.0.0.1:8000/api/users/delete/${userId}`, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+        },
+        onSuccess: () => {
+            showSnackbar('User deleted successfully', 'success');
+            queryClient.invalidateQueries(['users', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to delete user', 'error')
+        }
+    })
+
 
     const handleDelete = async (userId) => {
         // In this situation I think that use the built-in window.confirm is a better option than the ConfirmationDialog component, as it
@@ -76,16 +95,18 @@ const AdminUserTable = () => {
         if (!window.confirm('Are you sure you want to delete this user?')) {
             return;
         }
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/users/delete/${userId}`, {
-                headers: {Authorization: `Bearer ${auth.token}`}
-            });
-            setUsers(users.filter(user => user.id !== userId));
-            showSnackbar('User deleted successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to delete user', 'error');
-        }
+
+        deleteMutation.mutate(userId);
+        setEditingUserId(null);
     };
+
+    if (isLoading) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isError) {
+        return <Typography variant="h6" textAlign="center">Error loading users.</Typography>
+    }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
@@ -131,7 +152,7 @@ const AdminUserTable = () => {
                                     {editingUserId === user._id ? (
                                         <>
                                             <Button variant="contained" color="primary"
-                                                    onClick={handleUpdate}>Save</Button>
+                                                    onClick={() => handleUpdate(user._id)}>Save</Button>
                                             <Button sx={{ml: 1}} variant="contained" color="warning"
                                                     onClick={() => setEditingUserId(null)}>Cancel</Button>
                                         </>

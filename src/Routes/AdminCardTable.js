@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
+import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
 import {
     Autocomplete,
     Box,
@@ -20,107 +21,124 @@ import NewCardForm from '../Components/NewCardForm';
 const AdminCardTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [cards, setCards] = useState([]);
-    const [lessons, setLessons] = useState([]);
     const [editingCardId, setEditingCardId] = useState(null);
     const [editedCard, setEditedCard] = useState({});
-    const [sections, setSections] = useState([])
-    const [lessonGroups, setLessonGroups] = useState([])
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchCards = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
-                    headers: {Authorization: `Bearer ${auth.token}`}
-                });
-                setCards(response.data);
-            } catch (error) {
-                showSnackbar('Failed to fetch cards', 'error');
-            }
-        };
+    const { data: cards = [], isLoading: isLoadingCards, isError: isErrorCards} = useQuery({
+        queryKey: ['cards', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            })
 
-        fetchCards();
-    }, [auth.token, showSnackbar]);
+            return response.data;
+        },
+        onError: () => {
+            showSnackbar('Failed to fetch cards', 'error');
+        }
+    })
 
-    useEffect(() => {
-        const fetchLessonsAndSections = async () => {
-            try {
-                const [lessonsResponse, sectionsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/lessons/all'),
-                    axios.get('http://127.0.0.1:8000/api/sections/all')
-                ]);
+    const { data: lessonGroups, isLoading: isLoadingLessonGroups, isError: isErrorLessonGroups } = useQuery({
+        queryKey: ['lessonGroups', auth.token],
+        queryFn: async () => {
+            const [lessonsResponse, sectionsResponse] = await Promise.all([
+                axios.get('http://127.0.0.1:8000/api/lessons/all'),
+                axios.get('http://127.0.0.1:8000/api/sections/all')
+            ]);
 
-                const lessons = lessonsResponse.data;
-                const sections = sectionsResponse.data;
+            const lessons = lessonsResponse.data;
+            const sections = sectionsResponse.data;
 
-                setLessons(lessons);
-                setSections(sections);
+            const groupedLessons = sections.reduce((acc, section) => {
+                acc[section.name] = lessons.filter(lesson => lesson.section_id === section._id);
+                return acc;
+            }, {});
 
-                const groupedLessons = sections.reduce((acc, section) => {
-                    acc[section.name] = lessons.filter(lesson => lesson.section_id === section._id);
-                    return acc;
-                }, {});
+            groupedLessons['Ungrouped'] = lessons.filter(lesson => !lesson.section_id);
 
-                groupedLessons['Ungrouped'] = lessons.filter(lesson => !lesson.section_id);
+            return {groupedLessons, lessons, sections};
+        },
 
-                setLessonGroups(groupedLessons);
-            } catch (error) {
-                showSnackbar('Failed to fetch lessons or sections', 'error');
-            }
-        };
-
-        fetchLessonsAndSections();
-    }, [showSnackbar]);
+    });
 
     const handleEdit = (card) => {
         setEditingCardId(card._id);
         setEditedCard(card);
     };
 
-    const handleUpdate = async () => {
-        try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/cards/update/${editingCardId}`, editedCard, {
+    const updateMutation = useMutation({
+        mutationFn: async () => {
+            console.dir(editedCard);
+            await axios.put(`http://127.0.0.1:8000/api/cards/update/${editingCardId}`, editedCard, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            console.dir(response.data)
-            setCards(cards.map(card => card._id === editingCardId ? {
-                ...editedCard,
-                lesson_ids: editedCard.lesson_ids
-            } : card));
-            setEditingCardId(null);
-
+        },
+        onSuccess: () => {
             showSnackbar('Card updated successfully', 'success');
-        } catch (error) {
+            queryClient.invalidateQueries(['cards', auth.token]);
+            setEditingCardId(null);
+        },
+        onError: () => {
             showSnackbar('Failed to update card', 'error');
         }
+    })
+
+    const handleUpdate = async () => {
+        updateMutation.mutate();
     }
 
-    const handleDelete = async (cardId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (cardId) => {
             await axios.delete(`http://127.0.0.1:8000/api/cards/delete/${cardId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setCards(cards.filter(card => card._id !== cardId));
+        },
+        onSuccess: () => {
             showSnackbar('Card deleted successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to delete card', 'error');
+            queryClient.invalidateQueries(['cards', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to delete card', 'error')
         }
+    })
+
+    const handleDelete = async (cardId) => {
+        deleteMutation.mutate(cardId);
     }
+
+    const addMutation = useMutation({
+        mutationFn: async (newCard) => {
+            await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
+        },
+        onSuccess: () => {
+            showSnackbar('Card added successfully', 'success');
+            queryClient.invalidateQueries(['cards', auth.token]);
+        },
+        onError: () => {
+            showSnackbar('Failed to add card', 'error');
+        }
+    })
 
     const handleAddCard = async (newCard) => {
         if (!newCard.front_text || !newCard.back_text) {
             showSnackbar('Front and back text are required', 'error');
             return;
         }
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/cards/create', newCard, {
-                headers: {Authorization: `Bearer ${auth.token}`}
-            });
-            setCards([...cards, response.data]);
-            showSnackbar('Card added successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to add card', 'error');
-        }
+
+        addMutation.mutate(newCard);
+    }
+
+    if (isLoadingCards || isLoadingLessonGroups) {
+        return (
+            <Typography variant="h5" textAlign="center">Loading...</Typography>
+        )
+    }
+
+    if (isErrorCards || isErrorLessonGroups) {
+        return <Typography variant="h5" textAlign="center">Error loading data</Typography>;
     }
 
 
@@ -128,7 +146,7 @@ const AdminCardTable = () => {
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
             <Typography variant="h4" gutterBottom>Cards Table</Typography>
-            <NewCardForm lessons={lessons} lessonGroups={lessonGroups} sections={sections} onSubmit={handleAddCard}/>
+            <NewCardForm lessons={lessonGroups.lessons} lessonGroups={lessonGroups.groupedLessons} sections={lessonGroups.sections} onSubmit={handleAddCard}/>
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{minWidth: 700}}>
                     <TableHead>
@@ -141,7 +159,7 @@ const AdminCardTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {cards.map(card => (
+                        {cards?.map(card => (
                             <TableRow key={card._id} onDoubleClick={() => handleEdit(card)}>
                                 <TableCell sx={{
                                     maxWidth: 100,
@@ -181,10 +199,11 @@ const AdminCardTable = () => {
                                         <Autocomplete
                                             multiple
                                             disableCloseOnSelect
-                                            options={Object.keys(lessonGroups).flatMap(section => lessonGroups[section])}
-                                            groupBy={(option) => sections.find(section => section._id === option.section_id)?.name || 'Ungrouped'}
+                                            options={Object.keys(lessonGroups.groupedLessons).flatMap(section => lessonGroups.groupedLessons[section])}
+                                            groupBy={(option) => lessonGroups.sections.find(section => section._id === option.section_id)?.name || 'Ungrouped'}
                                             getOptionLabel={(option) => option.title}
-                                            value={lessons.filter(lesson => editedCard.lesson_ids?.includes(lesson._id))}
+                                            value={editedCard.lesson_ids.map(lessonId => lessonGroups.lessons.find(lesson => lesson._id === lessonId))}
+                                            isOptionEqualToValue={(option, value) => option._id === value._id}
                                             onChange={(event, newValue) => {
                                                 setEditedCard({
                                                     ...editedCard,
@@ -199,7 +218,7 @@ const AdminCardTable = () => {
                                         />
                                     ) : (
                                         <Typography sx={{minWidth: 150}}>
-                                            {card.lesson_ids?.map(lessonId => lessons.find(lesson => lesson._id === lessonId)?.title).join(', \n')}
+                                            {card.lesson_ids?.map(lessonId => lessonGroups.lessons.find(lesson => lesson._id === lessonId)?.title).join(', \n')}
                                         </Typography>
                                     )}
                                 </TableCell>

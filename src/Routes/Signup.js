@@ -2,6 +2,7 @@ import React from 'react';
 import {useNavigate} from "react-router-dom";
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 import {useSnackbar} from "../Contexts/SnackbarContext";
 
 
@@ -44,6 +45,21 @@ function Signup() {
         return true;
     }
 
+    const signupMutation = useMutation({
+        mutationFn: (newUser) => axios.post("http://127.0.0.1:8000/api/users/signup", newUser),
+        onSuccess: () => {
+            showSnackbar("Account created successfully", "success")
+            navigate("/login")
+        },
+        onError: (error) => {
+            if (error.response.status === 400) {
+                showSnackbar("Username already exists", "error")
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error")
+            }
+        }
+    });
+
     const handleSignup = () => {
         if (!isValidPassword()) {
             return
@@ -51,20 +67,8 @@ function Signup() {
             showSnackbar("Please enter a username", "error")
             return
         }
-        axios.post("http://127.0.0.1:8000/api/users/signup", {username: username, password: password})
-            .then(() => {
 
-                showSnackbar("Account created successfully", "success")
-                navigate("/login")
-
-            }).catch(error => {
-
-            if (error.response.status === 400) {
-                showSnackbar("Username already exists", "error")
-            } else {
-                showSnackbar(`Error: ${error.response.data.detail}`, "error")
-            }
-        })
+        signupMutation.mutate({username: username, password: password})
     }
 
     return (

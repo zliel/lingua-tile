@@ -1,37 +1,44 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import { useAuth } from '../Contexts/AuthContext';
 import {useSnackbar} from "../Contexts/SnackbarContext";
 import {Typography} from "@mui/material";
-
+import {useQuery} from "@tanstack/react-query";
 
 const ProtectedRoute = ({ children }) => {
     const { auth, checkAdmin } = useAuth();
     const { showSnackbar } = useSnackbar();
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    const token = auth.token || localStorage.getItem('token');
+    const { data: isAdmin, isLoading, isError } = useQuery({
+        queryKey: ['checkAdmin', token],
+        queryFn: async () => {
+            if (token) {
+                return await checkAdmin();
+            }
+            return false;
+        },
+        enabled: !!token
+    });
+
     useEffect(() => {
-        const verifyAdmin = async () => {
-            const isAdmin = await checkAdmin();
-            setLoading(false);
-            if (!auth.isLoggedIn || !isAdmin) {
-                showSnackbar("You are not authorized to view this page", "error");
+        if (!isLoading) {
+            if (isError || !isAdmin) {
+                showSnackbar("You are not authorized to view that page", "error");
                 navigate('/home');
             }
-        };
-
-        if (auth.token) {
-            verifyAdmin();
-        } else {
-            setLoading(false);
         }
-    }, [auth.token, navigate, auth.isLoggedIn, showSnackbar, checkAdmin]);
+    }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
 
-    if (loading) {
+    if (isLoading) {
         return (<>
             <Typography variant={"h5"} textAlign={"center"}>Loading...</Typography>
         </>);
+    }
+
+    if (isError || !isAdmin) {
+        return null;
     }
 
     return children;

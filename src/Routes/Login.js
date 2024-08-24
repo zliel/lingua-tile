@@ -2,6 +2,7 @@ import React from 'react';
 import {useNavigate} from "react-router-dom";
 import {Box, Grid, Typography, TextField, Button} from "@mui/material";
 import axios from "axios";
+import {useMutation} from "@tanstack/react-query";
 import {useAuth} from "../Contexts/AuthContext";
 import {useSnackbar} from "../Contexts/SnackbarContext";
 
@@ -13,28 +14,30 @@ function Login() {
     const navigate = useNavigate();
     const {showSnackbar} = useSnackbar();
 
+    const loginMutation = useMutation({
+        mutationFn: (credentials) => axios.post("http://127.0.0.1:8000/api/auth/login", credentials),
+        onSuccess: (response) => {
+            showSnackbar("Login successful", "success");
+            login(response.data, () => navigate("/"));
+        },
+        onError: (error) => {
+            if (error.response.status === 401) {
+                showSnackbar("Invalid credentials", "error");
+            } else {
+                showSnackbar(`Error: ${error.response.data.detail}`, "error");
+            }
+        }
+    });
+
     const handleLogin = () => {
         if (username === "" || password === "") {
             showSnackbar("Please enter a username and password", "error");
             return
         }
 
-        axios.post("http://127.0.0.1:8000/api/auth/login", {username: username, password: password})
-            .then(response => {
+        loginMutation.mutate({username: username, password: password});
 
-                const data = response.data;
-                showSnackbar("Login successful", "success");
-                login(data, () => navigate('/home'));
 
-            }).catch(error => {
-
-            if (error.response.status === 401 || error.response.status === 404) {
-                showSnackbar("Invalid username or password", "error");
-            } else {
-                showSnackbar(`Error: ${error.response.data.detail}`, "error");
-            }
-
-        })
     }
     return (
         <Box sx={{height: "50vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
