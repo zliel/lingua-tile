@@ -63,7 +63,7 @@ const AdminUserTable = () => {
             showSnackbar('User updated successfully', 'success');
             queryClient.invalidateQueries(['users', auth.token]);
         },
-        onError: (error) => {
+        onError: () => {
             showSnackbar('Failed to update user', 'error')
         }
     })
