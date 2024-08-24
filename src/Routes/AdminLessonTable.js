@@ -59,42 +59,63 @@ const AdminLessonTable = () => {
         setEditedLesson(card);
     };
 
-    const handleUpdate = async () => {
-        try {
+    const updateMutation = useMutation({
+        mutationFn: async () => {
             await axios.put(`http://127.0.0.1:8000/api/lessons/update/${editedLesson._id}`, editedLesson, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-            setLessons(lessons.map(lesson => lesson._id === editedLesson._id ? editedLesson : lesson));
+        },
+        onSuccess: () => {
             setEditingLessonId(null);
-        } catch (error) {
+            queryClient.invalidateQueries('lessons');
+            showSnackbar('Lesson updated successfully', 'success');
+        },
+        onError: () => {
             showSnackbar('Failed to update lesson', 'error');
         }
+    })
+
+    const handleUpdate = async () => {
+        updateMutation.mutate();
     }
 
-    const handleDelete = async (lessonId) => {
-        try {
+    const deleteMutation = useMutation({
+        mutationFn: async (lessonId) => {
             await axios.delete(`http://127.0.0.1:8000/api/lessons/delete/${lessonId}`, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-            setLessons(lessons.filter(lesson => lesson._id !== lessonId));
+        },
+        onSuccess: () => {
+            setEditingLessonId(null);
+            queryClient.invalidateQueries('lessons');
             showSnackbar('Lesson deleted successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to delete lesson', 'error');
         }
+    })
+
+    const handleDelete = async (lessonId) => {
+        deleteMutation.mutate(lessonId);
     }
 
-    const handleAddLesson = async (lesson) => {
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/lessons/create', lesson, {
+    const addMutation = useMutation({
+        mutationFn: async (lesson) => {
+            await axios.post('http://127.0.0.1:8000/api/lessons/create', lesson, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
-
-            setLessons([...lessons, response.data]);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries('lessons');
             showSnackbar('Lesson added successfully', 'success');
-        } catch (error) {
+        },
+        onError: () => {
             showSnackbar('Failed to add lesson', 'error');
         }
+    })
+
+    const handleAddLesson = async (lesson) => {
+        addMutation.mutate(lesson)
     }
 
     return (
