@@ -118,6 +118,14 @@ const AdminLessonTable = () => {
         addMutation.mutate(lesson)
     }
 
+    if (isLoadingLessons || isLoadingSections || isLoadingCards) {
+        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+    }
+
+    if (isErrorLessons || isErrorSections || isErrorCards) {
+        return <Typography variant="h6" textAlign="center">Failed to fetch data</Typography>
+    }
+
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
