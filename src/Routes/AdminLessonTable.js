@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import NewLessonForm from '../Components/NewLessonForm';
 import axios from 'axios';
+import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 import {
     Autocomplete,
     Box,
@@ -20,52 +21,38 @@ import {
 const AdminLessonTable = () => {
     const {auth} = useAuth();
     const {showSnackbar} = useSnackbar();
-    const [cards, setCards] = useState([]);
-    const [lessons, setLessons] = useState([]);
     const [editingLessonId, setEditingLessonId] = useState(null);
     const [editedLesson, setEditedLesson] = useState({});
-    const [sections, setSections] = useState([])
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchCards = async () => {
-            try {
-                console.log(`Sending token: ${auth.token}`);
-                const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
-                    headers: {Authorization: `Bearer ${auth.token}`}
-                })
+    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+        queryKey: ['lessons', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/lessons/all');
 
-                setCards(response.data);
-            } catch (error) {
-                showSnackbar('Failed to fetch cards', 'error');
-            }
+            return response.data;
         }
+    });
 
-        if (auth.token) fetchCards();
-    }, [auth.token, showSnackbar]);
+    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+        queryKey: ['sections', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/sections/all');
 
-    useEffect(() => {
-        const fetchLessonsAndSections = async () => {
-            try {
-                const [lessonsResponse, sectionsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/lessons/all'),
-                    axios.get('http://127.0.0.1:8000/api/sections/all')
-                ]);
+            return response.data;
+        }
+    })
 
-                const lessons = lessonsResponse.data;
-                const sections = sectionsResponse.data;
+    const { data: cards = [], isLoadingCards, isErrorCards } = useQuery({
+        queryKey: ['cards', auth.token],
+        queryFn: async () => {
+            const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
+                headers: {Authorization: `Bearer ${auth.token}`}
+            });
 
-
-                setLessons(lessons);
-                setSections(sections);
-
-            } catch (error) {
-                showSnackbar('Failed to fetch lessons or sections', 'error');
-            }
-        };
-
-        fetchLessonsAndSections();
-    }, [showSnackbar]);
-
+            return response.data;
+        }
+    });
 
     const handleEdit = (card) => {
         setEditingLessonId(card._id);
