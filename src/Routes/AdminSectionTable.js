@@ -16,6 +16,7 @@ import {
     Typography
 } from '@mui/material';
 import NewSectionForm from "../Components/NewSectionForm";
+import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 
 const AdminSectionTable = () => {
     const {auth} = useAuth();
@@ -89,17 +90,23 @@ const AdminSectionTable = () => {
         deleteMutation.mutate(sectionId);
     }
 
-    const handleAddSection = async (section) => {
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/api/sections/create', section, {
+    const addMutation = useMutation({
+        mutationFn: async (section) => {
+            await axios.post('http://127.0.0.1:8000/api/sections/create', section, {
                 headers: {Authorization: `Bearer ${auth.token}`}
-            });
-
-            setSections([...sections, response.data]);
-            showSnackbar('Lesson added successfully', 'success');
-        } catch (error) {
-            showSnackbar('Failed to add lesson', 'error');
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries('sections');
+            showSnackbar('Section added successfully', 'success');
+        },
+        onError: () => {
+            showSnackbar('Failed to add section', 'error');
         }
+    })
+
+    const handleAddSection = async (section) => {
+        addMutation.mutate(section);
     }
 
 
