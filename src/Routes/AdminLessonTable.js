@@ -7,7 +7,7 @@ import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
 import {
     Autocomplete,
     Box,
-    Button,
+    Button, Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -119,7 +119,14 @@ const AdminLessonTable = () => {
     }
 
     if (isLoadingLessons || isLoadingSections || isLoadingCards) {
-        return <Typography variant="h6" textAlign="center">Loading...</Typography>
+        return (
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
+                <Typography variant="h4" gutterBottom>Loading...</Typography>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={10} sx={{mb: 2}} />
+            </Box>
+        )
     }
 
     if (isErrorLessons || isErrorSections || isErrorCards) {
