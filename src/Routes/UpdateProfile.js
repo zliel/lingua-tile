@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Typography, Button, Grid, TextField} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField, Skeleton} from '@mui/material';
 import axios from 'axios';
 import {useQuery, useMutation} from '@tanstack/react-query'
 import {useNavigate} from 'react-router-dom';
@@ -115,7 +115,14 @@ function UpdateProfile() {
     }
 
     if (isLoading) {
-        return <Typography variant="h6" textAlign="center">Loading profile data...</Typography>;
+        return (
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
+                <Typography variant="h4" gutterBottom>Loading...</Typography>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={10} sx={{mb: 2}} />
+            </Box>
+        )
     }
 
     if (isError) {
