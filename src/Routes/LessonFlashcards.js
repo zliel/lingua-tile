@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Box, Button, Typography } from '@mui/material';
+import {Box, Button, Skeleton, Typography} from '@mui/material';
 import { useAuth } from '../Contexts/AuthContext';
 import { useSnackbar } from '../Contexts/SnackbarContext';
 
@@ -37,7 +37,12 @@ const LessonFlashcards = () => {
     });
 
     if (isLoading) {
-        return <Typography>Loading...</Typography>;
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={80} sx={{ borderRadius: 2, mb: 2 }} />
+                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={160} sx={{ borderRadius: 2 }} />
+            </Box>
+        );
     }
 
     if (isError) {
@@ -66,13 +71,13 @@ const LessonFlashcards = () => {
             <Typography variant="h4" gutterBottom>Lesson: {lesson.title}</Typography>
             <Box sx={{ mb: 2 }}>
                 <Typography variant="h5">
-                    {isEnglishToJapanese ? currentCard.back_text : currentCard.front_text}
+                    {isEnglishToJapanese ? currentCard?.back_text : currentCard?.front_text}
                 </Typography>
             </Box>
             {showTranslation && (
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="h6">
-                        {isEnglishToJapanese ? currentCard.front_text : currentCard.back_text}
+                        {isEnglishToJapanese ? currentCard?.front_text : currentCard?.back_text}
                     </Typography>
                 </Box>
             )}
