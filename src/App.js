@@ -18,6 +18,8 @@ import AdminUserTable from "./Routes/AdminUserTable";
 import AdminCardTable from "./Routes/AdminCardTable";
 import AdminLessonTable from "./Routes/AdminLessonTable";
 import AdminSectionTable from "./Routes/AdminSectionTable";
+import LessonFlashcards from "./Routes/LessonFlashcards";
+import LessonList from "./Routes/LessonList";
 
 const purpleBase = "#8c00cc"
 const greenBase = "#18b201"
@@ -79,7 +81,9 @@ function App() {
         {path: "/admin-users", element: <ProtectedRoute><AdminUserTable/></ProtectedRoute>},
         {path: "/admin-cards", element: <ProtectedRoute><AdminCardTable/></ProtectedRoute>},
         {path: "/admin-lessons", element: <ProtectedRoute><AdminLessonTable/></ProtectedRoute>},
-        {path: "/admin-sections", element: <ProtectedRoute><AdminSectionTable/></ProtectedRoute>}
+        {path: "/admin-sections", element: <ProtectedRoute><AdminSectionTable/></ProtectedRoute>},
+        {path: "/lessons", element: <LessonList/>},
+        {path: "/flashcards/:lessonId", element: <LessonFlashcards />}
     ])
 
     return (
