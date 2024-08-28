@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Typography, Button, Grid} from '@mui/material';
+import {Box, Typography, Button, Grid, Skeleton} from '@mui/material';
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from 'axios';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
@@ -72,7 +72,14 @@ function Profile() {
     };
 
     if (isLoading) {
-        return <Typography variant="h6" textAlign="center">Loading profile data...</Typography>;
+        return (
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
+                <Typography variant="h4" gutterBottom>Loading...</Typography>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+            </Box>
+        )
     }
 
     if (!auth.isLoggedIn) {
