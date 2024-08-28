@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Box, Typography, Button, Grid, Skeleton} from '@mui/material';
+import {Box, Button, Grid, Skeleton, Typography} from '@mui/material';
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from 'axios';
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import {useAuth} from '../Contexts/AuthContext';
@@ -14,11 +14,11 @@ function Profile() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const queryClient = useQueryClient();
 
-    const { data: user, isError, isLoading } = useQuery({
+    const {data: user, isError, isLoading} = useQuery({
         queryKey: ['user', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/users/', {
-                headers: { 'Authorization': `Bearer ${auth.token}` }
+                headers: {'Authorization': `Bearer ${auth.token}`}
             });
             return response.data;
         },
@@ -45,7 +45,7 @@ function Profile() {
     const deleteMutation = useMutation({
         mutationFn: async () => {
             await axios.delete(`http://127.0.0.1:8000/api/users/delete/${user._id}`, {
-                headers: { 'Authorization': `Bearer ${auth.token}` }
+                headers: {'Authorization': `Bearer ${auth.token}`}
             })
         },
         onSuccess: () => {
@@ -75,9 +75,9 @@ function Profile() {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
             </Box>
         )
     }

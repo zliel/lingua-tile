@@ -7,7 +7,7 @@ function Translate() {
         <Box>
             <Grid container justifyContent={"center"}>
                 <Grid item>
-                    <TranslationForm />
+                    <TranslationForm/>
                 </Grid>
             </Grid>
         </Box>
