@@ -5,7 +5,8 @@ import axios from 'axios';
 import {
     Autocomplete,
     Box,
-    Button, Skeleton,
+    Button,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -16,7 +17,7 @@ import {
     Typography
 } from '@mui/material';
 import NewSectionForm from "../Components/NewSectionForm";
-import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 const AdminSectionTable = () => {
     const {auth} = useAuth();
@@ -25,7 +26,7 @@ const AdminSectionTable = () => {
     const [editedSection, setEditedSection] = useState({});
     const queryClient = useQueryClient();
 
-    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+    const {data: lessons = [], isLoadingLessons, isErrorLessons} = useQuery({
         queryKey: ['lessons', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/lessons/all')
@@ -34,7 +35,7 @@ const AdminSectionTable = () => {
         }
     });
 
-    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+    const {data: sections = [], isLoadingSections, isErrorSections} = useQuery({
         queryKey: ['sections', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/sections/all')
@@ -111,9 +112,9 @@ const AdminSectionTable = () => {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
             </Box>
         )
     }

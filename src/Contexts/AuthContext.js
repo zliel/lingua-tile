@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect, useContext, useCallback} from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useState} from 'react';
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -12,7 +12,7 @@ export const AuthProvider = ({children}) => {
         try {
             const token = auth.token || localStorage.getItem('token');
             const response = await axios.get('http://127.0.0.1:8000/api/auth/check-admin', {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {Authorization: `Bearer ${token}`}
             });
             return new Promise((resolve) => {
                 setAuth(prevAuth => {
@@ -54,8 +54,6 @@ export const AuthProvider = ({children}) => {
         setAuth({token: '', isLoggedIn: false, isAdmin: false, username: ""});
         if (callback) callback();
     };
-
-
 
 
     return (

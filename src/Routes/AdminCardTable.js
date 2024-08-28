@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
-import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {
     Autocomplete,
     Box,
     Button,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -14,8 +15,7 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Typography,
-    Skeleton
+    Typography
 } from '@mui/material';
 import NewCardForm from '../Components/NewCardForm';
 
@@ -26,7 +26,7 @@ const AdminCardTable = () => {
     const [editedCard, setEditedCard] = useState({});
     const queryClient = useQueryClient();
 
-    const { data: cards = [], isLoading: isLoadingCards, isError: isErrorCards} = useQuery({
+    const {data: cards = [], isLoading: isLoadingCards, isError: isErrorCards} = useQuery({
         queryKey: ['cards', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
@@ -40,7 +40,7 @@ const AdminCardTable = () => {
         }
     })
 
-    const { data: lessonGroups, isLoading: isLoadingLessonGroups, isError: isErrorLessonGroups } = useQuery({
+    const {data: lessonGroups, isLoading: isLoadingLessonGroups, isError: isErrorLessonGroups} = useQuery({
         queryKey: ['lessonGroups', auth.token],
         queryFn: async () => {
             const [lessonsResponse, sectionsResponse] = await Promise.all([
@@ -136,9 +136,9 @@ const AdminCardTable = () => {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
             </Box>
         )
     }
@@ -152,7 +152,8 @@ const AdminCardTable = () => {
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
 
             <Typography variant="h4" gutterBottom>Cards Table</Typography>
-            <NewCardForm lessons={lessonGroups.lessons} lessonGroups={lessonGroups.groupedLessons} sections={lessonGroups.sections} onSubmit={handleAddCard}/>
+            <NewCardForm lessons={lessonGroups.lessons} lessonGroups={lessonGroups.groupedLessons}
+                         sections={lessonGroups.sections} onSubmit={handleAddCard}/>
             <TableContainer sx={{maxWidth: "90%", borderRadius: 2, border: `1px solid`}}>
                 <Table sx={{minWidth: 700}}>
                     <TableHead>

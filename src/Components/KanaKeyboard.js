@@ -1,6 +1,5 @@
-import React from 'react';
-import { useEffect} from 'react';
-import { TextField } from "@mui/material";
+import React, {useEffect} from 'react';
+import {TextField} from "@mui/material";
 import * as wanakana from "wanakana";
 
 
@@ -15,11 +14,11 @@ export default function KanaKeyboard(props) {
     return (
         <>
             <TextField id={"ime-text-input"}
-                          name={"src-text"}
-                            label={"IME Text"}
-                            type={"text"}
-                            value={props.srcText}
-                            onChange={props.setSrcText()}
+                       name={"src-text"}
+                       label={"IME Text"}
+                       type={"text"}
+                       value={props.srcText}
+                       onChange={props.setSrcText()}
             />
         </>
     );

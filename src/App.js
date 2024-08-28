@@ -1,5 +1,5 @@
 import './App.css';
-import {createTheme, CssBaseline, ThemeProvider, alpha, getContrastRatio} from "@mui/material";
+import {alpha, createTheme, CssBaseline, getContrastRatio, ThemeProvider} from "@mui/material";
 
 import {useState} from "react";
 import {useRoutes} from "react-router"
@@ -83,7 +83,7 @@ function App() {
         {path: "/admin-lessons", element: <ProtectedRoute><AdminLessonTable/></ProtectedRoute>},
         {path: "/admin-sections", element: <ProtectedRoute><AdminSectionTable/></ProtectedRoute>},
         {path: "/lessons", element: <LessonList/>},
-        {path: "/flashcards/:lessonId", element: <LessonFlashcards />}
+        {path: "/flashcards/:lessonId", element: <LessonFlashcards/>}
     ])
 
     return (

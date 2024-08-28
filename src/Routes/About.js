@@ -58,14 +58,16 @@ function About() {
             </Grid>
 
             <Grid item sm>
-                <Typography variant={"h5"} color={primaryHeaderColor}>Why the green and purple color scheme?</Typography>
+                <Typography variant={"h5"} color={primaryHeaderColor}>Why the green and purple color
+                    scheme?</Typography>
                 <Typography variant={"h6"}>My two favorite colors are green and purple, and I
                     thought they looked nice together. I also wanted to practice using Material-UI's theming system.
                 </Typography>
             </Grid>
 
             <Grid item sm>
-                <Typography variant={"h5"} color={secondaryHeaderColor}>What do I have planned for the future?</Typography>
+                <Typography variant={"h5"} color={secondaryHeaderColor}>What do I have planned for the
+                    future?</Typography>
                 <Typography variant={"h6"}>I want to add a spaced repetition system, vocabulary
                     flashcards, and a guided sequence of Japanese grammar and vocabulary, mirroring what I've learned
                     and being updated as I learn more.

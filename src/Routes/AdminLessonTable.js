@@ -3,11 +3,12 @@ import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import NewLessonForm from '../Components/NewLessonForm';
 import axios from 'axios';
-import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     Autocomplete,
     Box,
-    Button, Skeleton,
+    Button,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -25,7 +26,7 @@ const AdminLessonTable = () => {
     const [editedLesson, setEditedLesson] = useState({});
     const queryClient = useQueryClient();
 
-    const { data: lessons = [], isLoadingLessons, isErrorLessons } = useQuery({
+    const {data: lessons = [], isLoadingLessons, isErrorLessons} = useQuery({
         queryKey: ['lessons', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/lessons/all');
@@ -34,7 +35,7 @@ const AdminLessonTable = () => {
         }
     });
 
-    const { data: sections = [], isLoadingSections, isErrorSections } = useQuery({
+    const {data: sections = [], isLoadingSections, isErrorSections} = useQuery({
         queryKey: ['sections', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/sections/all');
@@ -43,7 +44,7 @@ const AdminLessonTable = () => {
         }
     })
 
-    const { data: cards = [], isLoadingCards, isErrorCards } = useQuery({
+    const {data: cards = [], isLoadingCards, isErrorCards} = useQuery({
         queryKey: ['cards', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/cards/all', {
@@ -122,9 +123,9 @@ const AdminLessonTable = () => {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
             </Box>
         )
     }
@@ -168,7 +169,10 @@ const AdminLessonTable = () => {
                                             getOptionLabel={(option) => option.name}
                                             value={sections.find(section => section._id === lesson.section_id)}
                                             onChange={(event, newValue) => {
-                                                setEditedLesson({...editedLesson, section_id: newValue?._id ? newValue._id : ''});
+                                                setEditedLesson({
+                                                    ...editedLesson,
+                                                    section_id: newValue?._id ? newValue._id : ''
+                                                });
                                             }}
                                             renderInput={(params) => <TextField {...params} label="Section"
                                                                                 variant="outlined"/>}

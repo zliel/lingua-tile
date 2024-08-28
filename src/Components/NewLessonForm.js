@@ -38,7 +38,7 @@ const NewLessonForm = ({cards, sections, onSubmit}) => {
                     }}
                     renderInput={(params) => <TextField {...params} label="Section" variant="outlined"/>}
                     sx={{mb: 2, width: '300px'}}
-                    />
+                />
 
                 <Autocomplete
                     multiple

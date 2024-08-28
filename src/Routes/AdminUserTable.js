@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {useAuth} from '../Contexts/AuthContext';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import axios from 'axios';
-import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import {
     Box,
-    Button, Skeleton,
+    Button,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -23,7 +24,7 @@ const AdminUserTable = () => {
     const [editedUser, setEditedUser] = useState({});
     const queryClient = useQueryClient();
 
-    const { data: users = [], isLoading, isError } = useQuery({
+    const {data: users = [], isLoading, isError} = useQuery({
         queryKey: ['users', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/users/admin/all', {
@@ -104,9 +105,9 @@ const AdminUserTable = () => {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={30} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
             </Box>
         )
     }

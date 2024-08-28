@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
+import React, {useState} from 'react';
+import {Autocomplete, Box, Button, TextField, Typography} from '@mui/material';
 
-const NewSectionForm = ({ lessons, onSubmit }) => {
+const NewSectionForm = ({lessons, onSubmit}) => {
     const [newSection, setNewSection] = useState({name: '', lesson_ids: []})
 
     const handleAddSection = () => {
@@ -24,8 +24,8 @@ const NewSectionForm = ({ lessons, onSubmit }) => {
                 <TextField
                     label="Section Name"
                     value={newSection.name || ''}
-                    onChange={(e) => setNewSection({ ...newSection, name: e.target.value })}
-                    sx={{ mb: 2, width: '300px' }}
+                    onChange={(e) => setNewSection({...newSection, name: e.target.value})}
+                    sx={{mb: 2, width: '300px'}}
                     required
                 />
                 <Autocomplete
@@ -35,10 +35,11 @@ const NewSectionForm = ({ lessons, onSubmit }) => {
                     getOptionLabel={(option) => option.title}
                     value={lessons.filter(lesson => newSection.lesson_ids?.includes(lesson._id))}
                     onChange={(event, newValue) => {
-                        setNewSection({ ...newSection, lesson_ids: newValue.map(lesson => lesson._id) })}
+                        setNewSection({...newSection, lesson_ids: newValue.map(lesson => lesson._id)})
                     }
-                    renderInput={(params) => <TextField {...params} label="Lessons" variant="standard" />}
-                    sx={{ mb: 2, width: '300px'}}
+                    }
+                    renderInput={(params) => <TextField {...params} label="Lessons" variant="standard"/>}
+                    sx={{mb: 2, width: '300px'}}
                 />
                 <Button variant="contained" color="primary" onClick={handleAddSection}>Add Section</Button>
             </Box>
