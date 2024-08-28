@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Box, Typography, Button, Grid, TextField, Skeleton} from '@mui/material';
+import {Box, Button, Grid, Skeleton, TextField, Typography} from '@mui/material';
 import axios from 'axios';
-import {useQuery, useMutation} from '@tanstack/react-query'
+import {useMutation, useQuery} from '@tanstack/react-query'
 import {useNavigate} from 'react-router-dom';
 import {useSnackbar} from '../Contexts/SnackbarContext';
 import {useAuth} from '../Contexts/AuthContext';
@@ -15,7 +15,7 @@ function UpdateProfile() {
     const {showSnackbar} = useSnackbar();
 
 
-    const { data: user, isError, isLoading } = useQuery({
+    const {data: user, isError, isLoading} = useQuery({
         queryKey: ['user', auth.token],
         queryFn: async () => {
             const response = await axios.get(`http://127.0.0.1:8000/api/users`, {
@@ -105,7 +105,7 @@ function UpdateProfile() {
         }
 
 
-        const updatedUser = { ...user, username, password: password || undefined };
+        const updatedUser = {...user, username, password: password || undefined};
         updateMutation.mutate(updatedUser);
     }
 
@@ -118,9 +118,9 @@ function UpdateProfile() {
         return (
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom>Loading...</Typography>
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}} />
-                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={10} sx={{mb: 2}} />
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={40} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={20} sx={{mb: 2}}/>
+                <Skeleton variant="rectangular" animation={"wave"} width="90%" height={10} sx={{mb: 2}}/>
             </Box>
         )
     }
