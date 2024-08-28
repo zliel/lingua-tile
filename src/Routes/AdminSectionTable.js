@@ -50,7 +50,7 @@ const AdminSectionTable = () => {
     };
 
     const updateMutation = useMutation({
-        mutationFn: async (sectionId) => {
+        mutationFn: async () => {
             await axios.put(`http://127.0.0.1:8000/api/sections/update/${editingSectionId}`, editedSection, {
                 headers: {Authorization: `Bearer ${auth.token}`}
             });
