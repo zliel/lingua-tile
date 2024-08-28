@@ -28,6 +28,7 @@ function NavBar(props) {
     const pages = [
         {name: "Home", endpoint: "/home"},
         {name: "About", endpoint: "/about"},
+        {name: "Lessons", endpoint: "/lessons"},
         {name: "Translate", endpoint: "/translate"}
     ];
 
