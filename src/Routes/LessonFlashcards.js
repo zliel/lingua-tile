@@ -1,24 +1,23 @@
-// src/Routes/LessonFlashcards.js
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import React, {useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {useQuery} from '@tanstack/react-query';
 import axios from 'axios';
 import {Box, Button, Skeleton, Typography} from '@mui/material';
-import { useAuth } from '../Contexts/AuthContext';
-import { useSnackbar } from '../Contexts/SnackbarContext';
+import {useAuth} from '../Contexts/AuthContext';
+import {useSnackbar} from '../Contexts/SnackbarContext';
 
 const LessonFlashcards = () => {
-    const { lessonId } = useParams();
-    const { auth } = useAuth();
-    const { showSnackbar } = useSnackbar();
+    const {lessonId} = useParams();
+    const {auth} = useAuth();
+    const {showSnackbar} = useSnackbar();
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [showTranslation, setShowTranslation] = useState(false);
 
-    const { data: lesson, isLoading, isError } = useQuery({
+    const {data: lesson, isLoading, isError} = useQuery({
         queryKey: ['lesson', lessonId, auth.token],
         queryFn: async () => {
             const response = await axios.get(`http://127.0.0.1:8000/api/lessons/${lessonId}`, {
-                headers: { Authorization: `Bearer ${auth.token}` }
+                headers: {Authorization: `Bearer ${auth.token}`}
             });
             return response.data;
         },
@@ -27,7 +26,7 @@ const LessonFlashcards = () => {
         }
     });
 
-    const { data: flashcards = [] } = useQuery({
+    const {data: flashcards = []} = useQuery({
         queryKey: ['flashcards', lessonId, auth.token],
         queryFn: async () => {
             const response = await axios.get(`http://127.0.0.1:8000/api/cards/lesson/${lessonId}`)
@@ -38,9 +37,10 @@ const LessonFlashcards = () => {
 
     if (isLoading) {
         return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
-                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={80} sx={{ borderRadius: 2, mb: 2 }} />
-                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={160} sx={{ borderRadius: 2 }} />
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
+                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={80}
+                          sx={{borderRadius: 2, mb: 2}}/>
+                <Skeleton animation={"wave"} variant="rectangular" width="70%" height={160} sx={{borderRadius: 2}}/>
             </Box>
         );
     }
@@ -67,15 +67,15 @@ const LessonFlashcards = () => {
     const isEnglishToJapanese = Math.random() > 0.5;
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+        <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
             <Typography variant="h4" gutterBottom>Lesson: {lesson.title}</Typography>
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{mb: 2}}>
                 <Typography variant="h5">
                     {isEnglishToJapanese ? currentCard?.back_text : currentCard?.front_text}
                 </Typography>
             </Box>
             {showTranslation && (
-                <Box sx={{ mb: 2 }}>
+                <Box sx={{mb: 2}}>
                     <Typography variant="h6">
                         {isEnglishToJapanese ? currentCard?.front_text : currentCard?.back_text}
                     </Typography>
@@ -84,7 +84,7 @@ const LessonFlashcards = () => {
             <Button variant="contained" color="primary" onClick={handleShowTranslation}>
                 Show Translation
             </Button>
-            <Button variant="contained" color="secondary" onClick={handleNextCard} sx={{ mt: 2 }}>
+            <Button variant="contained" color="secondary" onClick={handleNextCard} sx={{mt: 2}}>
                 Next Card
             </Button>
         </Box>

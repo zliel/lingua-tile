@@ -1,22 +1,22 @@
 // src/Routes/LessonList.js
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import axios from 'axios';
 import {Box, Button, Skeleton, Typography, useTheme} from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../Contexts/AuthContext';
-import { useSnackbar } from '../Contexts/SnackbarContext';
+import {Link} from 'react-router-dom';
+import {useAuth} from '../Contexts/AuthContext';
+import {useSnackbar} from '../Contexts/SnackbarContext';
 
 const LessonList = () => {
-    const { auth } = useAuth();
-    const { showSnackbar } = useSnackbar();
+    const {auth} = useAuth();
+    const {showSnackbar} = useSnackbar();
     const theme = useTheme();
 
-    const { data: lessons, isLoading, isError } = useQuery({
+    const {data: lessons, isLoading, isError} = useQuery({
         queryKey: ['lessons', auth.token],
         queryFn: async () => {
             const response = await axios.get('http://127.0.0.1:8000/api/lessons/all', {
-                headers: { Authorization: `Bearer ${auth.token}` }
+                headers: {Authorization: `Bearer ${auth.token}`}
             });
             return response.data;
         },
@@ -27,10 +27,11 @@ const LessonList = () => {
 
     if (isLoading) {
         return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
                 {Array.from(new Array(5)).map((_, index) => (
-                    <Box key={index} sx={{ width: '70%', mb: 2 }}>
-                        <Skeleton variant="rectangular" animation={"wave"} width="100%" height={80} sx={{ borderRadius: 2 }} />
+                    <Box key={index} sx={{width: '70%', mb: 2}}>
+                        <Skeleton variant="rectangular" animation={"wave"} width="100%" height={80}
+                                  sx={{borderRadius: 2}}/>
                     </Box>
                 ))}
             </Box>
@@ -42,10 +43,18 @@ const LessonList = () => {
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+        <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4}}>
             <Typography variant="h4" gutterBottom>Lessons</Typography>
             {lessons.map((lesson) => (
-                <Box key={lesson.id} sx={{ p: 1.5, mb: 2, width: '70%', display: 'flex', justifyContent: 'space-between', border: `2px solid ${theme.palette.primary.contrastText}`, borderRadius: 2}}>
+                <Box key={lesson.id} sx={{
+                    p: 1.5,
+                    mb: 2,
+                    width: '70%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    border: `2px solid ${theme.palette.primary.contrastText}`,
+                    borderRadius: 2
+                }}>
                     <Typography variant="h6">{lesson.title}</Typography>
                     <Button variant="contained" color="primary" component={Link} to={`/flashcards/${lesson._id}`}>
                         Flashcards
