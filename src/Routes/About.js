@@ -34,7 +34,7 @@ function About() {
           What is this?
         </Typography>
         <Typography variant={"h6"}>
-          This is a language learning platform I'm developing, aimed at English
+          This is a language learning platform I'm developing aimed at English
           learners learning Japanese
         </Typography>
       </Grid>
@@ -44,11 +44,10 @@ function About() {
           Why am I making this?
         </Typography>
         <Typography variant={"h6"}>
-          I wanted to recreate and combine aspects of the various learning
-          platforms I've used while learning Japanese. I also really wanted to
-          practice building full-stack applications, and I figured that since I
-          love education and learning, I may as well practice by making
-          something related to it.
+          I wanted to recreate and combine aspects of the various tools I've
+          used while learning Japanese. I also wanted to practice building
+          full-stack applications, and I figured that since I love education and
+          learning, I may as well practice by making something related to it.
         </Typography>
       </Grid>
 
@@ -71,6 +70,12 @@ function About() {
           </ListItem>
           <ListItem>
             <ListItemText
+              primary={"React-Query"}
+              sx={{ textAlign: "center" }}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
               primary={"Material-UI"}
               sx={{ textAlign: "center" }}
             />
@@ -86,6 +91,14 @@ function About() {
           </ListItem>
           <ListItem>
             <ListItemText
+              primary={"PyMongo"}
+              secondary={"MongoDB for the database has been great to work with"}
+              sx={{ textAlign: "center" }}
+            />
+          </ListItem>
+
+          <ListItem>
+            <ListItemText
               primary={"Redis"}
               secondary={"To store translations for optimization"}
               sx={{ textAlign: "center" }}
@@ -99,7 +112,7 @@ function About() {
           Why the green and purple color scheme?
         </Typography>
         <Typography variant={"h6"}>
-          My two favorite colors are green and purple, and I thought they looked
+          My two favorite colors are green and purple and I thought they looked
           nice together. I also wanted to practice using Material-UI's theming
           system.
         </Typography>
@@ -111,8 +124,8 @@ function About() {
         </Typography>
         <Typography variant={"h6"}>
           I want to add a spaced repetition system, vocabulary flashcards, and a
-          guided sequence of Japanese grammar and vocabulary, mirroring what
-          I've learned and being updated as I learn more.
+          guided sequence of Japanese grammar/vocabulary, mirroring what I've
+          learned and being updated as I learn more.
         </Typography>
       </Grid>
     </Grid>
