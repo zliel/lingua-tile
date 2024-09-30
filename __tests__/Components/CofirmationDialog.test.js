@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import ConfirmationDialog from "../src/Components/ConfirmationDialog";
+import ConfirmationDialog from "../../src/Components/ConfirmationDialog";
 
 describe("ConfirmationDialog", () => {
   it("renders with title and message", () => {
