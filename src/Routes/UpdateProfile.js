@@ -28,11 +28,14 @@ function UpdateProfile() {
   } = useQuery({
     queryKey: ["user", auth.token],
     queryFn: async () => {
-      const response = await axios.get(`http://127.0.0.1:8000/api/users`, {
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/users`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
         },
-      });
+      );
 
       setUsername(response.data.username);
       return response.data;
@@ -50,7 +53,7 @@ function UpdateProfile() {
   const updateMutation = useMutation({
     mutationFn: async (updatedUser) => {
       await axios.put(
-        `http://127.0.0.1:8000/api/users/update/${user._id}`,
+        `${process.env.REACT_APP_API_BASE}/api/users/update/${user._id}`,
         updatedUser,
         {
           headers: {

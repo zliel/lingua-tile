@@ -15,7 +15,10 @@ function Login() {
 
   const loginMutation = useMutation({
     mutationFn: (credentials) =>
-      axios.post("http://127.0.0.1:8000/api/auth/login", credentials),
+      axios.post(
+        `${process.env.REACT_APP_API_BASE}/api/auth/login`,
+        credentials,
+      ),
     onSuccess: (response) => {
       showSnackbar("Login successful", "success");
       login(response.data, () => navigate("/"));
