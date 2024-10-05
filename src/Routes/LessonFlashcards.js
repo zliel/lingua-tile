@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Button, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import Flashcard from "../Components/Flashcard";
 
 const LessonFlashcards = () => {
   const { lessonId } = useParams();
@@ -105,37 +106,17 @@ const LessonFlashcards = () => {
       <Typography variant="h4" gutterBottom>
         Lesson: {lesson.title}
       </Typography>
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h5">
-          {isEnglishToJapanese
-            ? currentCard?.back_text
-            : currentCard?.front_text}
-        </Typography>
-      </Box>
-      {showTranslation && (
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="h6">
-            {isEnglishToJapanese
-              ? currentCard?.front_text
-              : currentCard?.back_text}
-          </Typography>
-        </Box>
-      )}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleShowTranslation}
-      >
-        Show Translation
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleNextCard}
-        sx={{ mt: 2 }}
-      >
-        Next Card
-      </Button>
+      <Flashcard
+        frontText={
+          isEnglishToJapanese ? currentCard?.back_text : currentCard?.front_text
+        }
+        backText={
+          isEnglishToJapanese ? currentCard?.front_text : currentCard?.back_text
+        }
+        showTranslation={showTranslation}
+        onShowTranslation={handleShowTranslation}
+        onNextCard={handleNextCard}
+      />
     </Box>
   );
 };
