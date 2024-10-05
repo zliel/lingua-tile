@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
 const Flashcard = ({
@@ -8,6 +8,27 @@ const Flashcard = ({
   onShowTranslation,
   onNextCard,
 }) => {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      switch (event.key) {
+        case " ":
+          event.preventDefault(); // Prevent default spacebar scroll behavior
+          onShowTranslation();
+          break;
+        case "Enter":
+          onNextCard();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onShowTranslation, onNextCard]);
+
   return (
     <Card
       sx={{
