@@ -9,7 +9,7 @@ function TranslationForm() {
   useEffect(() => {
     const translateText = setTimeout(async () => {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
+        `${process.env.REACT_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
       );
       setTranslatedText(response.data.translatedText);
     }, 1000);

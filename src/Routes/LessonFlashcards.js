@@ -21,7 +21,7 @@ const LessonFlashcards = () => {
     queryKey: ["lesson", lessonId, auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/lessons/${lessonId}`,
+        `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         },
@@ -37,7 +37,7 @@ const LessonFlashcards = () => {
     queryKey: ["flashcards", lessonId, auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/cards/lesson/${lessonId}`,
+        `${process.env.REACT_APP_API_BASE}/api/cards/lesson/${lessonId}`,
       );
 
       return response.data;

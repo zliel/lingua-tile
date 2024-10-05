@@ -32,7 +32,7 @@ const AdminUserTable = () => {
     queryKey: ["users", auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/users/admin/all",
+        `${process.env.REACT_APP_API_BASE}/api/users/admin/all`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         },
@@ -64,7 +64,7 @@ const AdminUserTable = () => {
   const updateMutation = useMutation({
     mutationFn: async (userId) => {
       await axios.put(
-        `http://127.0.0.1:8000/api/users/update/${userId}`,
+        `${process.env.REACT_APP_API_BASE}/api/users/update/${userId}`,
         editedUser,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
@@ -87,9 +87,12 @@ const AdminUserTable = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (userId) => {
-      await axios.delete(`http://127.0.0.1:8000/api/users/delete/${userId}`, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_BASE}/api/users/delete/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       showSnackbar("User deleted successfully", "success");

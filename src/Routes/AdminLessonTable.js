@@ -33,7 +33,9 @@ const AdminLessonTable = () => {
   } = useQuery({
     queryKey: ["lessons", auth.token],
     queryFn: async () => {
-      const response = await axios.get("http://127.0.0.1:8000/api/lessons/all");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
+      );
 
       return response.data;
     },
@@ -47,7 +49,7 @@ const AdminLessonTable = () => {
     queryKey: ["sections", auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/sections/all",
+        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
       );
 
       return response.data;
@@ -61,9 +63,12 @@ const AdminLessonTable = () => {
   } = useQuery({
     queryKey: ["cards", auth.token],
     queryFn: async () => {
-      const response = await axios.get("http://127.0.0.1:8000/api/cards/all", {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/cards/all`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
 
       return response.data;
     },
@@ -77,7 +82,7 @@ const AdminLessonTable = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `http://127.0.0.1:8000/api/lessons/update/${editedLesson._id}`,
+        `${process.env.REACT_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
         editedLesson,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
@@ -101,7 +106,7 @@ const AdminLessonTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (lessonId) => {
       await axios.delete(
-        `http://127.0.0.1:8000/api/lessons/delete/${lessonId}`,
+        `${process.env.REACT_APP_API_BASE}/api/lessons/delete/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         },
@@ -123,9 +128,13 @@ const AdminLessonTable = () => {
 
   const addMutation = useMutation({
     mutationFn: async (lesson) => {
-      await axios.post("http://127.0.0.1:8000/api/lessons/create", lesson, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/create`,
+        lesson,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries("lessons");

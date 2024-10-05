@@ -21,9 +21,12 @@ function Profile() {
   } = useQuery({
     queryKey: ["user", auth.token],
     queryFn: async () => {
-      const response = await axios.get("http://127.0.0.1:8000/api/users/", {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/users/`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
       return response.data;
     },
     onError: (error) => {
@@ -47,9 +50,12 @@ function Profile() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await axios.delete(`http://127.0.0.1:8000/api/users/delete/${user._id}`, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_BASE}/api/users/delete/${user._id}`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       showSnackbar("Profile deleted successfully", "success");

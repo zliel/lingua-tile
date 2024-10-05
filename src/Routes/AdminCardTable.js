@@ -33,9 +33,12 @@ const AdminCardTable = () => {
   } = useQuery({
     queryKey: ["cards", auth.token],
     queryFn: async () => {
-      const response = await axios.get("http://127.0.0.1:8000/api/cards/all", {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/cards/all`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
 
       return response.data;
     },
@@ -52,8 +55,8 @@ const AdminCardTable = () => {
     queryKey: ["lessonGroups", auth.token],
     queryFn: async () => {
       const [lessonsResponse, sectionsResponse] = await Promise.all([
-        axios.get("http://127.0.0.1:8000/api/lessons/all"),
-        axios.get("http://127.0.0.1:8000/api/sections/all"),
+        axios.get(`${process.env.REACT_APP_API_BASE}/api/lessons/all`),
+        axios.get(`${process.env.REACT_APP_API_BASE}/api/sections/all`),
       ]);
 
       const lessons = lessonsResponse.data;
@@ -83,7 +86,7 @@ const AdminCardTable = () => {
     mutationFn: async () => {
       console.dir(editedCard);
       await axios.put(
-        `http://127.0.0.1:8000/api/cards/update/${editingCardId}`,
+        `${process.env.REACT_APP_API_BASE}/api/cards/update/${editingCardId}`,
         editedCard,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
@@ -106,9 +109,12 @@ const AdminCardTable = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (cardId) => {
-      await axios.delete(`http://127.0.0.1:8000/api/cards/delete/${cardId}`, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_BASE}/api/cards/delete/${cardId}`,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       showSnackbar("Card deleted successfully", "success");
@@ -125,9 +131,13 @@ const AdminCardTable = () => {
 
   const addMutation = useMutation({
     mutationFn: async (newCard) => {
-      await axios.post("http://127.0.0.1:8000/api/cards/create", newCard, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE}/api/cards/create`,
+        newCard,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       showSnackbar("Card added successfully", "success");

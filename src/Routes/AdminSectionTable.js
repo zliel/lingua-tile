@@ -33,7 +33,9 @@ const AdminSectionTable = () => {
   } = useQuery({
     queryKey: ["lessons", auth.token],
     queryFn: async () => {
-      const response = await axios.get("http://127.0.0.1:8000/api/lessons/all");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
+      );
 
       return response.data;
     },
@@ -47,7 +49,7 @@ const AdminSectionTable = () => {
     queryKey: ["sections", auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/sections/all",
+        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
       );
 
       return response.data;
@@ -62,7 +64,7 @@ const AdminSectionTable = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `http://127.0.0.1:8000/api/sections/update/${editingSectionId}`,
+        `${process.env.REACT_APP_API_BASE}/api/sections/update/${editingSectionId}`,
         editedSection,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
@@ -86,7 +88,7 @@ const AdminSectionTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (sectionId) => {
       await axios.delete(
-        `http://127.0.0.1:8000/api/sections/delete/${sectionId}`,
+        `${process.env.REACT_APP_API_BASE}/api/sections/delete/${sectionId}`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         },
@@ -108,9 +110,13 @@ const AdminSectionTable = () => {
 
   const addMutation = useMutation({
     mutationFn: async (section) => {
-      await axios.post("http://127.0.0.1:8000/api/sections/create", section, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE}/api/sections/create`,
+        section,
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        },
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries("sections");

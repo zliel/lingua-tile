@@ -20,7 +20,7 @@ const LessonList = () => {
     queryKey: ["lessons", auth.token],
     queryFn: async () => {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/lessons/all",
+        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         },
