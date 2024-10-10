@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import "./Flashcard.css";
 
 const Flashcard = ({
   frontText,
@@ -8,78 +10,71 @@ const Flashcard = ({
   onShowTranslation,
   onNextCard,
 }) => {
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      switch (event.key) {
-        case " ":
-          event.preventDefault(); // Prevent default spacebar scroll behavior
-          onShowTranslation();
-          break;
-        case "Enter":
-          onNextCard();
-          break;
-        default:
-          break;
-      }
-    };
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === "dark";
+  const [isFlipped, setIsFlipped] = useState(false);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onShowTranslation, onNextCard]);
+  const handleShowTranslation = () => {
+    setIsFlipped(!isFlipped);
+    setTimeout(() => {
+      onShowTranslation();
+    }, 300); // Match the duration of the flip animation
+  };
 
   return (
     <Card
+      className="flashcard"
       sx={{
-        maxWidth: 550,
-        width: "60%",
-        margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        height: 400,
+        backgroundColor: isDarkMode
+          ? theme.palette.background.paper
+          : theme.palette.background.default,
+        transition: "transform 0.3s ease",
       }}
-      elevation={3}
     >
-      <CardContent
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h5"
-          component="div"
-          gutterBottom
-          sx={{ textAlign: "center" }}
-        >
-          {frontText}
-        </Typography>
-        {showTranslation && (
+      <Box className={`flashcard-content ${isFlipped ? "flipped" : ""}`}>
+        <CardContent className="flashcard-front">
           <Typography
-            variant="h6"
-            color="text.secondary"
-            sx={{ textAlign: "center" }}
+            variant="h5"
+            component="div"
+            sx={{ mb: 2, textAlign: "center" }}
+          >
+            {frontText}
+          </Typography>
+        </CardContent>
+        <CardContent className="flashcard-back">
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ mb: 2, textAlign: "center" }}
           >
             {backText}
           </Typography>
-        )}
-      </CardContent>
-      <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+        </CardContent>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          p: 2,
+          backgroundColor: isDarkMode
+            ? theme.palette.action.hover
+            : theme.palette.action.selected,
+          borderTop: "1px solid",
+          borderColor: isDarkMode
+            ? theme.palette.divider
+            : theme.palette.divider,
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
-          onClick={onShowTranslation}
-          sx={{ marginRight: 2 }}
+          onClick={handleShowTranslation}
+          sx={{ mr: 1, width: "80%" }}
         >
-          Show Translation
+          {showTranslation ? "Hide Translation" : "Show Translation"}
         </Button>
         <Button variant="contained" color="secondary" onClick={onNextCard}>
-          Next Card
+          Next
         </Button>
       </Box>
     </Card>
