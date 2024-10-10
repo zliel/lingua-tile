@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import Flashcard from "../Components/Flashcard";
+import FlashcardsList from "../Components/FlashcardList";
 
 const LessonFlashcards = () => {
   const { lessonId } = useParams();
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showTranslation, setShowTranslation] = useState(false);
 
   const {
     data: lesson,
@@ -34,17 +32,6 @@ const LessonFlashcards = () => {
     },
   });
 
-  const { data: flashcards = [] } = useQuery({
-    queryKey: ["flashcards", lessonId, auth.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/cards/lesson/${lessonId}`,
-      );
-
-      return response.data;
-    },
-  });
-
   if (isLoading) {
     return (
       <Box
@@ -55,20 +42,7 @@ const LessonFlashcards = () => {
           mt: 4,
         }}
       >
-        <Skeleton
-          animation={"wave"}
-          variant="rectangular"
-          width="70%"
-          height={80}
-          sx={{ borderRadius: 2, mb: 2 }}
-        />
-        <Skeleton
-          animation={"wave"}
-          variant="rectangular"
-          width="70%"
-          height={160}
-          sx={{ borderRadius: 2 }}
-        />
+        <Typography>Loading lesson...</Typography>
       </Box>
     );
   }
@@ -76,23 +50,6 @@ const LessonFlashcards = () => {
   if (isError) {
     return <Typography>Error loading lesson.</Typography>;
   }
-
-  const handleNextCard = () => {
-    setShowTranslation(false);
-    if (currentCardIndex + 1 === flashcards.length) {
-      showSnackbar("You have reached the end of the lesson!", "success");
-      setCurrentCardIndex(0);
-    } else {
-      setCurrentCardIndex((prevIndex) => prevIndex + 1);
-    }
-  };
-
-  const handleShowTranslation = () => {
-    setShowTranslation(true);
-  };
-
-  const currentCard = flashcards[currentCardIndex];
-  const isEnglishToJapanese = Math.random() > 0.5;
 
   return (
     <Box
@@ -106,17 +63,7 @@ const LessonFlashcards = () => {
       <Typography variant="h4" gutterBottom>
         Lesson: {lesson.title}
       </Typography>
-      <Flashcard
-        frontText={
-          isEnglishToJapanese ? currentCard?.back_text : currentCard?.front_text
-        }
-        backText={
-          isEnglishToJapanese ? currentCard?.front_text : currentCard?.back_text
-        }
-        showTranslation={showTranslation}
-        onShowTranslation={handleShowTranslation}
-        onNextCard={handleNextCard}
-      />
+      <FlashcardsList lessonId={lessonId} />
     </Box>
   );
 };
