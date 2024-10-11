@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -23,14 +23,14 @@ const Flashcard = ({
   const [isFlipped, setIsFlipped] = useState(false);
   const [slideIn, setSlideIn] = useState(true);
 
-  const handleShowTranslation = () => {
+  const handleShowTranslation = useCallback(() => {
     setIsFlipped(!isFlipped);
     setTimeout(() => {
       onShowTranslation();
     }, 300); // Match the duration of the flip animation
-  };
+  }, [isFlipped, onShowTranslation]);
 
-  const handleNextCard = () => {
+  const handleNextCard = useCallback(() => {
     setSlideIn(false);
     setTimeout(() => {
       onNextCard();
@@ -38,7 +38,28 @@ const Flashcard = ({
       // The timeout should be longer than the duration of the slide animation
       // So that the first slide animation is done before the second one starts
     }, 350);
-  };
+  }, [onNextCard]);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      // Handle space and the number 1 for showing translation
+      if (["Space", "Digit1"].includes(event.code)) {
+        event.preventDefault();
+        return handleShowTranslation();
+      }
+
+      // Handle Enter and Right Arrow for next card
+      if (["Enter", "ArrowRight", "Digit2"].includes(event.code)) {
+        event.preventDefault();
+        return handleNextCard();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleNextCard, handleShowTranslation, showTranslation]);
 
   return (
     <Slide
