@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, LinearProgress, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  LinearProgress,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
-import { RocketLaunch } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 
 const FlashcardList = ({ lessonId }) => {
   const { auth } = useAuth();
@@ -13,6 +19,7 @@ const FlashcardList = ({ lessonId }) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [isEnglishToJapanese, setIsEnglishToJapanese] = useState(true);
+  const theme = useTheme();
 
   const {
     data: flashcards = [],
@@ -103,11 +110,33 @@ const FlashcardList = ({ lessonId }) => {
         onShowTranslation={handleShowTranslation}
         onNextCard={handleNextCard}
       />
-      <LinearProgress
-        variant="determinate"
-        value={(currentCardIndex / flashcards.length) * 100}
-        sx={{ width: "90%", height: 5, borderRadius: 2, mt: 1 }}
-      />
+      <Stack
+        direction={"row"}
+        sx={{ display: "flex", width: "90%", alignItems: "center" }}
+      >
+        <LinearProgress
+          variant="determinate"
+          value={(currentCardIndex / flashcards.length) * 100}
+          sx={{
+            width: "95%",
+            height: 5,
+            borderRadius: 2,
+            mt: 1.1,
+            "& .MuiLinearProgress-bar": {
+              background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
+            },
+          }}
+        />
+        <Typography
+          sx={{
+            mt: 0.8,
+            color: "transparent",
+            textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
+          }}
+        >
+          🔥
+        </Typography>
+      </Stack>
     </Box>
   );
 };
