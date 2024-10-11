@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, LinearProgress, Skeleton, Typography } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
+import { RocketLaunch } from "@mui/icons-material";
 
 const FlashcardList = ({ lessonId }) => {
   const { auth } = useAuth();
@@ -101,6 +102,11 @@ const FlashcardList = ({ lessonId }) => {
         showTranslation={showTranslation}
         onShowTranslation={handleShowTranslation}
         onNextCard={handleNextCard}
+      />
+      <LinearProgress
+        variant="determinate"
+        value={(currentCardIndex / flashcards.length) * 100}
+        sx={{ width: "90%", height: 5, borderRadius: 2, mt: 1 }}
       />
     </Box>
   );
