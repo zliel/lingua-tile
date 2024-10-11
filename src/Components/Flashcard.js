@@ -46,7 +46,6 @@ const Flashcard = ({
       in={slideIn}
       timeout={300}
       mountOnEnter
-      unmountOnExit
       easing={"ease"}
       sx={{
         transform: slideIn ? "translateX(100vw)" : "translateX(-100vw)",
@@ -114,7 +113,6 @@ const Flashcard = ({
                   color="primary"
                   onClick={handleShowTranslation}
                   sx={{ m: "auto", width: "45%" }}
-                  justifySelf="center"
                 >
                   {showTranslation ? "Hide Translation" : "Show Translation"}
                 </Button>
