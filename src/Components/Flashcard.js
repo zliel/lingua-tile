@@ -69,6 +69,7 @@ const Flashcard = ({
             >
               <Box
                 className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
+                onClick={handleShowTranslation}
               >
                 <CardContent
                   className="flashcard-front"
