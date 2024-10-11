@@ -26,27 +26,35 @@ const Flashcard = ({
       className="flashcard"
       sx={{
         backgroundColor: isDarkMode
-          ? theme.palette.background.paper
-          : theme.palette.background.default,
+          ? theme.palette.grey[900]
+          : theme.palette.grey[300],
         transition: "transform 0.3s ease",
       }}
     >
       <Box className={`flashcard-content ${isFlipped ? "flipped" : ""}`}>
-        <CardContent className="flashcard-front">
-          <Typography
-            variant="h5"
-            component="div"
-            sx={{ mb: 2, textAlign: "center" }}
-          >
+        <CardContent
+          className="flashcard-front"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h5" component="div">
             {frontText}
           </Typography>
         </CardContent>
-        <CardContent className="flashcard-back">
-          <Typography
-            variant="h5"
-            component="div"
-            sx={{ mb: 2, textAlign: "center" }}
-          >
+        <CardContent
+          className="flashcard-back"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h5" component="div">
             {backText}
           </Typography>
         </CardContent>
@@ -56,13 +64,10 @@ const Flashcard = ({
           display: "flex",
           justifyContent: "space-between",
           p: 2,
-          backgroundColor: isDarkMode
-            ? theme.palette.action.hover
-            : theme.palette.action.selected,
+          backgroundColor: theme.palette.action.hover,
           borderTop: "1px solid",
-          borderColor: isDarkMode
-            ? theme.palette.divider
-            : theme.palette.divider,
+          borderColor: theme.palette.divider,
+          mt: "auto",
         }}
       >
         <Button
