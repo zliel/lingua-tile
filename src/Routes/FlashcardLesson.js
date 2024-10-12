@@ -7,7 +7,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import FlashcardsList from "../Components/FlashcardList";
 
-const LessonFlashcards = () => {
+const FlashcardLesson = () => {
   const { lessonId } = useParams();
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
@@ -61,11 +61,11 @@ const LessonFlashcards = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        Lesson: {lesson.title}
+        {lesson.title}
       </Typography>
       <FlashcardsList lessonId={lessonId} />
     </Box>
   );
 };
 
-export default LessonFlashcards;
+export default FlashcardLesson;

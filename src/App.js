@@ -24,7 +24,7 @@ import AdminUserTable from "./Routes/AdminUserTable";
 import AdminCardTable from "./Routes/AdminCardTable";
 import AdminLessonTable from "./Routes/AdminLessonTable";
 import AdminSectionTable from "./Routes/AdminSectionTable";
-import LessonFlashcards from "./Routes/LessonFlashcards";
+import FlashcardLesson from "./Routes/FlashcardLesson";
 import LessonList from "./Routes/LessonList";
 
 const purpleBase = "#8c00cc";
@@ -130,7 +130,7 @@ function App() {
         ),
       },
       { path: "/lessons", element: <LessonList /> },
-      { path: "/flashcards/:lessonId", element: <LessonFlashcards /> },
+      { path: "/flashcards/:lessonId", element: <FlashcardLesson /> },
     ]);
 
   return (
