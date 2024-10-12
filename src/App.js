@@ -26,6 +26,7 @@ import AdminLessonTable from "./Routes/AdminLessonTable";
 import AdminSectionTable from "./Routes/AdminSectionTable";
 import FlashcardLesson from "./Routes/FlashcardLesson";
 import LessonList from "./Routes/LessonList";
+import { AuthProvider } from "./Contexts/AuthContext";
 
 const purpleBase = "#8c00cc";
 const greenBase = "#18b201";
@@ -138,8 +139,10 @@ function App() {
       <SnackbarProvider>
         <CssBaseline />
         <BrowserRouter>
-          <NavBar onThemeSwitch={handleTheme} />
-          <AppRoutes />
+          <AuthProvider>
+            <NavBar onThemeSwitch={handleTheme} />
+            <AppRoutes />
+          </AuthProvider>
         </BrowserRouter>
       </SnackbarProvider>
     </ThemeProvider>
