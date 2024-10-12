@@ -6,6 +6,8 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "./SnackbarContext";
 
 const AuthContext = createContext();
 
@@ -18,6 +20,9 @@ export const AuthProvider = ({ children }) => {
     isAdmin: false,
     username: "",
   });
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
+  const [authIsLoading, setAuthIsLoading] = useState(true);
 
   const checkAdmin = useCallback(async () => {
     try {
@@ -39,11 +44,14 @@ export const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       if (error.response.status === 401) {
-        logout();
+        showSnackbar("You've been logged out, please sign in again.", "error");
+        logout(() => navigate("/login"));
       }
       return Promise.resolve(false);
+    } finally {
+      setAuthIsLoading(false);
     }
-  }, [auth.token]);
+  }, [auth.token, navigate, showSnackbar]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -57,6 +65,8 @@ export const AuthProvider = ({ children }) => {
           username: username,
         });
       });
+    } else {
+      setAuthIsLoading(false);
     }
   }, [checkAdmin]);
 
@@ -80,7 +90,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, checkAdmin }}>
+    <AuthContext.Provider
+      value={{ auth, authIsLoading, login, logout, checkAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -9,6 +9,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Skeleton,
   Stack,
   Switch,
   Toolbar,
@@ -19,29 +20,35 @@ import { DarkMode, LightMode, Menu as MenuIcon } from "@mui/icons-material";
 import { useAuth } from "../Contexts/AuthContext";
 
 function NavBar(props) {
-  const { auth, logout } = useAuth();
+  const { auth, logout, authIsLoading } = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const pages = [
-    { name: "Home", endpoint: "/home" },
-    { name: "About", endpoint: "/about" },
-    { name: "Lessons", endpoint: "/lessons" },
-    { name: "Translate", endpoint: "/translate" },
-  ];
+  const pages = useMemo(() => {
+    return [
+      { name: "Home", endpoint: "/home" },
+      { name: "About", endpoint: "/about" },
+      { name: "Lessons", endpoint: "/lessons" },
+      { name: "Translate", endpoint: "/translate" },
+    ];
+  }, []);
 
-  const adminPages = [
-    { name: "User Table", endpoint: "/admin-users" },
-    { name: "Card Table", endpoint: "/admin-cards" },
-    { name: "Lesson Table", endpoint: "/admin-lessons" },
-    { name: "Section Table", endpoint: "/admin-sections" },
-  ];
+  const adminPages = useMemo(() => {
+    return [
+      { name: "User Table", endpoint: "/admin-users" },
+      { name: "Card Table", endpoint: "/admin-cards" },
+      { name: "Lesson Table", endpoint: "/admin-lessons" },
+      { name: "Section Table", endpoint: "/admin-sections" },
+    ];
+  }, []);
 
-  if (auth.isAdmin) {
-    pages.push(...adminPages);
-  }
+  useEffect(() => {
+    if (auth.isAdmin) {
+      pages.push(...adminPages);
+    }
+  }, [adminPages, auth.isAdmin, pages]);
 
   const handleMenuOpen = (event) => {
     setAnchorElMenu(event.currentTarget);
@@ -93,7 +100,7 @@ function NavBar(props) {
         </Menu>
         <Typography variant={"h6"} sx={{ paddingRight: "10px" }}>
           <Link
-            to={"/home"}
+            to={"/"}
             style={{
               textDecoration: "none",
               color: theme.palette.primary.contrastText,
@@ -116,7 +123,9 @@ function NavBar(props) {
           <Icon sx={{ mr: 1.5 }}>
             <DarkMode />
           </Icon>
-          {auth.isLoggedIn ? (
+          {authIsLoading ? (
+            <Skeleton variant="circular" width={40} height={40} />
+          ) : auth.isLoggedIn ? (
             <>
               <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
                 <Avatar
