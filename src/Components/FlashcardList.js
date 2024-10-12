@@ -7,6 +7,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  Zoom,
 } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -19,6 +20,7 @@ const FlashcardList = ({ lessonId }) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [isEnglishToJapanese, setIsEnglishToJapanese] = useState(true);
+  const [hasFinished, setHasFinished] = useState(false);
   const theme = useTheme();
 
   const {
@@ -77,6 +79,7 @@ const FlashcardList = ({ lessonId }) => {
     setTimeout(() => {
       if (currentCardIndex + 1 === flashcards.length) {
         showSnackbar("You have reached the end of the lesson!", "success");
+        setHasFinished(true);
         setCurrentCardIndex(0);
       } else {
         setCurrentCardIndex((prevIndex) => prevIndex + 1);
@@ -116,7 +119,10 @@ const FlashcardList = ({ lessonId }) => {
       >
         <LinearProgress
           variant="determinate"
-          value={(currentCardIndex / flashcards.length) * 100}
+          value={
+            // Keep the progress at 100% if they finished, but allow them to keep reviewing
+            hasFinished ? 100 : (currentCardIndex / flashcards.length) * 100
+          }
           sx={{
             width: "95%",
             height: 5,
@@ -127,15 +133,18 @@ const FlashcardList = ({ lessonId }) => {
             },
           }}
         />
-        <Typography
-          sx={{
-            mt: 0.8,
-            color: "transparent",
-            textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
-          }}
-        >
-          🔥
-        </Typography>
+        <Zoom in={hasFinished} easing={"ease"} timeout={500}>
+          <Typography
+            sx={{
+              mt: 0.8,
+              color: "transparent",
+              textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
+            }}
+            variant={"h5"}
+          >
+            🔥
+          </Typography>
+        </Zoom>
       </Stack>
     </Box>
   );
