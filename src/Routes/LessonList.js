@@ -11,6 +11,16 @@ const LessonList = () => {
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  const categoryColors = {
+    flashcards: "primary",
+    practice: "secondary",
+    grammar: "warning",
+  };
+  const categoryRoutes = {
+    flashcards: "/flashcards",
+    practice: "/practice",
+    grammar: "/grammar",
+  };
 
   const {
     data: lessons,
@@ -89,11 +99,11 @@ const LessonList = () => {
           <Typography variant="h6">{lesson.title}</Typography>
           <Button
             variant="contained"
-            color="primary"
+            color={categoryColors[lesson.category]}
             component={Link}
-            to={`/flashcards/${lesson._id}`}
+            to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
           >
-            Flashcards
+            {lesson.category}
           </Button>
         </Box>
       ))}
