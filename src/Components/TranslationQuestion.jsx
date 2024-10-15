@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useTheme } from "@mui/material/styles";
 
 const TranslationQuestion = ({ sentence, onNext }) => {
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState();
   const { showSnackbar } = useSnackbar();
+  const theme = useTheme();
+
+  useEffect(() => {
+    setUserAnswer("");
+    setIsCorrect(null);
+  }, [sentence]);
 
   const possibleAnswers = sentence.possible_answers.map((answer) =>
     answer.trim().toLowerCase(),
@@ -15,7 +22,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
     if (possibleAnswers.includes(userAnswer.trim().toLowerCase())) {
       setIsCorrect(true);
       showSnackbar("Correct!", "success");
-      setTimeout(onNext, 1000);
+      setTimeout(onNext, 500);
     } else {
       setIsCorrect(false);
       showSnackbar("Incorrect", "error");
@@ -28,8 +35,8 @@ const TranslationQuestion = ({ sentence, onNext }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        m: 2,
-        p: 2,
+        m: 8,
+        p: 4,
         border: 1,
         borderColor:
           isCorrect != null && isCorrect
@@ -38,9 +45,15 @@ const TranslationQuestion = ({ sentence, onNext }) => {
               ? "error.main"
               : "primary.main",
         borderRadius: 2,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? theme.palette.grey[900]
+            : theme.palette.grey[100],
       }}
     >
-      <Typography variant="h6">{sentence.full_sentence}</Typography>
+      <Typography variant="h6">
+        Please translate this sentence: {sentence.full_sentence}
+      </Typography>
       <TextField
         label="Translate to English"
         value={userAnswer}
