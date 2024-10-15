@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
@@ -8,10 +8,12 @@ const TranslationQuestion = ({ sentence, onNext }) => {
   const [isCorrect, setIsCorrect] = useState();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  const inputRef = useRef(null);
 
   useEffect(() => {
     setUserAnswer("");
     setIsCorrect(null);
+    inputRef.current.focus();
   }, [sentence]);
 
   const cleanString = (inputString) => {
@@ -70,6 +72,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
         value={userAnswer}
         onChange={(e) => setUserAnswer(e.target.value)}
         sx={{ mt: 2, width: "100%" }}
+        inputRef={inputRef}
       />
       <Button onClick={checkAnswer} variant="contained" sx={{ mt: 2 }}>
         Submit
