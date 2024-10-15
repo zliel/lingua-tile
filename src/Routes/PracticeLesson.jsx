@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Box, Skeleton, Typography } from "@mui/material";
@@ -7,15 +7,16 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 import TranslationQuestion from "../Components/TranslationQuestion";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./PracticeLesson.css";
 
-const GrammarLesson = () => {
+const PracticeLesson = () => {
   const { lessonId } = useParams();
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const [currentSentence, setCurrentSentence] = useState(0);
+  const [animationClass, setAnimationClass] = useState("slide-in");
+  const nodeRef = useRef(null);
 
   const {
     data: lesson,
@@ -38,13 +39,16 @@ const GrammarLesson = () => {
   });
 
   const handleNext = () => {
-    if (currentSentence === lesson.sentences.length - 1) {
-      showSnackbar("Lesson complete!", "success");
-    }
-
-    setCurrentSentence((prev) =>
-      prev === lesson.sentences.length - 1 ? 0 : prev + 1,
-    );
+    setAnimationClass("slide-out");
+    setTimeout(() => {
+      if (currentSentence === lesson.sentences.length - 1) {
+        showSnackbar("Lesson complete!", "success");
+      }
+      setCurrentSentence((prev) =>
+        prev === lesson.sentences.length - 1 ? 0 : prev + 1,
+      );
+      setAnimationClass("slide-in");
+    }, 400);
   };
 
   if (isLoading) {
@@ -75,23 +79,23 @@ const GrammarLesson = () => {
         alignItems: "center",
         justifyContent: "center",
         margin: "auto",
-        mt: 4,
-        p: 1.5,
+        mt: 6,
+        p: 3,
+        pb: "6em",
         border: 2,
         borderColor: "primary.main",
         borderRadius: 2,
       }}
     >
-      <TransitionGroup>
-        <CSSTransition timeout={1000} classNames={"fade"} key={currentSentence}>
-          <TranslationQuestion
-            sentence={lesson.sentences[currentSentence]}
-            onNext={handleNext}
-          />
-        </CSSTransition>
-      </TransitionGroup>
+      <Typography variant={"h4"}>{lesson.title}</Typography>
+      <div ref={nodeRef} className={animationClass}>
+        <TranslationQuestion
+          sentence={lesson.sentences[currentSentence]}
+          onNext={handleNext}
+        />
+      </div>
     </Box>
   );
 };
 
-export default GrammarLesson;
+export default PracticeLesson;
