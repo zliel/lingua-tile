@@ -14,12 +14,19 @@ const TranslationQuestion = ({ sentence, onNext }) => {
     setIsCorrect(null);
   }, [sentence]);
 
+  const cleanString = (inputString) => {
+    return inputString
+      .trim()
+      .toLowerCase()
+      .replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+  };
   const possibleAnswers = sentence.possible_answers.map((answer) =>
-    answer.trim().toLowerCase(),
+    // remove all punctuation and make lowercase
+    cleanString(answer),
   );
 
   const checkAnswer = () => {
-    if (possibleAnswers.includes(userAnswer.trim().toLowerCase())) {
+    if (possibleAnswers.includes(cleanString(userAnswer))) {
       setIsCorrect(true);
       showSnackbar("Correct!", "success");
       setTimeout(onNext, 500);
