@@ -28,6 +28,7 @@ import FlashcardLesson from "./Routes/FlashcardLesson";
 import LessonList from "./Routes/LessonList";
 import { AuthProvider } from "./Contexts/AuthContext";
 import GrammarLesson from "./Routes/GrammarLesson";
+import PracticeLesson from "./Routes/PracticeLesson";
 
 const purpleBase = "#8c00cc";
 const greenBase = "#18b201";
@@ -134,6 +135,7 @@ function App() {
       { path: "/lessons", element: <LessonList /> },
       { path: "/flashcards/:lessonId", element: <FlashcardLesson /> },
       { path: "/grammar/:lessonId", element: <GrammarLesson /> },
+      { path: "/practice/:lessonId", element: <PracticeLesson /> },
     ]);
 
   return (
