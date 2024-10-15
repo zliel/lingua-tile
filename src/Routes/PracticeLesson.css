@@ -1,15 +1,29 @@
-.fade-enter {
-    opacity: 0;
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(50%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
-.fade-enter-active {
-    opacity: 1;
-    transition: opacity 300ms;
 
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%);
+    }
 }
-.fade-exit {
-    opacity: 1;
+
+.slide-in {
+    animation: slideIn 300ms forwards;
 }
-.fade-exit-active {
-    opacity: 0;
-    transition: opacity 300ms;
+
+.slide-out {
+    animation: slideOut 200ms forwards;
 }
