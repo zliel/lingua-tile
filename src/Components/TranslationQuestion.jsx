@@ -56,6 +56,10 @@ const TranslationQuestion = ({ sentence, onNext }) => {
           theme.palette.mode === "dark"
             ? theme.palette.grey[900]
             : theme.palette.grey[100],
+        transition: "transform 0.3s ease",
+        "&:hover": {
+          transform: "scale(1.1)",
+        },
       }}
     >
       <Typography variant="h6">
