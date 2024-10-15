@@ -10,11 +10,27 @@ const TranslationQuestion = ({ sentence, onNext }) => {
   const theme = useTheme();
   const inputRef = useRef(null);
 
+  // Reset state on each sentence
   useEffect(() => {
     setUserAnswer("");
     setIsCorrect(null);
     inputRef.current.focus();
   }, [sentence]);
+
+  // Listener for the enter key if the input is focused
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.code === "Enter") {
+        event.preventDefault();
+        checkAnswer();
+      }
+    };
+
+    inputRef.current.addEventListener("keydown", handleKeyPress);
+    return () => {
+      inputRef.current.removeEventListener("keydown", handleKeyPress);
+    };
+  });
 
   const cleanString = (inputString) => {
     return inputString
