@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import { useTheme } from "@mui/material/styles";
 import TranslationQuestion from "../Components/TranslationQuestion";
 import "./PracticeLesson.css";
 
@@ -13,7 +12,6 @@ const PracticeLesson = () => {
   const { lessonId } = useParams();
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const theme = useTheme();
   const [currentSentence, setCurrentSentence] = useState(0);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
@@ -38,6 +36,7 @@ const PracticeLesson = () => {
     },
   });
 
+  // Event handler for switching to the next sentence
   const handleNext = () => {
     setAnimationClass("slide-out");
     setTimeout(() => {
