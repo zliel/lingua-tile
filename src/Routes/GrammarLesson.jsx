@@ -60,6 +60,7 @@ const GrammarLesson = () => {
         flexDirection: "column",
         width: "80%",
         alignItems: "center",
+        justifyContent: "center",
         margin: "auto",
         mt: 4,
         p: 1.5,
@@ -72,6 +73,13 @@ const GrammarLesson = () => {
         hideLineNumbers
         overrides={{
           ...getOverrides({}),
+          h2: {
+            props: {
+              style: {
+                textAlign: "center",
+              },
+            },
+          },
           img: {
             props: {
               style: {
