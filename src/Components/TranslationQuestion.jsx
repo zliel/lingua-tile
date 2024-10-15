@@ -26,9 +26,13 @@ const TranslationQuestion = ({ sentence, onNext }) => {
       }
     };
 
-    inputRef.current.addEventListener("keydown", handleKeyPress);
+    const currentInput = inputRef.current;
+
+    currentInput.addEventListener("keydown", handleKeyPress);
     return () => {
-      inputRef.current.removeEventListener("keydown", handleKeyPress);
+      if (inputRef.current) {
+        currentInput.removeEventListener("keydown", handleKeyPress);
+      }
     };
   });
 
