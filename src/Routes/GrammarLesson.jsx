@@ -1,16 +1,18 @@
 import React from "react";
-import { MuiMarkdown } from "mui-markdown";
+import { MuiMarkdown, getOverrides } from "mui-markdown";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useTheme } from "@mui/material/styles";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
   const { auth } = useAuth();
   const { showSnackbar } = useSnackbar();
+  const theme = useTheme();
 
   const {
     data: lesson,
@@ -66,7 +68,21 @@ const GrammarLesson = () => {
         borderRadius: 2,
       }}
     >
-      <MuiMarkdown hideLineNumbers>{lesson.content}</MuiMarkdown>
+      <MuiMarkdown
+        hideLineNumbers
+        overrides={{
+          ...getOverrides({}),
+          img: {
+            props: {
+              style: {
+                border: `2px solid ${theme.palette.primary.dark}`,
+              },
+            },
+          },
+        }}
+      >
+        {lesson.content}
+      </MuiMarkdown>
     </Box>
   );
 };
