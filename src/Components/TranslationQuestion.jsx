@@ -32,17 +32,20 @@ const TranslationQuestion = ({ sentence, onNext }) => {
     };
   });
 
+  // Helper function to remove punctuation and extra spaces, and make it lowercase
   const cleanString = (inputString) => {
     return inputString
       .trim()
       .toLowerCase()
       .replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
   };
+
   const possibleAnswers = sentence.possible_answers.map((answer) =>
     // remove all punctuation and make lowercase
     cleanString(answer),
   );
 
+  // Check if the user's answer is correct by comparing it to all answers in the sentence's possible_answers array
   const checkAnswer = () => {
     if (possibleAnswers.includes(cleanString(userAnswer))) {
       setIsCorrect(true);
