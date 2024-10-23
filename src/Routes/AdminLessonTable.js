@@ -221,6 +221,7 @@ const AdminLessonTable = () => {
               <TableCell>ID</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Section Name</TableCell>
+              <TableCell>Category</TableCell>
               <TableCell>Cards</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -268,6 +269,24 @@ const AdminLessonTable = () => {
                     sections.find(
                       (section) => section._id === lesson.section_id,
                     )?.name
+                  )}
+                </TableCell>
+                <TableCell sx={{ width: 300 }}>
+                  {editingLessonId === lesson._id ? (
+                    <TextField
+                      label="Category"
+                      value={editedLesson.category}
+                      onChange={(e) =>
+                        setEditedLesson({
+                          ...editedLesson,
+                          category: e.target.value,
+                        })
+                      }
+                      sx={{ mb: 2, width: "300px" }}
+                      required
+                    />
+                  ) : (
+                    lesson.category
                   )}
                 </TableCell>
                 <TableCell sx={{ width: 300 }}>
