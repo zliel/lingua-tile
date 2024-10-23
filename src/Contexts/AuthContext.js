@@ -9,19 +9,12 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
-    token: "",
-    isLoggedIn: false,
-    isAdmin: false,
-    username: "",
-  });
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
   const fetchAuthState = async () => {
     const token = localStorage.getItem("token");
-    console.log("fetchAuthState token", token);
     if (!token) {
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
     }
@@ -87,7 +80,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ auth, authIsLoading, authData, login, logout, checkAdmin }}
+      value={{ authIsLoading, authData, login, logout, checkAdmin }}
     >
       {children}
     </AuthContext.Provider>

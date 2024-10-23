@@ -8,7 +8,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
 function Profile() {
-  const { auth, authData, logout } = useAuth();
+  const { authData, logout } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,7 +59,7 @@ function Profile() {
     },
     onSuccess: () => {
       showSnackbar("Profile deleted successfully", "success");
-      queryClient.invalidateQueries(["user", auth.token]);
+      queryClient.invalidateQueries(["user", authData.token]);
       logout(() => navigate("/home"));
     },
     onError: (error) => {
