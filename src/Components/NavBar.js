@@ -20,7 +20,7 @@ import { DarkMode, LightMode, Menu as MenuIcon } from "@mui/icons-material";
 import { useAuth } from "../Contexts/AuthContext";
 
 function NavBar(props) {
-  const { auth, logout, authIsLoading } = useAuth();
+  const { logout, authIsLoading, authData } = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
   const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -45,10 +45,10 @@ function NavBar(props) {
   }, []);
 
   useEffect(() => {
-    if (auth.isAdmin) {
+    if (authData && authData.isAdmin) {
       pages.push(...adminPages);
     }
-  }, [adminPages, auth.isAdmin, pages]);
+  }, [adminPages, authData, pages]);
 
   const handleMenuOpen = (event) => {
     setAnchorElMenu(event.currentTarget);
@@ -125,7 +125,7 @@ function NavBar(props) {
           </Icon>
           {authIsLoading ? (
             <Skeleton variant="circular" width={40} height={40} />
-          ) : auth.isLoggedIn ? (
+          ) : authData.isLoggedIn ? (
             <>
               <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
                 <Avatar
@@ -134,7 +134,7 @@ function NavBar(props) {
                     color: theme.palette.primary.contrastText,
                   }}
                 >
-                  {auth.username ? auth.username[0].toUpperCase() : "?"}
+                  {authData.username ? authData.username[0].toUpperCase() : "?"}
                 </Avatar>
               </IconButton>
               <Menu

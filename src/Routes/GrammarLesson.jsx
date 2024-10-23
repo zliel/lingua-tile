@@ -10,7 +10,7 @@ import { useTheme } from "@mui/material/styles";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
 
@@ -19,12 +19,12 @@ const GrammarLesson = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["lesson", lessonId, auth.token],
+    queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
@@ -32,6 +32,7 @@ const GrammarLesson = () => {
     onError: () => {
       showSnackbar("Failed to fetch lesson", "error");
     },
+    enabled: !!authData,
   });
 
   if (isLoading) {

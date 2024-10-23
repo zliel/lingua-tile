@@ -8,7 +8,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 
 const LessonList = () => {
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const categoryColors = {
@@ -27,12 +27,12 @@ const LessonList = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["lessons", auth.token],
+    queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
@@ -40,6 +40,7 @@ const LessonList = () => {
     onError: () => {
       showSnackbar("Failed to fetch lessons", "error");
     },
+    enabled: !!authData,
   });
 
   if (isLoading) {
@@ -83,30 +84,31 @@ const LessonList = () => {
       <Typography variant="h4" gutterBottom>
         Lessons
       </Typography>
-      {lessons.map((lesson) => (
-        <Box
-          key={lesson.id}
-          sx={{
-            p: 1.5,
-            mb: 2,
-            width: "70%",
-            display: "flex",
-            justifyContent: "space-between",
-            border: `2px solid ${theme.palette.primary.contrastText}`,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6">{lesson.title}</Typography>
-          <Button
-            variant="contained"
-            color={categoryColors[lesson.category]}
-            component={Link}
-            to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+      {lessons &&
+        lessons.map((lesson) => (
+          <Box
+            key={lesson.id}
+            sx={{
+              p: 1.5,
+              mb: 2,
+              width: "70%",
+              display: "flex",
+              justifyContent: "space-between",
+              border: `2px solid ${theme.palette.primary.contrastText}`,
+              borderRadius: 2,
+            }}
           >
-            {lesson.category}
-          </Button>
-        </Box>
-      ))}
+            <Typography variant="h6">{lesson.title}</Typography>
+            <Button
+              variant="contained"
+              color={categoryColors[lesson.category]}
+              component={Link}
+              to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+            >
+              {lesson.category}
+            </Button>
+          </Box>
+        ))}
     </Box>
   );
 };

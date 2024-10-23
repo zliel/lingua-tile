@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 
 const AdminUserTable = () => {
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingUserId, setEditingUserId] = useState(null);
   const [editedUser, setEditedUser] = useState({});
@@ -29,16 +29,17 @@ const AdminUserTable = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["users", auth.token],
+    queryKey: ["users", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/users/admin/all`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
     },
+    enabled: !!authData,
   });
 
   useEffect(() => {
@@ -67,13 +68,13 @@ const AdminUserTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/users/update/${userId}`,
         editedUser,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("User updated successfully", "success");
-      queryClient.invalidateQueries(["users", auth.token]);
+      queryClient.invalidateQueries(["users", authData.token]);
     },
     onError: () => {
       showSnackbar("Failed to update user", "error");
@@ -90,13 +91,13 @@ const AdminUserTable = () => {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE}/api/users/delete/${userId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("User deleted successfully", "success");
-      queryClient.invalidateQueries(["users", auth.token]);
+      queryClient.invalidateQueries(["users", authData.token]);
     },
     onError: () => {
       showSnackbar("Failed to delete user", "error");

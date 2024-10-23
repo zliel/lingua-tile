@@ -10,7 +10,7 @@ import "./PracticeLesson.css";
 
 const PracticeLesson = () => {
   const { lessonId } = useParams();
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentSentence, setCurrentSentence] = useState(0);
   const [animationClass, setAnimationClass] = useState("slide-in");
@@ -21,12 +21,12 @@ const PracticeLesson = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["lesson", lessonId, auth.token],
+    queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
@@ -34,6 +34,7 @@ const PracticeLesson = () => {
     onError: () => {
       showSnackbar("Failed to fetch lesson", "error");
     },
+    enabled: !!authData,
   });
 
   // Event handler for switching to the next sentence

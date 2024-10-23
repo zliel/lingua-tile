@@ -23,7 +23,7 @@ import {
 import MarkdownPreviewer from "../Components/MarkdownPreviewer";
 
 const AdminLessonTable = () => {
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingLessonId, setEditingLessonId] = useState(null);
   const [editedLesson, setEditedLesson] = useState({});
@@ -34,7 +34,7 @@ const AdminLessonTable = () => {
     isLoadingLessons,
     isErrorLessons,
   } = useQuery({
-    queryKey: ["lessons", auth.token],
+    queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
@@ -42,6 +42,7 @@ const AdminLessonTable = () => {
 
       return response.data;
     },
+    enabled: !!authData,
   });
 
   const {
@@ -49,7 +50,7 @@ const AdminLessonTable = () => {
     isLoadingSections,
     isErrorSections,
   } = useQuery({
-    queryKey: ["sections", auth.token],
+    queryKey: ["sections", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/sections/all`,
@@ -57,6 +58,7 @@ const AdminLessonTable = () => {
 
       return response.data;
     },
+    enabled: !!authData,
   });
 
   const {
@@ -64,17 +66,18 @@ const AdminLessonTable = () => {
     isLoadingCards,
     isErrorCards,
   } = useQuery({
-    queryKey: ["cards", auth.token],
+    queryKey: ["cards", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/cards/all`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
 
       return response.data;
     },
+    enabled: !!authData,
   });
 
   const handleEdit = (card) => {
@@ -88,7 +91,7 @@ const AdminLessonTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
         editedLesson,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
@@ -111,7 +114,7 @@ const AdminLessonTable = () => {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE}/api/lessons/delete/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
@@ -135,7 +138,7 @@ const AdminLessonTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/lessons/create`,
         lesson,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },

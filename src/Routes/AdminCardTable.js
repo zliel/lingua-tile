@@ -20,7 +20,7 @@ import {
 import NewCardForm from "../Components/NewCardForm";
 
 const AdminCardTable = () => {
-  const { auth } = useAuth();
+  const { authData, authIsLoading } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingCardId, setEditingCardId] = useState(null);
   const [editedCard, setEditedCard] = useState({});
@@ -31,12 +31,12 @@ const AdminCardTable = () => {
     isLoading: isLoadingCards,
     isError: isErrorCards,
   } = useQuery({
-    queryKey: ["cards", auth.token],
+    queryKey: ["cards", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/cards/all`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
 
@@ -45,6 +45,7 @@ const AdminCardTable = () => {
     onError: () => {
       showSnackbar("Failed to fetch cards", "error");
     },
+    enabled: !!authData,
   });
 
   const {
@@ -52,7 +53,7 @@ const AdminCardTable = () => {
     isLoading: isLoadingLessonGroups,
     isError: isErrorLessonGroups,
   } = useQuery({
-    queryKey: ["lessonGroups", auth.token],
+    queryKey: ["lessonGroups", authData?.token],
     queryFn: async () => {
       const [lessonsResponse, sectionsResponse] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_BASE}/api/lessons/all`),
@@ -75,6 +76,7 @@ const AdminCardTable = () => {
 
       return { groupedLessons, lessons, sections };
     },
+    enabled: !!authData,
   });
 
   const handleEdit = (card) => {
@@ -84,18 +86,17 @@ const AdminCardTable = () => {
 
   const updateMutation = useMutation({
     mutationFn: async () => {
-      console.dir(editedCard);
       await axios.put(
         `${process.env.REACT_APP_API_BASE}/api/cards/update/${editingCardId}`,
         editedCard,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("Card updated successfully", "success");
-      queryClient.invalidateQueries(["cards", auth.token]);
+      queryClient.invalidateQueries(["cards", authData.token]);
       setEditingCardId(null);
     },
     onError: () => {
@@ -112,13 +113,13 @@ const AdminCardTable = () => {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE}/api/cards/delete/${cardId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("Card deleted successfully", "success");
-      queryClient.invalidateQueries(["cards", auth.token]);
+      queryClient.invalidateQueries(["cards", authData.token]);
     },
     onError: () => {
       showSnackbar("Failed to delete card", "error");
@@ -135,13 +136,13 @@ const AdminCardTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/cards/create`,
         newCard,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("Card added successfully", "success");
-      queryClient.invalidateQueries(["cards", auth.token]);
+      queryClient.invalidateQueries(["cards", authData.token]);
     },
     onError: () => {
       showSnackbar("Failed to add card", "error");
@@ -157,7 +158,7 @@ const AdminCardTable = () => {
     addMutation.mutate(newCard);
   };
 
-  if (isLoadingCards || isLoadingLessonGroups) {
+  if (isLoadingCards || isLoadingLessonGroups || authIsLoading) {
     return (
       <Box
         sx={{

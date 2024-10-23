@@ -6,11 +6,11 @@ import { Box, Skeleton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 const ProtectedRoute = ({ children }) => {
-  const { auth, checkAdmin } = useAuth();
+  const { authData, checkAdmin } = useAuth();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  const token = auth.token || localStorage.getItem("token");
+  const token = authData?.token || localStorage.getItem("token");
   const {
     data: isAdmin,
     isLoading,

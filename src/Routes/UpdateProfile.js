@@ -14,7 +14,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
 function UpdateProfile() {
-  const { auth, logout } = useAuth();
+  const { authData, logout } = useAuth();
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -26,13 +26,13 @@ function UpdateProfile() {
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["user", auth.token],
+    queryKey: ["user", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/users`,
         {
           headers: {
-            Authorization: `Bearer ${auth.token}`,
+            Authorization: `Bearer ${authData.token}`,
           },
         },
       );
@@ -48,6 +48,7 @@ function UpdateProfile() {
         showSnackbar(`Error: ${error.response.data.detail}`, "error");
       }
     },
+    enabled: !!authData,
   });
 
   const updateMutation = useMutation({
@@ -57,7 +58,7 @@ function UpdateProfile() {
         updatedUser,
         {
           headers: {
-            Authorization: `Bearer ${auth.token}`,
+            Authorization: `Bearer ${authData.token}`,
           },
         },
       );
@@ -127,7 +128,7 @@ function UpdateProfile() {
     updateMutation.mutate(updatedUser);
   };
 
-  if (!auth.isLoggedIn) {
+  if (!authData.isLoggedIn) {
     return (
       <Typography variant="h6" textAlign="center">
         Please log in to update your profile.
