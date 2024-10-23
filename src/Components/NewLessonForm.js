@@ -3,6 +3,9 @@ import {
   Autocomplete,
   Box,
   Button,
+  Card,
+  CardContent,
+  CardActions,
   TextField,
   Typography,
 } from "@mui/material";
@@ -24,9 +27,37 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
       section_id: "",
       category: "",
       content: "",
-      sentences: [{ full_sentence: "", possible_answers: [] }],
+      sentences: [],
       card_ids: [],
     });
+  };
+
+  const handleSentenceChange = (index, field, value) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[index][field] = value;
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
+  };
+
+  const handlePossibleAnswerChange = (sentenceIndex, answerIndex, value) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[sentenceIndex].possible_answers[answerIndex] = value;
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
+  };
+
+  const addNewSentence = () => {
+    setNewLesson({
+      ...newLesson,
+      sentences: [
+        ...newLesson.sentences,
+        { full_sentence: "", possible_answers: [""] },
+      ],
+    });
+  };
+
+  const addNewPossibleAnswer = (sentenceIndex) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[sentenceIndex].possible_answers.push("");
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
   };
 
   return (
@@ -104,6 +135,58 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
           />
         )}
 
+        {newLesson.category === "practice" && (
+          <Box sx={{ mb: 2, width: "300px" }}>
+            {newLesson.sentences.map((sentence, sentenceIndex) => (
+              <Card key={sentenceIndex} sx={{ mb: 2 }}>
+                <CardContent>
+                  <TextField
+                    label="Full Sentence"
+                    value={sentence.full_sentence}
+                    onChange={(e) =>
+                      handleSentenceChange(
+                        sentenceIndex,
+                        "full_sentence",
+                        e.target.value,
+                      )
+                    }
+                    sx={{ mb: 1, width: "100%" }}
+                    required
+                  />
+                  {sentence.possible_answers.map((answer, answerIndex) => (
+                    <TextField
+                      key={answerIndex}
+                      label={`Possible Answer ${answerIndex + 1}`}
+                      value={answer}
+                      onChange={(e) =>
+                        handlePossibleAnswerChange(
+                          sentenceIndex,
+                          answerIndex,
+                          e.target.value,
+                        )
+                      }
+                      sx={{ mb: 1, width: "100%" }}
+                      required
+                    />
+                  ))}
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="outlined"
+                    onClick={() => addNewPossibleAnswer(sentenceIndex)}
+                    sx={{ mb: 1 }}
+                  >
+                    Add Possible Answer
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+            <Button variant="outlined" onClick={addNewSentence}>
+              Add New Sentence
+            </Button>
+          </Box>
+        )}
+
         {newLesson.category === "flashcards" && (
           <Autocomplete
             multiple
@@ -127,7 +210,7 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
         )}
 
         <Button variant="contained" color="primary" onClick={handleAddLesson}>
-          Add Card
+          Add Lesson
         </Button>
       </Box>
     </Box>
