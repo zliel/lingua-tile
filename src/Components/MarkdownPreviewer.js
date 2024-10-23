@@ -21,8 +21,10 @@ const MarkdownPreviewer = ({ value, onChange }) => {
         <Box
           sx={{
             border: "1px solid #ccc",
+            borderRadius: 2,
             padding: 2,
             height: "100%",
+            maxHeight: 492,
             overflowY: "auto",
           }}
         >
