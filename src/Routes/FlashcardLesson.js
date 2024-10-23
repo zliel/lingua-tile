@@ -17,7 +17,7 @@ const FlashcardLesson = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["lesson", lessonId, authData.token],
+    queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
@@ -62,7 +62,7 @@ const FlashcardLesson = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        {lesson.title}
+        {lesson && lesson.title}
       </Typography>
       <FlashcardsList lessonId={lessonId} />
     </Box>
