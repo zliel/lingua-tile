@@ -1,13 +1,8 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./SnackbarContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AuthContext = createContext();
 
@@ -22,76 +17,77 @@ export const AuthProvider = ({ children }) => {
   });
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
-  const [authIsLoading, setAuthIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const checkAdmin = useCallback(async () => {
-    try {
-      const token = auth.token || localStorage.getItem("token");
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      return new Promise((resolve) => {
-        setAuth((prevAuth) => {
-          resolve(response.data.isAdmin);
-          return {
-            ...prevAuth,
-            isAdmin: response.data.isAdmin,
-          };
-        });
-      });
-    } catch (error) {
-      if (error.response.status === 401) {
+  const fetchAuthState = async () => {
+    const token = localStorage.getItem("token");
+    console.log("fetchAuthState token", token);
+    if (!token) {
+      return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
+    }
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    if (response.status >= 400) {
+      return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
+    }
+    return {
+      token,
+      isLoggedIn: true,
+      isAdmin: response.data.isAdmin,
+      username: localStorage.getItem("username"),
+    };
+  };
+
+  const { data: authData, isLoading: authIsLoading } = useQuery({
+    queryKey: ["authState"],
+    queryFn: fetchAuthState,
+    onError: (error) => {
+      if (error.response?.status === 401) {
         showSnackbar("You've been logged out, please sign in again.", "error");
         logout(() => navigate("/login"));
       }
-      return Promise.resolve(false);
-    } finally {
-      setAuthIsLoading(false);
-    }
-  }, [auth.token, navigate, showSnackbar]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
-    if (token) {
-      checkAdmin().then((isAdmin) => {
-        setAuth({
-          token: token,
-          isLoggedIn: true,
-          isAdmin: isAdmin,
-          username: username,
-        });
-      });
-    } else {
-      setAuthIsLoading(false);
-    }
-  }, [checkAdmin]);
+    },
+    onSuccess: (data) => {
+      console.dir(data);
+    },
+  });
 
   const login = (data, callback) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
-    setAuth({
-      token: data.token,
-      isLoggedIn: true,
-      isAdmin: data.isAdmin,
-      username: data.username,
-    });
+    queryClient.invalidateQueries("authState");
     if (callback) callback();
   };
 
   const logout = (callback) => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-    setAuth({ token: "", isLoggedIn: false, isAdmin: false, username: "" });
+    queryClient.invalidateQueries("authState");
     if (callback) callback();
   };
 
+  const checkAdmin = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      return response.data.isAdmin;
+    }
+    return false;
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ auth, authIsLoading, login, logout, checkAdmin }}
+      value={{ auth, authIsLoading, authData, login, logout, checkAdmin }}
     >
       {children}
     </AuthContext.Provider>
