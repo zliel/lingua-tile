@@ -3,20 +3,62 @@ import {
   Autocomplete,
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   TextField,
   Typography,
 } from "@mui/material";
+import MarkdownPreviewer from "./MarkdownPreviewer";
 
 const NewLessonForm = ({ cards, sections, onSubmit }) => {
   const [newLesson, setNewLesson] = useState({
     title: "",
     section_id: "",
+    category: "",
+    content: "",
+    sentences: [],
     card_ids: [],
   });
 
   const handleAddLesson = () => {
     onSubmit(newLesson);
-    setNewLesson({ title: "", section_id: "", card_ids: [] });
+    setNewLesson({
+      title: "",
+      section_id: "",
+      category: "",
+      content: "",
+      sentences: [],
+      card_ids: [],
+    });
+  };
+
+  const handleSentenceChange = (index, field, value) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[index][field] = value;
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
+  };
+
+  const handlePossibleAnswerChange = (sentenceIndex, answerIndex, value) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[sentenceIndex].possible_answers[answerIndex] = value;
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
+  };
+
+  const addNewSentence = () => {
+    setNewLesson({
+      ...newLesson,
+      sentences: [
+        ...newLesson.sentences,
+        { full_sentence: "", possible_answers: [""] },
+      ],
+    });
+  };
+
+  const addNewPossibleAnswer = (sentenceIndex) => {
+    const updatedSentences = [...newLesson.sentences];
+    updatedSentences[sentenceIndex].possible_answers.push("");
+    setNewLesson({ ...newLesson, sentences: updatedSentences });
   };
 
   return (
@@ -69,26 +111,108 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
           )}
           sx={{ mb: 2, width: "300px" }}
         />
-
         <Autocomplete
-          multiple
-          disableCloseOnSelect
-          options={cards}
-          getOptionLabel={(option) => option.front_text}
-          value={cards.filter((card) => newLesson.card_ids?.includes(card._id))}
+          options={["grammar", "flashcards", "practice"]}
+          value={newLesson.category}
           onChange={(event, newValue) => {
-            setNewLesson({
-              ...newLesson,
-              card_ids: newValue.map((card) => card._id),
-            });
+            setNewLesson({ ...newLesson, category: newValue });
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Cards" variant="outlined" />
+            <TextField {...params} label="Category" variant="outlined" />
           )}
           sx={{ mb: 2, width: "300px" }}
         />
+
+        {newLesson.category === "grammar" && (
+          <Box sx={{ width: 600, mb: 2 }}>
+            <Typography variant="h6" gutterBottom textAlign={"center"}>
+              Add Content
+            </Typography>
+            <MarkdownPreviewer
+              value={newLesson.content}
+              onChange={(e) =>
+                setNewLesson({ ...newLesson, content: e.target.value })
+              }
+            />
+          </Box>
+        )}
+
+        {newLesson.category === "practice" && (
+          <Box sx={{ mb: 2, width: "300px" }}>
+            {newLesson.sentences.map((sentence, sentenceIndex) => (
+              <Card key={sentenceIndex} sx={{ mb: 2 }}>
+                <CardContent>
+                  <TextField
+                    label="Full Sentence"
+                    value={sentence.full_sentence}
+                    onChange={(e) =>
+                      handleSentenceChange(
+                        sentenceIndex,
+                        "full_sentence",
+                        e.target.value,
+                      )
+                    }
+                    sx={{ mb: 1, width: "100%" }}
+                    required
+                  />
+                  {sentence.possible_answers.map((answer, answerIndex) => (
+                    <TextField
+                      key={answerIndex}
+                      label={`Possible Answer ${answerIndex + 1}`}
+                      value={answer}
+                      onChange={(e) =>
+                        handlePossibleAnswerChange(
+                          sentenceIndex,
+                          answerIndex,
+                          e.target.value,
+                        )
+                      }
+                      sx={{ mb: 1, width: "100%" }}
+                      required
+                    />
+                  ))}
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="outlined"
+                    onClick={() => addNewPossibleAnswer(sentenceIndex)}
+                    sx={{ mb: 1 }}
+                  >
+                    Add Possible Answer
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+            <Button variant="outlined" onClick={addNewSentence}>
+              Add New Sentence
+            </Button>
+          </Box>
+        )}
+
+        {newLesson.category === "flashcards" && (
+          <Autocomplete
+            multiple
+            disableCloseOnSelect
+            options={cards}
+            getOptionLabel={(option) => option.front_text}
+            value={cards.filter((card) =>
+              newLesson.card_ids?.includes(card._id),
+            )}
+            onChange={(event, newValue) => {
+              setNewLesson({
+                ...newLesson,
+                card_ids: newValue.map((card) => card._id),
+              });
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Cards" variant="outlined" />
+            )}
+            sx={{ mb: 2, width: "300px" }}
+          />
+        )}
+
         <Button variant="contained" color="primary" onClick={handleAddLesson}>
-          Add Card
+          Add Lesson
         </Button>
       </Box>
     </Box>
