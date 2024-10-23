@@ -20,7 +20,7 @@ import NewSectionForm from "../Components/NewSectionForm";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AdminSectionTable = () => {
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingSectionId, setEditingSectionId] = useState(null);
   const [editedSection, setEditedSection] = useState({});
@@ -31,7 +31,7 @@ const AdminSectionTable = () => {
     isLoadingLessons,
     isErrorLessons,
   } = useQuery({
-    queryKey: ["lessons", auth.token],
+    queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
@@ -39,6 +39,7 @@ const AdminSectionTable = () => {
 
       return response.data;
     },
+    enabled: !!authData,
   });
 
   const {
@@ -46,7 +47,7 @@ const AdminSectionTable = () => {
     isLoadingSections,
     isErrorSections,
   } = useQuery({
-    queryKey: ["sections", auth.token],
+    queryKey: ["sections", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/sections/all`,
@@ -54,6 +55,7 @@ const AdminSectionTable = () => {
 
       return response.data;
     },
+    enabled: !!authData,
   });
 
   const handleEdit = (section) => {
@@ -67,7 +69,7 @@ const AdminSectionTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/sections/update/${editingSectionId}`,
         editedSection,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
@@ -90,7 +92,7 @@ const AdminSectionTable = () => {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE}/api/sections/delete/${sectionId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
@@ -114,7 +116,7 @@ const AdminSectionTable = () => {
         `${process.env.REACT_APP_API_BASE}/api/sections/create`,
         section,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
