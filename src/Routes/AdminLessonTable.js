@@ -8,6 +8,8 @@ import {
   Autocomplete,
   Box,
   Button,
+  Card,
+  CardContent,
   Skeleton,
   Table,
   TableBody,
@@ -213,7 +215,7 @@ const AdminLessonTable = () => {
         onSubmit={handleAddLesson}
       />
       <TableContainer
-        sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
+        sx={{ maxWidth: "95%", borderRadius: 2, border: `1px solid` }}
       >
         <Table sx={{ minWidth: 700 }}>
           <TableHead>
@@ -222,6 +224,8 @@ const AdminLessonTable = () => {
               <TableCell>Title</TableCell>
               <TableCell>Section Name</TableCell>
               <TableCell>Category</TableCell>
+              <TableCell>Content</TableCell>
+              <TableCell>Sentences</TableCell>
               <TableCell>Cards</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -234,7 +238,7 @@ const AdminLessonTable = () => {
               >
                 <TableCell
                   sx={{
-                    maxWidth: 100,
+                    maxWidth: 50,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
@@ -243,6 +247,7 @@ const AdminLessonTable = () => {
                   {lesson._id}
                 </TableCell>
                 <TableCell>{lesson.title}</TableCell>
+                {/* Sections Column */}
                 <TableCell sx={{ width: 300 }}>
                   {editingLessonId === lesson._id ? (
                     <Autocomplete
@@ -271,6 +276,7 @@ const AdminLessonTable = () => {
                     )?.name
                   )}
                 </TableCell>
+                {/* Category Column */}
                 <TableCell sx={{ width: 300 }}>
                   {editingLessonId === lesson._id ? (
                     <TextField
@@ -289,6 +295,43 @@ const AdminLessonTable = () => {
                     lesson.category
                   )}
                 </TableCell>
+                {/* Content Column */}
+                <TableCell sx={{ width: 300 }}>
+                  {editingLessonId === lesson._id ? (
+                    <TextField
+                      label="Content"
+                      value={editedLesson.content}
+                      onChange={(e) =>
+                        setEditedLesson({
+                          ...editedLesson,
+                          content: e.target.value,
+                        })
+                      }
+                      sx={{ mb: 2, width: "300px" }}
+                      required
+                      multiline
+                    />
+                  ) : (
+                    lesson.content
+                  )}
+                </TableCell>
+
+                {/* Sentences Column */}
+                <TableCell sx={{ width: 300 }}>
+                  {/*  TODO: Add sentences column for updating, consider reworking the db to include Sentence models as their own collection, similar to cards */}
+                  {/*  For now we'll just show the full text for each sentence */}
+                  {lesson.sentences.map((sentence, sentenceIndex) => (
+                    <Card key={sentenceIndex} sx={{ mb: 2 }}>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          {sentence.full_sentence}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </TableCell>
+
+                {/* Cards Column */}
                 <TableCell sx={{ width: 300 }}>
                   {editingLessonId === lesson._id ? (
                     <Autocomplete
