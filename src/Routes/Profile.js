@@ -8,7 +8,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
 function Profile() {
-  const { auth, logout } = useAuth();
+  const { auth, authData, logout } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -19,12 +19,12 @@ function Profile() {
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["user", auth.token],
+    queryKey: ["user", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/users/`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
@@ -53,7 +53,7 @@ function Profile() {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE}/api/users/delete/${user._id}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
     },
@@ -121,7 +121,7 @@ function Profile() {
     );
   }
 
-  if (!auth.isLoggedIn) {
+  if (!authData.isLoggedIn) {
     return (
       <Typography variant="h6" textAlign="center">
         Please log in to view your profile.
