@@ -277,7 +277,7 @@ const AdminLessonTable = () => {
                   )}
                 </TableCell>
                 {/* Category Column */}
-                <TableCell sx={{ width: 300 }}>
+                <TableCell sx={{ width: 150 }}>
                   {editingLessonId === lesson._id ? (
                     <TextField
                       label="Category"
@@ -288,7 +288,7 @@ const AdminLessonTable = () => {
                           category: e.target.value,
                         })
                       }
-                      sx={{ mb: 2, width: "300px" }}
+                      sx={{ mb: 2, minWidth: 120 }}
                       required
                     />
                   ) : (
@@ -296,7 +296,9 @@ const AdminLessonTable = () => {
                   )}
                 </TableCell>
                 {/* Content Column */}
-                <TableCell sx={{ width: 300 }}>
+                <TableCell
+                  sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
+                >
                   {editingLessonId === lesson._id ? (
                     <TextField
                       label="Content"
@@ -307,19 +309,30 @@ const AdminLessonTable = () => {
                           content: e.target.value,
                         })
                       }
-                      sx={{ mb: 2, width: "300px" }}
+                      sx={{
+                        mb: 2,
+                        width: "300px",
+                      }}
                       required
                       multiline
+                      maxRows={10}
                     />
                   ) : (
-                    lesson.content
+                    <Box
+                      sx={{
+                        maxHeight: 150,
+                        overflowY: "auto",
+                      }}
+                    >
+                      {lesson.content}
+                    </Box>
                   )}
                 </TableCell>
 
                 {/* Sentences Column */}
                 <TableCell sx={{ width: 300 }}>
                   {/*  TODO: Add sentences column for updating, consider reworking the db to include Sentence models as their own collection, similar to cards */}
-                  {/*  For now we'll just show the full text for each sentence */}
+                  {/*  For now, we'll just show the full text for each sentence */}
                   {lesson.sentences.map((sentence, sentenceIndex) => (
                     <Card key={sentenceIndex} sx={{ mb: 2 }}>
                       <CardContent>
