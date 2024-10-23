@@ -11,12 +11,22 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
   const [newLesson, setNewLesson] = useState({
     title: "",
     section_id: "",
+    category: "",
+    content: "",
+    sentences: [],
     card_ids: [],
   });
 
   const handleAddLesson = () => {
     onSubmit(newLesson);
-    setNewLesson({ title: "", section_id: "", card_ids: [] });
+    setNewLesson({
+      title: "",
+      section_id: "",
+      category: "",
+      content: "",
+      sentences: [{ full_sentence: "", possible_answers: [] }],
+      card_ids: [],
+    });
   };
 
   return (
@@ -69,24 +79,53 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
           )}
           sx={{ mb: 2, width: "300px" }}
         />
-
         <Autocomplete
-          multiple
-          disableCloseOnSelect
-          options={cards}
-          getOptionLabel={(option) => option.front_text}
-          value={cards.filter((card) => newLesson.card_ids?.includes(card._id))}
+          options={["grammar", "flashcards", "practice"]}
+          value={newLesson.category}
           onChange={(event, newValue) => {
-            setNewLesson({
-              ...newLesson,
-              card_ids: newValue.map((card) => card._id),
-            });
+            setNewLesson({ ...newLesson, category: newValue });
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Cards" variant="outlined" />
+            <TextField {...params} label="Category" variant="outlined" />
           )}
           sx={{ mb: 2, width: "300px" }}
         />
+
+        {newLesson.category === "grammar" && (
+          <TextField
+            label="Content"
+            value={newLesson.content}
+            onChange={(e) =>
+              setNewLesson({ ...newLesson, content: e.target.value })
+            }
+            sx={{ mb: 2, width: "300px" }}
+            required
+            multiline
+          />
+        )}
+
+        {newLesson.category === "flashcards" && (
+          <Autocomplete
+            multiple
+            disableCloseOnSelect
+            options={cards}
+            getOptionLabel={(option) => option.front_text}
+            value={cards.filter((card) =>
+              newLesson.card_ids?.includes(card._id),
+            )}
+            onChange={(event, newValue) => {
+              setNewLesson({
+                ...newLesson,
+                card_ids: newValue.map((card) => card._id),
+              });
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Cards" variant="outlined" />
+            )}
+            sx={{ mb: 2, width: "300px" }}
+          />
+        )}
+
         <Button variant="contained" color="primary" onClick={handleAddLesson}>
           Add Card
         </Button>
