@@ -20,6 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import MarkdownPreviewer from "../Components/MarkdownPreviewer";
 
 const AdminLessonTable = () => {
   const { auth } = useAuth();
@@ -299,9 +300,10 @@ const AdminLessonTable = () => {
                 <TableCell
                   sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
                 >
-                  {editingLessonId === lesson._id ? (
-                    <TextField
-                      label="Content"
+                  {editingLessonId === lesson._id &&
+                  lesson.category === "grammar" ? (
+                    <MarkdownPreviewer
+                      sx={{ width: 600, height: 100, mb: 2 }}
                       value={editedLesson.content}
                       onChange={(e) =>
                         setEditedLesson({
@@ -309,13 +311,6 @@ const AdminLessonTable = () => {
                           content: e.target.value,
                         })
                       }
-                      sx={{
-                        mb: 2,
-                        width: "300px",
-                      }}
-                      required
-                      multiline
-                      maxRows={10}
                     />
                   ) : (
                     <Box
