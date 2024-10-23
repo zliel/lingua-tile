@@ -9,7 +9,7 @@ import FlashcardsList from "../Components/FlashcardList";
 
 const FlashcardLesson = () => {
   const { lessonId } = useParams();
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
 
   const {
@@ -17,12 +17,12 @@ const FlashcardLesson = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["lesson", lessonId, auth.token],
+    queryKey: ["lesson", lessonId, authData.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${auth.token}` },
+          headers: { Authorization: `Bearer ${authData.token}` },
         },
       );
       return response.data;
@@ -30,6 +30,7 @@ const FlashcardLesson = () => {
     onError: () => {
       showSnackbar("Failed to fetch lesson", "error");
     },
+    enabled: !!authData,
   });
 
   if (isLoading) {
