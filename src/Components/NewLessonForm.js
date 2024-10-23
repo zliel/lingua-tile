@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import MarkdownPreviewer from "./MarkdownPreviewer";
 
 const NewLessonForm = ({ cards, sections, onSubmit }) => {
   const [newLesson, setNewLesson] = useState({
@@ -123,16 +124,17 @@ const NewLessonForm = ({ cards, sections, onSubmit }) => {
         />
 
         {newLesson.category === "grammar" && (
-          <TextField
-            label="Content"
-            value={newLesson.content}
-            onChange={(e) =>
-              setNewLesson({ ...newLesson, content: e.target.value })
-            }
-            sx={{ mb: 2, width: "300px" }}
-            required
-            multiline
-          />
+          <Box sx={{ width: 600, mb: 2 }}>
+            <Typography variant="h6" gutterBottom textAlign={"center"}>
+              Add Content
+            </Typography>
+            <MarkdownPreviewer
+              value={newLesson.content}
+              onChange={(e) =>
+                setNewLesson({ ...newLesson, content: e.target.value })
+              }
+            />
+          </Box>
         )}
 
         {newLesson.category === "practice" && (
