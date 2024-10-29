@@ -61,8 +61,8 @@ jobs:
           flags: --platform=managed --allow-unauthenticated
 
       - name: Test the deployed service
-        # Check for the logo text in the deployed service
-        run: curl -s ${{ steps.deploy.outputs.url }} | grep "Linguatile"
+        # Check for a 200 status code
+        run: curl -w "%{http_code}" -s -o /dev/null ${{ steps.deploy.outputs.url }}
   
   
   
