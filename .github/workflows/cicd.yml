@@ -54,7 +54,7 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: linguatile-backend
+          service: linguatile-frontend
           image: us-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend-container/linguatile-frontend
           region: us-west2
           project_id: ${{ secrets.GCP_PROJECT_ID }}
