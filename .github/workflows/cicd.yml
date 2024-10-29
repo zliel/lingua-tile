@@ -1,11 +1,7 @@
 name: Deploy to Google Cloud Run
 on:
-  # Will trigger the workflow on push or pull request for now
     push:
         branches:
-        - main
-    pull_request:
-      branches:
         - main
 
 jobs:
