@@ -62,7 +62,7 @@ jobs:
 
       - name: Test the deployed service
         # Check for the logo text in the deployed service
-        run: curl -s https://${{ steps.deploy.outputs.url }} | grep "Linguatile"
+        run: curl -s ${{ steps.deploy.outputs.url }} | grep "Linguatile"
   
   
   
