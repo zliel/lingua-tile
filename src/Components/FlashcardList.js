@@ -15,7 +15,7 @@ import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
 
 const FlashcardList = ({ lessonId }) => {
-  const { auth } = useAuth();
+  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
@@ -28,13 +28,14 @@ const FlashcardList = ({ lessonId }) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["flashcards", lessonId, auth.token],
+    queryKey: ["flashcards", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE}/api/cards/lesson/${lessonId}`,
       );
       return response.data;
     },
+    enabled: !!authData,
   });
 
   useEffect(() => {
@@ -102,50 +103,58 @@ const FlashcardList = ({ lessonId }) => {
         mt: 4,
       }}
     >
-      <Flashcard
-        frontText={
-          isEnglishToJapanese ? currentCard?.back_text : currentCard?.front_text
-        }
-        backText={
-          isEnglishToJapanese ? currentCard?.front_text : currentCard?.back_text
-        }
-        showTranslation={showTranslation}
-        onShowTranslation={handleShowTranslation}
-        onNextCard={handleNextCard}
-      />
-      <Stack
-        direction={"row"}
-        sx={{ display: "flex", width: "90%", alignItems: "center" }}
-      >
-        <LinearProgress
-          variant="determinate"
-          value={
-            // Keep the progress at 100% if they finished, but allow them to keep reviewing
-            hasFinished ? 100 : (currentCardIndex / flashcards.length) * 100
-          }
-          sx={{
-            width: "95%",
-            height: 5,
-            borderRadius: 2,
-            mt: 1.1,
-            "& .MuiLinearProgress-bar": {
-              background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
-            },
-          }}
-        />
-        <Zoom in={hasFinished} easing={"ease"} timeout={500}>
-          <Typography
-            sx={{
-              mt: 0.8,
-              color: "transparent",
-              textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
-            }}
-            variant={"h5"}
+      {authData && (
+        <>
+          <Flashcard
+            frontText={
+              isEnglishToJapanese
+                ? currentCard?.back_text
+                : currentCard?.front_text
+            }
+            backText={
+              isEnglishToJapanese
+                ? currentCard?.front_text
+                : currentCard?.back_text
+            }
+            showTranslation={showTranslation}
+            onShowTranslation={handleShowTranslation}
+            onNextCard={handleNextCard}
+          />
+          <Stack
+            direction={"row"}
+            sx={{ display: "flex", width: "90%", alignItems: "center" }}
           >
-            🔥
-          </Typography>
-        </Zoom>
-      </Stack>
+            <LinearProgress
+              variant="determinate"
+              value={
+                // Keep the progress at 100% if they finished, but allow them to keep reviewing
+                hasFinished ? 100 : (currentCardIndex / flashcards.length) * 100
+              }
+              sx={{
+                width: "95%",
+                height: 5,
+                borderRadius: 2,
+                mt: 1.1,
+                "& .MuiLinearProgress-bar": {
+                  background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
+                },
+              }}
+            />
+            <Zoom in={hasFinished} easing={"ease"} timeout={500}>
+              <Typography
+                sx={{
+                  mt: 0.8,
+                  color: "transparent",
+                  textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
+                }}
+                variant={"h5"}
+              >
+                🔥
+              </Typography>
+            </Zoom>
+          </Stack>
+        </>
+      )}
     </Box>
   );
 };
