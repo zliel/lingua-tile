@@ -1,0 +1,65 @@
+name: Deploy to Google Cloud Run
+on:
+    push:
+        branches:
+        - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: docker build --build-arg REACT_APP_API_BASE=${{ secrets.REACT_APP_API_BASE }} -t linguatile-frontend .
+
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Configure Docker authentication
+      run: |
+        gcloud auth configure-docker us-west2-docker.pkg.dev --quiet
+
+    - name: Tag Docker image
+      run: |
+        docker tag linguatile-frontend us-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend-container/linguatile-frontend
+
+    - name: Push Docker image to Google Artifact Registry
+      run: |
+        docker push us-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend-container/linguatile-frontend
+
+# Deploy the Docker image to Cloud Run
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: linguatile-frontend
+          image: us-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend-container/linguatile-frontend
+          region: us-west2
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          flags: --platform=managed --allow-unauthenticated
+
+      - name: Test the deployed service
+        # Check for a 200 status code
+        run: curl -w "%{http_code}" -s -o /dev/null ${{ steps.deploy.outputs.url }}
+  
+  
+  
+  
