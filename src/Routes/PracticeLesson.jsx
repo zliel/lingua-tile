@@ -64,11 +64,6 @@ const PracticeLesson = () => {
     }, 400);
   };
 
-  const handlePerformanceReview = (rating) => {
-    setOverallPerformance(rating);
-    handleLessonComplete.mutate();
-  };
-
   const handleLessonComplete = useMutation({
     mutationFn: async () => {
       await axios.post(
@@ -88,6 +83,11 @@ const PracticeLesson = () => {
       setModalOpen(false);
       navigate("/lessons");
     },
+  });
+
+  const handlePerformanceReview = useCallback((rating) => {
+    setOverallPerformance(rating);
+    handleLessonComplete.mutate();
   });
 
   // Hotkeys for reviewing the lesson
