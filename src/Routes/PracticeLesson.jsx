@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -15,6 +15,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import TranslationQuestion from "../Components/TranslationQuestion";
 import "./PracticeLesson.css";
+import { useNavigate } from "react-router-dom";
 
 const PracticeLesson = () => {
   const { lessonId } = useParams();
@@ -25,6 +26,7 @@ const PracticeLesson = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
+  const navigate = useNavigate();
 
   const {
     data: lesson,
@@ -84,6 +86,7 @@ const PracticeLesson = () => {
     onSuccess: () => {
       showSnackbar("Lesson marked as complete", "success");
       setModalOpen(false);
+      navigate("/lessons");
     },
   });
 
