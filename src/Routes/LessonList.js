@@ -1,7 +1,14 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Button, Skeleton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Typography,
+  useTheme,
+  Divider,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -164,6 +171,17 @@ const LessonList = () => {
           <Typography variant="h5" gutterBottom>
             {sectionName}
           </Typography>
+          <Divider
+            sx={{
+              width: "33%",
+              mb: 2,
+              borderColor:
+                theme.palette.mode === "dark"
+                  ? "primary.dark"
+                  : "primary.light",
+              borderWidth: "1px",
+            }}
+          />
           {groupedLessons[sectionName].length > 0 ? (
             groupedLessons[sectionName].map((lesson) => {
               const review = getReviewForLesson(lesson._id);
@@ -175,7 +193,7 @@ const LessonList = () => {
                     mb: 2,
                     display: "flex",
                     justifyContent: "space-between",
-                    border: `2px solid ${theme.palette.primary.contrastText}`,
+                    border: `2px solid ${theme.palette.secondary.contrastText}`,
                     borderRadius: 2,
                   }}
                 >
