@@ -160,50 +160,59 @@ const LessonList = () => {
       <Typography variant="h4" gutterBottom>
         Lessons
       </Typography>
-      {lessons &&
-        lessons.map((lesson) => {
-          const review = getReviewForLesson(lesson._id);
-          return (
-            <Box
-              key={lesson.id}
-              sx={{
-                p: 1.5,
-                mb: 2,
-                width: "70%",
-                display: "flex",
-                justifyContent: "space-between",
-                border: `2px solid ${theme.palette.primary.contrastText}`,
-                borderRadius: 2,
-              }}
-            >
-              <Box>
-                <Typography variant="h6">{lesson.title}</Typography>
-                {review && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: review.isOverdue
-                        ? theme.palette.error.main
-                        : theme.palette.text.secondary,
-                    }}
+      {Object.keys(groupedLessons).map((sectionName) => (
+        <Box key={sectionName} sx={{ width: "70%", mb: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            {sectionName}
+          </Typography>
+          {groupedLessons[sectionName].length > 0 ? (
+            groupedLessons[sectionName].map((lesson) => {
+              const review = getReviewForLesson(lesson._id);
+              return (
+                <Box
+                  key={lesson._id}
+                  sx={{
+                    p: 1.5,
+                    mb: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    border: `2px solid ${theme.palette.primary.contrastText}`,
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6">{lesson.title}</Typography>
+                    {review && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: review.isOverdue
+                            ? theme.palette.error.main
+                            : theme.palette.text.secondary,
+                        }}
+                      >
+                        {review.isOverdue
+                          ? `Overdue by ${Math.abs(review.daysLeft)} days`
+                          : `Next review in ${review.daysLeft} days`}
+                      </Typography>
+                    )}
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color={categoryColors[lesson.category]}
+                    component={Link}
+                    to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
                   >
-                    {review.isOverdue
-                      ? `Overdue by ${Math.abs(review.daysLeft)} days`
-                      : `Next review in ${review.daysLeft} days`}
-                  </Typography>
-                )}
-              </Box>
-              <Button
-                variant="contained"
-                color={categoryColors[lesson.category]}
-                component={Link}
-                to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
-              >
-                {lesson.category}
-              </Button>
-            </Box>
-          );
-        })}
+                    {lesson.category}
+                  </Button>
+                </Box>
+              );
+            })
+          ) : (
+            <Typography>No lessons available for this section.</Typography>
+          )}
+        </Box>
+      ))}
     </Box>
   );
 };
