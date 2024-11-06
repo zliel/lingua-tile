@@ -1,7 +1,15 @@
 import React, { useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Modal,
+  Skeleton,
+  Typography,
+  Button,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -13,6 +21,8 @@ const PracticeLesson = () => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentSentence, setCurrentSentence] = useState(0);
+  const [overallPerformance, setOverallPerformance] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
 
@@ -43,6 +53,7 @@ const PracticeLesson = () => {
     setTimeout(() => {
       if (currentSentence === lesson.sentences.length - 1) {
         showSnackbar("Lesson complete!", "success");
+        setModalOpen(true);
       }
       setCurrentSentence((prev) =>
         prev === lesson.sentences.length - 1 ? 0 : prev + 1,
@@ -50,6 +61,31 @@ const PracticeLesson = () => {
       setAnimationClass("slide-in");
     }, 400);
   };
+
+  const handlePerformanceReview = (rating) => {
+    setOverallPerformance(rating);
+    handleLessonComplete.mutate();
+  };
+
+  const handleLessonComplete = useMutation({
+    mutationFn: async () => {
+      await axios.post(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/review`,
+        { lesson_id: lessonId, overall_performance: overallPerformance },
+        {
+          headers: { Authorization: `Bearer ${authData.token}` },
+        },
+      );
+    },
+    onError: () => {
+      showSnackbar("Failed to mark lesson as complete", "error");
+      setModalOpen(false);
+    },
+    onSuccess: () => {
+      showSnackbar("Lesson marked as complete", "success");
+      setModalOpen(false);
+    },
+  });
 
   if (isLoading) {
     return (
@@ -88,12 +124,77 @@ const PracticeLesson = () => {
       }}
     >
       <Typography variant={"h4"}>{lesson.title}</Typography>
-      <div ref={nodeRef} className={animationClass}>
+      <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
           sentence={lesson.sentences[currentSentence]}
           onNext={handleNext}
         />
-      </div>
+        <Modal open={modalOpen}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+            }}
+          >
+            <IconButton
+              sx={{ position: "absolute", top: 8, right: 8 }}
+              onClick={() => setModalOpen(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" component="h2">
+              Lesson Complete!
+            </Typography>
+            <Typography sx={{ mt: 2 }}>
+              How would you rate your performance?
+            </Typography>
+            <Box
+              sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
+            >
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handlePerformanceReview(0.1);
+                }}
+              >
+                Again
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handlePerformanceReview(0.45);
+                }}
+              >
+                Hard
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handlePerformanceReview(0.7);
+                }}
+              >
+                Good
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handlePerformanceReview(0.9);
+                }}
+              >
+                Easy
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+      </Box>
     </Box>
   );
 };
