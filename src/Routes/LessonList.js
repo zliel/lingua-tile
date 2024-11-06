@@ -44,7 +44,28 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
-  // Fetch user's lesson reviews
+  const {
+    data: sections,
+    isLoading: sectionsLoading,
+    isError: sectionsError,
+  } = useQuery({
+    queryKey: ["sections", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
+        {
+          headers: { Authorization: `Bearer ${authData.token}` },
+        },
+      );
+
+      return response.data;
+    },
+    onError: () => {
+      showSnackbar("Failed to fetch sections", "error");
+    },
+    enabled: !!authData && !!lessons,
+  });
+
   const {
     data: reviews,
     isLoading: reviewsLoading,
@@ -67,7 +88,7 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
-  if (isLoading) {
+  if (isLoading || sectionsLoading || reviewsLoading) {
     return (
       <Box
         sx={{
@@ -92,7 +113,7 @@ const LessonList = () => {
     );
   }
 
-  if (isError) {
+  if (isError || sectionsError || reviewsError) {
     return <Typography>Error loading lessons.</Typography>;
   }
 
