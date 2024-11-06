@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -86,6 +86,35 @@ const PracticeLesson = () => {
       setModalOpen(false);
     },
   });
+
+  // Hotkeys for reviewing the lesson
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (modalOpen) {
+        switch (event.key) {
+          case "1":
+            handlePerformanceReview(0.1);
+            break;
+          case "2":
+            handlePerformanceReview(0.45);
+            break;
+          case "3":
+            handlePerformanceReview(0.7);
+            break;
+          case "4":
+            handlePerformanceReview(0.9);
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [modalOpen, handleLessonComplete, handlePerformanceReview]);
 
   if (isLoading) {
     return (
