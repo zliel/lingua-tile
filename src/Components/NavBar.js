@@ -25,15 +25,12 @@ function NavBar(props) {
   const navigate = useNavigate();
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
-  const pages = useMemo(() => {
-    return [
-      { name: "Home", endpoint: "/home" },
-      { name: "About", endpoint: "/about" },
-      { name: "Lessons", endpoint: "/lessons" },
-      { name: "Translate", endpoint: "/translate" },
-    ];
-  }, []);
+  const [pages, setPages] = useState([
+    { name: "Home", endpoint: "/home" },
+    { name: "About", endpoint: "/about" },
+    { name: "Lessons", endpoint: "/lessons" },
+    { name: "Translate", endpoint: "/translate" },
+  ]);
 
   const adminPages = useMemo(() => {
     return [
@@ -46,9 +43,16 @@ function NavBar(props) {
 
   useEffect(() => {
     if (authData && authData.isAdmin) {
-      pages.push(...adminPages);
+      setPages((prevPages) => [...prevPages, ...adminPages]);
+    } else {
+      setPages([
+        { name: "Home", endpoint: "/home" },
+        { name: "About", endpoint: "/about" },
+        { name: "Lessons", endpoint: "/lessons" },
+        { name: "Translate", endpoint: "/translate" },
+      ]);
     }
-  }, [adminPages, authData, pages]);
+  }, [adminPages, authData]);
 
   const handleMenuOpen = (event) => {
     setAnchorElMenu(event.currentTarget);
