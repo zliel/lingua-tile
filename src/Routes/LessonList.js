@@ -226,6 +226,9 @@ const LessonList = () => {
                   <Button
                     variant="contained"
                     color={categoryColors[lesson.category]}
+                    sx={{
+                      color: theme.palette.mode === "dark" ? "white" : "black",
+                    }}
                     component={Link}
                     to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
                   >
