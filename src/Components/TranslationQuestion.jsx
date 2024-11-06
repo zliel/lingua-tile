@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 const TranslationQuestion = ({ sentence, onNext }) => {
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState();
+  const [randomAnswer, setRandomAnswer] = useState(0); // Random possible answer for when the user is incorrect
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const inputRef = useRef(null);
@@ -56,6 +57,10 @@ const TranslationQuestion = ({ sentence, onNext }) => {
       showSnackbar("Correct!", "success");
       setTimeout(onNext, 500);
     } else {
+      // Select a random answer to show the user if they are incorrect
+      setRandomAnswer(
+        Math.floor(Math.random() * sentence.possible_answers.length),
+      );
       setIsCorrect(false);
       showSnackbar("Incorrect", "error");
     }
@@ -100,6 +105,12 @@ const TranslationQuestion = ({ sentence, onNext }) => {
       <Button onClick={checkAnswer} variant="contained" sx={{ mt: 2 }}>
         Submit
       </Button>
+      {isCorrect !== null && !isCorrect && (
+        <Typography variant="body1" color="error" sx={{ mt: 2 }}>
+          Incorrect! One correct answer is: "
+          {sentence.possible_answers[randomAnswer]}"
+        </Typography>
+      )}
     </Box>
   );
 };

@@ -7,14 +7,23 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import TranslationQuestion from "../Components/TranslationQuestion";
 import "./PracticeLesson.css";
+import useLessonReview from "../hooks/useLessonReview";
+import ReviewModal from "../Components/ReviewModal";
 
 const PracticeLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentSentence, setCurrentSentence] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
+
+  const { handlePerformanceReview } = useLessonReview(
+    lessonId,
+    modalOpen,
+    setModalOpen,
+  );
 
   const {
     data: lesson,
@@ -43,6 +52,7 @@ const PracticeLesson = () => {
     setTimeout(() => {
       if (currentSentence === lesson.sentences.length - 1) {
         showSnackbar("Lesson complete!", "success");
+        setModalOpen(true);
       }
       setCurrentSentence((prev) =>
         prev === lesson.sentences.length - 1 ? 0 : prev + 1,
@@ -88,12 +98,17 @@ const PracticeLesson = () => {
       }}
     >
       <Typography variant={"h4"}>{lesson.title}</Typography>
-      <div ref={nodeRef} className={animationClass}>
+      <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
           sentence={lesson.sentences[currentSentence]}
           onNext={handleNext}
         />
-      </div>
+      </Box>
+      <ReviewModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        handlePerformanceReview={handlePerformanceReview}
+      />
     </Box>
   );
 };

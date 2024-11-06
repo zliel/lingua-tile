@@ -13,6 +13,8 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
+import useLessonReview from "../hooks/useLessonReview";
+import ReviewModal from "../Components/ReviewModal";
 
 const FlashcardList = ({ lessonId }) => {
   const { authData } = useAuth();
@@ -21,7 +23,14 @@ const FlashcardList = ({ lessonId }) => {
   const [showTranslation, setShowTranslation] = useState(false);
   const [isEnglishToJapanese, setIsEnglishToJapanese] = useState(true);
   const [hasFinished, setHasFinished] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
+
+  const { handlePerformanceReview } = useLessonReview(
+    lessonId,
+    modalOpen,
+    setModalOpen,
+  );
 
   const {
     data: flashcards = [],
@@ -82,6 +91,7 @@ const FlashcardList = ({ lessonId }) => {
         showSnackbar("You have reached the end of the lesson!", "success");
         setHasFinished(true);
         setCurrentCardIndex(0);
+        setModalOpen(true);
       } else {
         setCurrentCardIndex((prevIndex) => prevIndex + 1);
       }
@@ -155,6 +165,11 @@ const FlashcardList = ({ lessonId }) => {
           </Stack>
         </>
       )}
+      <ReviewModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        handlePerformanceReview={handlePerformanceReview}
+      />
     </Box>
   );
 };

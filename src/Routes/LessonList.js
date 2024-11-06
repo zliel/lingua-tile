@@ -6,6 +6,7 @@ import { Box, Button, Skeleton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import dayjs from "dayjs";
 
 const LessonList = () => {
   const { authData } = useAuth();
@@ -43,6 +44,29 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
+  // Fetch user's lesson reviews
+  const {
+    data: reviews,
+    isLoading: reviewsLoading,
+    isError: reviewsError,
+  } = useQuery({
+    queryKey: ["reviews", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/reviews`,
+        {
+          headers: { Authorization: `Bearer ${authData.token}` },
+        },
+      );
+
+      return response.data;
+    },
+    onError: () => {
+      showSnackbar("Failed to fetch reviews", "error");
+    },
+    enabled: !!authData,
+  });
+
   if (isLoading) {
     return (
       <Box
@@ -72,6 +96,19 @@ const LessonList = () => {
     return <Typography>Error loading lessons.</Typography>;
   }
 
+  // Helper function to get review information for a specific lesson
+  const getReviewForLesson = (lessonId) => {
+    const review = reviews?.find((review) => review.lesson_id === lessonId);
+    if (review) {
+      const daysLeft = dayjs(review.next_review).diff(dayjs(), "day");
+      return {
+        daysLeft: daysLeft,
+        isOverdue: daysLeft < 0,
+      };
+    }
+    return null;
+  };
+
   return (
     <Box
       sx={{
@@ -85,30 +122,49 @@ const LessonList = () => {
         Lessons
       </Typography>
       {lessons &&
-        lessons.map((lesson) => (
-          <Box
-            key={lesson.id}
-            sx={{
-              p: 1.5,
-              mb: 2,
-              width: "70%",
-              display: "flex",
-              justifyContent: "space-between",
-              border: `2px solid ${theme.palette.primary.contrastText}`,
-              borderRadius: 2,
-            }}
-          >
-            <Typography variant="h6">{lesson.title}</Typography>
-            <Button
-              variant="contained"
-              color={categoryColors[lesson.category]}
-              component={Link}
-              to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+        lessons.map((lesson) => {
+          const review = getReviewForLesson(lesson._id);
+          return (
+            <Box
+              key={lesson.id}
+              sx={{
+                p: 1.5,
+                mb: 2,
+                width: "70%",
+                display: "flex",
+                justifyContent: "space-between",
+                border: `2px solid ${theme.palette.primary.contrastText}`,
+                borderRadius: 2,
+              }}
             >
-              {lesson.category}
-            </Button>
-          </Box>
-        ))}
+              <Box>
+                <Typography variant="h6">{lesson.title}</Typography>
+                {review && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: review.isOverdue
+                        ? theme.palette.error.main
+                        : theme.palette.text.secondary,
+                    }}
+                  >
+                    {review.isOverdue
+                      ? `Overdue by ${Math.abs(review.daysLeft)} days`
+                      : `Next review in ${review.daysLeft} days`}
+                  </Typography>
+                )}
+              </Box>
+              <Button
+                variant="contained"
+                color={categoryColors[lesson.category]}
+                component={Link}
+                to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+              >
+                {lesson.category}
+              </Button>
+            </Box>
+          );
+        })}
     </Box>
   );
 };
