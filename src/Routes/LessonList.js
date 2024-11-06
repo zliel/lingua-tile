@@ -130,6 +130,24 @@ const LessonList = () => {
     return null;
   };
 
+  // Group together the lessons
+  let groupedLessons = {};
+  if (sections) {
+    groupedLessons = sections.reduce((acc, section) => {
+      acc[section.name] = lessons.filter(
+        (lesson) => lesson.section_id === section._id,
+      );
+      return acc;
+    }, {});
+
+    // Handle lessons without sections in an "Extras" segment
+    groupedLessons["Extras"] = lessons.filter(
+      (lesson) =>
+        !lesson.section_id ||
+        !sections.some((section) => section._id === lesson.section_id),
+    );
+  }
+
   return (
     <Box
       sx={{
