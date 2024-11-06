@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { MuiMarkdown, getOverrides } from "mui-markdown";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Icon, Skeleton, Typography } from "@mui/material";
+import { Done } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
+import useLessonReview from "../hooks/useLessonReview";
+import ReviewModal from "../Components/ReviewModal";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
+  const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
+
+  const { handlePerformanceReview } = useLessonReview(
+    lessonId,
+    modalOpen,
+    setModalOpen,
+  );
 
   const {
     data: lesson,
@@ -92,6 +102,21 @@ const GrammarLesson = () => {
       >
         {lesson.content}
       </MuiMarkdown>
+      <Button
+        sx={{ mt: 2, display: "flex", alignItems: "center" }}
+        variant={"contained"}
+        onClick={() => setModalOpen(true)}
+      >
+        Finished{" "}
+        <Icon sx={{ ml: 1, mb: 0.5, display: "flex", alignItems: "center" }}>
+          <Done />
+        </Icon>
+      </Button>
+      <ReviewModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        handlePerformanceReview={handlePerformanceReview}
+      />
     </Box>
   );
 };
