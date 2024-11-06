@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Box,
@@ -27,6 +27,7 @@ const PracticeLesson = () => {
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     data: lesson,
@@ -81,6 +82,7 @@ const PracticeLesson = () => {
     onSuccess: () => {
       showSnackbar("Lesson marked as complete", "success");
       setModalOpen(false);
+      queryClient.invalidateQueries("lessons");
       navigate("/lessons");
     },
   });
