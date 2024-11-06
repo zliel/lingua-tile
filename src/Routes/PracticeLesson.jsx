@@ -117,7 +117,7 @@ const PracticeLesson = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 400,
+              width: 500,
               bgcolor: "background.paper",
               border: "2px solid #000",
               boxShadow: 24,
@@ -131,7 +131,7 @@ const PracticeLesson = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" component="h2">
+            <Typography variant="h6" component="h2" textAlign={"center"}>
               Lesson Complete!
             </Typography>
             <Typography sx={{ mt: 2 }}>
@@ -146,7 +146,7 @@ const PracticeLesson = () => {
                   handlePerformanceReview(0.1);
                 }}
               >
-                Again
+                Again (1)
               </Button>
               <Button
                 variant="contained"
@@ -154,7 +154,7 @@ const PracticeLesson = () => {
                   handlePerformanceReview(0.45);
                 }}
               >
-                Hard
+                Hard (2)
               </Button>
               <Button
                 variant="contained"
@@ -162,7 +162,7 @@ const PracticeLesson = () => {
                   handlePerformanceReview(0.7);
                 }}
               >
-                Good
+                Good (3)
               </Button>
               <Button
                 variant="contained"
@@ -170,7 +170,7 @@ const PracticeLesson = () => {
                   handlePerformanceReview(0.9);
                 }}
               >
-                Easy
+                Easy (4)
               </Button>
             </Box>
           </Box>
