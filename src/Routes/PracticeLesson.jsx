@@ -15,19 +15,22 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import TranslationQuestion from "../Components/TranslationQuestion";
 import "./PracticeLesson.css";
-import { useNavigate } from "react-router-dom";
+import useLessonReview from "../hooks/useLessonReview";
 
 const PracticeLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentSentence, setCurrentSentence] = useState(0);
-  const [overallPerformance, setOverallPerformance] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+
+  const { handlePerformanceReview } = useLessonReview(
+    lessonId,
+    modalOpen,
+    setModalOpen,
+  );
 
   const {
     data: lesson,
@@ -64,65 +67,6 @@ const PracticeLesson = () => {
       setAnimationClass("slide-in");
     }, 400);
   };
-
-  const handleLessonComplete = useMutation({
-    mutationFn: async () => {
-      await axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/review`,
-        { lesson_id: lessonId, overall_performance: overallPerformance },
-        {
-          headers: { Authorization: `Bearer ${authData.token}` },
-        },
-      );
-    },
-    onError: () => {
-      showSnackbar("Failed to mark lesson as complete", "error");
-      setModalOpen(false);
-    },
-    onSuccess: () => {
-      showSnackbar("Lesson marked as complete", "success");
-      setModalOpen(false);
-      queryClient.invalidateQueries("lessons");
-      navigate("/lessons");
-    },
-  });
-
-  const handlePerformanceReview = useCallback(
-    (rating) => {
-      setOverallPerformance(rating);
-      handleLessonComplete.mutate();
-    },
-    [handleLessonComplete, setOverallPerformance],
-  );
-
-  // Hotkeys for reviewing the lesson
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (modalOpen) {
-        switch (event.key) {
-          case "1":
-            handlePerformanceReview(0.1);
-            break;
-          case "2":
-            handlePerformanceReview(0.45);
-            break;
-          case "3":
-            handlePerformanceReview(0.7);
-            break;
-          case "4":
-            handlePerformanceReview(0.9);
-            break;
-          default:
-            break;
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [modalOpen, handleLessonComplete, handlePerformanceReview]);
 
   if (isLoading) {
     return (
