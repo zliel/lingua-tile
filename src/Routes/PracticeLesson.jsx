@@ -85,10 +85,13 @@ const PracticeLesson = () => {
     },
   });
 
-  const handlePerformanceReview = useCallback((rating) => {
-    setOverallPerformance(rating);
-    handleLessonComplete.mutate();
-  });
+  const handlePerformanceReview = useCallback(
+    (rating) => {
+      setOverallPerformance(rating);
+      handleLessonComplete.mutate();
+    },
+    [handleLessonComplete, setOverallPerformance],
+  );
 
   // Hotkeys for reviewing the lesson
   useEffect(() => {
