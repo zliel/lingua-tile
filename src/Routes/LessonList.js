@@ -43,6 +43,29 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
+  // Fetch user's lesson reviews
+  const {
+    data: reviews,
+    isLoading: reviewsLoading,
+    isError: reviewsError,
+  } = useQuery({
+    queryKey: ["reviews", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/lessons/reviews`,
+        {
+          headers: { Authorization: `Bearer ${authData.token}` },
+        },
+      );
+
+      return response.data;
+    },
+    onError: () => {
+      showSnackbar("Failed to fetch reviews", "error");
+    },
+    enabled: !!authData,
+  });
+
   if (isLoading) {
     return (
       <Box
