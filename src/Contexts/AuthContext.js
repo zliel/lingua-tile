@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }) => {
         username: localStorage.getItem("username"),
       };
     } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
     }
   };
