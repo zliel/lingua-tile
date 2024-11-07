@@ -1,8 +1,14 @@
-// src/Routes/LessonList.js
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Button, Skeleton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Typography,
+  useTheme,
+  Divider,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -44,7 +50,28 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
-  // Fetch user's lesson reviews
+  const {
+    data: sections,
+    isLoading: sectionsLoading,
+    isError: sectionsError,
+  } = useQuery({
+    queryKey: ["sections", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
+        {
+          headers: { Authorization: `Bearer ${authData.token}` },
+        },
+      );
+
+      return response.data;
+    },
+    onError: () => {
+      showSnackbar("Failed to fetch sections", "error");
+    },
+    enabled: !!authData && !!lessons,
+  });
+
   const {
     data: reviews,
     isLoading: reviewsLoading,
@@ -67,7 +94,7 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
-  if (isLoading) {
+  if (isLoading || sectionsLoading || reviewsLoading) {
     return (
       <Box
         sx={{
@@ -92,7 +119,7 @@ const LessonList = () => {
     );
   }
 
-  if (isError) {
+  if (isError || sectionsError || reviewsError) {
     return <Typography>Error loading lessons.</Typography>;
   }
 
@@ -109,6 +136,24 @@ const LessonList = () => {
     return null;
   };
 
+  // Group together the lessons
+  let groupedLessons = {};
+  if (sections) {
+    groupedLessons = sections.reduce((acc, section) => {
+      acc[section.name] = lessons.filter(
+        (lesson) => lesson.section_id === section._id,
+      );
+      return acc;
+    }, {});
+
+    // Handle lessons without sections in an "Extras" segment
+    groupedLessons["Extras"] = lessons.filter(
+      (lesson) =>
+        !lesson.section_id ||
+        !sections.some((section) => section._id === lesson.section_id),
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -121,50 +166,82 @@ const LessonList = () => {
       <Typography variant="h4" gutterBottom>
         Lessons
       </Typography>
-      {lessons &&
-        lessons.map((lesson) => {
-          const review = getReviewForLesson(lesson._id);
-          return (
-            <Box
-              key={lesson.id}
-              sx={{
-                p: 1.5,
-                mb: 2,
-                width: "70%",
-                display: "flex",
-                justifyContent: "space-between",
-                border: `2px solid ${theme.palette.primary.contrastText}`,
-                borderRadius: 2,
-              }}
-            >
-              <Box>
-                <Typography variant="h6">{lesson.title}</Typography>
-                {review && (
-                  <Typography
-                    variant="body2"
+      {Object.keys(groupedLessons).map((sectionName) => (
+        <Box key={sectionName} sx={{ width: "70%", mb: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            {sectionName}
+          </Typography>
+          <Divider
+            sx={{
+              width: "33%",
+              mb: 2,
+              borderColor:
+                theme.palette.mode === "dark"
+                  ? "primary.dark"
+                  : "primary.light",
+              borderWidth: "1px",
+            }}
+          />
+          {groupedLessons[sectionName].length > 0 ? (
+            groupedLessons[sectionName].map((lesson) => {
+              const review = getReviewForLesson(lesson._id);
+              return (
+                <Box
+                  key={lesson._id}
+                  sx={{
+                    p: 1.5,
+                    mb: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    border: `2px solid ${theme.palette.mode === "dark" ? theme.palette.primary.contrastText : theme.palette.secondary.contrastText}`,
+                    borderRadius: 2,
+                    boxShadow: `0px 0px 5px 0px ${
+                      theme.palette.mode === "dark"
+                        ? theme.palette.primary.contrastText
+                        : theme.palette.secondary.contrastText
+                    }`,
+                    transition: "transform 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6">{lesson.title}</Typography>
+                    {review && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: review.isOverdue
+                            ? theme.palette.error.main
+                            : theme.palette.text.secondary,
+                        }}
+                      >
+                        {review.isOverdue
+                          ? `Overdue by ${Math.abs(review.daysLeft)} days`
+                          : `Next review in ${review.daysLeft} days`}
+                      </Typography>
+                    )}
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color={categoryColors[lesson.category]}
                     sx={{
-                      color: review.isOverdue
-                        ? theme.palette.error.main
-                        : theme.palette.text.secondary,
+                      color: theme.palette.mode === "dark" ? "white" : "black",
                     }}
+                    component={Link}
+                    to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
                   >
-                    {review.isOverdue
-                      ? `Overdue by ${Math.abs(review.daysLeft)} days`
-                      : `Next review in ${review.daysLeft} days`}
-                  </Typography>
-                )}
-              </Box>
-              <Button
-                variant="contained"
-                color={categoryColors[lesson.category]}
-                component={Link}
-                to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
-              >
-                {lesson.category}
-              </Button>
-            </Box>
-          );
-        })}
+                    {lesson.category}
+                  </Button>
+                </Box>
+              );
+            })
+          ) : (
+            <Typography>No lessons available for this section.</Typography>
+          )}
+        </Box>
+      ))}
     </Box>
   );
 };
