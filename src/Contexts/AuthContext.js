@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./SnackbarContext";
@@ -18,22 +18,27 @@ export const AuthProvider = ({ children }) => {
     if (!token) {
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
     }
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
-    if (response.status >= 400) {
+      if (response.status >= 401) {
+        return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
+      }
+
+      return {
+        token,
+        isLoggedIn: true,
+        isAdmin: response.data.isAdmin,
+        username: localStorage.getItem("username"),
+      };
+    } catch (error) {
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
     }
-    return {
-      token,
-      isLoggedIn: true,
-      isAdmin: response.data.isAdmin,
-      username: localStorage.getItem("username"),
-    };
   };
 
   const { data: authData, isLoading: authIsLoading } = useQuery({
