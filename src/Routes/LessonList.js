@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Skeleton,
+  Fade,
   Typography,
   useTheme,
   Divider,
@@ -15,6 +16,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import dayjs from "dayjs";
 
 const LessonList = () => {
+  const [showLoaded, setShowLoaded] = useState(false);
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
@@ -94,30 +96,15 @@ const LessonList = () => {
     enabled: !!authData,
   });
 
-  if (isLoading || sectionsLoading || reviewsLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        {Array.from(new Array(5)).map((_, index) => (
-          <Box key={index} sx={{ width: "70%", mb: 2 }}>
-            <Skeleton
-              variant="rectangular"
-              animation={"wave"}
-              width="100%"
-              height={80}
-              sx={{ borderRadius: 2 }}
-            />
-          </Box>
-        ))}
-      </Box>
-    );
-  }
+  // Manage the animation in-between loading and loaded
+  useEffect(() => {
+    if (isLoading || sectionsLoading || reviewsLoading) {
+      setShowLoaded(false);
+    } else {
+      const timer = setTimeout(() => setShowLoaded(true), 250);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, sectionsLoading, reviewsLoading]);
 
   if (isError || sectionsError || reviewsError) {
     return <Typography>Error loading lessons.</Typography>;
@@ -155,94 +142,133 @@ const LessonList = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 4,
-      }}
-    >
-      <Typography variant="h4" gutterBottom>
-        Lessons
-      </Typography>
-      {Object.keys(groupedLessons).map((sectionName) => (
-        <Box key={sectionName} sx={{ width: "70%", mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            {sectionName}
+    <>
+      <Fade
+        in={isLoading || sectionsLoading || reviewsLoading}
+        timeout={200}
+        unmountOnExit
+      >
+        <Box
+          sx={{
+            display: showLoaded ? "none" : "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
+          }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Loading lessons...
           </Typography>
-          <Divider
-            sx={{
-              width: "33%",
-              mb: 2,
-              borderColor:
-                theme.palette.mode === "dark"
-                  ? "primary.dark"
-                  : "primary.light",
-              borderWidth: "1px",
-            }}
-          />
-          {groupedLessons[sectionName].length > 0 ? (
-            groupedLessons[sectionName].map((lesson) => {
-              const review = getReviewForLesson(lesson._id);
-              return (
-                <Box
-                  key={lesson._id}
-                  sx={{
-                    p: 1.5,
-                    mb: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    border: `2px solid ${theme.palette.mode === "dark" ? theme.palette.primary.contrastText : theme.palette.secondary.contrastText}`,
-                    borderRadius: 2,
-                    boxShadow: `0px 0px 5px 0px ${
-                      theme.palette.mode === "dark"
-                        ? theme.palette.primary.contrastText
-                        : theme.palette.secondary.contrastText
-                    }`,
-                    transition: "transform 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.05)",
-                    },
-                  }}
-                >
-                  <Box>
-                    <Typography variant="h6">{lesson.title}</Typography>
-                    {review && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: review.isOverdue
-                            ? theme.palette.error.main
-                            : theme.palette.text.secondary,
-                        }}
-                      >
-                        {review.isOverdue
-                          ? `Overdue by ${Math.abs(review.daysLeft)} days`
-                          : `Next review in ${review.daysLeft} days`}
-                      </Typography>
-                    )}
-                  </Box>
-                  <Button
-                    variant="contained"
-                    color={categoryColors[lesson.category]}
-                    sx={{
-                      color: theme.palette.mode === "dark" ? "white" : "black",
-                    }}
-                    component={Link}
-                    to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
-                  >
-                    {lesson.category}
-                  </Button>
-                </Box>
-              );
-            })
-          ) : (
-            <Typography>No lessons available for this section.</Typography>
-          )}
+
+          {Array.from(new Array(10)).map((_, index) => (
+            <Box key={index} sx={{ width: "70%", mb: 2 }}>
+              <Skeleton
+                variant="rectangular"
+                animation={"wave"}
+                width="100%"
+                height={80}
+                sx={{ borderRadius: 2 }}
+              />
+            </Box>
+          ))}
         </Box>
-      ))}
-    </Box>
+      </Fade>
+      <Fade in={showLoaded} timeout={200} unmountOnExit>
+        <Box
+          sx={{
+            display: showLoaded ? "flex" : "none",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
+          }}
+        >
+          <Typography
+            sx={{ display: showLoaded ? "block" : "none" }}
+            variant="h4"
+            gutterBottom
+          >
+            Lessons
+          </Typography>
+          {Object.keys(groupedLessons).map((sectionName) => (
+            <Box key={sectionName} sx={{ width: "70%", mb: 4 }}>
+              <Typography variant="h5" gutterBottom>
+                {sectionName}
+              </Typography>
+              <Divider
+                sx={{
+                  width: "33%",
+                  mb: 2,
+                  borderColor:
+                    theme.palette.mode === "dark"
+                      ? "primary.dark"
+                      : "primary.light",
+                  borderWidth: "1px",
+                }}
+              />
+              {groupedLessons[sectionName].length > 0 ? (
+                groupedLessons[sectionName].map((lesson) => {
+                  const review = getReviewForLesson(lesson._id);
+                  return (
+                    <Box
+                      key={lesson._id}
+                      sx={{
+                        p: 1.5,
+                        mb: 2,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        border: `2px solid ${theme.palette.mode === "dark" ? theme.palette.primary.contrastText : theme.palette.secondary.contrastText}`,
+                        borderRadius: 2,
+                        boxShadow: `0px 0px 5px 0px ${
+                          theme.palette.mode === "dark"
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.secondary.contrastText
+                        }`,
+                        transition: "transform 0.3s ease",
+                        "&:hover": {
+                          transform: "scale(1.05)",
+                        },
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="h6">{lesson.title}</Typography>
+                        {review && (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: review.isOverdue
+                                ? theme.palette.error.main
+                                : theme.palette.text.secondary,
+                            }}
+                          >
+                            {review.isOverdue
+                              ? `Overdue by ${Math.abs(review.daysLeft)} days`
+                              : `Next review in ${review.daysLeft} days`}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Button
+                        variant="contained"
+                        color={categoryColors[lesson.category]}
+                        sx={{
+                          color:
+                            theme.palette.mode === "dark" ? "white" : "black",
+                        }}
+                        component={Link}
+                        to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+                      >
+                        {lesson.category}
+                      </Button>
+                    </Box>
+                  );
+                })
+              ) : (
+                <Typography>No lessons available for this section.</Typography>
+              )}
+            </Box>
+          ))}
+        </Box>
+      </Fade>
+    </>
   );
 };
 
