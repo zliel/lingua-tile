@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MuiMarkdown, getOverrides } from "mui-markdown";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
