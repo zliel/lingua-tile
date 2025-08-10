@@ -71,7 +71,7 @@ const LessonList = () => {
     onError: () => {
       showSnackbar("Failed to fetch sections", "error");
     },
-    enabled: !!authData && !!lessons,
+    enabled: !!authData,
   });
 
   const {
