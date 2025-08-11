@@ -39,12 +39,10 @@ const TranslationQuestion = ({ sentence, onNext }) => {
 
   // Helper function to remove punctuation and extra spaces, and make it lowercase
   const cleanString = (inputString) => {
-    return (
-      inputString
-        .trim()
-        .toLowerCase()
-        .replaceAll(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-    );
+    return inputString
+      .trim()
+      .toLowerCase()
+      .replaceAll(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
   };
 
   const possibleAnswers = sentence.possible_answers.map((answer) =>
