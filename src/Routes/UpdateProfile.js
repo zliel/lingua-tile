@@ -9,7 +9,9 @@ import { LoadingButton } from "@mui/lab";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || "",
+  );
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -42,7 +44,7 @@ function UpdateProfile() {
         showSnackbar(`Error: ${error.response.data.detail}`, "error");
       }
     },
-    enabled: !!authData,
+    enabled: !!authData && !!authData.isLoggedIn,
   });
 
   const updateMutation = useMutation({
@@ -122,7 +124,7 @@ function UpdateProfile() {
     updateMutation.mutate(updatedUser);
   };
 
-  if (!authData.isLoggedIn) {
+  if (!authData?.isLoggedIn) {
     return (
       <Typography variant="h6" textAlign="center">
         Please log in to update your profile.
