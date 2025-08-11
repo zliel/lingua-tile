@@ -1,21 +1,17 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  Skeleton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
+import { Box, Grid, Skeleton, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
+import { LoadingButton } from "@mui/lab";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || "",
+  );
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -48,7 +44,7 @@ function UpdateProfile() {
         showSnackbar(`Error: ${error.response.data.detail}`, "error");
       }
     },
-    enabled: !!authData,
+    enabled: !!authData && !!authData.isLoggedIn,
   });
 
   const updateMutation = useMutation({
@@ -128,7 +124,7 @@ function UpdateProfile() {
     updateMutation.mutate(updatedUser);
   };
 
-  if (!authData.isLoggedIn) {
+  if (!authData?.isLoggedIn) {
     return (
       <Typography variant="h6" textAlign="center">
         Please log in to update your profile.
@@ -198,48 +194,56 @@ function UpdateProfile() {
       <Typography variant="h6" gutterBottom>
         Current Username: {user.username}
       </Typography>
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        alignItems={"center"}
-        direction={"column"}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave();
+        }}
+        style={{ width: "100%" }}
       >
-        <Grid item>
-          <TextField
-            variant={"outlined"}
-            label="New Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+        <Grid
+          container
+          spacing={2}
+          justifyContent="center"
+          alignItems={"center"}
+          direction={"column"}
+        >
+          <Grid item>
+            <TextField
+              variant={"outlined"}
+              label="New Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              variant={"outlined"}
+              label="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              variant={"outlined"}
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </Grid>
+          <Grid item>
+            <LoadingButton
+              variant="contained"
+              color="secondary"
+              type="submit"
+              size={"small"}
+            >
+              Save Changes
+            </LoadingButton>
+          </Grid>
         </Grid>
-        <Grid item>
-          <TextField
-            variant={"outlined"}
-            label="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            variant={"outlined"}
-            label="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleSave}
-            size={"small"}
-          >
-            Save Changes
-          </Button>
-        </Grid>
-      </Grid>
+      </form>
       <Typography variant={"body1"} color={"error"} gutterBottom>
         Note that after saving changes, you will need to log back in.
       </Typography>

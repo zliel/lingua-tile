@@ -37,6 +37,7 @@ function Profile() {
         showSnackbar(`Error: ${error.response.data.detail}`, "error");
       }
     },
+    enabled: !!authData && !!authData.isLoggedIn,
   });
 
   const handleUpdate = () => {
