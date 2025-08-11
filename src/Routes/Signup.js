@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -82,51 +83,60 @@ function Signup() {
         alignItems: "center",
       }}
     >
-      <Grid container direction={"column"} spacing={2} alignItems={"center"}>
-        <Grid item>
-          <Typography variant={"h4"}>Sign Up</Typography>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSignup();
+        }}
+        style={{ width: "100%" }}
+      >
+        <Grid container direction={"column"} spacing={2} alignItems={"center"}>
+          <Grid item>
+            <Typography variant={"h4"}>Sign Up</Typography>
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"Username"}
+              variant={"outlined"}
+              fullWidth
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"Password"}
+              type={"password"}
+              variant={"outlined"}
+              color={"secondary"}
+              fullWidth
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"Confirm Password"}
+              type={"password"}
+              variant={"outlined"}
+              color={"secondary"}
+              fullWidth
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </Grid>
+          <Grid item>
+            <LoadingButton
+              loading={signupMutation.isPending}
+              variant={"contained"}
+              color={"primary"}
+              type="submit"
+            >
+              Login
+            </LoadingButton>
+          </Grid>
         </Grid>
-        <Grid item>
-          <TextField
-            label={"Username"}
-            variant={"outlined"}
-            fullWidth
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            label={"Password"}
-            type={"password"}
-            variant={"outlined"}
-            color={"secondary"}
-            fullWidth
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            label={"Confirm Password"}
-            type={"password"}
-            variant={"outlined"}
-            color={"secondary"}
-            fullWidth
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant={"contained"}
-            color={"primary"}
-            onClick={handleSignup}
-          >
-            Login
-          </Button>
-        </Grid>
-      </Grid>
+      </form>
     </Box>
   );
 }
