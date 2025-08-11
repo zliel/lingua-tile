@@ -52,6 +52,14 @@ function Login() {
       <Grid container direction={"column"} spacing={2} alignItems={"center"}>
         <Grid item>
           <Typography variant={"h4"}>Login</Typography>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+        style={{ width: "100%" }}
+      >
+              type="submit"
         </Grid>
         <Grid item>
           <TextField
@@ -77,6 +85,7 @@ function Login() {
           </Button>
         </Grid>
       </Grid>
+      </form>
     </Box>
   );
 }
