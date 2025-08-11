@@ -1,12 +1,8 @@
 name: Deploy to Google Cloud Run
 on:
-    push:
-        branches:
-        - main
-        paths-ignore:
-          - 'README.md'
-          - '.gitignore'
-          - '.github/**'
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   build:
