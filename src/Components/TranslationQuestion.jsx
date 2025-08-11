@@ -31,7 +31,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
 
     currentInput.addEventListener("keydown", handleKeyPress);
     return () => {
-      if (inputRef.current) {
+      if (currentInput) {
         currentInput.removeEventListener("keydown", handleKeyPress);
       }
     };
@@ -42,7 +42,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
     return inputString
       .trim()
       .toLowerCase()
-      .replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+      .replaceAll(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
   };
 
   const possibleAnswers = sentence.possible_answers.map((answer) =>
