@@ -61,7 +61,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
     queryClient.invalidateQueries("authState");
-    if (callback) callback();
+
+    setTimeout(() => {
+      if (callback) callback();
+    }, 350);
   };
 
   const logout = (callback) => {
