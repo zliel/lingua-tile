@@ -157,16 +157,14 @@ function NavBar(props) {
               </Menu>
             </>
           ) : (
-            <>
-              <Button component={Link} to="/login" color={"inherit"}>
-                Login
-              </Button>
-              <Button component={Link} to="/signup" color={"inherit"}>
-                Sign Up
-              </Button>
-            </>
           )}
               <div sx={{ display: authIsLoading ? "none" : "flex" }}>
+                <Button component={Link} to="/login" color={"inherit"}>
+                  Login
+                </Button>
+                <Button component={Link} to="/signup" color={"inherit"}>
+                  Sign Up
+                </Button>
               </div>
         </Stack>
       </Toolbar>
