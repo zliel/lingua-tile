@@ -43,19 +43,6 @@ function NavBar(props) {
     ];
   }, []);
 
-  useEffect(() => {
-    if (authData && authData.isAdmin) {
-      setPages((prevPages) => [...prevPages, ...adminPages]);
-    } else {
-      setPages([
-        { name: "Home", endpoint: "/home" },
-        { name: "About", endpoint: "/about" },
-        { name: "Lessons", endpoint: "/lessons" },
-        { name: "Translate", endpoint: "/translate" },
-      ]);
-    }
-  }, [adminPages, authData]);
-
   const handleMenuOpen = (event) => {
     setAnchorElMenu(event.currentTarget);
   };
@@ -75,7 +62,36 @@ function NavBar(props) {
   const handleLogout = () => {
     logout(() => navigate("/"));
     handleProfileMenuClose();
-  };
+  }, [logout, navigate]);
+
+  useEffect(() => {
+    if (authData && authData.isAdmin) {
+      setPages((prevPages) => [...prevPages, ...adminPages]);
+    } else {
+      let pagesToAdd = [
+        { name: "Home", endpoint: "/home" },
+        { name: "About", endpoint: "/about" },
+        { name: "Lessons", endpoint: "/lessons" },
+        { name: "Translate", endpoint: "/translate" },
+      ];
+
+      if (isMobile) {
+        if (authData && authData.isLoggedIn) {
+          pagesToAdd.push(
+            { name: "Profile", endpoint: "/profile" },
+            { name: "Logout", action: handleLogout },
+          );
+        } else {
+          pagesToAdd.push(
+            { name: "Login", endpoint: "/login" },
+            { name: "Sign Up", endpoint: "/signup" },
+          );
+        }
+      }
+
+      setPages(pagesToAdd);
+    }
+  }, [adminPages, authData, handleLogout, isMobile]);
 
   return (
     <AppBar position={"sticky"} enableColorOnDark>
