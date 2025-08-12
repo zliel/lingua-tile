@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Button, Grid, Skeleton, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Button, Fade, Grid, Skeleton, Typography } from "@mui/material";
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ function Profile() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showLoaded, setShowLoaded] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -36,6 +37,10 @@ function Profile() {
       } else {
         showSnackbar(`Error: ${error.response.data.detail}`, "error");
       }
+    },
+    onSuccess: () => {
+      setShowLoaded(true);
+      localStorage.setItem("username", user.username);
     },
     enabled: !!authData && !!authData.isLoggedIn,
   });
@@ -84,45 +89,17 @@ function Profile() {
     setDialogOpen(false);
   };
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Loading...
-        </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={30}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
-      </Box>
-    );
-  }
+  // Manage the animation in-between loading and loaded
+  useEffect(() => {
+    if (isLoading) {
+      setShowLoaded(false);
+    } else {
+      const timer = setTimeout(() => setShowLoaded(true), 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
-  if (!authData.isLoggedIn) {
+  if (!authData?.isLoggedIn) {
     return (
       <Typography variant="h6" textAlign="center">
         Please log in to view your profile.
@@ -139,40 +116,87 @@ function Profile() {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 4,
-      }}
-    >
-      <Typography variant="h4" gutterBottom>
-        Profile
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Username: {user.username}
-      </Typography>
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
-            Update Profile
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="warning" onClick={handleDelete}>
-            Delete Profile
-          </Button>
-        </Grid>
-      </Grid>
-      <ConfirmationDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onConfirm={handleDeleteConfirmation}
-        title={"Delete Profile"}
-        message={"Are you sure you want to delete your profile?"}
-      />
-    </Box>
+    <>
+      <Fade in={isLoading} timeout={100}>
+        <Box
+          sx={{
+            display: isLoading ? "flex" : "none",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
+          }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Loading...
+          </Typography>
+          <Skeleton
+            variant="rectangular"
+            animation={"wave"}
+            width="50%"
+            height={40}
+            sx={{ mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            animation={"wave"}
+            width="50%"
+            height={30}
+            sx={{ mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            animation={"wave"}
+            width="50%"
+            height={20}
+            sx={{ mb: 2 }}
+          />
+        </Box>
+      </Fade>
+      <Fade in={showLoaded} timeout={100} unmountOnExit>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
+          }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Profile
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Username: {localStorage.getItem("username") || ""}
+          </Typography>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleUpdate}
+              >
+                Update Profile
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={handleDelete}
+              >
+                Delete Profile
+              </Button>
+            </Grid>
+          </Grid>
+          <ConfirmationDialog
+            open={dialogOpen}
+            onClose={() => setDialogOpen(false)}
+            onConfirm={handleDeleteConfirmation}
+            title={"Delete Profile"}
+            message={"Are you sure you want to delete your profile?"}
+          />
+        </Box>
+      </Fade>
+    </>
   );
 }
 
