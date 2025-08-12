@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -11,13 +11,19 @@ import {
   MenuItem,
   Skeleton,
   Stack,
+  SwipeableDrawer,
   Switch,
   Toolbar,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { DarkMode, LightMode, Menu as MenuIcon } from "@mui/icons-material";
+import {
+  DarkMode,
+  LightMode,
+  Menu as MenuIcon,
+  Close as CloseIcon,
+} from "@mui/icons-material";
 import { useAuth } from "../Contexts/AuthContext";
 
 function NavBar(props) {
@@ -25,8 +31,8 @@ function NavBar(props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
-  const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [pages, setPages] = useState([
     { name: "Home", endpoint: "/home" },
     { name: "About", endpoint: "/about" },
@@ -44,11 +50,11 @@ function NavBar(props) {
   }, []);
 
   const handleMenuOpen = (event) => {
-    setAnchorElMenu(event.currentTarget);
+    setMenuIsOpen(!menuIsOpen);
   };
 
   const handleMenuClose = () => {
-    setAnchorElMenu(null);
+    setMenuIsOpen(false);
   };
 
   const handleProfileMenuOpen = (event) => {
@@ -59,7 +65,7 @@ function NavBar(props) {
     setAnchorElUser(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout(() => navigate("/"));
     handleProfileMenuClose();
   }, [logout, navigate]);
@@ -94,7 +100,15 @@ function NavBar(props) {
   }, [adminPages, authData, handleLogout, isMobile]);
 
   return (
-    <AppBar position={"sticky"} enableColorOnDark>
+    <AppBar
+      position={"sticky"}
+      enableColorOnDark
+      sx={{
+        height: "64px",
+        zIndex: theme.zIndex.drawer + 1,
+        justifyContent: "center",
+      }}
+    >
       <Toolbar>
         <IconButton
           edge="start"
@@ -102,24 +116,54 @@ function NavBar(props) {
           aria-label="menu"
           onClick={handleMenuOpen}
         >
-          <MenuIcon />
+          {Boolean(menuIsOpen) ? <CloseIcon /> : <MenuIcon />}
         </IconButton>
-        <Menu
-          anchorEl={anchorElMenu}
-          open={Boolean(anchorElMenu)}
+        <SwipeableDrawer
+          anchor="left"
+          open={menuIsOpen}
           onClose={handleMenuClose}
+          onOpen={handleMenuOpen}
+          variant="temporary"
+          slotProps={{
+            paper: {
+              sx: {
+                width: isMobile ? "150px" : "180px",
+                top: "64px",
+                height: "calc(100% - 64px)",
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.primary.light
+                    : theme.palette.primary.dark,
+                color: theme.palette.primary.contrastText,
+              },
+            },
+          }}
+          ModalProps={{
+            keepMounted: true,
+            hideBackdrop: false,
+          }}
         >
-          {pages.map((page) => (
-            <MenuItem
-              key={page.name}
-              component={Link}
-              to={page.endpoint}
-              onClick={page.action ? page.action : handleMenuClose}
-            >
-              {page.name}
-            </MenuItem>
-          ))}
-        </Menu>
+          <Box
+            sx={{
+              width: isMobile ? "150px" : "180px",
+            }}
+            role="presentation"
+            onclick={handleMenuClose}
+            onKeyDown={handleMenuClose}
+          >
+            {pages.map((page) => (
+              <MenuItem
+                key={page.name}
+                component={Link}
+                to={page.endpoint}
+                onClick={page.action ? page.action : handleMenuClose}
+              >
+                {page.name}
+              </MenuItem>
+            ))}
+          </Box>
+        </SwipeableDrawer>
+        {/* </Menu> */}
         <Typography variant={"h6"} sx={{ paddingRight: "10px" }}>
           <Link
             to={"/"}
@@ -145,35 +189,38 @@ function NavBar(props) {
           <Icon sx={{ mr: 1.5 }}>
             <DarkMode />
           </Icon>
-          {authIsLoading ? (
-            <Skeleton variant="circular" width={40} height={40} />
-          ) : authData.isLoggedIn ? (
-            <>
-              <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
-                <Avatar
-                  sx={{
-                    backgroundColor: theme.palette.secondary.dark,
-                    color: theme.palette.primary.contrastText,
-                  }}
+          {!isMobile &&
+            (authIsLoading ? (
+              <Skeleton variant="circular" width={40} height={40} />
+            ) : authData.isLoggedIn ? (
+              <>
+                <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
+                  <Avatar
+                    sx={{
+                      backgroundColor: theme.palette.secondary.dark,
+                      color: theme.palette.primary.contrastText,
+                    }}
+                  >
+                    {authData.username
+                      ? authData.username[0].toUpperCase()
+                      : "?"}
+                  </Avatar>
+                </IconButton>
+                <Menu
+                  anchorEl={anchorElUser}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleProfileMenuClose}
                 >
-                  {authData.username ? authData.username[0].toUpperCase() : "?"}
-                </Avatar>
-              </IconButton>
-              <Menu
-                anchorEl={anchorElUser}
-                open={Boolean(anchorElUser)}
-                onClose={handleProfileMenuClose}
-              >
-                <MenuItem
-                  onClick={handleProfileMenuClose}
-                  component={Link}
-                  to="/profile"
-                >
-                  My Profile
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </>
+                  <MenuItem
+                    onClick={handleProfileMenuClose}
+                    component={Link}
+                    to="/profile"
+                  >
+                    My Profile
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </>
             ) : (
               <div sx={{ display: authIsLoading ? "none" : "flex" }}>
                 <Button component={Link} to="/login" color={"inherit"}>
@@ -183,7 +230,7 @@ function NavBar(props) {
                   Sign Up
                 </Button>
               </div>
-            )}
+            ))}
         </Stack>
       </Toolbar>
     </AppBar>
