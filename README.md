@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+<h1 align="center">LinguaTile</h1>
+<p align="center">
+  <img src="./src/assets/LinguaTile%20Logo.png" />
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to LinguaTile, a language learning platform aimed at English speakers who are learning Japanese. \
+This application is designed to combine the best aspects of various language-learning tools into a single, full-stack application.
 
-## Available Scripts
+## About The Project
 
-In the project directory, you can run:
+At its core, I'm building LinguaTile not only as a project to practice full-stack development and build something related to my passion for education and learning, I'm trying to build a tool for learners that I wish I would have had starting out. My goal is to create a comprehensive tool for Japanese learners by recreating, combining, and improving upon features from various existing learning tools.
 
-### `npm start`
+### Built With
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The project is built with a modern tech stack, separating the frontend and backend for scalability and maintainability.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Frontend:**
 
-### `npm test`
+- `React`
+- `React Router`
+- `React Query`
+- `Material-UI (MUI)`
+- `Axios`
+- `Wanakana (for Japanese IME)`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Backend:**
 
-### `npm run build`
+- `FastAPI`
+- `FSRS` spaced-repetition algorithm
+- `PyMongo` & `MongoDB`
+- `Redis` (for caching translations)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+LinguaTile offers a variety of features to help users learn Japanese:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Themed Interface:** Switch between light and dark modes to suit your preference.
+- **Diverse Lesson Types:**
+  - **Grammar:** In-depth lessons with markdown-formatted content.
+  - **Flashcard:** Study with flashcards that can be flipped to show the translation.
+  - **Practice:** Test your knowledge by translating sentences.
+- **Lesson Tracking & Review:** Logged-in users can mark lessons as complete and get personalized review schedules using the FSRS spaced-repetition algorithm.
+- **Translation Tool:** A utility to get instant translations between English and Japanese.
+- **Admin Dashboard:** For administrators, there are dedicated tools to manage:
+  - Users
+  - Flashcards
+  - Lessons
+  - Sections
 
-### `npm run eject`
+## Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+To get a local copy running, do the following:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+You will need `npm` (or `yarn`) and `Python` installed on your machine. You will also need access to a `MongoDB` database and a`Redis` instance.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Installation
 
-## Learn More
+1. **Clone the repo**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```sh
+   git clone [https://github.com/zliel/lingua-tile.git](https://github.com/zliel/lingua-tile.git)
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. **Install NPM packages**
 
-### Code Splitting
+   ```sh
+   npm install
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. **Set up environment variables**
 
-### Analyzing the Bundle Size
+   Rename or copy `.env.example` to `.env` in the root folder of the project and add the following variable, \
+   pointing to the backend:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   ```
+   REACT_APP_API_BASE=your_backend_url_here
+   ```
 
-### Making a Progressive Web App
+   _Note: For info on how to set up the backend, see [the backend repo](https://github.com/zliel/Lingua-Tile-Backend)_
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+4. **Run the application**
 
-### Advanced Configuration
+   ```sh
+   npm start
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This will run the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
