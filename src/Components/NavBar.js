@@ -14,6 +14,7 @@ import {
   Switch,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { DarkMode, LightMode, Menu as MenuIcon } from "@mui/icons-material";
@@ -22,6 +23,7 @@ import { useAuth } from "../Contexts/AuthContext";
 function NavBar(props) {
   const { logout, authIsLoading, authData } = useAuth();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
