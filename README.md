@@ -36,12 +36,12 @@ LinguaTile offers a variety of features to help users learn Japanese:
 
 - **Themed Interface:** Switch between light and dark modes to suit your preference.
 - **Diverse Lesson Types:**
-  - **Grammar Lessons:** In-depth lessons with markdown-formatted content.
-  - **Flashcard Lessons:** Study with flashcards that can be flipped to show the translation.
-  - **Practice Lessons:** Test your knowledge by translating sentences.
+  - **Grammar:** In-depth lessons with markdown-formatted content.
+  - **Flashcard:** Study with flashcards that can be flipped to show the translation.
+  - **Practice:** Test your knowledge by translating sentences.
 - **Lesson Tracking & Review:** Logged-in users can mark lessons as complete and get personalized review schedules using the FSRS spaced-repetition algorithm.
 - **Translation Tool:** A utility to get instant translations between English and Japanese.
-- **Admin Dashboard:** For administrators, there are dedicated tables to manage:
+- **Admin Dashboard:** For administrators, there are dedicated tools to manage:
   - Users
   - Flashcards
   - Lessons
@@ -71,7 +71,8 @@ You will need `npm` (or `yarn`) and `Python` installed on your machine. You will
 
 3. **Set up environment variables**
 
-   Rename or copy `.env.example` to `.env` in the root of the `src` folder and add the following, pointing to the backend:
+   Rename or copy `.env.example` to `.env` in the root folder of the project and add the following variable, \
+   pointing to the backend:
 
    ```
    REACT_APP_API_BASE=your_backend_url_here
