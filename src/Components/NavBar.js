@@ -156,8 +156,7 @@ function NavBar(props) {
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
-          ) : (
-          )}
+            ) : (
               <div sx={{ display: authIsLoading ? "none" : "flex" }}>
                 <Button component={Link} to="/login" color={"inherit"}>
                   Login
@@ -166,6 +165,7 @@ function NavBar(props) {
                   Sign Up
                 </Button>
               </div>
+            )}
         </Stack>
       </Toolbar>
     </AppBar>
