@@ -166,6 +166,8 @@ function NavBar(props) {
               </Button>
             </>
           )}
+              <div sx={{ display: authIsLoading ? "none" : "flex" }}>
+              </div>
         </Stack>
       </Toolbar>
     </AppBar>
