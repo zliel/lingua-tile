@@ -31,13 +31,13 @@ import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
 
 const purpleBase = "#8c00cc";
-const greenBase = "#18b201";
+const greenBase = "#00c500";
 const lightTheme = createTheme({
   palette: {
     primary: {
       light: alpha(purpleBase, 0.5),
       main: alpha(purpleBase, 0.7),
-      dark: alpha(purpleBase, 0.9),
+      dark: alpha(purpleBase, 1),
       contrastText:
         getContrastRatio(alpha(purpleBase, 0.7), "#fff") >= 4.5
           ? "#fff"
@@ -46,7 +46,7 @@ const lightTheme = createTheme({
     secondary: {
       light: alpha(greenBase, 0.5),
       main: alpha(greenBase, 0.7),
-      dark: alpha(greenBase, 0.9),
+      dark: alpha(greenBase, 1),
       contrastText:
         getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5
           ? "#fff"
@@ -59,22 +59,10 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     primary: {
-      light: alpha(purpleBase, 0.5),
-      main: alpha(purpleBase, 0.7),
-      dark: alpha(purpleBase, 0.9),
-      contrastText:
-        getContrastRatio(alpha(purpleBase, 0.7), "#fff") >= 4.5
-          ? "#fff"
-          : "#000",
+      ...lightTheme.palette.primary,
     },
     secondary: {
-      light: alpha(greenBase, 0.5),
-      main: alpha(greenBase, 0.7),
-      dark: alpha(greenBase, 0.9),
-      contrastText:
-        getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5
-          ? "#fff"
-          : "#000",
+      ...lightTheme.palette.secondary,
     },
     mode: "dark",
   },
