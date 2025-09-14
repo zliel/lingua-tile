@@ -72,7 +72,8 @@ function NavBar(props) {
 
   useEffect(() => {
     if (authData && authData.isAdmin) {
-      setPages((prevPages) => [...prevPages, ...adminPages]);
+      if (!pages.find((page) => page.name === "User Table"))
+        setPages((prevPages) => [...prevPages, ...adminPages]);
     } else {
       let pagesToAdd = [
         { name: "Home", endpoint: "/home" },
@@ -97,7 +98,7 @@ function NavBar(props) {
 
       setPages(pagesToAdd);
     }
-  }, [adminPages, authData, handleLogout, isMobile]);
+  }, [adminPages, authData, handleLogout, isMobile, pages]);
 
   return (
     <AppBar
