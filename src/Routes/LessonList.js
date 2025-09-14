@@ -129,8 +129,9 @@ const LessonList = () => {
 
   // Group together the lessons
   let groupedLessons = {};
-  if (sections) {
+  if (sections && lessons) {
     groupedLessons = sections.reduce((acc, section) => {
+      if (!section || !section.name) return acc;
       acc[section.name] = lessons.filter(
         (lesson) => lesson.section_id === section._id,
       );
