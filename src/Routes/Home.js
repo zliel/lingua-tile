@@ -22,6 +22,10 @@ function Home() {
           marginTop: 5,
           display: "block",
           marginBottom: 2,
+          transition: "transform 0.3s ease",
+          "&:hover": {
+            transform: "scale(1.1)",
+          },
         }}
         src={Logo}
       />

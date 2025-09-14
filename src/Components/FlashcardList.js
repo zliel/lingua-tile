@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
   Zoom,
+  useMediaQuery,
 } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -25,6 +26,7 @@ const FlashcardList = ({ lessonId }) => {
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { handlePerformanceReview } = useLessonReview(
     lessonId,
@@ -88,10 +90,20 @@ const FlashcardList = ({ lessonId }) => {
 
     setTimeout(() => {
       if (currentCardIndex + 1 === flashcards.length) {
-        showSnackbar("You have reached the end of the lesson!", "success");
-        setHasFinished(true);
-        setCurrentCardIndex(0);
-        setModalOpen(true);
+        // NOTE: Disallows reviewing when not logged in
+        if (authData.isLoggedIn) {
+          showSnackbar("You have reached the end of the lesson!", "success");
+          setHasFinished(true);
+          setCurrentCardIndex(0);
+          setModalOpen(true);
+        } else {
+          showSnackbar(
+            "Please log in to complete the lesson to get personalized lesson scheduling.",
+            "info",
+          );
+          setHasFinished(false);
+          setCurrentCardIndex(0);
+        }
       } else {
         setCurrentCardIndex((prevIndex) => prevIndex + 1);
       }
@@ -110,7 +122,10 @@ const FlashcardList = ({ lessonId }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        mt: 4,
+        justifyContent: "center",
+        mt: isMobile ? 2 : 4,
+        width: isMobile ? "100vw" : "auto",
+        px: isMobile ? 1 : 0,
       }}
     >
       {authData && (
@@ -132,7 +147,11 @@ const FlashcardList = ({ lessonId }) => {
           />
           <Stack
             direction={"row"}
-            sx={{ display: "flex", width: "90%", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              width: isMobile ? "100%" : "90%",
+              alignItems: "center",
+            }}
           >
             <LinearProgress
               variant="determinate"
@@ -141,10 +160,11 @@ const FlashcardList = ({ lessonId }) => {
                 hasFinished ? 100 : (currentCardIndex / flashcards.length) * 100
               }
               sx={{
-                width: "95%",
-                height: 5,
+                width: isMobile ? "100%" : "95%",
+                height: isMobile ? 4 : 5,
                 borderRadius: 2,
                 mt: 1.1,
+                ml: isMobile ? 2.5 : 1,
                 "& .MuiLinearProgress-bar": {
                   background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
                 },

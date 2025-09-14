@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import FlashcardsList from "../Components/FlashcardList";
@@ -10,6 +10,7 @@ const FlashcardLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
+  const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const {
     data: lesson,
