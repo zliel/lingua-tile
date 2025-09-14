@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   Fade,
   Slide,
   Typography,
+  // useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import "./Flashcard.css";
@@ -19,6 +20,7 @@ const Flashcard = ({
   onNextCard,
 }) => {
   const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isDarkMode = theme.palette.mode === "dark";
   const [isFlipped, setIsFlipped] = useState(false);
   const [slideIn, setSlideIn] = useState(true);
@@ -27,7 +29,7 @@ const Flashcard = ({
     setIsFlipped(!isFlipped);
     setTimeout(() => {
       onShowTranslation();
-    }, 300); // Match the duration of the flip animation
+    }, 50);
   }, [isFlipped, onShowTranslation]);
 
   const handleNextCard = useCallback(() => {
@@ -136,7 +138,7 @@ const Flashcard = ({
                   onClick={handleShowTranslation}
                   sx={{ m: "auto", width: "45%" }}
                 >
-                  {showTranslation ? "Hide Translation" : "Show Translation"}
+                  {showTranslation ? "Show Front" : "Show Back"}
                 </Button>
                 <Button
                   variant="contained"

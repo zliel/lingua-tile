@@ -2,7 +2,14 @@ import { useState } from "react";
 import { MuiMarkdown, getOverrides } from "mui-markdown";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Button, Icon, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Icon,
+  Skeleton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Done } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
@@ -69,12 +76,13 @@ const GrammarLesson = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: "80%",
+        width: "85%",
         alignItems: "center",
         justifyContent: "center",
         margin: "auto",
         mt: 4,
-        p: 1.5,
+        mb: 4,
+        p: 2.5,
         border: 2,
         borderColor: "primary.main",
         borderRadius: 2,
@@ -102,16 +110,38 @@ const GrammarLesson = () => {
       >
         {lesson.content}
       </MuiMarkdown>
-      <Button
-        sx={{ mt: 2, display: "flex", alignItems: "center" }}
-        variant={"contained"}
-        onClick={() => setModalOpen(true)}
+      {/* NOTE: Tooltip and disabled button when user is not logged in */}
+      <Tooltip
+        title={
+          !authData.isLoggedIn ? (
+            <Typography>You must be logged in to finish the lesson.</Typography>
+          ) : (
+            <Typography>Finish Lesson</Typography>
+          )
+        }
+        placement="right"
+        arrow
       >
-        Finished{" "}
-        <Icon sx={{ ml: 1, mb: 0.5, display: "flex", alignItems: "center" }}>
-          <Done />
-        </Icon>
-      </Button>
+        <span>
+          <Button
+            sx={{ mt: 2, mb: 2, display: "flex", alignItems: "center" }}
+            variant={"contained"}
+            disabled={!authData.isLoggedIn}
+            onClick={() => {
+              if (authData.isLoggedIn) {
+                setModalOpen(true);
+              }
+            }}
+          >
+            Finished
+            <Icon
+              sx={{ ml: 1, mb: 0.5, display: "flex", alignItems: "center" }}
+            >
+              <Done />
+            </Icon>
+          </Button>
+        </span>
+      </Tooltip>
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}

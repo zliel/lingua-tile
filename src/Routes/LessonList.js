@@ -9,17 +9,21 @@ import {
   Typography,
   useTheme,
   Divider,
+  useMediaQuery,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import dayjs from "dayjs";
+// Border colors from @mui/color
+import { grey } from "@mui/material/colors";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const categoryColors = {
     flashcards: "primary",
     practice: "secondary",
@@ -93,7 +97,7 @@ const LessonList = () => {
     onError: () => {
       showSnackbar("Failed to fetch reviews", "error");
     },
-    enabled: !!authData,
+    enabled: !!authData && !!authData.token,
   });
 
   // Manage the animation in-between loading and loaded
@@ -106,7 +110,7 @@ const LessonList = () => {
     }
   }, [isLoading, sectionsLoading, reviewsLoading]);
 
-  if (isError || sectionsError || reviewsError) {
+  if (isError || sectionsError || (reviewsError && authData.token)) {
     return <Typography>Error loading lessons.</Typography>;
   }
 
@@ -145,7 +149,7 @@ const LessonList = () => {
     <>
       <Fade
         in={isLoading || sectionsLoading || reviewsLoading}
-        timeout={200}
+        timeout={100}
         unmountOnExit
       >
         <Box
@@ -153,7 +157,7 @@ const LessonList = () => {
             display: showLoaded ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
-            mt: 4,
+            mt: 2,
           }}
         >
           <Typography variant="h4" gutterBottom>
@@ -161,7 +165,7 @@ const LessonList = () => {
           </Typography>
 
           {Array.from(new Array(10)).map((_, index) => (
-            <Box key={index} sx={{ width: "70%", mb: 2 }}>
+            <Box key={index} sx={{ width: isMobile ? "90%" : "70%", mb: 2 }}>
               <Skeleton
                 variant="rectangular"
                 animation={"wave"}
@@ -173,13 +177,13 @@ const LessonList = () => {
           ))}
         </Box>
       </Fade>
-      <Fade in={showLoaded} timeout={200} unmountOnExit>
+      <Fade in={showLoaded} timeout={100} unmountOnExit>
         <Box
           sx={{
-            display: showLoaded ? "flex" : "none",
+            display: showLoaded && (lessons || sections) ? "flex" : "none",
             flexDirection: "column",
             alignItems: "center",
-            mt: 4,
+            mt: 2,
           }}
         >
           <Typography
@@ -190,7 +194,10 @@ const LessonList = () => {
             Lessons
           </Typography>
           {Object.keys(groupedLessons).map((sectionName) => (
-            <Box key={sectionName} sx={{ width: "70%", mb: 4 }}>
+            <Box
+              key={sectionName}
+              sx={{ width: isMobile ? "90%" : "70%", mb: 4 }}
+            >
               <Typography variant="h5" gutterBottom>
                 {sectionName}
               </Typography>
@@ -216,7 +223,7 @@ const LessonList = () => {
                         mb: 2,
                         display: "flex",
                         justifyContent: "space-between",
-                        border: `2px solid ${theme.palette.mode === "dark" ? theme.palette.primary.contrastText : theme.palette.secondary.contrastText}`,
+                        border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["A200"]}`,
                         borderRadius: 2,
                         boxShadow: `0px 0px 5px 0px ${
                           theme.palette.mode === "dark"
@@ -230,7 +237,12 @@ const LessonList = () => {
                       }}
                     >
                       <Box>
-                        <Typography variant="h6">{lesson.title}</Typography>
+                        <Typography
+                          variant="h6"
+                          fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}
+                        >
+                          {lesson.title}
+                        </Typography>
                         {review && (
                           <Typography
                             variant="body2"

@@ -10,6 +10,7 @@ const FlashcardLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
+  // const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const {
     data: lesson,

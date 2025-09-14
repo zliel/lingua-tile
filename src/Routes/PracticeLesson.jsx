@@ -1,7 +1,13 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Skeleton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -18,6 +24,7 @@ const PracticeLesson = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
+  const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const { handlePerformanceReview } = useLessonReview(
     lessonId,
@@ -51,8 +58,17 @@ const PracticeLesson = () => {
     setAnimationClass("slide-out");
     setTimeout(() => {
       if (currentSentence === lesson.sentences.length - 1) {
-        showSnackbar("Lesson complete!", "success");
-        setModalOpen(true);
+        // NOTE: Disallows reviewing when not logged in
+        if (authData.isLoggedIn) {
+          showSnackbar("Lesson complete!", "success");
+          setModalOpen(true);
+        } else {
+          showSnackbar(
+            "Please log in to complete the lesson to get personalized lesson scheduling.",
+            "info",
+            2000,
+          );
+        }
       }
       setCurrentSentence((prev) =>
         prev === lesson.sentences.length - 1 ? 0 : prev + 1,
@@ -85,12 +101,12 @@ const PracticeLesson = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: "80%",
+        width: isMobile ? "90%" : "80%",
         alignItems: "center",
         justifyContent: "center",
         margin: "auto",
         mt: 6,
-        p: 3,
+        p: isMobile ? "8px" : 3,
         pb: "6em",
         border: 2,
         borderColor: "primary.main",
@@ -108,6 +124,7 @@ const PracticeLesson = () => {
         open={modalOpen}
         setOpen={setModalOpen}
         handlePerformanceReview={handlePerformanceReview}
+        isMobile={isMobile}
       />
     </Box>
   );

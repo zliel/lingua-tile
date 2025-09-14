@@ -10,11 +10,14 @@ export const SnackbarProvider = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("info");
+  // NOTE: Used in preventing users from reviewing, allows custom auto-hide durations
+  const [duration, setDuration] = useState(1500);
 
-  const showSnackbar = (msg, sev = "info") => {
+  const showSnackbar = (msg, sev = "info", duration = 1500) => {
     setMessage(msg);
     setSeverity(sev);
     setOpen(true);
+    setDuration(duration);
   };
 
   const handleClose = (_event, reason) => {
@@ -41,7 +44,7 @@ export const SnackbarProvider = ({ children }) => {
       <Snackbar
         open={open}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        autoHideDuration={1500}
+        autoHideDuration={duration}
         onClose={handleClose}
         message={message}
         action={action}

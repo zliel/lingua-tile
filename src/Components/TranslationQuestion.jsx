@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 
@@ -9,6 +15,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
   const [randomAnswer, setRandomAnswer] = useState(0); // Random possible answer for when the user is incorrect
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const inputRef = useRef(null);
 
   // Reset state on each sentence
@@ -31,6 +38,7 @@ const TranslationQuestion = ({ sentence, onNext }) => {
 
     currentInput.addEventListener("keydown", handleKeyPress);
     return () => {
+      // NOTE: linting fix
       if (currentInput) {
         currentInput.removeEventListener("keydown", handleKeyPress);
       }
@@ -54,7 +62,9 @@ const TranslationQuestion = ({ sentence, onNext }) => {
   const checkAnswer = () => {
     if (possibleAnswers.includes(cleanString(userAnswer))) {
       setIsCorrect(true);
-      showSnackbar("Correct!", "success");
+      // NOTE: Shortened timeout to 500ms for quicker feedback and to allow
+      // the "please login" snackbar to show before moving to the next sentence
+      showSnackbar("Correct!", "success", 500);
       setTimeout(onNext, 500);
     } else {
       // Select a random answer to show the user if they are incorrect
@@ -72,8 +82,10 @@ const TranslationQuestion = ({ sentence, onNext }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        m: 8,
-        p: 4,
+        m: isMobile ? 1 : 8,
+        p: isMobile ? 2 : 4,
+        minWidth: isMobile ? "95%" : "50%",
+        maxWidth: isMobile ? "100%" : "600px",
         border: 1,
         borderColor:
           isCorrect != null && isCorrect
@@ -93,7 +105,8 @@ const TranslationQuestion = ({ sentence, onNext }) => {
       }}
     >
       <Typography variant="h6">
-        Please translate this sentence: {sentence.full_sentence}
+        Please translate this sentence:
+        <br /> {sentence.full_sentence}
       </Typography>
       <TextField
         label="Translate to English"
