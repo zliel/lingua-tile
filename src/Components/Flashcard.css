@@ -48,3 +48,16 @@
 .flashcard-back {
   transform: rotateY(180deg);
 }
+
+@media (max-width: 600px) {
+  .flashcard {
+    max-width: 100vw;
+    min-width: 80vw;
+    min-height: 300px;
+    max-height: 350px;
+  }
+  .flashcard-front,
+  .flashcard-back {
+    min-height: 200px;
+  }
+}
