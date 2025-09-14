@@ -7,7 +7,7 @@ import {
   Fade,
   Slide,
   Typography,
-  useMediaQuery,
+  // useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import "./Flashcard.css";
@@ -20,7 +20,7 @@ const Flashcard = ({
   onNextCard,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isDarkMode = theme.palette.mode === "dark";
   const [isFlipped, setIsFlipped] = useState(false);
   const [slideIn, setSlideIn] = useState(true);
