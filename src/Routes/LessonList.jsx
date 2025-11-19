@@ -195,7 +195,7 @@ const LessonList = () => {
                     {groupedLessons[sectionName].map((lesson) => {
                       const review = getReviewForLesson(lesson._id);
                       return (
-                        <Grid item xs={12} sm={6} md={4} key={lesson._id}>
+                        <Grid xs={12} sm={6} md={4} key={lesson._id}>
                           <LessonListItem lesson={lesson} review={review} />
                         </Grid>
                       );
