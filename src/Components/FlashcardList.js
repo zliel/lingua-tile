@@ -166,7 +166,7 @@ const FlashcardList = ({ lessonId }) => {
                 mt: 1.1,
                 ml: isMobile ? 2.5 : 1,
                 "& .MuiLinearProgress-bar": {
-                  background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
+                  background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
                 },
               }}
             />

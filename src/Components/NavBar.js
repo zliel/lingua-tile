@@ -133,6 +133,7 @@ function NavBar(props) {
                   theme.palette.mode === "dark"
                     ? theme.palette.primary.light
                     : theme.palette.primary.dark,
+                backdropFilter: isMobile ? "blur(5px)" : "none",
                 color: theme.palette.primary.contrastText,
               },
             },
