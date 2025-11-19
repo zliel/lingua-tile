@@ -3,20 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Box,
-  Button,
   Skeleton,
   Fade,
   Typography,
   useTheme,
   Divider,
   useMediaQuery,
+  Grid,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import dayjs from "dayjs";
-// Border colors from @mui/color
-import { grey } from "@mui/material/colors";
+import { LessonListItem } from "../Components/LessonListItem";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
@@ -24,16 +22,6 @@ const LessonList = () => {
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const categoryColors = {
-    flashcards: "primary",
-    practice: "secondary",
-    grammar: "warning",
-  };
-  const categoryRoutes = {
-    flashcards: "/flashcards",
-    practice: "/practice",
-    grammar: "/grammar",
-  };
 
   const {
     data: lessons,
@@ -214,66 +202,27 @@ const LessonList = () => {
                 }}
               />
               {groupedLessons[sectionName].length > 0 ? (
-                groupedLessons[sectionName].map((lesson) => {
-                  const review = getReviewForLesson(lesson._id);
-                  return (
-                    <Box
-                      key={lesson._id}
-                      sx={{
-                        p: 1.5,
-                        mb: 2,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["A200"]}`,
-                        borderRadius: 2,
-                        boxShadow: `0px 0px 5px 0px ${
-                          theme.palette.mode === "dark"
-                            ? theme.palette.primary.contrastText
-                            : theme.palette.secondary.contrastText
-                        }`,
-                        transition: "transform 0.3s ease",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                        },
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="h6"
-                          fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}
-                        >
-                          {lesson.title}
-                        </Typography>
-                        {review && (
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: review.isOverdue
-                                ? theme.palette.error.main
-                                : theme.palette.text.secondary,
-                            }}
-                          >
-                            {review.isOverdue
-                              ? `Overdue by ${Math.abs(review.daysLeft)} days`
-                              : `Next review in ${review.daysLeft} days`}
-                          </Typography>
-                        )}
+                isMobile ? (
+                  groupedLessons[sectionName].map((lesson) => {
+                    const review = getReviewForLesson(lesson._id);
+                    return (
+                      <Box key={lesson._id} sx={{ mb: 2 }}>
+                        <LessonListItem lesson={lesson} review={review} />
                       </Box>
-                      <Button
-                        variant="contained"
-                        color={categoryColors[lesson.category]}
-                        sx={{
-                          color:
-                            theme.palette.mode === "dark" ? "white" : "black",
-                        }}
-                        component={Link}
-                        to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
-                      >
-                        {lesson.category}
-                      </Button>
-                    </Box>
-                  );
-                })
+                    );
+                  })
+                ) : (
+                  <Grid container spacing={2}>
+                    {groupedLessons[sectionName].map((lesson) => {
+                      const review = getReviewForLesson(lesson._id);
+                      return (
+                        <Grid item xs={12} sm={6} md={4} key={lesson._id}>
+                          <LessonListItem lesson={lesson} review={review} />
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                )
               ) : (
                 <Typography>No lessons available for this section.</Typography>
               )}
