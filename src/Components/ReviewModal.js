@@ -51,53 +51,75 @@ function ReviewModal({ open, setOpen, lessonId }) {
   ]
 
   return (
-    <Modal open={open}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: isMobile ? "90vw" : 500,
-          maxWidth: "95vw",
-          maxHeight: isMobile ? "80vh" : "60vh",
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
-        <IconButton
-          sx={{ position: "absolute", top: 8, right: 8 }}
-          onClick={() => setOpen(false)}
+    <Modal open={open} sx={{ backdropFilter: "blur(4px)" }} onClose={() => setOpen(false)}>
+      {isLoading ? (
+        <Box
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "center",
+            zIndex: 1300,
+          }}
         >
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" component="h2" textAlign={"center"}>
-          Lesson Complete!
-        </Typography>
-        <Typography sx={{ mt: 2, textAlign: "center" }}>
-          How would you rate your performance?
-        </Typography>
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }} gap={isMobile ? 2 : 2}>
-          {reviewOptions.map((option) => (
-            <Button
-              key={option.label}
-              variant="contained"
-              color="primary"
-              sx={getButtonStyle(isMobile)}
-              onClick={() => {
-                handlePerformanceReview(option.value);
-                setOpen(false);
-              }}
-            >
-              {option.label} {option.keyBinding}
-            </Button>
-          ))}
+          <CircularProgress size="5rem"
+            tabIndex={-1}
+            sx={{
+              position: "absolute",
+              top: "35%",
+              "&:focus": { outline: "5px solid " + theme.palette.primary.main },
+            }}
+          />
         </Box>
-      </Box>
-    </Modal>
+      ) : (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "40%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: isMobile ? "90vw" : 500,
+            maxWidth: "95vw",
+            maxHeight: isMobile ? "80vh" : "60vh",
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <IconButton
+            sx={{ position: "absolute", top: 8, right: 8 }}
+            onClick={() => setOpen(false)}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" component="h2" textAlign={"center"}>
+            Lesson Complete!
+          </Typography>
+          <Typography sx={{ mt: 2, textAlign: "center" }}>
+            How would you rate your performance?
+          </Typography>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }} gap={isMobile ? 2 : 2}>
+            {reviewOptions.map((option) => (
+              <Button
+                key={option.label}
+                variant="contained"
+                color="primary"
+                sx={getButtonStyle(isMobile)}
+                onClick={() => {
+                  handlePerformanceReview(option.value, option.label);
+                }}
+              >
+                {option.label} {option.keyBinding}
+              </Button>
+            ))}
+          </Box>
+        </Box>
+      )
+      }
+    </Modal >
   );
 }
 
