@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Box,
-  Skeleton,
   Fade,
   Typography,
   useTheme,
@@ -15,6 +14,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import dayjs from "dayjs";
 import { LessonListItem } from "../Components/LessonListItem";
+import { LessonListSkeleton } from "../Components/LessonListSkeleton";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
@@ -141,30 +141,9 @@ const LessonList = () => {
         timeout={100}
         unmountOnExit
       >
-        <Box
-          sx={{
-            display: showLoaded ? "none" : "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 2,
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
-            Loading lessons...
-          </Typography>
-
-          {Array.from(new Array(10)).map((_, index) => (
-            <Box key={index} sx={{ width: isMobile ? "90%" : "70%", mb: 2 }}>
-              <Skeleton
-                variant="rectangular"
-                animation={"wave"}
-                width="100%"
-                height={80}
-                sx={{ borderRadius: 2 }}
-              />
-            </Box>
-          ))}
-        </Box>
+        <div>
+          <LessonListSkeleton />
+        </div>
       </Fade>
       <Fade in={showLoaded} timeout={100} unmountOnExit>
         <Box

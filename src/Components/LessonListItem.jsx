@@ -31,16 +31,16 @@ export const LessonListItem = ({ lesson, review }) => {
         mb: 2,
         display: "flex",
         flexDirection: isMobile ? "row" : "column",
+        alignItems: isMobile ? "center" : "flex-start",
         justifyContent: "space-between",
         width: "100%",
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["a200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
+        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
+          ? theme.palette.primary.contrastText
+          : theme.palette.secondary.contrastText
+          }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
@@ -71,7 +71,7 @@ export const LessonListItem = ({ lesson, review }) => {
         color={categoryColors[lesson.category]}
         sx={{
           color: theme.palette.mode === "dark" ? "white" : "black",
-          mt: 2,
+          mt: isMobile ? 0 : 2,
         }}
         component={Link}
         to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
