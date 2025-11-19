@@ -44,14 +44,14 @@ const Flashcard = ({
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      // Handle space and the number 1 for showing translation
-      if (["Space", "Digit1"].includes(event.code)) {
+      // Handle space for flipping the card
+      if (event.code === "Space") {
         event.preventDefault();
         return handleShowTranslation();
       }
 
       // Handle Enter and Right Arrow for next card
-      if (["Enter", "ArrowRight", "Digit2"].includes(event.code)) {
+      if (["Enter", "ArrowRight"].includes(event.code)) {
         event.preventDefault();
         return handleNextCard();
       }
