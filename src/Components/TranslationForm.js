@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Grid, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Grid, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import axios from "axios";
 
 function TranslationForm() {
   const [srcText, setSrcText] = useState("Hello!");
   const [translatedText, setTranslatedText] = useState("こんにちは！");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const translateText = setTimeout(async () => {
@@ -34,8 +36,8 @@ function TranslationForm() {
         container
         alignItems={"center"}
         justifyContent={"center"}
-        direction={"row"}
-        gap={12}
+        direction={isMobile ? "column" : "row"}
+        gap={"2em"}
         paddingTop={"1.5em"}
       >
         <Grid item>
