@@ -58,7 +58,7 @@
     margin-bottom: 0.1em;
   }
   .flashcard:hover {
-  transform: none;
+    transform: none;
   }
   .flashcard-front,
   .flashcard-back {

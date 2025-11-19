@@ -9,7 +9,7 @@ import {
   Skeleton,
   Tooltip,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import { Done } from "@mui/icons-material";
 import { useParams } from "react-router-dom";

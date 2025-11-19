@@ -61,11 +61,15 @@ const FlashcardLesson = () => {
         mt: 4,
       }}
     >
-      <Typography variant="h1" gutterBottom sx={{ fontSize: isMobile ? "1.5rem" : "2.5rem" }}>
+      <Typography
+        variant="h1"
+        gutterBottom
+        sx={{ fontSize: isMobile ? "1.5rem" : "2.5rem" }}
+      >
         {lesson && lesson.title}
       </Typography>
       <FlashcardsList lessonId={lessonId} />
-    </Box >
+    </Box>
   );
 };
 

@@ -31,7 +31,9 @@ function Home() {
         }}
         src={Logo}
       />
-      <Typography sx={{ textAlign: "center", fontSize: isMobile ? "1.2rem" : "1.5rem" }}>
+      <Typography
+        sx={{ textAlign: "center", fontSize: isMobile ? "1.2rem" : "1.5rem" }}
+      >
         Welcome to LinguaTile, a learning platform focused on the Japanese
         language.
       </Typography>

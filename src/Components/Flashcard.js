@@ -103,7 +103,10 @@ const Flashcard = ({
                     textAlign: "center",
                   }}
                 >
-                  <Typography component="div" sx={{ fontSize: isMobile ? "2rem" : "3rem" }}>
+                  <Typography
+                    component="div"
+                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                  >
                     {frontText}
                   </Typography>
                 </CardContent>
@@ -116,7 +119,10 @@ const Flashcard = ({
                     textAlign: "center",
                   }}
                 >
-                  <Typography component="div" sx={{ fontSize: isMobile ? "2rem" : "3rem" }}>
+                  <Typography
+                    component="div"
+                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                  >
                     {backText}
                   </Typography>
                 </CardContent>
@@ -137,7 +143,12 @@ const Flashcard = ({
                   variant="contained"
                   color="primary"
                   onClick={handleShowTranslation}
-                  sx={{ m: "auto", height: "80%", width: "55%", fontSize: isMobile ? "0.8rem" : "1rem" }}
+                  sx={{
+                    m: "auto",
+                    height: "80%",
+                    width: "55%",
+                    fontSize: isMobile ? "0.8rem" : "1rem",
+                  }}
                 >
                   {showTranslation ? "Show Front" : "Show Back"}
                 </Button>
@@ -145,7 +156,12 @@ const Flashcard = ({
                   variant="contained"
                   color="secondary"
                   onClick={handleNextCard}
-                  sx={{ m: "auto", height: "80%", width: "55%", fontSize: isMobile ? "0.8rem" : "1rem" }}
+                  sx={{
+                    m: "auto",
+                    height: "80%",
+                    width: "55%",
+                    fontSize: isMobile ? "0.8rem" : "1rem",
+                  }}
                 >
                   Next Card
                 </Button>

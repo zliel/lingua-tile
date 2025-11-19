@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
-const useLessonReview = (lessonId, modalOpen, setModalOpen, setModalLoading) => {
+const useLessonReview = (
+  lessonId,
+  modalOpen,
+  setModalOpen,
+  setModalLoading,
+) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [overallPerformance, setOverallPerformance] = useState(0);

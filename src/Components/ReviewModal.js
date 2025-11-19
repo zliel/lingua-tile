@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Box, Button, IconButton, Modal, Typography, CircularProgress, useTheme, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  Typography,
+  CircularProgress,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useLessonReview from "../hooks/useLessonReview";
 
@@ -11,7 +20,7 @@ function ReviewModal({ open, setOpen, lessonId }) {
     lessonId,
     open,
     setOpen,
-    setIsLoading
+    setIsLoading,
   );
 
   useEffect(() => {
@@ -42,16 +51,19 @@ function ReviewModal({ open, setOpen, lessonId }) {
     };
   }, [open, handlePerformanceReview, isLoading]);
 
-
   const reviewOptions = [
     { label: "Again", value: 0.1, keyBinding: isMobile ? "" : "(1)" },
     { label: "Hard", value: 0.45, keyBinding: isMobile ? "" : "(2)" },
     { label: "Good", value: 0.7, keyBinding: isMobile ? "" : "(3)" },
     { label: "Easy", value: 0.9, keyBinding: isMobile ? "" : "(4)" },
-  ]
+  ];
 
   return (
-    <Modal open={open} sx={{ backdropFilter: "blur(4px)" }} onClose={() => setOpen(false)}>
+    <Modal
+      open={open}
+      sx={{ backdropFilter: "blur(4px)" }}
+      onClose={() => setOpen(false)}
+    >
       {isLoading ? (
         <Box
           sx={{
@@ -63,7 +75,8 @@ function ReviewModal({ open, setOpen, lessonId }) {
             zIndex: 1300,
           }}
         >
-          <CircularProgress size="5rem"
+          <CircularProgress
+            size="5rem"
             sx={{
               position: "absolute",
               top: "35%",
@@ -100,7 +113,10 @@ function ReviewModal({ open, setOpen, lessonId }) {
           <Typography sx={{ mt: 2, textAlign: "center" }}>
             How would you rate your performance?
           </Typography>
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }} gap={isMobile ? 2 : 2}>
+          <Box
+            sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
+            gap={isMobile ? 2 : 2}
+          >
             {reviewOptions.map((option) => (
               <Button
                 key={option.label}
@@ -116,9 +132,8 @@ function ReviewModal({ open, setOpen, lessonId }) {
             ))}
           </Box>
         </Box>
-      )
-      }
-    </Modal >
+      )}
+    </Modal>
   );
 }
 
