@@ -1,8 +1,10 @@
 import React from "react";
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Button, IconButton, Modal, Typography, useTheme, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
+function ReviewModal({ open, setOpen, handlePerformanceReview }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Modal open={open}>
       <Box
@@ -11,13 +13,14 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: isMobile ? "90%" : 500,
+          width: isMobile ? "90vw" : 500,
+          maxWidth: "95vw",
+          maxHeight: isMobile ? "80vh" : "60vh",
           bgcolor: "background.paper",
           border: "2px solid #000",
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
-          gap: isMobile ? 1 : 2,
         }}
       >
         <IconButton
@@ -32,7 +35,7 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
         <Typography sx={{ mt: 2, textAlign: "center" }}>
           How would you rate your performance?
         </Typography>
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }} gap={isMobile ? 2 : 2}>
           <Button
             variant="contained"
             onClick={() => {
@@ -40,12 +43,12 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
             }}
             size={isMobile ? "small" : "medium"}
             sx={{
-              minWidth: isMobile ? 60 : 85,
-              px: isMobile ? 1 : 1.5,
-              fontSize: isMobile ? "0.8rem" : "0.9rem",
+              minWidth: isMobile ? 48 : 85,
+              px: 1.25,
+              fontSize: isMobile ? "1rem" : "1rem",
             }}
           >
-            Again (1)
+            Again {isMobile ? "" : "(2)"}
           </Button>
           <Button
             variant="contained"
@@ -54,12 +57,12 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
             }}
             size={isMobile ? "small" : "medium"}
             sx={{
-              minWidth: isMobile ? 60 : 85,
-              px: isMobile ? 1 : 1.5,
-              fontSize: isMobile ? "0.8rem" : "0.9rem",
+              minWidth: isMobile ? 48 : 85,
+              px: 1.25,
+              fontSize: "1rem"
             }}
           >
-            Hard (2)
+            Hard {isMobile ? "" : "(2)"}
           </Button>
           <Button
             variant="contained"
@@ -68,12 +71,12 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
             }}
             size={isMobile ? "small" : "medium"}
             sx={{
-              minWidth: isMobile ? 60 : 85,
-              px: isMobile ? 1 : 1.5,
-              fontSize: isMobile ? "0.8rem" : "0.9rem",
+              minWidth: isMobile ? 48 : 85,
+              px: 1.25,
+              fontSize: "1rem"
             }}
           >
-            Good (3)
+            Good {isMobile ? "" : "(3)"}
           </Button>
           <Button
             variant="contained"
@@ -82,12 +85,13 @@ function ReviewModal({ open, setOpen, handlePerformanceReview, isMobile }) {
             }}
             size={isMobile ? "small" : "medium"}
             sx={{
-              minWidth: isMobile ? 60 : 85,
-              px: isMobile ? 1 : 1.5,
-              fontSize: isMobile ? "0.8rem" : "0.9rem",
+              minWidth: isMobile ? 48 : 85,
+              px: 1.25,
+              fontSize: "1rem"
             }}
           >
-            Easy (4)
+            Easy {isMobile ? "" : "(4)"}
+
           </Button>
         </Box>
       </Box>
