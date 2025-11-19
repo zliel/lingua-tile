@@ -49,7 +49,7 @@ function Signup() {
 
   const signupMutation = useMutation({
     mutationFn: (newUser) =>
-      axios.post(`${process.env.REACT_APP_API_BASE}/api/users/signup`, newUser),
+      axios.post(`${import.meta.env.VITE_APP_API_BASE}/api/users/signup`, newUser),
     onSuccess: () => {
       showSnackbar("Account created successfully", "success");
       navigate("/login");

@@ -17,7 +17,7 @@ function Login() {
   const loginMutation = useMutation({
     mutationFn: (credentials) =>
       axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/auth/login`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
         credentials,
       ),
     onSuccess: (response) => {

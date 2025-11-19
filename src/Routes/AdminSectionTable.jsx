@@ -34,7 +34,7 @@ const AdminSectionTable = () => {
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
       );
 
       return response.data;
@@ -50,7 +50,7 @@ const AdminSectionTable = () => {
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
       );
 
       return response.data;
@@ -66,7 +66,7 @@ const AdminSectionTable = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `${process.env.REACT_APP_API_BASE}/api/sections/update/${editingSectionId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/update/${editingSectionId}`,
         editedSection,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
@@ -90,7 +90,7 @@ const AdminSectionTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (sectionId) => {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE}/api/sections/delete/${sectionId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/delete/${sectionId}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -113,7 +113,7 @@ const AdminSectionTable = () => {
   const addMutation = useMutation({
     mutationFn: async (section) => {
       await axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/sections/create`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/create`,
         section,
         {
           headers: { Authorization: `Bearer ${authData.token}` },

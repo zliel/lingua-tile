@@ -23,7 +23,7 @@ function Profile() {
     queryKey: ["user", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/users/`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -57,7 +57,7 @@ function Profile() {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE}/api/users/delete/${user._id}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${user._id}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },

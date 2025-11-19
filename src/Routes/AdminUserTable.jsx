@@ -32,7 +32,7 @@ const AdminUserTable = () => {
     queryKey: ["users", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/users/admin/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/admin/all`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -65,7 +65,7 @@ const AdminUserTable = () => {
   const updateMutation = useMutation({
     mutationFn: async (userId) => {
       await axios.put(
-        `${process.env.REACT_APP_API_BASE}/api/users/update/${userId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${userId}`,
         editedUser,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
@@ -89,7 +89,7 @@ const AdminUserTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (userId) => {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE}/api/users/delete/${userId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${userId}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },

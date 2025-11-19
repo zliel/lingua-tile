@@ -35,7 +35,7 @@ const FlashcardList = ({ lessonId }) => {
     queryKey: ["flashcards", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/cards/lesson/${lessonId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/lesson/${lessonId}`,
       );
       return response.data;
     },

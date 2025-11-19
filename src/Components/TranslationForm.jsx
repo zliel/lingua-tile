@@ -17,7 +17,7 @@ function TranslationForm() {
   useEffect(() => {
     const translateText = setTimeout(async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
       );
       setTranslatedText(response.data.translatedText);
     }, 1000);

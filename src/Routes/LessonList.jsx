@@ -31,7 +31,7 @@ const LessonList = () => {
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -52,7 +52,7 @@ const LessonList = () => {
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -74,7 +74,7 @@ const LessonList = () => {
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/reviews`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },

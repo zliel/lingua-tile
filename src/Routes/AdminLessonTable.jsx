@@ -37,7 +37,7 @@ const AdminLessonTable = () => {
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
       );
 
       return response.data;
@@ -53,7 +53,7 @@ const AdminLessonTable = () => {
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/sections/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
       );
 
       return response.data;
@@ -69,7 +69,7 @@ const AdminLessonTable = () => {
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/cards/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/all`,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
         },
@@ -88,7 +88,7 @@ const AdminLessonTable = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
         editedLesson,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
@@ -112,7 +112,7 @@ const AdminLessonTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (lessonId) => {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/delete/${lessonId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/delete/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -135,7 +135,7 @@ const AdminLessonTable = () => {
   const addMutation = useMutation({
     mutationFn: async (lesson) => {
       await axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/create`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/create`,
         lesson,
         {
           headers: { Authorization: `Bearer ${authData.token}` },

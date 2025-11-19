@@ -21,7 +21,7 @@ const useLessonReview = (
     mutationFn: async () => {
       setModalLoading(true);
       await axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/review`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
         { lesson_id: lessonId, overall_performance: overallPerformance },
         {
           headers: { Authorization: `Bearer ${authData.token}` },

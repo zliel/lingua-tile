@@ -7,7 +7,7 @@ import {
   ThemeProvider,
 } from "@mui/material";
 
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { useRoutes } from "react-router";
 import NavBar from "./Components/NavBar";
 import { BrowserRouter } from "react-router-dom";
@@ -68,7 +68,7 @@ const darkTheme = createTheme({
   },
 });
 
-function App() {
+function App(): JSX.Element {
   const startingTheme =
     localStorage.getItem("theme") === "dark" ? darkTheme : lightTheme;
   const [theme, setTheme] = useState(startingTheme);

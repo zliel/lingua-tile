@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     }
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/auth/check-admin`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/auth/check-admin`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/auth/check-admin`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

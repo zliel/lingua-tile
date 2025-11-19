@@ -25,7 +25,7 @@ function UpdateProfile() {
     queryKey: ["user", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/users`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users`,
         {
           headers: {
             Authorization: `Bearer ${authData.token}`,
@@ -50,7 +50,7 @@ function UpdateProfile() {
   const updateMutation = useMutation({
     mutationFn: async (updatedUser) => {
       await axios.put(
-        `${process.env.REACT_APP_API_BASE}/api/users/update/${user._id}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
         updatedUser,
         {
           headers: {

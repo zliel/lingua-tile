@@ -40,7 +40,7 @@ const PracticeLesson = () => {
     queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/lessons/${lessonId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },

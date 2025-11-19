@@ -34,7 +34,7 @@ const AdminCardTable = () => {
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE}/api/cards/all`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/all`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -56,8 +56,8 @@ const AdminCardTable = () => {
     queryKey: ["lessonGroups", authData?.token],
     queryFn: async () => {
       const [lessonsResponse, sectionsResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/lessons/all`),
-        axios.get(`${process.env.REACT_APP_API_BASE}/api/sections/all`),
+        axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`),
+        axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/sections/all`),
       ]);
 
       const lessons = lessonsResponse.data;
@@ -87,7 +87,7 @@ const AdminCardTable = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `${process.env.REACT_APP_API_BASE}/api/cards/update/${editingCardId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/update/${editingCardId}`,
         editedCard,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
@@ -111,7 +111,7 @@ const AdminCardTable = () => {
   const deleteMutation = useMutation({
     mutationFn: async (cardId) => {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE}/api/cards/delete/${cardId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/delete/${cardId}`,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
         },
@@ -133,7 +133,7 @@ const AdminCardTable = () => {
   const addMutation = useMutation({
     mutationFn: async (newCard) => {
       await axios.post(
-        `${process.env.REACT_APP_API_BASE}/api/cards/create`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/create`,
         newCard,
         {
           headers: { Authorization: `Bearer ${authData.token}` },
