@@ -1,8 +1,9 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import Logo from "../assets/LinguaTile Logo.png";
 
 function Home() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Box
       sx={{
@@ -10,6 +11,7 @@ function Home() {
         width: "100%",
         margin: "auto",
         display: "flex",
+        padding: 2,
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
@@ -22,14 +24,14 @@ function Home() {
           marginTop: 5,
           display: "block",
           marginBottom: 2,
-          transition: "transform 0.3s ease",
+          transition: isMobile ? "" : "transform 0.3s ease",
           "&:hover": {
-            transform: "scale(1.1)",
+            transform: isMobile ? "" : "scale(1.1)",
           },
         }}
         src={Logo}
       />
-      <Typography variant={"h6"} sx={{ textAlign: "center" }}>
+      <Typography sx={{ textAlign: "center", fontSize: isMobile ? "1.2rem" : "1.5rem" }}>
         Welcome to LinguaTile, a learning platform focused on the Japanese
         language.
       </Typography>
