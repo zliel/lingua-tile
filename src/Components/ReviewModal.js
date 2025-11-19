@@ -1,9 +1,47 @@
-import { Box, Button, IconButton, Modal, Typography, useTheme, useMediaQuery } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, IconButton, Modal, Typography, CircularProgress, useTheme, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import useLessonReview from "../hooks/useLessonReview";
 
-function ReviewModal({ open, setOpen, handlePerformanceReview }) {
+function ReviewModal({ open, setOpen, lessonId }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [isLoading, setIsLoading] = useState(false);
+  const { handlePerformanceReview } = useLessonReview(
+    lessonId,
+    open,
+    setOpen,
+    setIsLoading
+  );
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (open && !isLoading) {
+        switch (event.key) {
+          case "1":
+            handlePerformanceReview(0.1);
+            break;
+          case "2":
+            handlePerformanceReview(0.45);
+            break;
+          case "3":
+            handlePerformanceReview(0.7);
+            break;
+          case "4":
+            handlePerformanceReview(0.9);
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [open, handlePerformanceReview]);
+
 
   const reviewOptions = [
     { label: "Again", value: 0.1, keyBinding: isMobile ? "" : "(1)" },
@@ -11,6 +49,7 @@ function ReviewModal({ open, setOpen, handlePerformanceReview }) {
     { label: "Good", value: 0.7, keyBinding: isMobile ? "" : "(3)" },
     { label: "Easy", value: 0.9, keyBinding: isMobile ? "" : "(4)" },
   ]
+
   return (
     <Modal open={open}>
       <Box
