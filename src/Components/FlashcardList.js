@@ -124,7 +124,7 @@ const FlashcardList = ({ lessonId }) => {
         alignItems: "center",
         justifyContent: "center",
         mt: isMobile ? 2 : 4,
-        width: isMobile ? "100vw" : "auto",
+        width: isMobile ? "100%" : "auto",
         px: isMobile ? 1 : 0,
       }}
     >
