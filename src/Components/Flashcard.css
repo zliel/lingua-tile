@@ -56,6 +56,9 @@
     min-height: 300px;
     max-height: 350px;
   }
+  .flashcard:hover {
+  transform: none;
+}
   .flashcard-front,
   .flashcard-back {
     min-height: 250px;

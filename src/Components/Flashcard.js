@@ -83,9 +83,9 @@ const Flashcard = ({
                 backgroundColor: isDarkMode
                   ? theme.palette.grey[900]
                   : theme.palette.grey[100],
-                transition: "transform 0.3s ease",
+                transition: isMobile ? "" : "transform 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.1)",
+                  transform: isMobile ? "" : "scale(1.1)",
                 },
               }}
               elevation={8}
