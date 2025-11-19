@@ -28,12 +28,6 @@ const FlashcardList = ({ lessonId }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { handlePerformanceReview } = useLessonReview(
-    lessonId,
-    modalOpen,
-    setModalOpen,
-  );
-
   const {
     data: flashcards = [],
     isLoading,
@@ -188,7 +182,7 @@ const FlashcardList = ({ lessonId }) => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        handlePerformanceReview={handlePerformanceReview}
+        lessonId={lessonId}
       />
     </Box>
   );
