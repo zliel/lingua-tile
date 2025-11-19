@@ -4,16 +4,54 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./SnackbarContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-const AuthContext = createContext();
+interface AuthData {
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+  token: string;
+  username: string | null;
+}
 
-export const useAuth = () => useContext(AuthContext);
+interface AuthContextType {
+  authIsLoading: boolean;
+  authData: AuthData | null;
+  login: (data: { token: string; username: string }, callback?: () => void) => void;
+  logout: (callback?: () => void) => void;
+  checkAdmin: () => Promise<boolean>;
+}
 
-export const AuthProvider = ({ children }) => {
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const fetchAuthState = async () => {
+  const login = (data: { token: string; username: string }, callback?: () => void) => {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("username", data.username);
+    queryClient.invalidateQueries({ queryKey: ["authState"] });
+
+    setTimeout(() => {
+      if (callback) callback();
+    }, 350);
+  };
+
+  const logout = (callback?: () => void) => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    queryClient.invalidateQueries({ queryKey: ["authState"] });
+    if (callback) callback();
+  };
+
+  const fetchAuthState = async (): Promise<AuthData> => {
     const token = localStorage.getItem("token");
     if (!token) {
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
@@ -43,38 +81,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const { data: authData, isLoading: authIsLoading } = useQuery({
+  const { data: authData, isLoading: authIsLoading, error } = useQuery({
     queryKey: ["authState"],
     queryFn: fetchAuthState,
-    onError: (error) => {
-      if (error.response?.status === 401) {
-        showSnackbar("You've been logged out, please sign in again.", "error");
-        logout(() => navigate("/login"));
-      }
-    },
-    onSuccess: (data) => {
-      console.dir(data);
-    },
   });
 
-  const login = (data, callback) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("username", data.username);
-    queryClient.invalidateQueries("authState");
+  if (error && (error as any).response?.status === 401) {
+    showSnackbar("You've been logged out, please sign in again.", "error");
+    logout(() => navigate("/login"));
+  }
 
-    setTimeout(() => {
-      if (callback) callback();
-    }, 350);
-  };
-
-  const logout = (callback) => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    queryClient.invalidateQueries("authState");
-    if (callback) callback();
-  };
-
-  const checkAdmin = useCallback(async () => {
+  const checkAdmin = useCallback(async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
     if (token) {
       const response = await axios.get(
@@ -90,7 +107,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authIsLoading, authData, login, logout, checkAdmin }}
+      value={{ authIsLoading, authData: authData ?? null, login, logout, checkAdmin }}
     >
       {children}
     </AuthContext.Provider>
@@ -98,3 +115,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export default AuthContext;
+

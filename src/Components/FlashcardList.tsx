@@ -14,9 +14,9 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
-import ReviewModal from "../Components/ReviewModal";
+import ReviewModal from "./ReviewModal";
 
-const FlashcardList = ({ lessonId }) => {
+const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -84,7 +84,7 @@ const FlashcardList = ({ lessonId }) => {
     setTimeout(() => {
       if (currentCardIndex + 1 === flashcards.length) {
         // NOTE: Disallows reviewing when not logged in
-        if (authData.isLoggedIn) {
+        if (authData?.isLoggedIn) {
           showSnackbar("You have reached the end of the lesson!", "success");
           setHasFinished(true);
           setCurrentCardIndex(0);

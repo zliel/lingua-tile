@@ -16,22 +16,16 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
-import useLessonReview from "../hooks/useLessonReview";
 import ReviewModal from "../Components/ReviewModal";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
+  console.log("Lesson ID:", lessonId);
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const { handlePerformanceReview } = useLessonReview(
-    lessonId,
-    modalOpen,
-    setModalOpen,
-  );
 
   const {
     data: lesson,
@@ -131,7 +125,7 @@ const GrammarLesson = () => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        handlePerformanceReview={handlePerformanceReview}
+        lessonId={lessonId}
       />
     </Box>
   );

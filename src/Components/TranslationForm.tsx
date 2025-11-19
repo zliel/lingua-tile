@@ -25,7 +25,7 @@ function TranslationForm() {
     return () => clearTimeout(translateText);
   }, [srcText]);
 
-  function handleInputChange(e) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSrcText(e.target.value);
   }
 
@@ -46,7 +46,7 @@ function TranslationForm() {
         gap={"2em"}
         paddingTop={"1.5em"}
       >
-        <Grid item>
+        <Grid>
           <TextField
             id={"src-text-input"}
             name={"src-text"}
@@ -56,14 +56,18 @@ function TranslationForm() {
             onChange={handleInputChange}
           />
         </Grid>
-        <Grid item>
+        <Grid>
           <TextField
             id={"translated-text-output"}
             name={"translated-text"}
             label={"Translated Text"}
             type={"text"}
             value={translatedText}
-            inputProps={{ readOnly: true }}
+            slotProps={{
+              input: {
+                readOnly: true,
+              },
+            }}
             color={"secondary"}
           />
         </Grid>

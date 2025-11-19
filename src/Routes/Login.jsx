@@ -58,10 +58,10 @@ function Login() {
         style={{ width: "100%" }}
       >
         <Grid container direction={"column"} spacing={2} alignItems={"center"}>
-          <Grid item>
+          <Grid>
             <Typography variant={"h4"}>Login</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               label={"Username"}
               variant={"outlined"}
@@ -69,7 +69,7 @@ function Login() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               label={"Password"}
               type={"password"}
@@ -79,7 +79,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <LoadingButton
               loading={loginMutation.isPending}
               variant={"contained"}

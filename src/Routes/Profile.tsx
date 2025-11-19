@@ -17,7 +17,7 @@ function Profile() {
 
   const {
     data: user,
-    isError,
+    error,
     isLoading,
   } = useQuery({
     queryKey: ["user", authData?.token],
@@ -25,25 +25,37 @@ function Profile() {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
     },
-    onError: (error) => {
+    enabled: !!authData && !!authData.isLoggedIn,
+  });
+
+  // Handle query errors
+  useEffect(() => {
+    if (!error) return;
+    if (axios.isAxiosError(error) && error.response) {
       if (error.response.status === 401) {
         showSnackbar("Session expired. Please log in again.", "error");
         logout(() => navigate("/home"));
       } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
+        showSnackbar(
+          `Error: ${error.response.data?.detail || error.message}`,
+          "error"
+        );
       }
-    },
-    onSuccess: () => {
-      setShowLoaded(true);
+    } else {
+      showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
+    }
+  }, [error, logout, navigate, showSnackbar]);
+
+  useEffect(() => {
+    if (user && user.username) {
       localStorage.setItem("username", user.username);
-    },
-    enabled: !!authData && !!authData.isLoggedIn,
-  });
+    }
+  }, [user]);
 
   const handleUpdate = () => {
     // Redirect to update profile page
@@ -59,30 +71,42 @@ function Profile() {
       await axios.delete(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${user._id}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("Profile deleted successfully", "success");
-      queryClient.invalidateQueries(["user", authData.token]);
+      queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
       logout(() => navigate("/home"));
     },
-    onError: (error) => {
-      if (error.response.status === 401) {
-        showSnackbar("Session expired. Please log in again.", "error");
-      } else if (error.response.status === 403) {
-        showSnackbar(
-          "You do not have permission to delete this profile.",
-          "error",
-        );
-      } else if (error.response.status === 404) {
-        showSnackbar("Profile not found.", "error");
-      } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
-      }
-    },
   });
+
+  useEffect(() => {
+    if (deleteMutation.isError) {
+      const error = deleteMutation.error;
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) {
+          showSnackbar("Session expired. Please log in again.", "error");
+          logout(() => navigate("/home"));
+        } else if (error.response.status === 403) {
+          showSnackbar(
+            "You do not have permission to delete this profile.",
+            "error",
+          );
+        } else if (error.response.status === 404) {
+          showSnackbar("Profile not found.", "error");
+        } else {
+          showSnackbar(
+            `Error: ${error.response.data?.detail || error.message}`,
+            "error"
+          );
+        }
+      } else {
+        showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
+      }
+    }
+  }, [deleteMutation.isError, deleteMutation.error, logout, navigate, showSnackbar]);
 
   const handleDeleteConfirmation = async () => {
     deleteMutation.mutate();
@@ -107,7 +131,7 @@ function Profile() {
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <Typography variant="h6" textAlign="center">
         Error loading profile data.
@@ -168,7 +192,7 @@ function Profile() {
             Username: {localStorage.getItem("username") || ""}
           </Typography>
           <Grid container spacing={2} justifyContent="center">
-            <Grid item>
+            <Grid>
               <Button
                 variant="contained"
                 color="primary"
@@ -177,7 +201,7 @@ function Profile() {
                 Update Profile
               </Button>
             </Grid>
-            <Grid item>
+            <Grid>
               <Button
                 variant="contained"
                 color="warning"

@@ -12,13 +12,21 @@ import {
 import { useTheme } from "@mui/material/styles";
 import "./Flashcard.css";
 
+interface FlashcardProps {
+  frontText: string;
+  backText: string;
+  showTranslation: boolean;
+  onShowTranslation: () => void;
+  onNextCard: () => void;
+}
+
 const Flashcard = ({
   frontText,
   backText,
   showTranslation,
   onShowTranslation,
   onNextCard,
-}) => {
+}: FlashcardProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isDarkMode = theme.palette.mode === "dark";
@@ -43,7 +51,7 @@ const Flashcard = ({
   }, [onNextCard]);
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent) => {
       // Handle space for flipping the card
       if (event.code === "Space") {
         event.preventDefault();
@@ -70,11 +78,12 @@ const Flashcard = ({
       timeout={300}
       mountOnEnter
       easing={"ease"}
-      sx={{
-        transform: slideIn ? "translateX(100vw)" : "translateX(-100vw)",
-      }}
     >
-      <div>
+      <div
+        style={{
+          transform: slideIn ? "translateX(100vw)" : "translateX(-100vw)",
+        }}
+      >
         <Fade in={slideIn} timeout={300} easing={"ease"}>
           <div>
             <Card

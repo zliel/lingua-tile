@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   Dialog,
@@ -8,7 +7,13 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-function ConfirmationDialog({ open, onClose, onConfirm, title, message }) {
+function ConfirmationDialog({ open, onClose, onConfirm, title, message }: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+}) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>

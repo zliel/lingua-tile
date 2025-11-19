@@ -91,10 +91,10 @@ function Signup() {
         style={{ width: "100%" }}
       >
         <Grid container direction={"column"} spacing={2} alignItems={"center"}>
-          <Grid item>
+          <Grid>
             <Typography variant={"h4"}>Sign Up</Typography>
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               label={"Username"}
               variant={"outlined"}
@@ -103,7 +103,7 @@ function Signup() {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               label={"Password"}
               type={"password"}
@@ -114,7 +114,7 @@ function Signup() {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               label={"Confirm Password"}
               type={"password"}
@@ -125,7 +125,7 @@ function Signup() {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <LoadingButton
               loading={signupMutation.isPending}
               variant={"contained"}

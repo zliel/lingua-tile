@@ -19,7 +19,7 @@ function UpdateProfile() {
 
   const {
     data: user,
-    isError,
+    error,
     isLoading,
   } = useQuery({
     queryKey: ["user", authData?.token],
@@ -28,7 +28,7 @@ function UpdateProfile() {
         `${import.meta.env.VITE_APP_API_BASE}/api/users`,
         {
           headers: {
-            Authorization: `Bearer ${authData.token}`,
+            Authorization: `Bearer ${authData?.token}`,
           },
         },
       );
@@ -36,16 +36,25 @@ function UpdateProfile() {
       setUsername(response.data.username);
       return response.data;
     },
-    onError: (error) => {
+    enabled: !!authData && !!authData.isLoggedIn,
+  });
+
+  if (error) {
+    if (axios.isAxiosError(error) && error.response) {
       if (error.response.status === 401) {
         showSnackbar("Session expired. Please log in again.", "error");
         logout(() => navigate("/home"));
       } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
+        showSnackbar(
+          `Error: ${error.response.data?.detail || error.message}`,
+          "error",
+        );
       }
-    },
-    enabled: !!authData && !!authData.isLoggedIn,
-  });
+    } else {
+      showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
+    }
+  }
+
 
   const updateMutation = useMutation({
     mutationFn: async (updatedUser) => {
@@ -54,7 +63,7 @@ function UpdateProfile() {
         updatedUser,
         {
           headers: {
-            Authorization: `Bearer ${authData.token}`,
+            Authorization: `Bearer ${authData?.token}`,
           },
         },
       );
@@ -63,19 +72,30 @@ function UpdateProfile() {
       showSnackbar("Profile updated successfully", "success");
       logout(() => navigate("/login"));
     },
-    onError: (error) => {
-      if (error.response.status === 401) {
-        showSnackbar("Invalid token. Please log in again.", "error");
-        logout(() => navigate("/login"));
-      } else if (error.response.status === 403) {
-        showSnackbar("Unauthorized to update user", "error");
-      } else if (error.response.status === 404) {
-        showSnackbar("User not found", "error");
-      } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
-      }
-    },
   });
+
+  if (updateMutation.error) {
+    const error = updateMutation.error;
+    if (axios.isAxiosError(error) && error.response) {
+      switch (error.response.status) {
+        case 401:
+          showSnackbar("Invalid token. Please log in again.", "error");
+          logout(() => navigate("/login"));
+          break;
+        case 403:
+          showSnackbar("Unauthorized to update user", "error");
+          break;
+        case 404:
+          showSnackbar("User not found", "error");
+          break;
+        default:
+          showSnackbar(
+            `Error: ${error.response.data?.detail || error.message}`,
+            "error",
+          );
+      }
+    }
+  }
 
   const isValidPassword = () => {
     const conditions = {
@@ -90,7 +110,7 @@ function UpdateProfile() {
       match: password === confirmPassword,
     };
 
-    const messages = {
+    const messages: Record<string, string> = {
       length: "Password must be between 8 and 64 characters long",
       validChars:
         "Password must only include letters, numbers, special characters, and spaces",
@@ -170,7 +190,7 @@ function UpdateProfile() {
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <Typography variant="h6" textAlign="center">
         Failed to load profile data.
@@ -208,7 +228,7 @@ function UpdateProfile() {
           alignItems={"center"}
           direction={"column"}
         >
-          <Grid item>
+          <Grid>
             <TextField
               variant={"outlined"}
               label="New Username"
@@ -216,7 +236,7 @@ function UpdateProfile() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               variant={"outlined"}
               label="New Password"
@@ -224,7 +244,7 @@ function UpdateProfile() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
               variant={"outlined"}
               label="Confirm New Password"
@@ -232,7 +252,7 @@ function UpdateProfile() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </Grid>
-          <Grid item>
+          <Grid>
             <LoadingButton
               variant="contained"
               color="secondary"

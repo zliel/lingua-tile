@@ -30,7 +30,7 @@ function About() {
     <Container maxWidth="md" sx={{ p: 4 }}>
       <Paper elevation={4} sx={{ p: 4 }}>
         <Grid container direction="column" spacing={3}>
-          <Grid item>
+          <Grid>
             <Box display="flex" alignItems="center" gap={2}>
               <LanguageIcon fontSize="large" color="primary" />
               <Typography variant="h3" color={primaryHeaderColor}>
@@ -41,7 +41,7 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Typography variant="h5" color={secondaryHeaderColor} gutterBottom>
               Mission Statement
             </Typography>
@@ -55,7 +55,7 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Typography variant="h5" color={primaryHeaderColor} gutterBottom>
               Why?
             </Typography>
@@ -71,12 +71,12 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Typography variant="h5" color={secondaryHeaderColor} gutterBottom>
               Tech Stack
             </Typography>
             <Grid container spacing={4}>
-              <Grid item xs={12} sm={6}>
+              <Grid xs={12} sm={6}>
                 <Typography variant="h6" color={primaryHeaderColor}>
                   <CodeIcon
                     sx={{ mr: 0.5, mb: 0.25, verticalAlign: "middle" }}
@@ -110,7 +110,7 @@ function About() {
                   </ListItem>
                 </List>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid xs={12} sm={6}>
                 <Typography variant="h6" color={primaryHeaderColor}>
                   <CodeIcon
                     sx={{ mr: 0.5, mb: 0.25, verticalAlign: "middle" }}
@@ -149,7 +149,7 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Typography variant="h5" color={primaryHeaderColor} gutterBottom>
               Color Scheme (why green and purple?)
             </Typography>
@@ -161,7 +161,7 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Typography variant="h5" color={secondaryHeaderColor} gutterBottom>
               What’s Next?
             </Typography>
@@ -175,7 +175,7 @@ function About() {
 
           <Divider />
 
-          <Grid item>
+          <Grid>
             <Box display="flex" alignItems="center" gap={1}>
               <GitHub
                 fontSize="large"

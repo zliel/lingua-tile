@@ -13,7 +13,6 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import TranslationQuestion from "../Components/TranslationQuestion";
 import "./PracticeLesson.css";
-import useLessonReview from "../hooks/useLessonReview";
 import ReviewModal from "../Components/ReviewModal";
 
 const PracticeLesson = () => {
@@ -25,12 +24,6 @@ const PracticeLesson = () => {
   const [animationClass, setAnimationClass] = useState("slide-in");
   const nodeRef = useRef(null);
   const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
-
-  const { handlePerformanceReview } = useLessonReview(
-    lessonId,
-    modalOpen,
-    setModalOpen,
-  );
 
   const {
     data: lesson,
@@ -123,7 +116,7 @@ const PracticeLesson = () => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        handlePerformanceReview={handlePerformanceReview}
+        lessonId={lessonId}
       />
     </Box>
   );

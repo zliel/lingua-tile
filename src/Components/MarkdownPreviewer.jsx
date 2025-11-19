@@ -4,7 +4,7 @@ import { Box, TextField, Grid } from "@mui/material";
 const MarkdownPreviewer = ({ value, onChange }) => {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
+      <Grid xs={6}>
         <TextField
           label="Content"
           value={value}
@@ -16,7 +16,7 @@ const MarkdownPreviewer = ({ value, onChange }) => {
           fullWidth
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid xs={6}>
         <Box
           sx={{
             border: "1px solid #ccc",

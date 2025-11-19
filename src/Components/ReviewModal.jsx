@@ -18,7 +18,6 @@ function ReviewModal({ open, setOpen, lessonId }) {
   const [isLoading, setIsLoading] = useState(false);
   const { handlePerformanceReview } = useLessonReview(
     lessonId,
-    open,
     setOpen,
     setIsLoading,
   );
@@ -124,7 +123,7 @@ function ReviewModal({ open, setOpen, lessonId }) {
                 color="primary"
                 sx={getButtonStyle(isMobile)}
                 onClick={() => {
-                  handlePerformanceReview(option.value, option.label);
+                  handlePerformanceReview(option.value);
                 }}
               >
                 {option.label} {option.keyBinding}

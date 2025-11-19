@@ -6,10 +6,9 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
 const useLessonReview = (
-  lessonId,
-  modalOpen,
-  setModalOpen,
-  setModalLoading,
+  lessonId: string,
+  setModalOpen: (open: boolean) => void,
+  setModalLoading: (loading: boolean) => void
 ) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
@@ -37,13 +36,13 @@ const useLessonReview = (
       showSnackbar("Lesson marked as complete", "success");
       setModalLoading(false);
       setModalOpen(false);
-      queryClient.invalidateQueries("lessons");
+      queryClient.invalidateQueries("lessons" as any);
       navigate("/lessons");
     },
   });
 
   const handlePerformanceReview = useCallback(
-    (rating) => {
+    (rating: number) => {
       setOverallPerformance(rating);
       handleLessonComplete.mutate();
     },
