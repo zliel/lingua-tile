@@ -1,8 +1,13 @@
-import { Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material"
+import {
+  Box,
+  Button,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
-
 
 export const LessonListItem = ({ lesson, review }) => {
   const theme = useTheme();
@@ -17,6 +22,7 @@ export const LessonListItem = ({ lesson, review }) => {
     practice: "/practice",
     grammar: "/grammar",
   };
+
   return (
     <Box
       key={lesson._id}
@@ -30,10 +36,11 @@ export const LessonListItem = ({ lesson, review }) => {
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["a200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
-          ? theme.palette.primary.contrastText
-          : theme.palette.secondary.contrastText
-          }`,
+        boxShadow: `0px 0px 5px 0px ${
+          theme.palette.mode === "dark"
+            ? theme.palette.primary.contrastText
+            : theme.palette.secondary.contrastText
+        }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
@@ -41,10 +48,7 @@ export const LessonListItem = ({ lesson, review }) => {
       }}
     >
       <Box>
-        <Typography
-          variant="h6"
-          fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}
-        >
+        <Typography variant="h6" fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}>
           {lesson.title}
         </Typography>
         {review && (
@@ -66,8 +70,7 @@ export const LessonListItem = ({ lesson, review }) => {
         variant="contained"
         color={categoryColors[lesson.category]}
         sx={{
-          color:
-            theme.palette.mode === "dark" ? "white" : "black",
+          color: theme.palette.mode === "dark" ? "white" : "black",
           mt: 2,
         }}
         component={Link}
@@ -76,6 +79,5 @@ export const LessonListItem = ({ lesson, review }) => {
         {lesson.category}
       </Button>
     </Box>
-  )
-}
-
+  );
+};
