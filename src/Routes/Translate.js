@@ -1,5 +1,4 @@
-import React from "react";
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import TranslationForm from "../Components/TranslationForm";
 
 function Translate() {
