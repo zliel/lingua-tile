@@ -15,7 +15,14 @@ export const LessonListSkeleton = () => {
   const skeletonCount = isMobile ? 10 : 25;
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 2 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: 2,
+      }}
+    >
       <Typography variant="h4" gutterBottom>
         Loading lessons...
       </Typography>
@@ -52,7 +59,14 @@ export const LessonListSkeleton = () => {
           ))}
         </Box>
       ) : (
-        <Box sx={{ width: "70%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <Box
+          sx={{
+            width: "70%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <Skeleton
             variant="rectangular"
             animation="wave"
@@ -73,7 +87,14 @@ export const LessonListSkeleton = () => {
           />
           <Grid container spacing={2} sx={{ width: "100%" }}>
             {Array.from({ length: skeletonCount }).map((_, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index} sx={{ width: '30%' }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={index}
+                sx={{ width: "30%" }}
+              >
                 <Skeleton
                   variant="rectangular"
                   animation="wave"

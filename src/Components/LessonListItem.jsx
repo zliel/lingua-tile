@@ -37,10 +37,11 @@ export const LessonListItem = ({ lesson, review }) => {
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["a200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
-          ? theme.palette.primary.contrastText
-          : theme.palette.secondary.contrastText
-          }`,
+        boxShadow: `0px 0px 5px 0px ${
+          theme.palette.mode === "dark"
+            ? theme.palette.primary.contrastText
+            : theme.palette.secondary.contrastText
+        }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
