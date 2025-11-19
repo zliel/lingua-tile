@@ -1,10 +1,16 @@
-import React from "react";
 import { Box, Button, IconButton, Modal, Typography, useTheme, useMediaQuery } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 function ReviewModal({ open, setOpen, handlePerformanceReview }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const reviewOptions = [
+    { label: "Again", value: 0.1, keyBinding: isMobile ? "" : "(1)" },
+    { label: "Hard", value: 0.45, keyBinding: isMobile ? "" : "(2)" },
+    { label: "Good", value: 0.7, keyBinding: isMobile ? "" : "(3)" },
+    { label: "Easy", value: 0.9, keyBinding: isMobile ? "" : "(4)" },
+  ]
   return (
     <Modal open={open}>
       <Box
@@ -36,67 +42,30 @@ function ReviewModal({ open, setOpen, handlePerformanceReview }) {
           How would you rate your performance?
         </Typography>
         <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }} gap={isMobile ? 2 : 2}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handlePerformanceReview(0.1);
-            }}
-            size={isMobile ? "small" : "medium"}
-            sx={{
-              minWidth: isMobile ? 48 : 85,
-              px: 1.25,
-              fontSize: isMobile ? "1rem" : "1rem",
-            }}
-          >
-            Again {isMobile ? "" : "(2)"}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handlePerformanceReview(0.45);
-            }}
-            size={isMobile ? "small" : "medium"}
-            sx={{
-              minWidth: isMobile ? 48 : 85,
-              px: 1.25,
-              fontSize: "1rem"
-            }}
-          >
-            Hard {isMobile ? "" : "(2)"}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handlePerformanceReview(0.7);
-            }}
-            size={isMobile ? "small" : "medium"}
-            sx={{
-              minWidth: isMobile ? 48 : 85,
-              px: 1.25,
-              fontSize: "1rem"
-            }}
-          >
-            Good {isMobile ? "" : "(3)"}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              handlePerformanceReview(0.9);
-            }}
-            size={isMobile ? "small" : "medium"}
-            sx={{
-              minWidth: isMobile ? 48 : 85,
-              px: 1.25,
-              fontSize: "1rem"
-            }}
-          >
-            Easy {isMobile ? "" : "(4)"}
-
-          </Button>
+          {reviewOptions.map((option) => (
+            <Button
+              key={option.label}
+              variant="contained"
+              color="primary"
+              sx={getButtonStyle(isMobile)}
+              onClick={() => {
+                handlePerformanceReview(option.value);
+                setOpen(false);
+              }}
+            >
+              {option.label} {option.keyBinding}
+            </Button>
+          ))}
         </Box>
       </Box>
     </Modal>
   );
 }
+
+const getButtonStyle = (isMobile) => ({
+  minWidth: isMobile ? 48 : 85,
+  px: 1.25,
+  fontSize: "1rem",
+});
 
 export default ReviewModal;
