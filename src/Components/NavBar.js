@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -96,6 +96,7 @@ function NavBar(props) {
 
       setPages(pagesToAdd);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authData, handleLogout, isMobile]);
 
   return (
