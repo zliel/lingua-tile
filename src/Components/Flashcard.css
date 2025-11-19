@@ -55,6 +55,7 @@
     min-width: 80vw;
     min-height: 300px;
     max-height: 350px;
+    margin-bottom: 0.1em;
   }
   .flashcard:hover {
   transform: none;
