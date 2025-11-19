@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -40,14 +40,12 @@ function NavBar(props) {
     { name: "Translate", endpoint: "/translate" },
   ]);
 
-  const adminPages = useMemo(() => {
-    return [
-      { name: "User Table", endpoint: "/admin-users" },
-      { name: "Card Table", endpoint: "/admin-cards" },
-      { name: "Lesson Table", endpoint: "/admin-lessons" },
-      { name: "Section Table", endpoint: "/admin-sections" },
-    ];
-  }, []);
+  const adminPages = [
+    { name: "User Table", endpoint: "/admin-users" },
+    { name: "Card Table", endpoint: "/admin-cards" },
+    { name: "Lesson Table", endpoint: "/admin-lessons" },
+    { name: "Section Table", endpoint: "/admin-sections" },
+  ];
 
   const handleMenuOpen = (event) => {
     setMenuIsOpen(!menuIsOpen);
@@ -98,7 +96,8 @@ function NavBar(props) {
 
       setPages(pagesToAdd);
     }
-  }, [adminPages, authData, handleLogout, isMobile, pages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authData, handleLogout, isMobile]);
 
   return (
     <AppBar
@@ -135,6 +134,7 @@ function NavBar(props) {
                   theme.palette.mode === "dark"
                     ? theme.palette.primary.light
                     : theme.palette.primary.dark,
+                backdropFilter: isMobile ? "blur(5px)" : "none",
                 color: theme.palette.primary.contrastText,
               },
             },
@@ -149,7 +149,7 @@ function NavBar(props) {
               width: isMobile ? "150px" : "180px",
             }}
             role="presentation"
-            onclick={handleMenuClose}
+            onClick={handleMenuClose}
             onKeyDown={handleMenuClose}
           >
             {pages.map((page) => (

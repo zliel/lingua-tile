@@ -124,7 +124,6 @@ const PracticeLesson = () => {
         open={modalOpen}
         setOpen={setModalOpen}
         handlePerformanceReview={handlePerformanceReview}
-        isMobile={isMobile}
       />
     </Box>
   );

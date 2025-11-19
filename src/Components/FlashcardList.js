@@ -14,7 +14,6 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
-import useLessonReview from "../hooks/useLessonReview";
 import ReviewModal from "../Components/ReviewModal";
 
 const FlashcardList = ({ lessonId }) => {
@@ -27,12 +26,6 @@ const FlashcardList = ({ lessonId }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const { handlePerformanceReview } = useLessonReview(
-    lessonId,
-    modalOpen,
-    setModalOpen,
-  );
 
   const {
     data: flashcards = [],
@@ -124,7 +117,7 @@ const FlashcardList = ({ lessonId }) => {
         alignItems: "center",
         justifyContent: "center",
         mt: isMobile ? 2 : 4,
-        width: isMobile ? "100vw" : "auto",
+        width: isMobile ? "100%" : "auto",
         px: isMobile ? 1 : 0,
       }}
     >
@@ -166,7 +159,7 @@ const FlashcardList = ({ lessonId }) => {
                 mt: 1.1,
                 ml: isMobile ? 2.5 : 1,
                 "& .MuiLinearProgress-bar": {
-                  background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.dark})`,
+                  background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
                 },
               }}
             />
@@ -188,7 +181,7 @@ const FlashcardList = ({ lessonId }) => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        handlePerformanceReview={handlePerformanceReview}
+        lessonId={lessonId}
       />
     </Box>
   );

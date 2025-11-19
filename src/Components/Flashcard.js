@@ -7,7 +7,7 @@ import {
   Fade,
   Slide,
   Typography,
-  // useMediaQuery,
+  useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import "./Flashcard.css";
@@ -20,7 +20,7 @@ const Flashcard = ({
   onNextCard,
 }) => {
   const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isDarkMode = theme.palette.mode === "dark";
   const [isFlipped, setIsFlipped] = useState(false);
   const [slideIn, setSlideIn] = useState(true);
@@ -44,14 +44,14 @@ const Flashcard = ({
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      // Handle space and the number 1 for showing translation
-      if (["Space", "Digit1"].includes(event.code)) {
+      // Handle space for flipping the card
+      if (event.code === "Space") {
         event.preventDefault();
         return handleShowTranslation();
       }
 
       // Handle Enter and Right Arrow for next card
-      if (["Enter", "ArrowRight", "Digit2"].includes(event.code)) {
+      if (["Enter", "ArrowRight"].includes(event.code)) {
         event.preventDefault();
         return handleNextCard();
       }
@@ -83,9 +83,9 @@ const Flashcard = ({
                 backgroundColor: isDarkMode
                   ? theme.palette.grey[900]
                   : theme.palette.grey[100],
-                transition: "transform 0.3s ease",
+                transition: isMobile ? "" : "transform 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.1)",
+                  transform: isMobile ? "" : "scale(1.1)",
                 },
               }}
               elevation={8}
@@ -103,7 +103,10 @@ const Flashcard = ({
                     textAlign: "center",
                   }}
                 >
-                  <Typography variant="h5" component="div">
+                  <Typography
+                    component="div"
+                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                  >
                     {frontText}
                   </Typography>
                 </CardContent>
@@ -116,7 +119,10 @@ const Flashcard = ({
                     textAlign: "center",
                   }}
                 >
-                  <Typography variant="h5" component="div">
+                  <Typography
+                    component="div"
+                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                  >
                     {backText}
                   </Typography>
                 </CardContent>
@@ -126,6 +132,7 @@ const Flashcard = ({
                   display: "flex",
                   justifyContent: "space-between",
                   p: 2,
+                  gap: 2,
                   backgroundColor: theme.palette.action.hover,
                   borderTop: "1px solid",
                   borderColor: theme.palette.divider,
@@ -136,7 +143,12 @@ const Flashcard = ({
                   variant="contained"
                   color="primary"
                   onClick={handleShowTranslation}
-                  sx={{ m: "auto", width: "45%" }}
+                  sx={{
+                    m: "auto",
+                    height: "80%",
+                    width: "55%",
+                    fontSize: isMobile ? "0.8rem" : "1rem",
+                  }}
                 >
                   {showTranslation ? "Show Front" : "Show Back"}
                 </Button>
@@ -144,7 +156,12 @@ const Flashcard = ({
                   variant="contained"
                   color="secondary"
                   onClick={handleNextCard}
-                  sx={{ m: "auto", width: "45%" }}
+                  sx={{
+                    m: "auto",
+                    height: "80%",
+                    width: "55%",
+                    fontSize: isMobile ? "0.8rem" : "1rem",
+                  }}
                 >
                   Next Card
                 </Button>

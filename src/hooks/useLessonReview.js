@@ -1,12 +1,16 @@
-// src/hooks/useLessonComplete.js
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 
-const useLessonReview = (lessonId, modalOpen, setModalOpen) => {
+const useLessonReview = (
+  lessonId,
+  modalOpen,
+  setModalOpen,
+  setModalLoading,
+) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [overallPerformance, setOverallPerformance] = useState(0);
@@ -15,6 +19,7 @@ const useLessonReview = (lessonId, modalOpen, setModalOpen) => {
 
   const handleLessonComplete = useMutation({
     mutationFn: async () => {
+      setModalLoading(true);
       await axios.post(
         `${process.env.REACT_APP_API_BASE}/api/lessons/review`,
         { lesson_id: lessonId, overall_performance: overallPerformance },
@@ -25,10 +30,12 @@ const useLessonReview = (lessonId, modalOpen, setModalOpen) => {
     },
     onError: () => {
       showSnackbar("Failed to mark lesson as complete", "error");
+      setModalLoading(false);
       setModalOpen(false);
     },
     onSuccess: () => {
       showSnackbar("Lesson marked as complete", "success");
+      setModalLoading(false);
       setModalOpen(false);
       queryClient.invalidateQueries("lessons");
       navigate("/lessons");
@@ -42,34 +49,6 @@ const useLessonReview = (lessonId, modalOpen, setModalOpen) => {
     },
     [handleLessonComplete, setOverallPerformance],
   );
-
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (modalOpen) {
-        switch (event.key) {
-          case "1":
-            handlePerformanceReview(0.1);
-            break;
-          case "2":
-            handlePerformanceReview(0.45);
-            break;
-          case "3":
-            handlePerformanceReview(0.7);
-            break;
-          case "4":
-            handlePerformanceReview(0.9);
-            break;
-          default:
-            break;
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [modalOpen, handlePerformanceReview]);
 
   return { handlePerformanceReview };
 };

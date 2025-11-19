@@ -1,15 +1,13 @@
-import React from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import TranslationForm from "../Components/TranslationForm";
 
 function Translate() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <Box>
-      <Grid container justifyContent={"center"}>
-        <Grid item>
-          <TranslationForm />
-        </Grid>
-      </Grid>
+    <Box sx={{ padding: isMobile ? "1em" : "2em" }}>
+      <TranslationForm />
     </Box>
   );
 }
