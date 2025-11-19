@@ -14,7 +14,6 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
-import useLessonReview from "../hooks/useLessonReview";
 import ReviewModal from "../Components/ReviewModal";
 
 const FlashcardList = ({ lessonId }) => {

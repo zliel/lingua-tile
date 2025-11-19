@@ -40,7 +40,7 @@ function ReviewModal({ open, setOpen, lessonId }) {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [open, handlePerformanceReview]);
+  }, [open, handlePerformanceReview, isLoading]);
 
 
   const reviewOptions = [
@@ -64,7 +64,6 @@ function ReviewModal({ open, setOpen, lessonId }) {
           }}
         >
           <CircularProgress size="5rem"
-            tabIndex={-1}
             sx={{
               position: "absolute",
               top: "35%",
