@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-// import { Dayjs as dayjs } from "dayjs";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import { LessonListItem } from "../Components/LessonListItem";
 import { LessonListSkeleton } from "../Components/LessonListSkeleton";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
@@ -87,9 +86,6 @@ const LessonList = () => {
 
       return response.data;
     },
-    // onError: () => {
-    //   showSnackbar("Failed to fetch reviews", "error");
-    // },
     enabled: !!authData && !!authData.token,
   });
 

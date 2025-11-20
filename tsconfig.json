@@ -13,6 +13,8 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
     "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     /* Bundler mode */
     "moduleResolution": "node",
     "noEmit": true,
