@@ -14,7 +14,10 @@ interface AuthData {
 interface AuthContextType {
   authIsLoading: boolean;
   authData: AuthData | null;
-  login: (data: { token: string; username: string }, callback?: () => void) => void;
+  login: (
+    data: { token: string; username: string },
+    callback?: () => void,
+  ) => void;
   logout: (callback?: () => void) => void;
   checkAdmin: () => Promise<boolean>;
 }
@@ -34,7 +37,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const login = (data: { token: string; username: string }, callback?: () => void) => {
+  const login = (
+    data: { token: string; username: string },
+    callback?: () => void,
+  ) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
     queryClient.invalidateQueries({ queryKey: ["authState"] });
@@ -81,7 +87,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const { data: authData, isLoading: authIsLoading, error } = useQuery({
+  const {
+    data: authData,
+    isLoading: authIsLoading,
+    error,
+  } = useQuery({
     queryKey: ["authState"],
     queryFn: fetchAuthState,
   });
@@ -107,7 +117,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authIsLoading, authData: authData ?? null, login, logout, checkAdmin }}
+      value={{
+        authIsLoading,
+        authData: authData ?? null,
+        login,
+        logout,
+        checkAdmin,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -115,4 +131,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default AuthContext;
-

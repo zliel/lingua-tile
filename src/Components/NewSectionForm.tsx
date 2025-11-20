@@ -9,8 +9,17 @@ import {
 import { Lesson } from "@/types/lessons";
 import { NewSection } from "@/types/sections";
 
-const NewSectionForm = ({ lessons, onSubmit }: { lessons: Lesson[], onSubmit: (section: NewSection) => void }) => {
-  const [newSection, setNewSection] = useState<NewSection>({ name: "", lesson_ids: [] });
+const NewSectionForm = ({
+  lessons,
+  onSubmit,
+}: {
+  lessons: Lesson[];
+  onSubmit: (section: NewSection) => void;
+}) => {
+  const [newSection, setNewSection] = useState<NewSection>({
+    name: "",
+    lesson_ids: [],
+  });
 
   const handleAddSection = () => {
     onSubmit(newSection);

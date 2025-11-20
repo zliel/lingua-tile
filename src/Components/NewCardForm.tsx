@@ -11,11 +11,16 @@ import { NewCard } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
 
-const NewCardForm = ({ lessons, lessonGroups, sections, onSubmit }: {
-  lessons: Lesson[],
-  lessonGroups: Record<string, Lesson[]>,
-  sections: Section[],
-  onSubmit: (card: NewCard) => void,
+const NewCardForm = ({
+  lessons,
+  lessonGroups,
+  sections,
+  onSubmit,
+}: {
+  lessons: Lesson[];
+  lessonGroups: Record<string, Lesson[]>;
+  sections: Section[];
+  onSubmit: (card: NewCard) => void;
 }) => {
   const [newCard, setNewCard] = useState<NewCard>({
     front_text: "",

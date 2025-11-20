@@ -14,7 +14,13 @@ interface Sentence {
   possible_answers: string[];
 }
 
-const TranslationQuestion = ({ sentence, onNext }: { sentence: Sentence, onNext: () => void }) => {
+const TranslationQuestion = ({
+  sentence,
+  onNext,
+}: {
+  sentence: Sentence;
+  onNext: () => void;
+}) => {
   const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState<boolean | null>();
   const [randomAnswer, setRandomAnswer] = useState(0); // Random possible answer for when the user is incorrect

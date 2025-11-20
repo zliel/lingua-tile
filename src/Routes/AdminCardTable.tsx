@@ -67,12 +67,15 @@ const AdminCardTable = () => {
       const lessons = lessonsResponse.data;
       const sections = sectionsResponse.data;
 
-      const groupedLessons = sections.reduce((acc: Record<string, Lesson[]>, section: Section) => {
-        acc[section.name] = lessons.filter(
-          (lesson: Lesson) => lesson.section_id === section._id,
-        );
-        return acc;
-      }, {});
+      const groupedLessons = sections.reduce(
+        (acc: Record<string, Lesson[]>, section: Section) => {
+          acc[section.name] = lessons.filter(
+            (lesson: Lesson) => lesson.section_id === section._id,
+          );
+          return acc;
+        },
+        {},
+      );
 
       groupedLessons["Ungrouped"] = lessons.filter(
         (lesson: Lesson) => !lesson.section_id,
@@ -263,8 +266,7 @@ const AdminCardTable = () => {
                           ...editedCard,
                           front_text: e.target.value,
                         });
-                      }
-                      }
+                      }}
                     />
                   ) : (
                     <Typography sx={{ minWidth: 100, whiteSpace: "nowrap" }}>
@@ -296,12 +298,15 @@ const AdminCardTable = () => {
                     <Autocomplete
                       multiple
                       disableCloseOnSelect
-                      options={Object.keys(lessonGroups?.groupedLessons).flatMap(
+                      options={Object.keys(
+                        lessonGroups?.groupedLessons,
+                      ).flatMap(
                         (section) => lessonGroups?.groupedLessons[section],
                       )}
                       groupBy={(option) =>
                         lessonGroups?.sections.find(
-                          (section: Section) => section._id === option.section_id,
+                          (section: Section) =>
+                            section._id === option.section_id,
                         )?.name || "Ungrouped"
                       }
                       getOptionLabel={(option) => option.title}

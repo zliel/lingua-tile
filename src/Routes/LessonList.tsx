@@ -113,7 +113,9 @@ const LessonList = () => {
 
   // Helper function to get review information for a specific lesson
   const getReviewForLesson = (lessonId: string): ReviewStats | null => {
-    const review = reviews?.find((review: Review) => review.lesson_id === lessonId);
+    const review = reviews?.find(
+      (review: Review) => review.lesson_id === lessonId,
+    );
     if (review) {
       const daysLeft = dayjs(review.next_review_date).diff(dayjs(), "day");
       return {
@@ -127,13 +129,16 @@ const LessonList = () => {
   // Group together the lessons
   let groupedLessons: Record<string, Lesson[]> = {};
   if (sections && lessons) {
-    groupedLessons = sections.reduce((acc: Record<string, Lesson[]>, section: Section) => {
-      if (!section || !section.name) return acc;
-      acc[section.name] = lessons.filter(
-        (lesson: Lesson) => lesson.section_id === section._id,
-      );
-      return acc;
-    }, {});
+    groupedLessons = sections.reduce(
+      (acc: Record<string, Lesson[]>, section: Section) => {
+        if (!section || !section.name) return acc;
+        acc[section.name] = lessons.filter(
+          (lesson: Lesson) => lesson.section_id === section._id,
+        );
+        return acc;
+      },
+      {},
+    );
 
     // Handle lessons without sections in an "Extras" segment
     groupedLessons["Extras"] = lessons.filter(

@@ -55,7 +55,6 @@ function UpdateProfile() {
     }
   }
 
-
   const updateMutation = useMutation({
     mutationFn: async (updatedUser) => {
       await axios.put(

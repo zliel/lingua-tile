@@ -1,7 +1,14 @@
 import { MuiMarkdown } from "mui-markdown";
 import { Box, TextField, SxProps } from "@mui/material";
 
-const MarkdownPreviewer = ({ value, onChange }: { value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, sx?: SxProps }) => {
+const MarkdownPreviewer = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  sx?: SxProps;
+}) => {
   return (
     <Box display="flex" gap={2}>
       <Box flex={1}>

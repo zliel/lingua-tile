@@ -12,7 +12,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import useLessonReview from "../hooks/useLessonReview";
 
-function ReviewModal({ open, setOpen, lessonId }: { open: boolean; setOpen: (open: boolean) => void; lessonId: string; }) {
+function ReviewModal({
+  open,
+  setOpen,
+  lessonId,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  lessonId: string;
+}) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);

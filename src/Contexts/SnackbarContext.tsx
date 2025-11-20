@@ -6,18 +6,24 @@ const SnackbarContext = createContext<{
   showSnackbar: (
     message: string,
     severity?: "error" | "warning" | "info" | "success",
-    duration?: number
+    duration?: number,
   ) => void;
 }>({
-  showSnackbar: () => { },
+  showSnackbar: () => {},
 });
 
 export const useSnackbar = () => useContext(SnackbarContext);
 
-export const SnackbarProvider = ({ children }: { children: React.ReactNode }) => {
+export const SnackbarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState<"error" | "warning" | "info" | "success">("info")
+  const [severity, setSeverity] = useState<
+    "error" | "warning" | "info" | "success"
+  >("info");
   // NOTE: Used in preventing users from reviewing, allows custom auto-hide durations
   const [duration, setDuration] = useState(1500);
 

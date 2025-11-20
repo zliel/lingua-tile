@@ -7,7 +7,13 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-function ConfirmationDialog({ open, onClose, onConfirm, title, message }: {
+function ConfirmationDialog({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  message,
+}: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;

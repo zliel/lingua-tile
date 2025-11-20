@@ -8,7 +8,7 @@ import { useAuth } from "../Contexts/AuthContext";
 const useLessonReview = (
   lessonId: string,
   setModalOpen: (open: boolean) => void,
-  setModalLoading: (loading: boolean) => void
+  setModalLoading: (loading: boolean) => void,
 ) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
@@ -23,7 +23,7 @@ const useLessonReview = (
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
         { lesson_id: lessonId, overall_performance: overallPerformance },
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },

@@ -15,7 +15,7 @@ function Login() {
   const { showSnackbar } = useSnackbar();
 
   const loginMutation = useMutation({
-    mutationFn: (credentials: { username: string, password: string }) =>
+    mutationFn: (credentials: { username: string; password: string }) =>
       axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
         credentials,

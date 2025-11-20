@@ -43,7 +43,7 @@ function Profile() {
       } else {
         showSnackbar(
           `Error: ${error.response.data?.detail || error.message}`,
-          "error"
+          "error",
         );
       }
     } else {
@@ -99,14 +99,20 @@ function Profile() {
         } else {
           showSnackbar(
             `Error: ${error.response.data?.detail || error.message}`,
-            "error"
+            "error",
           );
         }
       } else {
         showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
       }
     }
-  }, [deleteMutation.isError, deleteMutation.error, logout, navigate, showSnackbar]);
+  }, [
+    deleteMutation.isError,
+    deleteMutation.error,
+    logout,
+    navigate,
+    showSnackbar,
+  ]);
 
   const handleDeleteConfirmation = async () => {
     deleteMutation.mutate();

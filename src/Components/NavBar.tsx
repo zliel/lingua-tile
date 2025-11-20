@@ -79,16 +79,17 @@ function NavBar(props: { onThemeSwitch: () => void }) {
   useEffect(() => {
     if (authData && authData.isAdmin) {
       if (!pages.find((page) => page.name === "User Table")) {
-
-        let mobileExtraPages: Page[] = isMobile ? [
-          { name: "Profile", endpoint: "/profile" },
-          { name: "Logout", action: handleLogout },
-        ] : [];
+        let mobileExtraPages: Page[] = isMobile
+          ? [
+              { name: "Profile", endpoint: "/profile" },
+              { name: "Logout", action: handleLogout },
+            ]
+          : [];
 
         setPages((prevPages) => {
           // Filter out the login/signup pages if they exist
           const filteredPrevPages = prevPages.filter(
-            (page) => page.name !== "Login" && page.name !== "Sign Up"
+            (page) => page.name !== "Login" && page.name !== "Sign Up",
           );
 
           return [...filteredPrevPages, ...adminPages, ...mobileExtraPages];
@@ -174,7 +175,7 @@ function NavBar(props: { onThemeSwitch: () => void }) {
             onClick={handleMenuClose}
             onKeyDown={handleMenuClose}
           >
-            {pages.map((page) => (
+            {pages.map((page) =>
               page.endpoint ? (
                 <MenuItem
                   key={page.name}
@@ -185,14 +186,11 @@ function NavBar(props: { onThemeSwitch: () => void }) {
                   {page.name}
                 </MenuItem>
               ) : (
-                <MenuItem
-                  key={page.name}
-                  onClick={page.action}
-                >
+                <MenuItem key={page.name} onClick={page.action}>
                   {page.name}
                 </MenuItem>
-              )
-            ))}
+              ),
+            )}
           </Box>
         </SwipeableDrawer>
         {/* </Menu> */}
@@ -254,7 +252,7 @@ function NavBar(props: { onThemeSwitch: () => void }) {
                 </Menu>
               </>
             ) : (
-              <div style={{ display: authIsLoading ? "none" : "flex" }} >
+              <div style={{ display: authIsLoading ? "none" : "flex" }}>
                 <Button component={Link} to="/login" color={"inherit"}>
                   Login
                 </Button>
@@ -265,7 +263,7 @@ function NavBar(props: { onThemeSwitch: () => void }) {
             ))}
         </Stack>
       </Toolbar>
-    </AppBar >
+    </AppBar>
   );
 }
 

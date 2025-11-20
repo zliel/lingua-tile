@@ -14,7 +14,15 @@ import { Section } from "@/types/sections";
 import { LessonCategory, NewLesson, Sentence } from "@/types/lessons";
 import { Card as CardType } from "@/types/cards";
 
-const NewLessonForm = ({ cards, sections, onSubmit }: { cards: CardType[], sections: Section[], onSubmit: (lesson: NewLesson) => void }) => {
+const NewLessonForm = ({
+  cards,
+  sections,
+  onSubmit,
+}: {
+  cards: CardType[];
+  sections: Section[];
+  onSubmit: (lesson: NewLesson) => void;
+}) => {
   const [newLesson, setNewLesson] = useState<NewLesson>({
     title: "",
     section_id: "",
@@ -36,8 +44,14 @@ const NewLessonForm = ({ cards, sections, onSubmit }: { cards: CardType[], secti
     });
   };
 
-  const handleSentenceChange = (index: number, field: "full_sentence" | "possible_answers", value: string) => {
-    const updatedSentences = newLesson.sentences ? [...newLesson.sentences] : [];
+  const handleSentenceChange = (
+    index: number,
+    field: "full_sentence" | "possible_answers",
+    value: string,
+  ) => {
+    const updatedSentences = newLesson.sentences
+      ? [...newLesson.sentences]
+      : [];
     if (field === "full_sentence") {
       updatedSentences[index].full_sentence = value;
     } else if (field === "possible_answers") {
@@ -47,8 +61,14 @@ const NewLessonForm = ({ cards, sections, onSubmit }: { cards: CardType[], secti
     setNewLesson({ ...newLesson, sentences: updatedSentences });
   };
 
-  const handlePossibleAnswerChange = (sentenceIndex: number, answerIndex: number, value: string) => {
-    const updatedSentences = newLesson.sentences ? [...newLesson.sentences] : [];
+  const handlePossibleAnswerChange = (
+    sentenceIndex: number,
+    answerIndex: number,
+    value: string,
+  ) => {
+    const updatedSentences = newLesson.sentences
+      ? [...newLesson.sentences]
+      : [];
     updatedSentences[sentenceIndex].possible_answers[answerIndex] = value;
     setNewLesson({ ...newLesson, sentences: updatedSentences });
   };
@@ -72,7 +92,9 @@ const NewLessonForm = ({ cards, sections, onSubmit }: { cards: CardType[], secti
   };
 
   const addNewPossibleAnswer = (sentenceIndex: number) => {
-    const updatedSentences = newLesson.sentences ? [...newLesson.sentences] : [];
+    const updatedSentences = newLesson.sentences
+      ? [...newLesson.sentences]
+      : [];
     updatedSentences[sentenceIndex].possible_answers.push("");
     setNewLesson({ ...newLesson, sentences: updatedSentences });
   };
@@ -155,50 +177,54 @@ const NewLessonForm = ({ cards, sections, onSubmit }: { cards: CardType[], secti
 
         {newLesson.category === "practice" && (
           <Box sx={{ mb: 2, width: "300px" }}>
-            {newLesson?.sentences?.map((sentence: Sentence, sentenceIndex: number) => (
-              <Card key={sentenceIndex} sx={{ mb: 2 }}>
-                <CardContent>
-                  <TextField
-                    label="Full Sentence"
-                    value={sentence.full_sentence}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleSentenceChange(
-                        sentenceIndex,
-                        "full_sentence",
-                        e.target.value,
-                      )
-                    }
-                    sx={{ mb: 1, width: "100%" }}
-                    required
-                  />
-                  {sentence.possible_answers.map((answer: string, answerIndex: number) => (
+            {newLesson?.sentences?.map(
+              (sentence: Sentence, sentenceIndex: number) => (
+                <Card key={sentenceIndex} sx={{ mb: 2 }}>
+                  <CardContent>
                     <TextField
-                      key={answerIndex}
-                      label={`Possible Answer ${answerIndex + 1}`}
-                      value={answer}
+                      label="Full Sentence"
+                      value={sentence.full_sentence}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handlePossibleAnswerChange(
+                        handleSentenceChange(
                           sentenceIndex,
-                          answerIndex,
+                          "full_sentence",
                           e.target.value,
                         )
                       }
                       sx={{ mb: 1, width: "100%" }}
                       required
                     />
-                  ))}
-                </CardContent>
-                <CardActions>
-                  <Button
-                    variant="outlined"
-                    onClick={() => addNewPossibleAnswer(sentenceIndex)}
-                    sx={{ mb: 1 }}
-                  >
-                    Add Possible Answer
-                  </Button>
-                </CardActions>
-              </Card>
-            ))}
+                    {sentence.possible_answers.map(
+                      (answer: string, answerIndex: number) => (
+                        <TextField
+                          key={answerIndex}
+                          label={`Possible Answer ${answerIndex + 1}`}
+                          value={answer}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handlePossibleAnswerChange(
+                              sentenceIndex,
+                              answerIndex,
+                              e.target.value,
+                            )
+                          }
+                          sx={{ mb: 1, width: "100%" }}
+                          required
+                        />
+                      ),
+                    )}
+                  </CardContent>
+                  <CardActions>
+                    <Button
+                      variant="outlined"
+                      onClick={() => addNewPossibleAnswer(sentenceIndex)}
+                      sx={{ mb: 1 }}
+                    >
+                      Add Possible Answer
+                    </Button>
+                  </CardActions>
+                </Card>
+              ),
+            )}
             <Button variant="outlined" onClick={addNewSentence}>
               Add New Sentence
             </Button>

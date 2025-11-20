@@ -12,7 +12,13 @@ import { Lesson, ReviewStats } from "@/types/lessons";
 
 type CategoryColor = "primary" | "secondary" | "warning";
 
-export const LessonListItem = ({ lesson, review }: { lesson: Lesson, review: ReviewStats | null }) => {
+export const LessonListItem = ({
+  lesson,
+  review,
+}: {
+  lesson: Lesson;
+  review: ReviewStats | null;
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const categoryColors: Record<string, CategoryColor> = {
@@ -41,10 +47,11 @@ export const LessonListItem = ({ lesson, review }: { lesson: Lesson, review: Rev
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
-          ? theme.palette.primary.contrastText
-          : theme.palette.secondary.contrastText
-          }`,
+        boxShadow: `0px 0px 5px 0px ${
+          theme.palette.mode === "dark"
+            ? theme.palette.primary.contrastText
+            : theme.palette.secondary.contrastText
+        }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",

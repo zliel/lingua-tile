@@ -249,7 +249,9 @@ const AdminSectionTable = () => {
                       options={lessons}
                       getOptionLabel={(option) => option.title}
                       value={editedSection?.lesson_ids.map((lessonId) =>
-                        lessons.find((lesson: Lesson) => lesson._id === lessonId),
+                        lessons.find(
+                          (lesson: Lesson) => lesson._id === lessonId,
+                        ),
                       )}
                       onChange={(_event, newValue) => {
                         if (!editedSection) return;
@@ -272,8 +274,9 @@ const AdminSectionTable = () => {
                       {section.lesson_ids
                         ?.map(
                           (lessonId) =>
-                            lessons.find((lesson: Lesson) => lesson._id === lessonId)
-                              ?.title,
+                            lessons.find(
+                              (lesson: Lesson) => lesson._id === lessonId,
+                            )?.title,
                         )
                         .join(", \n")}
                     </Typography>
