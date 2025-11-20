@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -7,8 +7,17 @@ import {
   Typography,
 } from "@mui/material";
 
-const NewCardForm = ({ lessons, lessonGroups, sections, onSubmit }) => {
-  const [newCard, setNewCard] = useState({
+import { NewCard } from "@/types/cards";
+import { Lesson } from "@/types/lessons";
+import { Section } from "@/types/sections";
+
+const NewCardForm = ({ lessons, lessonGroups, sections, onSubmit }: {
+  lessons: Lesson[],
+  lessonGroups: Record<string, Lesson[]>,
+  sections: Section[],
+  onSubmit: (card: NewCard) => void,
+}) => {
+  const [newCard, setNewCard] = useState<NewCard>({
     front_text: "",
     back_text: "",
     lesson_ids: [],
@@ -73,9 +82,9 @@ const NewCardForm = ({ lessons, lessonGroups, sections, onSubmit }) => {
           }
           getOptionLabel={(option) => option.title}
           value={lessons.filter((lesson) =>
-            newCard.lesson_ids.includes(lesson._id),
+            newCard.lesson_ids?.includes(lesson._id),
           )}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setNewCard({
               ...newCard,
               lesson_ids: newValue.map((lesson) => lesson._id),

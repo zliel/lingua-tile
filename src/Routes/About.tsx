@@ -76,7 +76,7 @@ function About() {
               Tech Stack
             </Typography>
             <Grid container spacing={4}>
-              <Grid xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="h6" color={primaryHeaderColor}>
                   <CodeIcon
                     sx={{ mr: 0.5, mb: 0.25, verticalAlign: "middle" }}
@@ -110,7 +110,7 @@ function About() {
                   </ListItem>
                 </List>
               </Grid>
-              <Grid xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="h6" color={primaryHeaderColor}>
                   <CodeIcon
                     sx={{ mr: 0.5, mb: 0.25, verticalAlign: "middle" }}

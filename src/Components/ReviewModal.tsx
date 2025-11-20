@@ -12,7 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import useLessonReview from "../hooks/useLessonReview";
 
-function ReviewModal({ open, setOpen, lessonId }) {
+function ReviewModal({ open, setOpen, lessonId }: { open: boolean; setOpen: (open: boolean) => void; lessonId: string; }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ function ReviewModal({ open, setOpen, lessonId }) {
   );
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent) => {
       if (open && !isLoading) {
         switch (event.key) {
           case "1":
@@ -136,7 +136,7 @@ function ReviewModal({ open, setOpen, lessonId }) {
   );
 }
 
-const getButtonStyle = (isMobile) => ({
+const getButtonStyle = (isMobile: boolean) => ({
   minWidth: isMobile ? 48 : 85,
   px: 1.25,
   fontSize: "1rem",

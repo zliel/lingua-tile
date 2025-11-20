@@ -22,13 +22,10 @@ const FlashcardLesson = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
-    },
-    onError: () => {
-      showSnackbar("Failed to fetch lesson", "error");
     },
     enabled: !!authData,
   });
@@ -49,6 +46,7 @@ const FlashcardLesson = () => {
   }
 
   if (isError) {
+    showSnackbar("Failed to fetch lesson", "error");
     return <Typography>Error loading lesson.</Typography>;
   }
 
@@ -68,7 +66,7 @@ const FlashcardLesson = () => {
       >
         {lesson && lesson.title}
       </Typography>
-      <FlashcardsList lessonId={lessonId} />
+      <FlashcardsList lessonId={lessonId || ""} />
     </Box>
   );
 };

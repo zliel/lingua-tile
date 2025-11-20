@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
@@ -8,14 +8,14 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { LoadingButton } from "@mui/lab";
 
 function Login() {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
   const loginMutation = useMutation({
-    mutationFn: (credentials) =>
+    mutationFn: (credentials: { username: string, password: string }) =>
       axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
         credentials,
@@ -25,10 +25,13 @@ function Login() {
       login(response.data, () => navigate("/"));
     },
     onError: (error) => {
-      if (error.response.status === 401) {
-        showSnackbar("Invalid credentials", "error");
+      if (axios.isAxiosError(error) && error.response) {
+        showSnackbar(
+          `Login failed: ${error.response.data.message || "Unknown error"}`,
+          "error",
+        );
       } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
+        showSnackbar(`Login failed: ${error.message}`, "error");
       }
     },
   });

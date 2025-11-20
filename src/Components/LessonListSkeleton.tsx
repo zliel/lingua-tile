@@ -88,10 +88,7 @@ export const LessonListSkeleton = () => {
           <Grid container spacing={2} sx={{ width: "100%" }}>
             {Array.from({ length: skeletonCount }).map((_, index) => (
               <Grid
-                item
-                xs={12}
-                sm={6}
-                md={4}
+                size={{ xs: 12, sm: 6, md: 4 }}
                 key={index}
                 sx={{ width: "30%" }}
               >

@@ -12,9 +12,12 @@ import {
 } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import dayjs from "dayjs";
+// import { Dayjs as dayjs } from "dayjs";
+import * as dayjs from "dayjs";
 import { LessonListItem } from "../Components/LessonListItem";
 import { LessonListSkeleton } from "../Components/LessonListSkeleton";
+import { Lesson, Review, ReviewStats } from "@/types/lessons";
+import { Section } from "@/types/sections";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
@@ -33,16 +36,17 @@ const LessonList = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
     },
-    onError: () => {
-      showSnackbar("Failed to fetch lessons", "error");
-    },
     enabled: !!authData,
   });
+
+  if (isError) {
+    showSnackbar("Failed to fetch lessons", "error");
+  }
 
   const {
     data: sections,
@@ -54,17 +58,18 @@ const LessonList = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
 
       return response.data;
     },
-    onError: () => {
-      showSnackbar("Failed to fetch sections", "error");
-    },
     enabled: !!authData,
   });
+
+  if (sectionsError) {
+    showSnackbar("Failed to fetch sections", "error");
+  }
 
   const {
     data: reviews,
@@ -76,17 +81,21 @@ const LessonList = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
 
       return response.data;
     },
-    onError: () => {
-      showSnackbar("Failed to fetch reviews", "error");
-    },
+    // onError: () => {
+    //   showSnackbar("Failed to fetch reviews", "error");
+    // },
     enabled: !!authData && !!authData.token,
   });
+
+  if (reviewsError && authData?.token) {
+    showSnackbar("Failed to fetch reviews", "error");
+  }
 
   // Manage the animation in-between loading and loaded
   useEffect(() => {
@@ -98,15 +107,15 @@ const LessonList = () => {
     }
   }, [isLoading, sectionsLoading, reviewsLoading]);
 
-  if (isError || sectionsError || (reviewsError && authData.token)) {
+  if (isError || sectionsError || (reviewsError && authData?.token)) {
     return <Typography>Error loading lessons.</Typography>;
   }
 
   // Helper function to get review information for a specific lesson
-  const getReviewForLesson = (lessonId) => {
-    const review = reviews?.find((review) => review.lesson_id === lessonId);
+  const getReviewForLesson = (lessonId: string): ReviewStats | null => {
+    const review = reviews?.find((review: Review) => review.lesson_id === lessonId);
     if (review) {
-      const daysLeft = dayjs(review.next_review).diff(dayjs(), "day");
+      const daysLeft = dayjs(review.next_review_date).diff(dayjs(), "day");
       return {
         daysLeft: daysLeft,
         isOverdue: daysLeft < 0,
@@ -116,21 +125,21 @@ const LessonList = () => {
   };
 
   // Group together the lessons
-  let groupedLessons = {};
+  let groupedLessons: Record<string, Lesson[]> = {};
   if (sections && lessons) {
-    groupedLessons = sections.reduce((acc, section) => {
+    groupedLessons = sections.reduce((acc: Record<string, Lesson[]>, section: Section) => {
       if (!section || !section.name) return acc;
       acc[section.name] = lessons.filter(
-        (lesson) => lesson.section_id === section._id,
+        (lesson: Lesson) => lesson.section_id === section._id,
       );
       return acc;
     }, {});
 
     // Handle lessons without sections in an "Extras" segment
     groupedLessons["Extras"] = lessons.filter(
-      (lesson) =>
+      (lesson: Lesson) =>
         !lesson.section_id ||
-        !sections.some((section) => section._id === lesson.section_id),
+        !sections.some((section: Section) => section._id === lesson.section_id),
     );
   }
 
@@ -195,7 +204,7 @@ const LessonList = () => {
                     {groupedLessons[sectionName].map((lesson) => {
                       const review = getReviewForLesson(lesson._id);
                       return (
-                        <Grid xs={12} sm={6} md={4} key={lesson._id}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={lesson._id}>
                           <LessonListItem lesson={lesson} review={review} />
                         </Grid>
                       );

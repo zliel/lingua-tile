@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -6,13 +6,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Lesson } from "@/types/lessons";
+import { NewSection } from "@/types/sections";
 
-const NewSectionForm = ({ lessons, onSubmit }) => {
-  const [newSection, setNewSection] = useState({ name: "", lesson_ids: [] });
+const NewSectionForm = ({ lessons, onSubmit }: { lessons: Lesson[], onSubmit: (section: NewSection) => void }) => {
+  const [newSection, setNewSection] = useState<NewSection>({ name: "", lesson_ids: [] });
 
   const handleAddSection = () => {
     onSubmit(newSection);
-    setNewSection({});
+    setNewSection({ name: "", lesson_ids: [] });
   };
 
   return (
@@ -53,9 +55,9 @@ const NewSectionForm = ({ lessons, onSubmit }) => {
           options={lessons}
           getOptionLabel={(option) => option.title}
           value={lessons.filter((lesson) =>
-            newSection.lesson_ids?.includes(lesson._id),
+            newSection.lesson_ids.includes(lesson?._id),
           )}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setNewSection({
               ...newSection,
               lesson_ids: newValue.map((lesson) => lesson._id),

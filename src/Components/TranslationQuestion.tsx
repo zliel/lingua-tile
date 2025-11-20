@@ -9,25 +9,30 @@ import {
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 
-const TranslationQuestion = ({ sentence, onNext }) => {
+interface Sentence {
+  full_sentence: string;
+  possible_answers: string[];
+}
+
+const TranslationQuestion = ({ sentence, onNext }: { sentence: Sentence, onNext: () => void }) => {
   const [userAnswer, setUserAnswer] = useState("");
-  const [isCorrect, setIsCorrect] = useState();
+  const [isCorrect, setIsCorrect] = useState<boolean | null>();
   const [randomAnswer, setRandomAnswer] = useState(0); // Random possible answer for when the user is incorrect
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Reset state on each sentence
   useEffect(() => {
     setUserAnswer("");
     setIsCorrect(null);
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, [sentence]);
 
   // Listener for the enter key if the input is focused
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent) => {
       if (event.code === "Enter") {
         event.preventDefault();
         checkAnswer();
@@ -36,17 +41,14 @@ const TranslationQuestion = ({ sentence, onNext }) => {
 
     const currentInput = inputRef.current;
 
-    currentInput.addEventListener("keydown", handleKeyPress);
+    currentInput?.addEventListener("keydown", handleKeyPress);
     return () => {
-      // NOTE: linting fix
-      if (currentInput) {
-        currentInput.removeEventListener("keydown", handleKeyPress);
-      }
+      currentInput?.removeEventListener("keydown", handleKeyPress);
     };
   });
 
   // Helper function to remove punctuation and extra spaces, and make it lowercase
-  const cleanString = (inputString) => {
+  const cleanString = (inputString: string) => {
     return inputString
       .trim()
       .toLowerCase()

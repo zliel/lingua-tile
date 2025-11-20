@@ -8,15 +8,19 @@ import {
 import { Link } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
+import { Lesson, ReviewStats } from "@/types/lessons";
 
-export const LessonListItem = ({ lesson, review }) => {
+type CategoryColor = "primary" | "secondary" | "warning";
+
+export const LessonListItem = ({ lesson, review }: { lesson: Lesson, review: ReviewStats | null }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const categoryColors = {
+  const categoryColors: Record<string, CategoryColor> = {
     flashcards: "primary",
     practice: "secondary",
     grammar: "warning",
   };
+
   const categoryRoutes = {
     flashcards: "/flashcards",
     practice: "/practice",
@@ -35,13 +39,12 @@ export const LessonListItem = ({ lesson, review }) => {
         justifyContent: "space-between",
         width: "100%",
         height: "100%",
-        border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["a200"]}`,
+        border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
+        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
+          ? theme.palette.primary.contrastText
+          : theme.palette.secondary.contrastText
+          }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
@@ -69,13 +72,13 @@ export const LessonListItem = ({ lesson, review }) => {
       </Box>
       <Button
         variant="contained"
-        color={categoryColors[lesson.category]}
+        color={categoryColors[lesson.category || "flashcards"]}
         sx={{
           color: theme.palette.mode === "dark" ? "white" : "black",
           mt: isMobile ? 0 : 2,
         }}
         component={Link}
-        to={`${categoryRoutes[lesson.category]}/${lesson._id}`}
+        to={`${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`}
       >
         {lesson.category}
       </Button>

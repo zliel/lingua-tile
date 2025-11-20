@@ -1,15 +1,16 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Grid, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useState } from "react";
+import { NewUser } from "@/types/users";
 
 function Signup() {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ function Signup() {
       match: password === confirmPassword,
     };
 
-    const messages = {
+    const messages: Record<string, string> = {
       length: "Password must be between 8 and 64 characters long",
       validChars:
         "Password must only include letters, numbers, special characters, and spaces",
@@ -48,17 +49,19 @@ function Signup() {
   };
 
   const signupMutation = useMutation({
-    mutationFn: (newUser) =>
+    mutationFn: (newUser: NewUser) =>
       axios.post(`${import.meta.env.VITE_APP_API_BASE}/api/users/signup`, newUser),
     onSuccess: () => {
       showSnackbar("Account created successfully", "success");
       navigate("/login");
     },
     onError: (error) => {
-      if (error.response.status === 400) {
-        showSnackbar("Username already exists", "error");
-      } else {
-        showSnackbar(`Error: ${error.response.data.detail}`, "error");
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 400) {
+          showSnackbar("Username already exists", "error");
+        } else {
+          showSnackbar(`Error: ${error.response.data.detail}`, "error");
+        }
       }
     },
   });

@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { TextField } from "@mui/material";
 import * as wanakana from "wanakana";
 
-export default function KanaKeyboard(props) {
+export default function KanaKeyboard(props: {
+  srcText: string;
+  setSrcText: () => (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   useEffect(() => {
     const input = document.getElementById("ime-text-input");
-    wanakana.bind(input);
+    wanakana.bind(input as HTMLTextAreaElement);
 
-    return () => wanakana.unbind(input);
+    return () => wanakana.unbind(input as HTMLTextAreaElement);
   }, []);
 
   return (

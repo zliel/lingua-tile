@@ -15,12 +15,11 @@ import { Done } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import { useTheme } from "@mui/material/styles";
+import { Theme, useTheme } from "@mui/material/styles";
 import ReviewModal from "../Components/ReviewModal";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
-  console.log("Lesson ID:", lessonId);
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [modalOpen, setModalOpen] = useState(false);
@@ -37,13 +36,10 @@ const GrammarLesson = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
-    },
-    onError: () => {
-      showSnackbar("Failed to fetch lesson", "error");
     },
     enabled: !!authData,
   });
@@ -64,6 +60,7 @@ const GrammarLesson = () => {
   }
 
   if (isError) {
+    showSnackbar("Failed to fetch lesson", "error");
     return <Typography>Error loading lesson.</Typography>;
   }
 
@@ -93,7 +90,7 @@ const GrammarLesson = () => {
       {/* NOTE: Tooltip and disabled button when user is not logged in */}
       <Tooltip
         title={
-          !authData.isLoggedIn ? (
+          !authData?.isLoggedIn ? (
             <Typography>You must be logged in to finish the lesson.</Typography>
           ) : (
             <Typography>Finish Lesson</Typography>
@@ -106,9 +103,9 @@ const GrammarLesson = () => {
           <Button
             sx={{ mt: 2, mb: 2, display: "flex", alignItems: "center" }}
             variant={"contained"}
-            disabled={!authData.isLoggedIn}
+            disabled={!authData?.isLoggedIn}
             onClick={() => {
-              if (authData.isLoggedIn) {
+              if (authData?.isLoggedIn) {
                 setModalOpen(true);
               }
             }}
@@ -125,13 +122,13 @@ const GrammarLesson = () => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        lessonId={lessonId}
+        lessonId={lessonId || ""}
       />
     </Box>
   );
 };
 
-const getMarkdownOverrides = (isMobile, theme) => ({
+const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
   ...getOverrides({}),
   h1: {
     props: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import NewLessonForm from "../Components/NewLessonForm";
@@ -21,18 +21,21 @@ import {
   Typography,
 } from "@mui/material";
 import MarkdownPreviewer from "../Components/MarkdownPreviewer";
+import { Card as CardType } from "@/types/cards";
+import { Lesson, LessonCategory, NewLesson } from "@/types/lessons";
+import { Section } from "@/types/sections";
 
 const AdminLessonTable = () => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [editingLessonId, setEditingLessonId] = useState(null);
-  const [editedLesson, setEditedLesson] = useState({});
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
+  const [editedLesson, setEditedLesson] = useState<Lesson | null>(null);
   const queryClient = useQueryClient();
 
   const {
     data: lessons = [],
-    isLoadingLessons,
-    isErrorLessons,
+    isLoading: isLoadingLessons,
+    isError: isErrorLessons,
   } = useQuery({
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
@@ -47,8 +50,8 @@ const AdminLessonTable = () => {
 
   const {
     data: sections = [],
-    isLoadingSections,
-    isErrorSections,
+    isLoading: isLoadingSections,
+    isError: isErrorSections,
   } = useQuery({
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
@@ -63,8 +66,8 @@ const AdminLessonTable = () => {
 
   const {
     data: cards = [],
-    isLoadingCards,
-    isErrorCards,
+    isLoading: isLoadingCards,
+    isError: isErrorCards,
   } = useQuery({
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
@@ -80,24 +83,24 @@ const AdminLessonTable = () => {
     enabled: !!authData,
   });
 
-  const handleEdit = (card) => {
-    setEditingLessonId(card._id);
-    setEditedLesson(card);
+  const handleEdit = (lesson: Lesson) => {
+    setEditingLessonId(lesson._id);
+    setEditedLesson(lesson);
   };
 
   const updateMutation = useMutation({
     mutationFn: async () => {
       await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson?._id}`,
         editedLesson,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       setEditingLessonId(null);
-      queryClient.invalidateQueries("lessons");
+      queryClient.invalidateQueries({ queryKey: ["lessons"] });
       showSnackbar("Lesson updated successfully", "success");
     },
     onError: () => {
@@ -110,17 +113,17 @@ const AdminLessonTable = () => {
   };
 
   const deleteMutation = useMutation({
-    mutationFn: async (lessonId) => {
+    mutationFn: async (lessonId: string) => {
       await axios.delete(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/delete/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       setEditingLessonId(null);
-      queryClient.invalidateQueries("lessons");
+      queryClient.invalidateQueries({ queryKey: ["lessons"] });
       showSnackbar("Lesson deleted successfully", "success");
     },
     onError: () => {
@@ -128,22 +131,22 @@ const AdminLessonTable = () => {
     },
   });
 
-  const handleDelete = async (lessonId) => {
+  const handleDelete = async (lessonId: string) => {
     deleteMutation.mutate(lessonId);
   };
 
   const addMutation = useMutation({
-    mutationFn: async (lesson) => {
+    mutationFn: async (lesson: NewLesson) => {
       await axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/create`,
         lesson,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries("lessons");
+      queryClient.invalidateQueries({ queryKey: ["lessons"] });
       showSnackbar("Lesson added successfully", "success");
     },
     onError: () => {
@@ -151,7 +154,7 @@ const AdminLessonTable = () => {
     },
   });
 
-  const handleAddLesson = async (lesson) => {
+  const handleAddLesson = async (lesson: NewLesson) => {
     addMutation.mutate(lesson);
   };
 
@@ -235,7 +238,7 @@ const AdminLessonTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {lessons.map((lesson) => (
+            {lessons.map((lesson: Lesson) => (
               <TableRow
                 key={lesson._id}
                 onDoubleClick={() => handleEdit(lesson)}
@@ -258,9 +261,11 @@ const AdminLessonTable = () => {
                       options={sections}
                       getOptionLabel={(option) => option.name}
                       value={sections.find(
-                        (section) => section._id === lesson.section_id,
+                        (section: Section) => section._id === lesson.section_id,
                       )}
-                      onChange={(event, newValue) => {
+                      onChange={(_event, newValue) => {
+                        if (!editedLesson) return;
+
                         setEditedLesson({
                           ...editedLesson,
                           section_id: newValue?._id ? newValue._id : "",
@@ -276,7 +281,7 @@ const AdminLessonTable = () => {
                     />
                   ) : (
                     sections.find(
-                      (section) => section._id === lesson.section_id,
+                      (section: Section) => section._id === lesson.section_id,
                     )?.name
                   )}
                 </TableCell>
@@ -285,13 +290,15 @@ const AdminLessonTable = () => {
                   {editingLessonId === lesson._id ? (
                     <TextField
                       label="Category"
-                      value={editedLesson.category}
-                      onChange={(e) =>
+                      value={editedLesson?.category}
+                      onChange={(e) => {
+                        if (!editedLesson) return;
+
                         setEditedLesson({
                           ...editedLesson,
-                          category: e.target.value,
-                        })
-                      }
+                          category: e.target.value as LessonCategory,
+                        });
+                      }}
                       sx={{ mb: 2, minWidth: 120 }}
                       required
                     />
@@ -304,16 +311,16 @@ const AdminLessonTable = () => {
                   sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
                 >
                   {editingLessonId === lesson._id &&
-                  lesson.category === "grammar" ? (
+                    lesson.category === "grammar" ? (
                     <MarkdownPreviewer
-                      sx={{ width: 600, height: 100, mb: 2 }}
-                      value={editedLesson.content}
-                      onChange={(e) =>
+                      value={editedLesson?.content ?? ""}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                        if (!editedLesson) return;
                         setEditedLesson({
                           ...editedLesson,
                           content: e.target.value,
-                        })
-                      }
+                        });
+                      }}
                     />
                   ) : (
                     <Box
@@ -331,7 +338,7 @@ const AdminLessonTable = () => {
                 <TableCell sx={{ width: 300 }}>
                   {/*  TODO: Add sentences column for updating, consider reworking the db to include Sentence models as their own collection, similar to cards */}
                   {/*  For now, we'll just show the full text for each sentence */}
-                  {lesson.sentences.map((sentence, sentenceIndex) => (
+                  {lesson?.sentences?.map((sentence, sentenceIndex) => (
                     <Card key={sentenceIndex} sx={{ mb: 2 }}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>
@@ -350,10 +357,12 @@ const AdminLessonTable = () => {
                       disableCloseOnSelect
                       options={cards}
                       getOptionLabel={(option) => option.front_text}
-                      value={cards.filter((card) =>
-                        editedLesson.card_ids?.includes(card._id),
+                      value={cards.filter((card: CardType) =>
+                        editedLesson?.card_ids?.includes(card._id),
                       )}
-                      onChange={(event, newValue) => {
+                      onChange={(_event, newValue) => {
+                        if (!editedLesson) return;
+
                         setEditedLesson({
                           ...editedLesson,
                           card_ids: newValue.map((card) => card._id),
@@ -372,7 +381,7 @@ const AdminLessonTable = () => {
                       {lesson.card_ids
                         ?.map(
                           (cardId) =>
-                            cards.find((card) => card._id === cardId)
+                            cards.find((card: CardType) => card._id === cardId)
                               ?.front_text,
                         )
                         .join(", \n")}

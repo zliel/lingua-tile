@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import axios from "axios";
@@ -16,12 +16,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { User } from "@/types/users";
 
 const AdminUserTable = () => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [editedUser, setEditedUser] = useState({});
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [editedUser, setEditedUser] = useState<User>({
+    _id: "",
+    username: "",
+    roles: [],
+    completedLessons: [],
+  });
+
   const queryClient = useQueryClient();
 
   const {
@@ -34,7 +41,7 @@ const AdminUserTable = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/admin/all`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
@@ -43,7 +50,7 @@ const AdminUserTable = () => {
   });
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (editingUserId) {
         if (event.key === "Escape") {
           setEditingUserId(null);
@@ -57,54 +64,54 @@ const AdminUserTable = () => {
     };
   }, [editingUserId]);
 
-  const handleEdit = (user) => {
+  const handleEdit = (user: User) => {
     setEditingUserId(user._id);
     setEditedUser(user);
   };
 
   const updateMutation = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: async (userId: string) => {
       await axios.put(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${userId}`,
         editedUser,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("User updated successfully", "success");
-      queryClient.invalidateQueries(["users", authData.token]);
+      queryClient.invalidateQueries({ queryKey: ["users", authData?.token] });
     },
     onError: () => {
       showSnackbar("Failed to update user", "error");
     },
   });
 
-  const handleUpdate = (userId) => {
+  const handleUpdate = (userId: string) => {
     updateMutation.mutate(userId);
     setEditingUserId(null);
   };
 
   const deleteMutation = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: async (userId: string) => {
       await axios.delete(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${userId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       showSnackbar("User deleted successfully", "success");
-      queryClient.invalidateQueries(["users", authData.token]);
+      queryClient.invalidateQueries({ queryKey: ["users", authData?.token] });
     },
     onError: () => {
       showSnackbar("Failed to delete user", "error");
     },
   });
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId: string) => {
     // In this situation I think that use the built-in window.confirm is a better option than the ConfirmationDialog component, as it
     // avoids overcomplicating the delete method.
     if (!window.confirm("Are you sure you want to delete this user?")) {
@@ -186,7 +193,7 @@ const AdminUserTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
+            {users.map((user: User) => (
               <TableRow key={user._id} onDoubleClick={() => handleEdit(user)}>
                 <TableCell>{user._id}</TableCell>
                 <TableCell>
@@ -205,19 +212,23 @@ const AdminUserTable = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {editingUserId === user._id ? (
-                    <TextField
-                      value={editedUser.completedLessons}
-                      onChange={(e) =>
-                        setEditedUser({
-                          ...editedUser,
-                          completedLessons: e.target.value,
-                        })
-                      }
-                    />
-                  ) : (
-                    user.completedLessons
-                  )}
+                  {/* TODO: Set up the lesson reviews */}
+                  {user.completedLessons}
+                  {/* {editingUserId === user._id ? ( */}
+                  {/*   <TextField */}
+                  {/* value={editedUser.completedLessons} */}
+                  {/* onChange={(e) => { */}
+                  {/*   if (!editedUser) return; */}
+                  {/**/}
+                  {/*   setEditedUser({ */}
+                  {/*     ...editedUser, */}
+                  {/*     completedLessons: e.target.value, */}
+                  {/*   }) */}
+                  {/* }} */}
+                  {/* /> */}
+                  {/* ) : ( */}
+                  {/* user.completedLessons */}
+                  {/* )} */}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: "noWrap" }}>
                   {editingUserId === user._id ? (

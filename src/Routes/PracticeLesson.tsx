@@ -19,9 +19,9 @@ const PracticeLesson = () => {
   const { lessonId } = useParams();
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [currentSentence, setCurrentSentence] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [animationClass, setAnimationClass] = useState("slide-in");
+  const [currentSentence, setCurrentSentence] = useState<number>(0);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [animationClass, setAnimationClass] = useState<string>("slide-in");
   const nodeRef = useRef(null);
   const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
@@ -35,13 +35,10 @@ const PracticeLesson = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
       return response.data;
-    },
-    onError: () => {
-      showSnackbar("Failed to fetch lesson", "error");
     },
     enabled: !!authData,
   });
@@ -52,7 +49,7 @@ const PracticeLesson = () => {
     setTimeout(() => {
       if (currentSentence === lesson.sentences.length - 1) {
         // NOTE: Disallows reviewing when not logged in
-        if (authData.isLoggedIn) {
+        if (authData?.isLoggedIn) {
           showSnackbar("Lesson complete!", "success");
           setModalOpen(true);
         } else {
@@ -86,6 +83,7 @@ const PracticeLesson = () => {
   }
 
   if (isError) {
+    showSnackbar("Failed to fetch lesson", "error");
     return <Typography>Error loading lesson.</Typography>;
   }
 
@@ -116,7 +114,7 @@ const PracticeLesson = () => {
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}
-        lessonId={lessonId}
+        lessonId={lessonId || ""}
       />
     </Box>
   );

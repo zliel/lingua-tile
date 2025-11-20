@@ -26,28 +26,36 @@ import {
 } from "@mui/icons-material";
 import { useAuth } from "../Contexts/AuthContext";
 
-function NavBar(props) {
+type Page = {
+  name: string;
+  endpoint?: string;
+  action?: () => void;
+};
+
+const basePages = [
+  { name: "Home", endpoint: "/home" },
+  { name: "About", endpoint: "/about" },
+  { name: "Lessons", endpoint: "/lessons" },
+  { name: "Translate", endpoint: "/translate" },
+];
+
+const adminPages = [
+  { name: "User Table", endpoint: "/admin-users" },
+  { name: "Card Table", endpoint: "/admin-cards" },
+  { name: "Lesson Table", endpoint: "/admin-lessons" },
+  { name: "Section Table", endpoint: "/admin-sections" },
+];
+
+function NavBar(props: { onThemeSwitch: () => void }) {
   const { logout, authIsLoading, authData } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [pages, setPages] = useState([
-    { name: "Home", endpoint: "/home" },
-    { name: "About", endpoint: "/about" },
-    { name: "Lessons", endpoint: "/lessons" },
-    { name: "Translate", endpoint: "/translate" },
-  ]);
+  const [pages, setPages] = useState<Page[]>(basePages);
 
-  const adminPages = [
-    { name: "User Table", endpoint: "/admin-users" },
-    { name: "Card Table", endpoint: "/admin-cards" },
-    { name: "Lesson Table", endpoint: "/admin-lessons" },
-    { name: "Section Table", endpoint: "/admin-sections" },
-  ];
-
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = () => {
     setMenuIsOpen(!menuIsOpen);
   };
 
@@ -55,7 +63,7 @@ function NavBar(props) {
     setMenuIsOpen(false);
   };
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -70,10 +78,24 @@ function NavBar(props) {
 
   useEffect(() => {
     if (authData && authData.isAdmin) {
-      if (!pages.find((page) => page.name === "User Table"))
-        setPages((prevPages) => [...prevPages, ...adminPages]);
+      if (!pages.find((page) => page.name === "User Table")) {
+
+        let mobileExtraPages: Page[] = isMobile ? [
+          { name: "Profile", endpoint: "/profile" },
+          { name: "Logout", action: handleLogout },
+        ] : [];
+
+        setPages((prevPages) => {
+          // Filter out the login/signup pages if they exist
+          const filteredPrevPages = prevPages.filter(
+            (page) => page.name !== "Login" && page.name !== "Sign Up"
+          );
+
+          return [...filteredPrevPages, ...adminPages, ...mobileExtraPages];
+        });
+      }
     } else {
-      let pagesToAdd = [
+      let pagesToAdd: Page[] = [
         { name: "Home", endpoint: "/home" },
         { name: "About", endpoint: "/about" },
         { name: "Lessons", endpoint: "/lessons" },
@@ -153,14 +175,23 @@ function NavBar(props) {
             onKeyDown={handleMenuClose}
           >
             {pages.map((page) => (
-              <MenuItem
-                key={page.name}
-                component={Link}
-                to={page.endpoint}
-                onClick={page.action ? page.action : handleMenuClose}
-              >
-                {page.name}
-              </MenuItem>
+              page.endpoint ? (
+                <MenuItem
+                  key={page.name}
+                  component={Link}
+                  to={page.endpoint}
+                  onClick={handleMenuClose}
+                >
+                  {page.name}
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  key={page.name}
+                  onClick={page.action}
+                >
+                  {page.name}
+                </MenuItem>
+              )
             ))}
           </Box>
         </SwipeableDrawer>
@@ -193,7 +224,7 @@ function NavBar(props) {
           {!isMobile &&
             (authIsLoading ? (
               <Skeleton variant="circular" width={40} height={40} />
-            ) : authData.isLoggedIn ? (
+            ) : authData?.isLoggedIn ? (
               <>
                 <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
                   <Avatar
@@ -223,7 +254,7 @@ function NavBar(props) {
                 </Menu>
               </>
             ) : (
-              <div sx={{ display: authIsLoading ? "none" : "flex" }}>
+              <div style={{ display: authIsLoading ? "none" : "flex" }} >
                 <Button component={Link} to="/login" color={"inherit"}>
                   Login
                 </Button>
@@ -234,7 +265,7 @@ function NavBar(props) {
             ))}
         </Stack>
       </Toolbar>
-    </AppBar>
+    </AppBar >
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import axios from "axios";
@@ -18,18 +18,20 @@ import {
 } from "@mui/material";
 import NewSectionForm from "../Components/NewSectionForm";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { NewSection, Section } from "@/types/sections";
+import { Lesson } from "@/types/lessons";
 
 const AdminSectionTable = () => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [editingSectionId, setEditingSectionId] = useState(null);
-  const [editedSection, setEditedSection] = useState({});
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editedSection, setEditedSection] = useState<Section | null>(null);
   const queryClient = useQueryClient();
 
   const {
     data: lessons = [],
-    isLoadingLessons,
-    isErrorLessons,
+    isLoading: isLoadingLessons,
+    isError: isErrorLessons,
   } = useQuery({
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
@@ -44,8 +46,8 @@ const AdminSectionTable = () => {
 
   const {
     data: sections = [],
-    isLoadingSections,
-    isErrorSections,
+    isLoading: isLoadingSections,
+    isError: isErrorSections,
   } = useQuery({
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
@@ -58,7 +60,7 @@ const AdminSectionTable = () => {
     enabled: !!authData,
   });
 
-  const handleEdit = (section) => {
+  const handleEdit = (section: Section) => {
     setEditingSectionId(section._id);
     setEditedSection(section);
   };
@@ -69,13 +71,13 @@ const AdminSectionTable = () => {
         `${import.meta.env.VITE_APP_API_BASE}/api/sections/update/${editingSectionId}`,
         editedSection,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       setEditingSectionId(null);
-      queryClient.invalidateQueries("sections");
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section updated successfully", "success");
     },
     onError: () => {
@@ -88,17 +90,17 @@ const AdminSectionTable = () => {
   };
 
   const deleteMutation = useMutation({
-    mutationFn: async (sectionId) => {
+    mutationFn: async (sectionId: string) => {
       await axios.delete(
         `${import.meta.env.VITE_APP_API_BASE}/api/sections/delete/${sectionId}`,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
       setEditingSectionId(null);
-      queryClient.invalidateQueries("sections");
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section deleted successfully", "success");
     },
     onError: () => {
@@ -106,22 +108,22 @@ const AdminSectionTable = () => {
     },
   });
 
-  const handleDelete = async (sectionId) => {
+  const handleDelete = async (sectionId: string) => {
     deleteMutation.mutate(sectionId);
   };
 
   const addMutation = useMutation({
-    mutationFn: async (section) => {
+    mutationFn: async (section: NewSection) => {
       await axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/sections/create`,
         section,
         {
-          headers: { Authorization: `Bearer ${authData.token}` },
+          headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries("sections");
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section added successfully", "success");
     },
     onError: () => {
@@ -129,7 +131,7 @@ const AdminSectionTable = () => {
     },
   });
 
-  const handleAddSection = async (section) => {
+  const handleAddSection = async (section: NewSection) => {
     addMutation.mutate(section);
   };
 
@@ -205,7 +207,7 @@ const AdminSectionTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sections.map((section) => (
+            {sections.map((section: Section) => (
               <TableRow
                 key={section._id}
                 onDoubleClick={() => handleEdit(section)}
@@ -223,13 +225,15 @@ const AdminSectionTable = () => {
                 <TableCell sx={{ whiteSpace: "noWrap", minWidth: 150 }}>
                   {editingSectionId === section._id ? (
                     <TextField
-                      value={editedSection.name}
-                      onChange={(e) =>
+                      value={editedSection?.name}
+                      onChange={(e) => {
+                        if (!editedSection) return;
+
                         setEditedSection({
                           ...editedSection,
                           name: e.target.value,
-                        })
-                      }
+                        });
+                      }}
                     />
                   ) : (
                     <Typography sx={{ minWidth: 150 }}>
@@ -244,10 +248,12 @@ const AdminSectionTable = () => {
                       disableCloseOnSelect
                       options={lessons}
                       getOptionLabel={(option) => option.title}
-                      value={editedSection.lesson_ids.map((lessonId) =>
-                        lessons.find((lesson) => lesson._id === lessonId),
+                      value={editedSection?.lesson_ids.map((lessonId) =>
+                        lessons.find((lesson: Lesson) => lesson._id === lessonId),
                       )}
-                      onChange={(event, newValue) => {
+                      onChange={(_event, newValue) => {
+                        if (!editedSection) return;
+
                         setEditedSection({
                           ...editedSection,
                           lesson_ids: newValue.map((option) => option._id),
@@ -266,7 +272,7 @@ const AdminSectionTable = () => {
                       {section.lesson_ids
                         ?.map(
                           (lessonId) =>
-                            lessons.find((lesson) => lesson._id === lessonId)
+                            lessons.find((lesson: Lesson) => lesson._id === lessonId)
                               ?.title,
                         )
                         .join(", \n")}
