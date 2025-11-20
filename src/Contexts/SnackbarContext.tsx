@@ -2,10 +2,12 @@ import { createContext, useContext, useState } from "react";
 import { Alert, IconButton, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+type SnackBarSeverity = "error" | "warning" | "info" | "success";
+
 const SnackbarContext = createContext<{
   showSnackbar: (
     message: string,
-    severity?: "error" | "warning" | "info" | "success",
+    severity?: SnackBarSeverity,
     duration?: number,
   ) => void;
 }>({
@@ -21,13 +23,15 @@ export const SnackbarProvider = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState<
-    "error" | "warning" | "info" | "success"
-  >("info");
+  const [severity, setSeverity] = useState<SnackBarSeverity>("info");
   // NOTE: Used in preventing users from reviewing, allows custom auto-hide durations
   const [duration, setDuration] = useState(1500);
 
-  const showSnackbar = (msg: string, sev = "info", duration = 1500) => {
+  const showSnackbar = (
+    msg: string,
+    sev: SnackBarSeverity = "info",
+    duration = 1500,
+  ) => {
     setMessage(msg);
     setSeverity(sev);
     setOpen(true);
