@@ -211,6 +211,7 @@ const AdminLessonTable = () => {
         flexDirection: "column",
         alignItems: "center",
         mt: 4,
+        pb: 4,
       }}
     >
       <Typography variant="h4" gutterBottom>
@@ -311,7 +312,7 @@ const AdminLessonTable = () => {
                   sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
                 >
                   {editingLessonId === lesson._id &&
-                  lesson.category === "grammar" ? (
+                    lesson.category === "grammar" ? (
                     <MarkdownPreviewer
                       value={editedLesson?.content ?? ""}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
