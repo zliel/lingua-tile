@@ -124,7 +124,7 @@ function App() {
     ]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} defaultMode="light" noSsr>
       <SnackbarProvider>
         <CssBaseline />
         <BrowserRouter>
