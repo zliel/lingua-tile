@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Card, CardContent, Grid, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
@@ -74,7 +83,12 @@ function Login() {
             }}
             style={{ width: "100%" }}
           >
-            <Grid container direction={"column"} spacing={4} alignItems={"center"}>
+            <Grid
+              container
+              direction={"column"}
+              spacing={4}
+              alignItems={"center"}
+            >
               <Grid mt={2}>
                 <Typography variant={"h4"}>Log in</Typography>
               </Grid>
