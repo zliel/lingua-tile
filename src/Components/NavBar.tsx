@@ -17,7 +17,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { useColorScheme, useTheme } from "@mui/material/styles";
 import {
   DarkMode,
   LightMode,
@@ -46,10 +46,11 @@ const adminPages = [
   { name: "Section Table", endpoint: "/admin-sections" },
 ];
 
-function NavBar(props: { onThemeSwitch: () => void }) {
+function NavBar() {
   const { logout, authIsLoading, authData } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { mode, setMode } = useColorScheme();
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -211,9 +212,9 @@ function NavBar(props: { onThemeSwitch: () => void }) {
             <LightMode />
           </Icon>
           <Switch
-            onChange={props.onThemeSwitch}
+            onChange={() => setMode(mode === "light" ? "dark" : "light")}
             color={"default"}
-            checked={localStorage.getItem("theme") === "dark"}
+            checked={mode === "dark"}
             sx={{ mt: 0.7 }}
           />
           <Icon sx={{ mr: 1.5 }}>

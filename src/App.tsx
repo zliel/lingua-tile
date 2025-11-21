@@ -1,13 +1,13 @@
 import "./App.css";
 import {
   alpha,
+  ColorSystemOptions,
   createTheme,
   CssBaseline,
   getContrastRatio,
   ThemeProvider,
+  useColorScheme,
 } from "@mui/material";
-
-import { JSX, useState } from "react";
 import { useRoutes } from "react-router";
 import NavBar from "./Components/NavBar";
 import { BrowserRouter } from "react-router-dom";
@@ -32,7 +32,8 @@ import PracticeLesson from "./Routes/PracticeLesson";
 
 const purpleBase = "#8c00cc";
 const greenBase = "#00c500";
-const lightTheme = createTheme({
+
+const palette: ColorSystemOptions = {
   palette: {
     primary: {
       light: alpha(purpleBase, 0.5),
@@ -52,31 +53,25 @@ const lightTheme = createTheme({
           ? "#fff"
           : "#000",
     },
-    mode: "light",
+  },
+};
+
+const theme = createTheme({
+  colorSchemes: {
+    light: {
+      ...palette,
+    },
+    dark: {
+      ...palette,
+    },
   },
 });
 
-const darkTheme = createTheme({
-  palette: {
-    primary: {
-      ...lightTheme.palette.primary,
-    },
-    secondary: {
-      ...lightTheme.palette.secondary,
-    },
-    mode: "dark",
-  },
-});
-
-function App(): JSX.Element {
-  const startingTheme =
-    localStorage.getItem("theme") === "dark" ? darkTheme : lightTheme;
-  const [theme, setTheme] = useState(startingTheme);
-  const handleTheme = () => {
-    theme === lightTheme ? setTheme(darkTheme) : setTheme(lightTheme);
-
-    localStorage.setItem("theme", theme === lightTheme ? "dark" : "light");
-  };
+function App() {
+  const { mode, setMode } = useColorScheme();
+  if (!mode || mode == undefined) {
+    setMode("light");
+  }
 
   const AppRoutes = () =>
     useRoutes([
@@ -127,12 +122,12 @@ function App(): JSX.Element {
     ]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} defaultMode="light" noSsr>
       <SnackbarProvider>
         <CssBaseline />
         <BrowserRouter>
           <AuthProvider>
-            <NavBar onThemeSwitch={handleTheme} />
+            <NavBar />
             <AppRoutes />
           </AuthProvider>
         </BrowserRouter>
