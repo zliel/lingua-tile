@@ -1,148 +1,114 @@
-import { useNavigate } from "react-router-dom";
-import { Box, Grid, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import { useState } from "react";
-import { NewUser } from "@/types/users";
+import {
+  Box,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { Analytics, LibraryBooks, School } from "@mui/icons-material";
+import { SignupForm } from "@/Components/SignupForm";
 
 function Signup() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const { showSnackbar } = useSnackbar();
-  const navigate = useNavigate();
-
-  const isValidPassword = () => {
-    const conditions = {
-      length: password.length >= 8 && password.length <= 64,
-      validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(
-        password,
-      ),
-      lowercase: /[a-z]/.test(password),
-      uppercase: /[A-Z]/.test(password),
-      number: /[0-9]/.test(password),
-      specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-      match: password === confirmPassword,
-    };
-
-    const messages: Record<string, string> = {
-      length: "Password must be between 8 and 64 characters long",
-      validChars:
-        "Password must only include letters, numbers, special characters, and spaces",
-      lowercase: "Password must include at least one lowercase letter",
-      uppercase: "Password must include at least one uppercase letter",
-      number: "Password must include at least one number",
-      specialChar: "Password must include at least one special character",
-      match: "Passwords do not match",
-    };
-
-    for (const [key, isValid] of Object.entries(conditions)) {
-      if (!isValid) {
-        showSnackbar(messages[key], "error");
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const signupMutation = useMutation({
-    mutationFn: (newUser: NewUser) =>
-      axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/signup`,
-        newUser,
-      ),
-    onSuccess: () => {
-      showSnackbar("Account created successfully", "success");
-      navigate("/login");
-    },
-    onError: (error) => {
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 400) {
-          showSnackbar("Username already exists", "error");
-        } else {
-          showSnackbar(`Error: ${error.response.data.detail}`, "error");
-        }
-      }
-    },
-  });
-
-  const handleSignup = () => {
-    if (!isValidPassword()) {
-      return;
-    } else if (username === "") {
-      showSnackbar("Please enter a username", "error");
-      return;
-    }
-
-    signupMutation.mutate({ username: username, password: password });
-  };
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box
       sx={{
-        height: "50vh",
+        height: "90vh",
+        py: 2,
+        px: 8,
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
       }}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSignup();
+      <Grid
+        container
+        sx={{
+          width: "100%",
+          height: "50%",
+          mb: isMobile ? 4 : 0,
         }}
-        style={{ width: "100%" }}
       >
-        <Grid container direction={"column"} spacing={2} alignItems={"center"}>
-          <Grid>
-            <Typography variant={"h4"}>Sign Up</Typography>
-          </Grid>
-          <Grid>
-            <TextField
-              label={"Username"}
-              variant={"outlined"}
-              fullWidth
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid>
-            <TextField
-              label={"Password"}
-              type={"password"}
-              variant={"outlined"}
-              color={"secondary"}
-              fullWidth
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid>
-            <TextField
-              label={"Confirm Password"}
-              type={"password"}
-              variant={"outlined"}
-              color={"secondary"}
-              fullWidth
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid>
-            <LoadingButton
-              loading={signupMutation.isPending}
-              variant={"contained"}
-              color={"primary"}
-              type="submit"
-            >
-              Login
-            </LoadingButton>
-          </Grid>
+        {/* Call to Action */}
+        <Grid
+          size={{ xs: 12, sm: 6 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            p: isMobile ? 2 : 6,
+          }}
+        >
+          <Typography
+            variant="h3"
+            fontWeight={700}
+            gutterBottom
+            sx={{ fontSize: isMobile ? "2rem" : "2.5rem" }}
+          >
+            Take the First Step!
+          </Typography>
+          <Typography
+            variant="h6"
+            fontWeight={400}
+            mb={3}
+            sx={{ fontSize: isMobile ? "1rem" : "1.25rem" }}
+          >
+            Start your Japanese language journey today. Sign up and unlock a
+            world of learning!
+          </Typography>
+          <Typography
+            variant="h6"
+            fontWeight={500}
+            mt={2}
+            sx={{ fontSize: isMobile ? "1rem" : "1.25rem" }}
+          >
+            Join today and get the following:
+          </Typography>
+          <List>
+            <ListItem sx={{ pl: 0 }}>
+              <ListItemIcon sx={{ minWidth: "35px" }}>
+                <LibraryBooks />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Access to comprehensive Japanese learning resources"}
+              />
+            </ListItem>
+            <ListItem sx={{ pl: 0 }}>
+              <ListItemIcon sx={{ minWidth: "35px" }}>
+                <School />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Personalized study plans tailored to your goals"}
+              />
+            </ListItem>
+            <ListItem sx={{ pl: 0 }}>
+              <ListItemIcon sx={{ minWidth: "35px" }}>
+                <Analytics />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Progress tracking to monitor your improvement"}
+              />
+            </ListItem>
+          </List>
         </Grid>
-      </form>
+
+        {/* Signup Form Section */}
+        <Grid
+          size={{ xs: 12, sm: 6 }}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            p: isMobile ? 0 : 6,
+            mb: isMobile ? 4 : 0,
+          }}
+        >
+          <SignupForm />
+        </Grid>
+      </Grid>
     </Box>
   );
 }
