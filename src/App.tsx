@@ -8,7 +8,6 @@ import {
   ThemeProvider,
   useColorScheme,
 } from "@mui/material";
-
 import { useRoutes } from "react-router";
 import NavBar from "./Components/NavBar";
 import { BrowserRouter } from "react-router-dom";
@@ -56,7 +55,6 @@ const palette: ColorSystemOptions = {
     },
   },
 };
-
 
 const theme = createTheme({
   colorSchemes: {
