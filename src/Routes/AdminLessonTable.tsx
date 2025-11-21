@@ -312,7 +312,7 @@ const AdminLessonTable = () => {
                   sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
                 >
                   {editingLessonId === lesson._id &&
-                    lesson.category === "grammar" ? (
+                  lesson.category === "grammar" ? (
                     <MarkdownPreviewer
                       value={editedLesson?.content ?? ""}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {

@@ -82,9 +82,9 @@ function NavBar() {
       if (!pages.find((page) => page.name === "User Table")) {
         let mobileExtraPages: Page[] = isMobile
           ? [
-            { name: "Profile", endpoint: "/profile" },
-            { name: "Logout", action: handleLogout },
-          ]
+              { name: "Profile", endpoint: "/profile" },
+              { name: "Logout", action: handleLogout },
+            ]
           : [];
 
         setPages((prevPages) => {
