@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
@@ -13,6 +22,8 @@ function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const loginMutation = useMutation({
     mutationFn: (credentials: { username: string; password: string }) =>
@@ -47,53 +58,73 @@ function Login() {
   return (
     <Box
       sx={{
-        height: "50vh",
+        height: "90vh",
+        p: 8,
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
       }}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
+      <Card
+        elevation={1}
+        sx={{
+          pt: isMobile ? 2 : 0,
+          width: isMobile ? "100%" : 400,
+          maxWidth: isMobile ? "100%" : "90%",
+          height: "fit-content",
+          borderRadius: 3,
+          boxShadow: 3,
         }}
-        style={{ width: "100%" }}
       >
-        <Grid container direction={"column"} spacing={2} alignItems={"center"}>
-          <Grid>
-            <Typography variant={"h4"}>Login</Typography>
-          </Grid>
-          <Grid>
-            <TextField
-              label={"Username"}
-              variant={"outlined"}
-              fullWidth
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Grid>
-          <Grid>
-            <TextField
-              label={"Password"}
-              type={"password"}
-              variant={"outlined"}
-              color={"secondary"}
-              fullWidth
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Grid>
-          <Grid>
-            <LoadingButton
-              loading={loginMutation.isPending}
-              variant={"contained"}
-              color={"primary"}
-              type="submit"
+        <CardContent>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+            style={{ width: "100%" }}
+          >
+            <Grid
+              container
+              direction={"column"}
+              spacing={4}
+              alignItems={"center"}
             >
-              Login
-            </LoadingButton>
-          </Grid>
-        </Grid>
-      </form>
+              <Grid mt={2}>
+                <Typography variant={"h4"}>Log in</Typography>
+              </Grid>
+              <Grid>
+                <TextField
+                  label={"Username"}
+                  variant={"outlined"}
+                  fullWidth
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Grid>
+              <Grid>
+                <TextField
+                  label={"Password"}
+                  type={"password"}
+                  variant={"outlined"}
+                  color={"secondary"}
+                  fullWidth
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid>
+                <LoadingButton
+                  loading={loginMutation.isPending}
+                  variant={"contained"}
+                  color={"primary"}
+                  type="submit"
+                  size="large"
+                >
+                  Log in
+                </LoadingButton>
+              </Grid>
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
     </Box>
   );
 }
