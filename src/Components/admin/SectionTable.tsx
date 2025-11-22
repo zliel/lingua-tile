@@ -2,12 +2,29 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, Typography, Autocomplete, Button } from "@mui/material";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  Typography,
+  Autocomplete,
+  Button,
+} from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 
-export const SectionTable = ({ lessons, sections }: { lessons: Lesson[], sections: Section[] }) => {
+export const SectionTable = ({
+  lessons,
+  sections,
+}: {
+  lessons: Lesson[];
+  sections: Section[];
+}) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
@@ -109,9 +126,7 @@ export const SectionTable = ({ lessons, sections }: { lessons: Lesson[], section
                     }}
                   />
                 ) : (
-                  <Typography sx={{ minWidth: 150 }}>
-                    {section.name}
-                  </Typography>
+                  <Typography sx={{ minWidth: 150 }}>{section.name}</Typography>
                 )}
               </TableCell>
               <TableCell sx={{ width: 300 }}>
@@ -122,9 +137,7 @@ export const SectionTable = ({ lessons, sections }: { lessons: Lesson[], section
                     options={lessons}
                     getOptionLabel={(option) => option?.title || ""}
                     value={editedSection?.lesson_ids.map((lessonId) =>
-                      lessons.find(
-                        (lesson: Lesson) => lesson._id === lessonId,
-                      ),
+                      lessons.find((lesson: Lesson) => lesson._id === lessonId),
                     )}
                     onChange={(_event, newValue) => {
                       if (!editedSection) return;
@@ -197,6 +210,5 @@ export const SectionTable = ({ lessons, sections }: { lessons: Lesson[], section
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
-
+  );
+};

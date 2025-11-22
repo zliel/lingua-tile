@@ -1,22 +1,23 @@
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import axios from "axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Box,
-  Skeleton,
+  // Skeleton,
   Typography,
 } from "@mui/material";
 import NewCardForm from "../Components/NewCardForm";
 import { CardTable } from "@/Components/admin/CardTable";
-import { Card, NewCard } from "@/types/cards";
+import { Card } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
+import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
+import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 
 const AdminCardTable = () => {
   const { authData, authIsLoading } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
 
   const {
     data: cards = [],
@@ -75,69 +76,22 @@ const AdminCardTable = () => {
     enabled: !!authData,
   });
 
-
-  const addMutation = useMutation({
-    mutationFn: async (newCard: NewCard) => {
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/create`,
-        newCard,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-    },
-    onSuccess: () => {
-      showSnackbar("Card added successfully", "success");
-      queryClient.invalidateQueries({ queryKey: ["cards", authData?.token] });
-    },
-    onError: () => {
-      showSnackbar("Failed to add card", "error");
-    },
-  });
-
-  const handleAddCard = async (newCard: NewCard) => {
-    if (!newCard.front_text || !newCard.back_text) {
-      showSnackbar("Front and back text are required", "error");
-      return;
-    }
-
-    addMutation.mutate(newCard);
-  };
-
   if (isLoadingCards || isLoadingLessonGroups || authIsLoading) {
     return (
       <Box
         sx={{
+          mt: 4,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          mt: 4,
+          justifyContent: "center",
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Loading...
+          Cards Table
         </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={30}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
+        <FormSkeleton />
+        <TableSkeleton rows={5} columns={5} />
       </Box>
     );
   }
@@ -167,11 +121,8 @@ const AdminCardTable = () => {
         lessons={lessonGroups?.lessons}
         lessonGroups={lessonGroups?.groupedLessons}
         sections={lessonGroups?.sections}
-        onSubmit={handleAddCard}
       />
-      <CardTable
-        cards={cards}
-        lessonGroups={lessonGroups} />
+      <CardTable cards={cards} lessonGroups={lessonGroups} />
     </Box>
   );
 };

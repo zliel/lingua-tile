@@ -3,7 +3,18 @@ import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Card, NewCard } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, Typography, Autocomplete, Button } from "@mui/material";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  Typography,
+  Autocomplete,
+  Button,
+} from "@mui/material";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -14,7 +25,13 @@ type LessonGroup = {
   groupedLessons: { [key: string]: Lesson[] };
 };
 
-export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups: LessonGroup }) => {
+export const CardTable = ({
+  cards,
+  lessonGroups,
+}: {
+  cards: Card[];
+  lessonGroups: LessonGroup;
+}) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
@@ -72,7 +89,6 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
     deleteMutation.mutate(cardId);
   };
 
-
   return (
     <TableContainer
       sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
@@ -124,8 +140,9 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
                       textOverflow: "ellipsis",
                       whiteSpace: "normal",
                       wordBreak: "break-word",
-                      display: "block"
-                    }}>
+                      display: "block",
+                    }}
+                  >
                     {card.front_text}
                   </Typography>
                 )}
@@ -153,8 +170,9 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
                       textOverflow: "ellipsis",
                       whiteSpace: "normal",
                       wordBreak: "break-word",
-                      display: "block"
-                    }}>
+                      display: "block",
+                    }}
+                  >
                     {card.back_text}
                   </Typography>
                 )}
@@ -164,9 +182,7 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
                   <Autocomplete
                     multiple
                     disableCloseOnSelect
-                    options={Object.keys(
-                      lessonGroups?.groupedLessons,
-                    ).flatMap(
+                    options={Object.keys(lessonGroups?.groupedLessons).flatMap(
                       (section) => lessonGroups?.groupedLessons[section],
                     )}
                     groupBy={(option) =>
@@ -209,8 +225,9 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
                       textOverflow: "ellipsis",
                       whiteSpace: "normal",
                       wordBreak: "break-word",
-                      display: "block"
-                    }}>
+                      display: "block",
+                    }}
+                  >
                     {card.lesson_ids
                       ?.map(
                         (lessonId) =>
@@ -264,6 +281,5 @@ export const CardTable = ({ cards, lessonGroups }: { cards: Card[], lessonGroups
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
-
+  );
+};

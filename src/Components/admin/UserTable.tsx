@@ -1,7 +1,16 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
-import { User } from "@/types/users"
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, Button } from "@mui/material"
+import { User } from "@/types/users";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  Button,
+} from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -17,7 +26,6 @@ export const UserTable = ({ users }: { users: User[] }) => {
     completedLessons: [],
   });
   const queryClient = useQueryClient();
-
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -185,6 +193,5 @@ export const UserTable = ({ users }: { users: User[] }) => {
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
-
+  );
+};

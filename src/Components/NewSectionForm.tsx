@@ -28,8 +28,6 @@ const NewSectionForm = ({
     lesson_ids: [],
   });
 
-
-
   const addMutation = useMutation({
     mutationFn: async (section: NewSection) => {
       await axios.post(
@@ -106,7 +104,12 @@ const NewSectionForm = ({
           sx={{ mb: 2, width: "300px" }}
           disabled={newSection.name.trim() === ""}
         />
-        <Button variant="contained" color="primary" onClick={handleAddSection} loading={addMutation.isPending}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddSection}
+          loading={addMutation.isPending}
+        >
           Add Section
         </Button>
       </Box>

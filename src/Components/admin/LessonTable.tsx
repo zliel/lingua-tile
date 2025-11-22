@@ -2,7 +2,21 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Lesson, LessonCategory } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Autocomplete, TextField, Box, Card, CardContent, Typography, Button } from "@mui/material";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Autocomplete,
+  TextField,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+} from "@mui/material";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -10,7 +24,15 @@ import MarkdownPreviewer from "../MarkdownPreviewer";
 import { Card as CardType } from "@/types/cards";
 
 //TODO: Consider making this a tabbed table that filters for grammar/flashcard/practice lessons separately for easier editing
-export const LessonTable = ({ cards, lessons, sections }: { cards: CardType[], lessons: Lesson[], sections: Section[] }) => {
+export const LessonTable = ({
+  cards,
+  lessons,
+  sections,
+}: {
+  cards: CardType[];
+  lessons: Lesson[];
+  sections: Section[];
+}) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
@@ -88,10 +110,7 @@ export const LessonTable = ({ cards, lessons, sections }: { cards: CardType[], l
         </TableHead>
         <TableBody>
           {lessons.map((lesson: Lesson) => (
-            <TableRow
-              key={lesson._id}
-              onDoubleClick={() => handleEdit(lesson)}
-            >
+            <TableRow key={lesson._id} onDoubleClick={() => handleEdit(lesson)}>
               <TableCell
                 sx={{
                   maxWidth: 50,
@@ -156,11 +175,9 @@ export const LessonTable = ({ cards, lessons, sections }: { cards: CardType[], l
                 )}
               </TableCell>
               {/* Content Column */}
-              <TableCell
-                sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}
-              >
+              <TableCell sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}>
                 {editingLessonId === lesson._id &&
-                  lesson.category === "grammar" ? (
+                lesson.category === "grammar" ? (
                   <MarkdownPreviewer
                     value={editedLesson?.content ?? ""}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -218,11 +235,7 @@ export const LessonTable = ({ cards, lessons, sections }: { cards: CardType[], l
                       });
                     }}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Cards"
-                        variant="outlined"
-                      />
+                      <TextField {...params} label="Cards" variant="outlined" />
                     )}
                   />
                 ) : (
@@ -279,6 +292,5 @@ export const LessonTable = ({ cards, lessons, sections }: { cards: CardType[], l
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
-
+  );
+};

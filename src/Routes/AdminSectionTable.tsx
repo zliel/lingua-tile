@@ -1,16 +1,14 @@
 import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
-import {
-  Box,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import NewSectionForm from "../Components/NewSectionForm";
 import { useQuery } from "@tanstack/react-query";
 import { SectionTable } from "@/Components/admin/SectionTable";
+import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
+import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 
 const AdminSectionTable = () => {
-  const { authData } = useAuth();
+  const { authData, authIsLoading } = useAuth();
 
   const {
     data: lessons = [],
@@ -44,7 +42,7 @@ const AdminSectionTable = () => {
     enabled: !!authData,
   });
 
-  if (isLoadingLessons || isLoadingSections) {
+  if (isLoadingLessons || isLoadingSections || authIsLoading) {
     return (
       <Box
         sx={{
@@ -57,27 +55,8 @@ const AdminSectionTable = () => {
         <Typography variant="h4" gutterBottom>
           Loading...
         </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={30}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
+        <FormSkeleton title={true} fields={2} buttons={1} width={400} />
+        <TableSkeleton rows={5} columns={3} />
       </Box>
     );
   }
@@ -104,10 +83,7 @@ const AdminSectionTable = () => {
         Sections Table
       </Typography>
       <NewSectionForm lessons={lessons} />
-      <SectionTable
-        sections={sections}
-        lessons={lessons}
-      />
+      <SectionTable sections={sections} lessons={lessons} />
     </Box>
   );
 };

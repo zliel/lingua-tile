@@ -1,6 +1,20 @@
-import { Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
-export const TableSkeleton = ({ rows, columns }: { rows: number, columns: number }) => {
+export const TableSkeleton = ({
+  rows,
+  columns,
+}: {
+  rows: number;
+  columns: number;
+}) => {
   return (
     <TableContainer
       sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
@@ -30,4 +44,3 @@ export const TableSkeleton = ({ rows, columns }: { rows: number, columns: number
     </TableContainer>
   );
 };
-

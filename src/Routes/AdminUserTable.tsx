@@ -1,15 +1,12 @@
 import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Box,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { UserTable } from "@/Components/admin/UserTable";
+import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 
 const AdminUserTable = () => {
-  const { authData } = useAuth();
+  const { authData, authIsLoading } = useAuth();
 
   const {
     data: users = [],
@@ -29,7 +26,7 @@ const AdminUserTable = () => {
     enabled: !!authData,
   });
 
-  if (isLoading) {
+  if (isLoading || authIsLoading) {
     return (
       <Box
         sx={{
@@ -42,27 +39,7 @@ const AdminUserTable = () => {
         <Typography variant="h4" gutterBottom>
           Loading...
         </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={30}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
+        <TableSkeleton rows={5} columns={4} />
       </Box>
     );
   }
@@ -88,10 +65,7 @@ const AdminUserTable = () => {
       <Typography variant="h4" gutterBottom>
         Users Table
       </Typography>
-      <UserTable
-        users={users}
-      />
-
+      <UserTable users={users} />
     </Box>
   );
 };
