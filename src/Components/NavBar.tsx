@@ -5,13 +5,13 @@ import {
   Avatar,
   Box,
   Button,
+  Drawer,
   Icon,
   IconButton,
   Menu,
   MenuItem,
   Skeleton,
   Stack,
-  SwipeableDrawer,
   Switch,
   Toolbar,
   Typography,
@@ -128,7 +128,7 @@ function NavBar() {
       position={"sticky"}
       enableColorOnDark
       sx={{
-        height: "64px",
+        height: "56px",
         zIndex: theme.zIndex.drawer + 1,
         justifyContent: "center",
       }}
@@ -142,18 +142,18 @@ function NavBar() {
         >
           {Boolean(menuIsOpen) ? <CloseIcon /> : <MenuIcon />}
         </IconButton>
-        <SwipeableDrawer
-          anchor="left"
+        <Drawer
+          anchor={isMobile ? "top" : "left"}
           open={menuIsOpen}
           onClose={handleMenuClose}
-          onOpen={handleMenuOpen}
           variant="temporary"
           slotProps={{
             paper: {
               sx: {
-                width: isMobile ? "150px" : "180px",
-                top: "64px",
-                height: "calc(100% - 64px)",
+                width: isMobile ? "100%" : "180px",
+                top: isMobile ? "0" : "56px",
+                pt: isMobile ? "56px" : "0",
+                height: isMobile ? "fit-content" : "calc(100% - 56px)",
                 backgroundColor:
                   theme.palette.mode === "dark"
                     ? theme.palette.primary.light
@@ -193,7 +193,7 @@ function NavBar() {
               ),
             )}
           </Box>
-        </SwipeableDrawer>
+        </Drawer>
         {/* </Menu> */}
         <Typography variant={"h6"} sx={{ paddingRight: "10px" }}>
           <Link

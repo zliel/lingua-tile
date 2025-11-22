@@ -211,6 +211,7 @@ const AdminLessonTable = () => {
         flexDirection: "column",
         alignItems: "center",
         mt: 4,
+        pb: 4,
       }}
     >
       <Typography variant="h4" gutterBottom>
