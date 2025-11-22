@@ -8,22 +8,50 @@ import {
 } from "@mui/material";
 import { Lesson } from "@/types/lessons";
 import { NewSection } from "@/types/sections";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
 
 const NewSectionForm = ({
   lessons,
-  onSubmit,
+  _onSubmit,
 }: {
   lessons: Lesson[];
-  onSubmit: (section: NewSection) => void;
+  _onSubmit?: (section: NewSection) => void;
 }) => {
+  const { authData } = useAuth();
+  const { showSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
   const [newSection, setNewSection] = useState<NewSection>({
     name: "",
     lesson_ids: [],
   });
 
+
+
+  const addMutation = useMutation({
+    mutationFn: async (section: NewSection) => {
+      await axios.post(
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/create`,
+        section,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
+      showSnackbar("Section added successfully", "success");
+      setNewSection({ name: "", lesson_ids: [] });
+    },
+    onError: () => {
+      showSnackbar("Failed to add section", "error");
+    },
+  });
+
   const handleAddSection = () => {
-    onSubmit(newSection);
-    setNewSection({ name: "", lesson_ids: [] });
+    addMutation.mutate(newSection);
   };
 
   return (
@@ -76,8 +104,9 @@ const NewSectionForm = ({
             <TextField {...params} label="Lessons" variant="standard" />
           )}
           sx={{ mb: 2, width: "300px" }}
+          disabled={newSection.name.trim() === ""}
         />
-        <Button variant="contained" color="primary" onClick={handleAddSection}>
+        <Button variant="contained" color="primary" onClick={handleAddSection} loading={addMutation.isPending}>
           Add Section
         </Button>
       </Box>
