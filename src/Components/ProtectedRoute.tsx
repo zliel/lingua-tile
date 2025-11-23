@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import { Box, Skeleton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
