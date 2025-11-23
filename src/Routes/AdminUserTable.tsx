@@ -2,8 +2,8 @@ import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
-import { UserTable } from "@/Components/admin/UserTable";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
+import { UserTable } from "@/Components/admin/UserTable";
 
 const AdminUserTable = () => {
   const { authData, authIsLoading } = useAuth();

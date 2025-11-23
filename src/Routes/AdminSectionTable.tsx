@@ -1,11 +1,11 @@
 import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
 import { Box, Typography } from "@mui/material";
-import NewSectionForm from "../Components/NewSectionForm";
+import NewSectionForm from "../Components/admin/NewSectionForm";
 import { useQuery } from "@tanstack/react-query";
-import { SectionTable } from "@/Components/admin/SectionTable";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
+import { SectionTable } from "@/Components/admin/SectionTable";
 
 const AdminSectionTable = () => {
   const { authData, authIsLoading } = useAuth();

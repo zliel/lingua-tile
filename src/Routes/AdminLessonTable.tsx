@@ -1,13 +1,13 @@
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import NewLessonForm from "../Components/NewLessonForm";
+import NewLessonForm from "../Components/admin/NewLessonForm";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
 import { NewLesson } from "@/types/lessons";
-import { LessonTable } from "@/Components/admin/LessonTable";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
+import { LessonTable } from "@/Components/admin/LessonTable";
 
 const AdminLessonTable = () => {
   const { authData } = useAuth();

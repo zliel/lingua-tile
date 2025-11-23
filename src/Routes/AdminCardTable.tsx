@@ -4,16 +4,15 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
-  // Skeleton,
   Typography,
 } from "@mui/material";
-import NewCardForm from "../Components/NewCardForm";
-import { CardTable } from "@/Components/admin/CardTable";
+import NewCardForm from "../Components/admin/NewCardForm";
 import { Card } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
+import { CardTable } from "@/Components/admin/CardTable";
 
 const AdminCardTable = () => {
   const { authData, authIsLoading } = useAuth();
