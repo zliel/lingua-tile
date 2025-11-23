@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import MarkdownPreviewer from "./MarkdownPreviewer";
+import MarkdownPreviewer from "../MarkdownPreviewer";
 import { Section } from "@/types/sections";
 import { LessonCategory, NewLesson, Sentence } from "@/types/lessons";
 import { Card as CardType } from "@/types/cards";

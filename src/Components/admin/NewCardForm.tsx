@@ -10,26 +10,55 @@ import {
 import { NewCard } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import { useAuth } from "@/Contexts/AuthContext";
 
 const NewCardForm = ({
   lessons,
   lessonGroups,
   sections,
-  onSubmit,
 }: {
   lessons: Lesson[];
   lessonGroups: Record<string, Lesson[]>;
   sections: Section[];
-  onSubmit: (card: NewCard) => void;
 }) => {
+  const { authData } = useAuth();
+  const { showSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
   const [newCard, setNewCard] = useState<NewCard>({
     front_text: "",
     back_text: "",
     lesson_ids: [],
   });
 
+  const addMutation = useMutation({
+    mutationFn: async (newCard: NewCard) => {
+      await axios.post(
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/create`,
+        newCard,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
+    },
+    onSuccess: () => {
+      showSnackbar("Card added successfully", "success");
+      queryClient.invalidateQueries({ queryKey: ["cards", authData?.token] });
+    },
+    onError: () => {
+      showSnackbar("Failed to add card", "error");
+    },
+  });
+
   const handleAddCard = () => {
-    onSubmit(newCard);
+    if (!newCard.front_text || !newCard.back_text) {
+      showSnackbar("Front and back text are required", "error");
+      return;
+    }
+
+    addMutation.mutate(newCard);
     setNewCard({ front_text: "", back_text: "", lesson_ids: [] });
   };
 

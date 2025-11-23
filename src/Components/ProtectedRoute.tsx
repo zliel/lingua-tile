@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import { Box, Skeleton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -34,44 +33,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
-
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Loading...
-        </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={30}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
-      </Box>
-    );
-  }
 
   if (isError || !isAdmin) {
     return null;
