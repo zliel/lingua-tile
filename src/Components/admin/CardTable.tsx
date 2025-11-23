@@ -1,6 +1,12 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
-import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridDeleteIcon,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -133,7 +139,7 @@ export const CardTable = ({
         showToolbar
         processRowUpdate={handleProcessRowUpdate}
         sx={{
-          '.MuiDataGrid-cell': { py: '15px', maxHeight: '200px' },
+          ".MuiDataGrid-cell": { py: "15px", maxHeight: "200px" },
         }}
       />
     </Box>

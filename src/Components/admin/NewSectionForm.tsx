@@ -13,11 +13,7 @@ import axios from "axios";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 
-const NewSectionForm = ({
-  lessons,
-}: {
-  lessons: Lesson[];
-}) => {
+const NewSectionForm = ({ lessons }: { lessons: Lesson[] }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();

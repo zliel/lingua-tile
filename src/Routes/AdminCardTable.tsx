@@ -2,10 +2,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import NewCardForm from "../Components/admin/NewCardForm";
 import { Card } from "@/types/cards";
 import { Lesson } from "@/types/lessons";

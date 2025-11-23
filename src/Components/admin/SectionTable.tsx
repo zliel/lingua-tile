@@ -3,9 +3,20 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridColumnVisibilityModel, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridDeleteIcon,
+  GridColumnVisibilityModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { useMutation, useQueryClient, useIsFetching } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useIsFetching,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 export const SectionTable = ({
@@ -57,7 +68,6 @@ export const SectionTable = ({
     },
   });
 
-
   const handleProcessRowUpdate = async (newRow: Section, oldRow: Section) => {
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
 
@@ -66,7 +76,8 @@ export const SectionTable = ({
   };
 
   const handleDelete = (sectionId: string) => {
-    if (!window.confirm("Are you sure you want to delete this section?")) return;
+    if (!window.confirm("Are you sure you want to delete this section?"))
+      return;
     deleteMutation.mutateAsync(sectionId);
   };
 
@@ -84,10 +95,12 @@ export const SectionTable = ({
       label: lesson.title,
       id: lesson._id,
     }));
-    const selectedLessons = (params.value as string[]).map((id) => {
-      const lesson = lessons.find((l) => l._id === id);
-      return lesson ? { label: lesson.title, id: lesson._id } : null;
-    }).filter(Boolean) as { label: string; id: string }[];
+    const selectedLessons = (params.value as string[])
+      .map((id) => {
+        const lesson = lessons.find((l) => l._id === id);
+        return lesson ? { label: lesson.title, id: lesson._id } : null;
+      })
+      .filter(Boolean) as { label: string; id: string }[];
     return (
       <Autocomplete
         multiple
@@ -95,10 +108,16 @@ export const SectionTable = ({
         value={selectedLessons}
         onChange={(_, newValue) => {
           const newLessonIds = newValue.map((item) => item.id);
-          params.api.setEditCellValue({ id: params.id, field: params.field, value: newLessonIds });
+          params.api.setEditCellValue({
+            id: params.id,
+            field: params.field,
+            value: newLessonIds,
+          });
         }}
-        renderInput={(inputParams) => <TextField {...inputParams} variant="standard" label="Lessons" />}
-        sx={{ mr: 2, ml: 2, width: '100%' }}
+        renderInput={(inputParams) => (
+          <TextField {...inputParams} variant="standard" label="Lessons" />
+        )}
+        sx={{ mr: 2, ml: 2, width: "100%" }}
       />
     );
   };
@@ -142,9 +161,10 @@ export const SectionTable = ({
     },
   ];
 
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
-    _id: false,
-  });
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    useState<GridColumnVisibilityModel>({
+      _id: false,
+    });
 
   return (
     <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
@@ -162,7 +182,7 @@ export const SectionTable = ({
           setColumnVisibilityModel(newModel)
         }
         sx={{
-          '.MuiDataGrid-cell': { py: '15px' },
+          ".MuiDataGrid-cell": { py: "15px" },
         }}
       />
     </Box>

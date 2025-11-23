@@ -1,7 +1,13 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { User } from "@/types/users";
-import { DataGrid, GridColDef, GridRenderCellParams, GridActionsCellItem, GridDeleteIcon } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridActionsCellItem,
+  GridDeleteIcon,
+} from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";

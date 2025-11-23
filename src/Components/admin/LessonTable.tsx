@@ -3,12 +3,22 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Lesson, Sentence } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridColumnVisibilityModel, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridActionsCellItem,
+  GridDeleteIcon,
+  GridColumnVisibilityModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { useMutation, useQueryClient, useIsFetching } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useIsFetching,
+} from "@tanstack/react-query";
 import axios from "axios";
 import { Card } from "@/types/cards";
-
 
 export const LessonTable = ({
   cards,
@@ -61,7 +71,6 @@ export const LessonTable = ({
     },
   });
 
-
   const handleProcessRowUpdate = async (newRow: Lesson, oldRow: Lesson) => {
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
 
@@ -75,7 +84,8 @@ export const LessonTable = ({
   };
 
   const getSectionName = (sectionId: any) => {
-    const sectionName = sections.find((s) => s._id === sectionId.value)?.name || "";
+    const sectionName =
+      sections.find((s) => s._id === sectionId.value)?.name || "";
     return sectionName;
   };
 
@@ -85,10 +95,12 @@ export const LessonTable = ({
       id: card._id,
     }));
 
-    const selectedCards = (params.value as string[]).map((id) => {
-      const card = cards.find((c) => c._id === id);
-      return card ? { label: card.front_text, id: card._id } : null;
-    }).filter(Boolean) as { label: string; id: string }[];
+    const selectedCards = (params.value as string[])
+      .map((id) => {
+        const card = cards.find((c) => c._id === id);
+        return card ? { label: card.front_text, id: card._id } : null;
+      })
+      .filter(Boolean) as { label: string; id: string }[];
 
     return (
       <Autocomplete
@@ -97,10 +109,16 @@ export const LessonTable = ({
         value={selectedCards}
         onChange={(_, newValue) => {
           const newLessonIds = newValue.map((item) => item.id);
-          params.api.setEditCellValue({ id: params.id, field: params.field, value: newLessonIds });
+          params.api.setEditCellValue({
+            id: params.id,
+            field: params.field,
+            value: newLessonIds,
+          });
         }}
-        renderInput={(inputParams) => <TextField {...inputParams} variant="standard" label="Lessons" />}
-        sx={{ mr: 2, ml: 2, width: '100%' }}
+        renderInput={(inputParams) => (
+          <TextField {...inputParams} variant="standard" label="Lessons" />
+        )}
+        sx={{ mr: 2, ml: 2, width: "100%" }}
       />
     );
   };
@@ -121,9 +139,7 @@ export const LessonTable = ({
       editable: true,
       renderCell: (params) => {
         return (
-          <Box sx={{ whiteSpace: "pre-line" }}>
-            {getSectionName(params)}
-          </Box>
+          <Box sx={{ whiteSpace: "pre-line" }}>{getSectionName(params)}</Box>
         );
       },
       type: "singleSelect",
@@ -166,9 +182,10 @@ export const LessonTable = ({
         />
       ),
       renderCell: (params) => (
-        <Box sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: 'auto' }}>{params.value}</Box>
+        <Box sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: "auto" }}>
+          {params.value}
+        </Box>
       ),
-
     },
     {
       field: "sentences",
@@ -177,10 +194,16 @@ export const LessonTable = ({
       flex: 1,
       editable: false,
       renderCell: (params) => {
-        const full_sentences = params.row.sentences.map(((sentence: Sentence) => `- ${sentence.full_sentence}`)).join('\n');
+        const full_sentences = params.row.sentences
+          .map((sentence: Sentence) => `- ${sentence.full_sentence}`)
+          .join("\n");
         return (
-          <Box sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: 'auto' }}>{full_sentences}</Box>
-        )
+          <Box
+            sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: "auto" }}
+          >
+            {full_sentences}
+          </Box>
+        );
       },
     },
     {
@@ -216,9 +239,10 @@ export const LessonTable = ({
     },
   ];
 
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
-    _id: false,
-  });
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    useState<GridColumnVisibilityModel>({
+      _id: false,
+    });
 
   return (
     <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
@@ -236,7 +260,7 @@ export const LessonTable = ({
           setColumnVisibilityModel(newModel)
         }
         sx={{
-          '.MuiDataGrid-cell': { py: '15px', maxHeight: '200px' },
+          ".MuiDataGrid-cell": { py: "15px", maxHeight: "200px" },
         }}
       />
     </Box>
