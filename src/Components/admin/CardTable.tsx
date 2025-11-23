@@ -1,23 +1,12 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
-import { Card, NewCard } from "@/types/cards";
+import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridRenderCellParams } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Card } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  TextField,
-  Typography,
-  Autocomplete,
-  Button,
-} from "@mui/material";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
 
 type LessonGroup = {
   lessons: Lesson[];
@@ -34,20 +23,13 @@ export const CardTable = ({
 }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [editingCardId, setEditingCardId] = useState<string | null>(null);
-  const [editedCard, setEditedCard] = useState<NewCard | null>(null);
   const queryClient = useQueryClient();
 
-  const handleEdit = (card: Card) => {
-    setEditingCardId(card._id);
-    setEditedCard(card);
-  };
-
   const updateMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (card: Card) => {
       await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/update/${editingCardId}`,
-        editedCard,
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/update/${card._id}`,
+        card,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
         },
@@ -56,16 +38,11 @@ export const CardTable = ({
     onSuccess: () => {
       showSnackbar("Card updated successfully", "success");
       queryClient.invalidateQueries({ queryKey: ["cards", authData?.token] });
-      setEditingCardId(null);
     },
     onError: () => {
       showSnackbar("Failed to update card", "error");
     },
   });
-
-  const handleUpdate = async () => {
-    updateMutation.mutate();
-  };
 
   const deleteMutation = useMutation({
     mutationFn: async (cardId: string) => {
@@ -85,201 +62,80 @@ export const CardTable = ({
     },
   });
 
-  const handleDelete = async (cardId: string) => {
-    deleteMutation.mutate(cardId);
+  const handleProcessRowUpdate = async (newRow: Card, oldRow: Card) => {
+    if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
+
+    await updateMutation.mutateAsync(newRow);
+    return newRow;
   };
 
+  const handleDelete = (cardId: string) => {
+    if (!window.confirm("Are you sure you want to delete this card?")) return;
+    deleteMutation.mutateAsync(cardId);
+  };
+
+  const columns: GridColDef[] = [
+    { field: "_id", headerName: "ID", width: 220 },
+    {
+      field: "front_text",
+      headerName: "Front",
+      width: 180,
+      editable: true,
+    },
+    {
+      field: "back_text",
+      headerName: "Back",
+      width: 180,
+      editable: true,
+    },
+    {
+      field: "lesson_id",
+      headerName: "Lesson",
+      width: 200,
+      flex: 1,
+      editable: true,
+      type: "singleSelect",
+      renderCell: (params: GridRenderCellParams) => {
+        const lesson = lessonGroups.lessons.find(
+          (lesson) => lesson._id === params.row.lesson_ids[0],
+        );
+        return <span>{lesson ? lesson.title : ""}</span>;
+      },
+      valueOptions: lessonGroups.lessons.map((lesson) => ({
+        value: lesson._id,
+        label: lesson.title,
+      })),
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
+      width: 100,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<GridDeleteIcon color="error" />}
+          label="Delete"
+          onClick={() => handleDelete(params.id as string)}
+        />,
+      ],
+    },
+  ];
+
   return (
-    <TableContainer
-      sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
-    >
-      <Table sx={{ minWidth: 700 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Front</TableCell>
-            <TableCell>Back</TableCell>
-            <TableCell>Lessons</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {cards?.map((card: Card) => (
-            <TableRow key={card._id} onDoubleClick={() => handleEdit(card)}>
-              <TableCell
-                sx={{
-                  maxWidth: 100,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  wordBreak: "break-word",
-                }}
-              >
-                {card._id}
-              </TableCell>
-              <TableCell>
-                {editingCardId === card._id ? (
-                  <TextField
-                    value={editedCard?.front_text}
-                    onChange={(e) => {
-                      if (!editedCard) return;
-
-                      return setEditedCard({
-                        ...editedCard,
-                        front_text: e.target.value,
-                      });
-                    }}
-                    multiline
-                    maxRows={4}
-                  />
-                ) : (
-                  <Typography
-                    sx={{
-                      minWidth: 100,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "normal",
-                      wordBreak: "break-word",
-                      display: "block",
-                    }}
-                  >
-                    {card.front_text}
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell>
-                {editingCardId === card._id ? (
-                  <TextField
-                    value={editedCard?.back_text}
-                    onChange={(e) => {
-                      if (!editedCard) return;
-
-                      setEditedCard({
-                        ...editedCard,
-                        back_text: e.target.value,
-                      });
-                    }}
-                    multiline
-                    maxRows={4}
-                  />
-                ) : (
-                  <Typography
-                    sx={{
-                      minWidth: 100,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "normal",
-                      wordBreak: "break-word",
-                      display: "block",
-                    }}
-                  >
-                    {card.back_text}
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell sx={{ width: 300 }}>
-                {editingCardId === card._id ? (
-                  <Autocomplete
-                    multiple
-                    disableCloseOnSelect
-                    options={Object.keys(lessonGroups?.groupedLessons).flatMap(
-                      (section) => lessonGroups?.groupedLessons[section],
-                    )}
-                    groupBy={(option) =>
-                      lessonGroups?.sections.find(
-                        (section: Section) =>
-                          section._id === option?.section_id,
-                      )?.name || "Ungrouped"
-                    }
-                    getOptionLabel={(option) => option?.title || ""}
-                    value={editedCard?.lesson_ids?.map((lessonId) =>
-                      lessonGroups?.lessons.find(
-                        (lesson: Lesson) => lesson._id === lessonId,
-                      ),
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option?._id === value?._id
-                    }
-                    onChange={(_event, newValue) => {
-                      if (!editedCard) return;
-
-                      setEditedCard({
-                        ...editedCard,
-                        lesson_ids: newValue.map((lesson) => lesson?._id || ""),
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Lessons"
-                        placeholder="Select lessons"
-                      />
-                    )}
-                  />
-                ) : (
-                  <Typography
-                    sx={{
-                      minWidth: 100,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "normal",
-                      wordBreak: "break-word",
-                      display: "block",
-                    }}
-                  >
-                    {card.lesson_ids
-                      ?.map(
-                        (lessonId) =>
-                          lessonGroups?.lessons.find(
-                            (lesson: Lesson) => lesson._id === lessonId,
-                          )?.title,
-                      )
-                      .join(", \n")}
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell sx={{ whiteSpace: "noWrap" }}>
-                {editingCardId === card._id ? (
-                  <>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={handleUpdate}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      sx={{ ml: 1 }}
-                      variant={"contained"}
-                      color={"warning"}
-                      onClick={() => setEditingCardId(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    onClick={() => handleEdit(card)}
-                  >
-                    Edit
-                  </Button>
-                )}
-                <Button
-                  sx={{ ml: 1 }}
-                  variant={"contained"}
-                  color={"error"}
-                  onClick={() => handleDelete(card._id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box sx={{ height: 600, width: "90%", mx: "auto", mt: 2 }}>
+      <DataGrid
+        label="Cards"
+        rows={cards}
+        columns={columns}
+        loading={updateMutation.isPending || deleteMutation.isPending}
+        getRowId={(row) => row._id}
+        getRowHeight={() => "auto"}
+        showToolbar
+        processRowUpdate={handleProcessRowUpdate}
+        sx={{
+          '.MuiDataGrid-cell': { py: '15px', maxHeight: '200px' },
+        }}
+      />
+    </Box>
   );
 };

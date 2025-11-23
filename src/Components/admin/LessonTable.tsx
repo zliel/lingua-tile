@@ -1,53 +1,33 @@
+import { useState } from "react";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
-import { Lesson, LessonCategory } from "@/types/lessons";
+import { Lesson, Sentence } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Autocomplete,
-  TextField,
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-} from "@mui/material";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridColumnVisibilityModel, GridRenderCellParams } from "@mui/x-data-grid";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { useMutation, useQueryClient, useIsFetching } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
-import MarkdownPreviewer from "../MarkdownPreviewer";
-import { Card as CardType } from "@/types/cards";
+import { Card } from "@/types/cards";
 
-//TODO: Consider making this a tabbed table that filters for grammar/flashcard/practice lessons separately for easier editing
+
 export const LessonTable = ({
   cards,
   lessons,
   sections,
 }: {
-  cards: CardType[];
+  cards: Card[];
   lessons: Lesson[];
   sections: Section[];
 }) => {
   const { authData } = useAuth();
+  const isFetchingSections = useIsFetching({ queryKey: ["sections"] }) > 0;
   const { showSnackbar } = useSnackbar();
-  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
-  const [editedLesson, setEditedLesson] = useState<Lesson | null>(null);
   const queryClient = useQueryClient();
 
-  const handleEdit = (lesson: Lesson) => {
-    setEditingLessonId(lesson._id);
-    setEditedLesson(lesson);
-  };
-
   const updateMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (editedLesson: Lesson) => {
       await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson?._id}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
         editedLesson,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
@@ -55,18 +35,13 @@ export const LessonTable = ({
       );
     },
     onSuccess: () => {
-      setEditingLessonId(null);
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
-      showSnackbar("Lesson updated successfully", "success");
+      showSnackbar("Section updated successfully", "success");
     },
     onError: () => {
-      showSnackbar("Failed to update lesson", "error");
+      showSnackbar("Failed to update section", "error");
     },
   });
-
-  const handleUpdate = async () => {
-    updateMutation.mutate();
-  };
 
   const deleteMutation = useMutation({
     mutationFn: async (lessonId: string) => {
@@ -78,219 +53,192 @@ export const LessonTable = ({
       );
     },
     onSuccess: () => {
-      setEditingLessonId(null);
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
-      showSnackbar("Lesson deleted successfully", "success");
+      showSnackbar("Section deleted successfully", "success");
     },
     onError: () => {
-      showSnackbar("Failed to delete lesson", "error");
+      showSnackbar("Failed to delete section", "error");
     },
   });
 
-  const handleDelete = async (lessonId: string) => {
-    deleteMutation.mutate(lessonId);
+
+  const handleProcessRowUpdate = async (newRow: Lesson, oldRow: Lesson) => {
+    if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
+
+    await updateMutation.mutateAsync(newRow);
+    return newRow;
   };
 
+  const handleDelete = (lessonId: string) => {
+    if (!window.confirm("Are you sure you want to delete this lesson?")) return;
+    deleteMutation.mutateAsync(lessonId);
+  };
+
+  const getSectionName = (sectionId: any) => {
+    const sectionName = sections.find((s) => s._id === sectionId.value)?.name || "";
+    return sectionName;
+  };
+
+  const CardEditCell = (params: GridRenderCellParams) => {
+    const cardOptions = cards.map((card) => ({
+      label: card.front_text,
+      id: card._id,
+    }));
+
+    const selectedCards = (params.value as string[]).map((id) => {
+      const card = cards.find((c) => c._id === id);
+      return card ? { label: card.front_text, id: card._id } : null;
+    }).filter(Boolean) as { label: string; id: string }[];
+
+    return (
+      <Autocomplete
+        multiple
+        options={cardOptions}
+        value={selectedCards}
+        onChange={(_, newValue) => {
+          const newLessonIds = newValue.map((item) => item.id);
+          params.api.setEditCellValue({ id: params.id, field: params.field, value: newLessonIds });
+        }}
+        renderInput={(inputParams) => <TextField {...inputParams} variant="standard" label="Lessons" />}
+        sx={{ mr: 2, ml: 2, width: '100%' }}
+      />
+    );
+  };
+
+  const columns: GridColDef[] = [
+    { field: "_id", headerName: "ID", width: 220 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 100,
+      headerAlign: "left",
+      editable: true,
+    },
+    {
+      field: "section_id",
+      headerName: "Section Name",
+      width: 150,
+      editable: true,
+      renderCell: (params) => {
+        return (
+          <Box sx={{ whiteSpace: "pre-line" }}>
+            {getSectionName(params)}
+          </Box>
+        );
+      },
+      type: "singleSelect",
+      valueOptions: sections.map((section) => ({
+        label: section.name,
+        value: section._id,
+      })),
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      width: 100,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: ["Grammar", "Flashcards", "Practice"],
+      // Format in title case
+      valueFormatter: (params: string) => {
+        return params.charAt(0).toUpperCase() + params.slice(1).toLowerCase();
+      },
+    },
+    {
+      field: "content",
+      headerName: "Content",
+      width: 300,
+      editable: true,
+      renderEditCell: (params) => (
+        <TextField
+          multiline
+          fullWidth
+          minRows={4}
+          maxRows={10}
+          value={params.value}
+          onChange={(e) =>
+            params.api.setEditCellValue({
+              id: params.id,
+              field: params.field,
+              value: e.target.value,
+            })
+          }
+        />
+      ),
+      renderCell: (params) => (
+        <Box sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: 'auto' }}>{params.value}</Box>
+      ),
+
+    },
+    {
+      field: "sentences",
+      headerName: "Sentences",
+      width: 100,
+      flex: 1,
+      editable: false,
+      renderCell: (params) => {
+        const full_sentences = params.row.sentences.map(((sentence: Sentence) => `- ${sentence.full_sentence}`)).join('\n');
+        return (
+          <Box sx={{ whiteSpace: "pre-line", maxHeight: 200, overflowY: 'auto' }}>{full_sentences}</Box>
+        )
+      },
+    },
+    {
+      field: "card_ids",
+      headerName: "Cards",
+      width: 100,
+      flex: 1,
+      editable: true,
+      renderCell: (params) => {
+        return (
+          <Box sx={{ whiteSpace: "pre-line" }}>
+            {params.row.card_ids
+              .map((id: string) => cards.find((c) => c._id === id)?.front_text)
+              .filter(Boolean)
+              .join(", ")}
+          </Box>
+        );
+      },
+      renderEditCell: CardEditCell,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
+      width: 100,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<GridDeleteIcon color="error" />}
+          label="Delete"
+          onClick={() => handleDelete(params.id as string)}
+        />,
+      ],
+    },
+  ];
+
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
+    _id: false,
+  });
+
   return (
-    <TableContainer
-      sx={{ maxWidth: "95%", borderRadius: 2, border: `1px solid` }}
-    >
-      <Table sx={{ minWidth: 700 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Title</TableCell>
-            <TableCell>Section Name</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Content</TableCell>
-            <TableCell>Sentences</TableCell>
-            <TableCell>Cards</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {lessons.map((lesson: Lesson) => (
-            <TableRow key={lesson._id} onDoubleClick={() => handleEdit(lesson)}>
-              <TableCell
-                sx={{
-                  maxWidth: 50,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {lesson._id}
-              </TableCell>
-              <TableCell>{lesson.title}</TableCell>
-              {/* Sections Column */}
-              <TableCell sx={{ width: 300 }}>
-                {editingLessonId === lesson._id ? (
-                  <Autocomplete
-                    options={sections}
-                    getOptionLabel={(option) => option.name}
-                    value={sections.find(
-                      (section: Section) => section._id === lesson.section_id,
-                    )}
-                    onChange={(_event, newValue) => {
-                      if (!editedLesson) return;
-
-                      setEditedLesson({
-                        ...editedLesson,
-                        section_id: newValue?._id ? newValue._id : "",
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Section"
-                        variant="outlined"
-                      />
-                    )}
-                  />
-                ) : (
-                  sections.find(
-                    (section: Section) => section._id === lesson.section_id,
-                  )?.name
-                )}
-              </TableCell>
-              {/* Category Column */}
-              <TableCell sx={{ width: 150 }}>
-                {editingLessonId === lesson._id ? (
-                  <TextField
-                    label="Category"
-                    value={editedLesson?.category}
-                    onChange={(e) => {
-                      if (!editedLesson) return;
-
-                      setEditedLesson({
-                        ...editedLesson,
-                        category: e.target.value as LessonCategory,
-                      });
-                    }}
-                    sx={{ mb: 2, minWidth: 120 }}
-                    required
-                  />
-                ) : (
-                  lesson.category
-                )}
-              </TableCell>
-              {/* Content Column */}
-              <TableCell sx={{ width: 300, maxHeight: 150, overflowY: "auto" }}>
-                {editingLessonId === lesson._id &&
-                lesson.category === "grammar" ? (
-                  <MarkdownPreviewer
-                    value={editedLesson?.content ?? ""}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      if (!editedLesson) return;
-                      setEditedLesson({
-                        ...editedLesson,
-                        content: e.target.value,
-                      });
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      maxHeight: 150,
-                      overflowY: "auto",
-                    }}
-                  >
-                    {lesson.content}
-                  </Box>
-                )}
-              </TableCell>
-
-              {/* Sentences Column */}
-              <TableCell sx={{ width: 300 }}>
-                {/*  TODO: Add sentences column for updating, consider reworking the db to include Sentence models as their own collection, similar to cards */}
-                {/*  For now, we'll just show the full text for each sentence */}
-                {lesson?.sentences?.map((sentence, sentenceIndex) => (
-                  <Card key={sentenceIndex} sx={{ mb: 2 }}>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        {sentence.full_sentence}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </TableCell>
-
-              {/* Cards Column */}
-              <TableCell sx={{ width: 300 }}>
-                {editingLessonId === lesson._id ? (
-                  <Autocomplete
-                    multiple
-                    disableCloseOnSelect
-                    options={cards}
-                    getOptionLabel={(option) => option.front_text}
-                    value={cards.filter((card: CardType) =>
-                      editedLesson?.card_ids?.includes(card._id),
-                    )}
-                    onChange={(_event, newValue) => {
-                      if (!editedLesson) return;
-
-                      setEditedLesson({
-                        ...editedLesson,
-                        card_ids: newValue.map((card) => card._id),
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Cards" variant="outlined" />
-                    )}
-                  />
-                ) : (
-                  <Typography sx={{ minWidth: 150 }}>
-                    {lesson.card_ids
-                      ?.map(
-                        (cardId) =>
-                          cards.find((card: CardType) => card._id === cardId)
-                            ?.front_text,
-                      )
-                      .join(", \n")}
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell sx={{ whiteSpace: "noWrap" }}>
-                {editingLessonId === lesson._id ? (
-                  <>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={handleUpdate}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      sx={{ ml: 1 }}
-                      variant={"contained"}
-                      color={"warning"}
-                      onClick={() => setEditingLessonId(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    onClick={() => handleEdit(lesson)}
-                  >
-                    Edit
-                  </Button>
-                )}
-                <Button
-                  sx={{ ml: 1 }}
-                  variant={"contained"}
-                  color={"error"}
-                  onClick={() => handleDelete(lesson._id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
+      <DataGrid
+        label="Lessons"
+        rows={lessons}
+        columns={columns}
+        getRowId={(row) => row._id}
+        showToolbar
+        loading={updateMutation.isPending || isFetchingSections}
+        getRowHeight={() => "auto"}
+        processRowUpdate={handleProcessRowUpdate}
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={(newModel) =>
+          setColumnVisibilityModel(newModel)
+        }
+        sx={{
+          '.MuiDataGrid-cell': { py: '15px', maxHeight: '200px' },
+        }}
+      />
+    </Box>
   );
 };

@@ -1,22 +1,12 @@
+import { useState } from "react";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  TextField,
-  Typography,
-  Autocomplete,
-  Button,
-} from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DataGrid, GridColDef, GridActionsCellItem, GridDeleteIcon, GridColumnVisibilityModel, GridRenderCellParams } from "@mui/x-data-grid";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { useMutation, useQueryClient, useIsFetching } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
 
 export const SectionTable = ({
   lessons,
@@ -27,19 +17,13 @@ export const SectionTable = ({
 }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
-  const [editedSection, setEditedSection] = useState<Section | null>(null);
   const queryClient = useQueryClient();
-
-  const handleEdit = (section: Section) => {
-    setEditingSectionId(section._id);
-    setEditedSection(section);
-  };
+  const isFetchingSections = useIsFetching({ queryKey: ["sections"] }) > 0;
 
   const updateMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (editedSection: Section) => {
       await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/update/${editingSectionId}`,
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/update/${editedSection._id}`,
         editedSection,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
@@ -47,7 +31,6 @@ export const SectionTable = ({
       );
     },
     onSuccess: () => {
-      setEditingSectionId(null);
       queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section updated successfully", "success");
     },
@@ -55,10 +38,6 @@ export const SectionTable = ({
       showSnackbar("Failed to update section", "error");
     },
   });
-
-  const handleUpdate = () => {
-    updateMutation.mutate();
-  };
 
   const deleteMutation = useMutation({
     mutationFn: async (sectionId: string) => {
@@ -70,7 +49,6 @@ export const SectionTable = ({
       );
     },
     onSuccess: () => {
-      setEditingSectionId(null);
       queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section deleted successfully", "success");
     },
@@ -79,136 +57,114 @@ export const SectionTable = ({
     },
   });
 
-  const handleDelete = async (sectionId: string) => {
-    deleteMutation.mutate(sectionId);
+
+  const handleProcessRowUpdate = async (newRow: Section, oldRow: Section) => {
+    if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
+
+    await updateMutation.mutateAsync(newRow);
+    return newRow;
   };
 
+  const handleDelete = (sectionId: string) => {
+    if (!window.confirm("Are you sure you want to delete this section?")) return;
+    deleteMutation.mutateAsync(sectionId);
+  };
+
+  const getLessonTitles = (lessonIds: string[]) => {
+    if (!lessons || lessons.length === 0) return "";
+
+    return lessonIds
+      .map((id) => lessons.find((l) => l._id === id)?.title)
+      .filter(Boolean)
+      .join("\n");
+  };
+
+  const LessonEditCell = (params: GridRenderCellParams) => {
+    const lessonOptions = lessons.map((lesson) => ({
+      label: lesson.title,
+      id: lesson._id,
+    }));
+    const selectedLessons = (params.value as string[]).map((id) => {
+      const lesson = lessons.find((l) => l._id === id);
+      return lesson ? { label: lesson.title, id: lesson._id } : null;
+    }).filter(Boolean) as { label: string; id: string }[];
+    return (
+      <Autocomplete
+        multiple
+        options={lessonOptions}
+        value={selectedLessons}
+        onChange={(_, newValue) => {
+          const newLessonIds = newValue.map((item) => item.id);
+          params.api.setEditCellValue({ id: params.id, field: params.field, value: newLessonIds });
+        }}
+        renderInput={(inputParams) => <TextField {...inputParams} variant="standard" label="Lessons" />}
+        sx={{ mr: 2, ml: 2, width: '100%' }}
+      />
+    );
+  };
+
+  const columns: GridColDef[] = [
+    { field: "_id", headerName: "ID", width: 220 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 200,
+      headerAlign: "left",
+      editable: true,
+    },
+    {
+      field: "lesson_ids",
+      headerName: "Lessons",
+      width: 300,
+      flex: 1,
+      editable: true,
+      renderCell: (params) => {
+        return (
+          <Box sx={{ whiteSpace: "pre-line" }}>
+            {getLessonTitles(params.value as string[])}
+          </Box>
+        );
+      },
+      renderEditCell: LessonEditCell,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
+      width: 100,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<GridDeleteIcon color="error" />}
+          label="Delete"
+          onClick={() => handleDelete(params.id as string)}
+        />,
+      ],
+    },
+  ];
+
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
+    _id: false,
+  });
+
   return (
-    <TableContainer
-      sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
-    >
-      <Table sx={{ minWidth: 700 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Lessons</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sections.map((section: Section) => (
-            <TableRow
-              key={section._id}
-              onDoubleClick={() => handleEdit(section)}
-            >
-              <TableCell
-                sx={{
-                  maxWidth: 100,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {section._id}
-              </TableCell>
-              <TableCell sx={{ whiteSpace: "noWrap", minWidth: 150 }}>
-                {editingSectionId === section._id ? (
-                  <TextField
-                    value={editedSection?.name}
-                    onChange={(e) => {
-                      if (!editedSection) return;
-
-                      setEditedSection({
-                        ...editedSection,
-                        name: e.target.value,
-                      });
-                    }}
-                  />
-                ) : (
-                  <Typography sx={{ minWidth: 150 }}>{section.name}</Typography>
-                )}
-              </TableCell>
-              <TableCell sx={{ width: 300 }}>
-                {editingSectionId === section._id ? (
-                  <Autocomplete
-                    multiple
-                    disableCloseOnSelect
-                    options={lessons}
-                    getOptionLabel={(option) => option?.title || ""}
-                    value={editedSection?.lesson_ids.map((lessonId) =>
-                      lessons.find((lesson: Lesson) => lesson._id === lessonId),
-                    )}
-                    onChange={(_event, newValue) => {
-                      if (!editedSection) return;
-
-                      setEditedSection({
-                        ...editedSection,
-                        lesson_ids: newValue.map((option) => option?._id || ""),
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Lessons"
-                      />
-                    )}
-                  />
-                ) : (
-                  <Typography sx={{ minWidth: 150 }}>
-                    {section.lesson_ids
-                      ?.map(
-                        (lessonId) =>
-                          lessons.find(
-                            (lesson: Lesson) => lesson._id === lessonId,
-                          )?.title,
-                      )
-                      .join(", \n")}
-                  </Typography>
-                )}
-              </TableCell>
-              <TableCell sx={{ whiteSpace: "noWrap" }}>
-                {editingSectionId === section._id ? (
-                  <>
-                    <Button
-                      variant={"contained"}
-                      color={"primary"}
-                      onClick={handleUpdate}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      sx={{ ml: 1 }}
-                      variant={"contained"}
-                      color={"warning"}
-                      onClick={() => setEditingSectionId(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    onClick={() => handleEdit(section)}
-                  >
-                    Edit
-                  </Button>
-                )}
-                <Button
-                  sx={{ ml: 1 }}
-                  variant={"contained"}
-                  color={"error"}
-                  onClick={() => handleDelete(section._id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
+      <DataGrid
+        label="Sections"
+        rows={sections}
+        columns={columns}
+        getRowId={(row) => row._id}
+        showToolbar
+        loading={updateMutation.isPending || isFetchingSections}
+        getRowHeight={() => "auto"}
+        processRowUpdate={handleProcessRowUpdate}
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={(newModel) =>
+          setColumnVisibilityModel(newModel)
+        }
+        sx={{
+          '.MuiDataGrid-cell': { py: '15px' },
+        }}
+      />
+    </Box>
   );
 };
