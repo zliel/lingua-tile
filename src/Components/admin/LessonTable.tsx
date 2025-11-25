@@ -11,7 +11,7 @@ import {
   GridColumnVisibilityModel,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
-import { Autocomplete, Box, TextField } from "@mui/material";
+import { Autocomplete, Box, Tab, Tabs, TextField } from "@mui/material";
 import {
   useMutation,
   useQueryClient,
@@ -19,6 +19,13 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import { Card } from "@/types/cards";
+
+const categoryColumnVisibility: Record<string, GridColumnVisibilityModel> = {
+  All: { _id: false },
+  Grammar: { _id: false, sentences: false, card_ids: false },
+  Flashcards: { _id: false, sentences: false, content: false },
+  Practice: { _id: false, card_ids: false, content: false },
+};
 
 export const LessonTable = ({
   cards,
@@ -32,6 +39,12 @@ export const LessonTable = ({
   const { authData } = useAuth();
   const isFetchingSections = useIsFetching({ queryKey: ["sections"] }) > 0;
   const { showSnackbar } = useSnackbar();
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const categories = ["All", "Grammar", "Flashcards", "Practice"];
+  const filteredLessons = lessons.filter(
+    (lesson) =>
+      lesson.category?.toLowerCase() === selectedCategory.toLowerCase(),
+  );
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
@@ -128,14 +141,14 @@ export const LessonTable = ({
     {
       field: "title",
       headerName: "Title",
-      width: 100,
+      width: 200,
       headerAlign: "left",
       editable: true,
     },
     {
       field: "section_id",
       headerName: "Section Name",
-      width: 150,
+      width: 200,
       editable: true,
       renderCell: (params) => {
         return (
@@ -163,6 +176,7 @@ export const LessonTable = ({
       field: "content",
       headerName: "Content",
       width: 300,
+      flex: 1,
       editable: true,
       renderEditCell: (params) => (
         <TextField
@@ -238,16 +252,24 @@ export const LessonTable = ({
     },
   ];
 
-  const [columnVisibilityModel, setColumnVisibilityModel] =
-    useState<GridColumnVisibilityModel>({
-      _id: false,
-    });
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState(
+    categoryColumnVisibility[selectedCategory],
+  );
+  const handleTabChange = (_: React.SyntheticEvent, newCategory: string) => {
+    setSelectedCategory(newCategory);
+    setColumnVisibilityModel(categoryColumnVisibility[newCategory]);
+  };
 
   return (
     <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
+      <Tabs value={selectedCategory} onChange={handleTabChange} sx={{ mb: 2 }}>
+        {categories.map((category) => (
+          <Tab key={category} label={category} value={category} />
+        ))}
+      </Tabs>
       <DataGrid
         label="Lessons"
-        rows={lessons}
+        rows={selectedCategory === "All" ? lessons : filteredLessons}
         columns={columns}
         getRowId={(row) => row._id}
         showToolbar
@@ -255,9 +277,6 @@ export const LessonTable = ({
         getRowHeight={() => "auto"}
         processRowUpdate={handleProcessRowUpdate}
         columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={(newModel) =>
-          setColumnVisibilityModel(newModel)
-        }
         sx={{
           ".MuiDataGrid-cell": { py: "15px", maxHeight: "200px" },
         }}
