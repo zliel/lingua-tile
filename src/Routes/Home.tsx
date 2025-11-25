@@ -24,7 +24,7 @@ function Home() {
           );
           return response.data;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
@@ -38,7 +38,7 @@ function Home() {
           );
           return response.data;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
@@ -52,7 +52,7 @@ function Home() {
           );
           return response.data;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
       });
     }
   }, [authData, queryClient]);

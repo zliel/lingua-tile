@@ -22,7 +22,7 @@ interface AuthContextType {
   checkAdmin: () => Promise<boolean>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) {
       return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
     }
+
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/check-admin`,
@@ -94,6 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ["authState"],
     queryFn: fetchAuthState,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (error && (error as any).response?.status === 401) {
@@ -102,6 +104,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const checkAdmin = useCallback(async (): Promise<boolean> => {
+    if (authData && authData.isLoggedIn) {
+      return !!authData.isAdmin;
+    }
+
     const token = localStorage.getItem("token");
     if (token) {
       const response = await axios.get(
@@ -113,7 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return response.data.isAdmin;
     }
     return false;
-  }, []);
+  }, [authData]);
 
   return (
     <AuthContext.Provider
