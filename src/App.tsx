@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import "./App.css";
 import {
   alpha,
@@ -11,6 +12,8 @@ import {
 import { useRoutes } from "react-router";
 import NavBar from "./Components/NavBar";
 import { BrowserRouter } from "react-router-dom";
+import { SnackbarProvider } from "./Contexts/SnackbarContext";
+import { AuthProvider } from "./Contexts/AuthContext";
 import Home from "./Routes/Home";
 import Translate from "./Routes/Translate";
 import About from "./Routes/About";
@@ -18,17 +21,15 @@ import Login from "./Routes/Login";
 import Signup from "./Routes/Signup";
 import Profile from "./Routes/Profile";
 import UpdateProfile from "./Routes/UpdateProfile";
-import { SnackbarProvider } from "./Contexts/SnackbarContext";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import AdminUserTable from "./Routes/AdminUserTable";
-import AdminCardTable from "./Routes/AdminCardTable";
-import AdminLessonTable from "./Routes/AdminLessonTable";
-import AdminSectionTable from "./Routes/AdminSectionTable";
 import FlashcardLesson from "./Routes/FlashcardLesson";
-import LessonList from "./Routes/LessonList";
-import { AuthProvider } from "./Contexts/AuthContext";
 import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
+const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
+const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
+const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
+const AdminCardTable = lazy(() => import("./Routes/AdminCardTable"));
+const LessonList = lazy(() => import("./Routes/LessonList"));
 
 const purpleBase = "#8c00cc";
 const greenBase = "#00c500";
@@ -87,7 +88,9 @@ function App() {
         path: "/admin-users",
         element: (
           <ProtectedRoute>
-            <AdminUserTable />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminUserTable />
+            </Suspense>
           </ProtectedRoute>
         ),
       },
@@ -95,7 +98,9 @@ function App() {
         path: "/admin-cards",
         element: (
           <ProtectedRoute>
-            <AdminCardTable />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminCardTable />
+            </Suspense>
           </ProtectedRoute>
         ),
       },
@@ -103,7 +108,9 @@ function App() {
         path: "/admin-lessons",
         element: (
           <ProtectedRoute>
-            <AdminLessonTable />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminLessonTable />
+            </Suspense>
           </ProtectedRoute>
         ),
       },
@@ -111,7 +118,9 @@ function App() {
         path: "/admin-sections",
         element: (
           <ProtectedRoute>
-            <AdminSectionTable />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminSectionTable />
+            </Suspense>
           </ProtectedRoute>
         ),
       },
