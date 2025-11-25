@@ -15,7 +15,9 @@ COPY . .
 
 # Set the environment variable to work with cicd workflow
 ARG VITE_APP_API_BASE
-RUN VITE_APP_API_BASE=$VITE_APP_API_BASE npm run build
+ENV VITE_APP_API_BASE=$VITE_APP_API_BASE
+
+RUN npm run build
 
 # Use Nginx to serve the application
 FROM nginx:alpine

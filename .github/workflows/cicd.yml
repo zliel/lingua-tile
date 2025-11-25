@@ -11,9 +11,6 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: testing
-        run: echo ${{ secrets.hello_world }}
-
       - name: Build Docker image
         run: docker build --build-arg VITE_APP_API_BASE=${{ secrets.VITE_APP_API_BASE }} -t linguatile-frontend .
 
