@@ -74,7 +74,6 @@ const LessonList = () => {
 
   const {
     data: reviews,
-    isLoading: reviewsLoading,
     isError: reviewsError,
   } = useQuery({
     queryKey: ["reviews", authData?.token],
