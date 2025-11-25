@@ -1,5 +1,3 @@
-import { Card } from "./cards";
-
 export interface Sentence {
   full_sentence: string;
   possible_answers: string[];
@@ -39,6 +37,14 @@ export interface Review {
   _id: string;
   lesson_id: string;
   user_id: string;
-  card_object: Card;
+  card_object: FSRSData;
   next_review: Date;
+}
+
+export interface FSRSData {
+  state: number;
+  step: number | null;
+  stability: number | null;
+  difficulty: number | null;
+  last_review: string;
 }
