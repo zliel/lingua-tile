@@ -26,11 +26,13 @@ function Login() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const loginMutation = useMutation({
-    mutationFn: (credentials: { username: string; password: string }) =>
-      axios.post(
+    mutationFn: (credentials: { username: string; password: string }) => {
+      console.log("Logging into: " + import.meta.env.VITE_APP_API_BASE);
+      return axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
         credentials,
-      ),
+      );
+    },
     onSuccess: (response) => {
       showSnackbar("Login successful", "success");
       login(response.data, () => navigate("/"));
