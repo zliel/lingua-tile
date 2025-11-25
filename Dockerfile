@@ -14,8 +14,8 @@ RUN npm install
 COPY . .
 
 # Set the environment variable to work with cicd workflow
-ARG REACT_APP_API_BASE
-ENV REACT_APP_API_BASE=$REACT_APP_API_BASE
+ARG VITE_APP_API_BASE
+ENV VITE_APP_API_BASE=$VITE_APP_API_BASE
 
 # Build the application
 RUN npm run build
@@ -24,7 +24,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy the build output from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
