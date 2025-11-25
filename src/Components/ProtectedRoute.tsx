@@ -5,7 +5,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useQuery } from "@tanstack/react-query";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { authData, checkAdmin } = useAuth();
+  const { authData, authIsLoading, checkAdmin } = useAuth();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -17,12 +17,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ["checkAdmin", token],
     queryFn: async () => {
+      if (!authIsLoading && authData && typeof authData.isAdmin === "boolean") {
+        return authData.isAdmin;
+      }
+
       if (token) {
         return await checkAdmin();
       }
+
       return false;
     },
     enabled: !!token,
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {

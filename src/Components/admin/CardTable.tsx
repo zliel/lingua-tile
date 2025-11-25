@@ -7,7 +7,7 @@ import {
   GridDeleteIcon,
   GridRenderCellParams,
 } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { Autocomplete, Box, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Card } from "@/types/cards";
@@ -80,8 +80,50 @@ export const CardTable = ({
     deleteMutation.mutateAsync(cardId);
   };
 
+  const getLessonTitles = (lessonIds: string[]) => {
+    const titles = lessonIds
+      .map((id) => {
+        const lesson = lessonGroups.lessons.find((lesson) => lesson._id === id);
+        return lesson ? lesson.title : null;
+      })
+      .filter((title): title is string => title !== null);
+    return titles.join("\n");
+  };
+
+  const LessonEditCell = (params: GridRenderCellParams) => {
+    const lessonOptions = lessonGroups.lessons.map((lesson) => ({
+      id: lesson._id,
+      label: lesson.title,
+    }));
+    const selectedLessons = (params.value as string[])
+      .map((id) => {
+        const lesson = lessonGroups.lessons.find((l) => l._id === id);
+        return lesson ? { label: lesson.title, id: lesson._id } : null;
+      })
+      .filter(Boolean) as { label: string; id: string }[];
+    return (
+      <Autocomplete
+        multiple
+        options={lessonOptions}
+        value={selectedLessons}
+        onChange={(_, newValue) => {
+          const newLessonIds = newValue.map((item) => item.id);
+          params.api.setEditCellValue({
+            id: params.id,
+            field: params.field,
+            value: newLessonIds,
+          });
+        }}
+        renderInput={(inputParams) => (
+          <TextField {...inputParams} variant="standard" label="Lessons" />
+        )}
+        sx={{ mr: 2, ml: 2, width: "100%" }}
+      />
+    );
+  };
+
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "_id", headerName: "ID", width: 220, editable: false },
     {
       field: "front_text",
       headerName: "Front",
@@ -95,22 +137,19 @@ export const CardTable = ({
       editable: true,
     },
     {
-      field: "lesson_id",
+      field: "lesson_ids",
       headerName: "Lesson",
       width: 200,
       flex: 1,
       editable: true,
-      type: "singleSelect",
-      renderCell: (params: GridRenderCellParams) => {
-        const lesson = lessonGroups.lessons.find(
-          (lesson) => lesson._id === params.row.lesson_ids[0],
+      renderEditCell: LessonEditCell,
+      renderCell: (params) => {
+        return (
+          <Box sx={{ whiteSpace: "pre-line" }}>
+            {getLessonTitles(params.value as string[])}
+          </Box>
         );
-        return <span>{lesson ? lesson.title : ""}</span>;
       },
-      valueOptions: lessonGroups.lessons.map((lesson) => ({
-        value: lesson._id,
-        label: lesson.title,
-      })),
     },
     {
       field: "actions",

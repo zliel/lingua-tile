@@ -20,7 +20,7 @@ import { Section } from "@/types/sections";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
-  const { authData } = useAuth();
+  const { authData, authIsLoading } = useAuth();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -41,6 +41,7 @@ const LessonList = () => {
       return response.data;
     },
     enabled: !!authData,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (isError) {
@@ -64,17 +65,14 @@ const LessonList = () => {
       return response.data;
     },
     enabled: !!authData,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (sectionsError) {
     showSnackbar("Failed to fetch sections", "error");
   }
 
-  const {
-    data: reviews,
-    isLoading: reviewsLoading,
-    isError: reviewsError,
-  } = useQuery({
+  const { data: reviews, isError: reviewsError } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
@@ -86,7 +84,8 @@ const LessonList = () => {
 
       return response.data;
     },
-    enabled: !!authData && !!authData.token,
+    enabled: !authIsLoading && !!authData,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (reviewsError && authData?.token) {
@@ -95,13 +94,13 @@ const LessonList = () => {
 
   // Manage the animation in-between loading and loaded
   useEffect(() => {
-    if (isLoading || sectionsLoading || reviewsLoading) {
+    if (isLoading || sectionsLoading) {
       setShowLoaded(false);
     } else {
       const timer = setTimeout(() => setShowLoaded(true), 250);
       return () => clearTimeout(timer);
     }
-  }, [isLoading, sectionsLoading, reviewsLoading]);
+  }, [isLoading, sectionsLoading]);
 
   if (isError || sectionsError || (reviewsError && authData?.token)) {
     return <Typography>Error loading lessons.</Typography>;
@@ -146,11 +145,7 @@ const LessonList = () => {
 
   return (
     <>
-      <Fade
-        in={isLoading || sectionsLoading || reviewsLoading}
-        timeout={100}
-        unmountOnExit
-      >
+      <Fade in={isLoading || sectionsLoading} timeout={100} unmountOnExit>
         <div>
           <LessonListSkeleton />
         </div>
@@ -196,7 +191,10 @@ const LessonList = () => {
                     const review = getReviewForLesson(lesson._id);
                     return (
                       <Box key={lesson._id} sx={{ mb: 2 }}>
-                        <LessonListItem lesson={lesson} review={review} />
+                        <LessonListItem
+                          lesson={lesson}
+                          review={review || null}
+                        />
                       </Box>
                     );
                   })

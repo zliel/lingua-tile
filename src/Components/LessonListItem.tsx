@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
 import { Lesson, ReviewStats } from "@/types/lessons";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 type CategoryColor = "primary" | "secondary" | "warning";
 
@@ -19,8 +21,15 @@ export const LessonListItem = ({
   lesson: Lesson;
   review: ReviewStats | null;
 }) => {
+  const { authData } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const queryClient = useQueryClient();
+  const isReviewLoading =
+    queryClient.isFetching({
+      queryKey: ["reviews", authData?.token],
+    }) > 0;
+
   const categoryColors: Record<string, CategoryColor> = {
     flashcards: "primary",
     practice: "secondary",
@@ -62,19 +71,28 @@ export const LessonListItem = ({
         <Typography variant="h6" fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}>
           {lesson.title}
         </Typography>
-        {review && (
+        {isReviewLoading ? (
           <Typography
             variant="body2"
-            sx={{
-              color: review.isOverdue
-                ? theme.palette.error.main
-                : theme.palette.text.secondary,
-            }}
+            sx={{ color: theme.palette.text.secondary }}
           >
-            {review.isOverdue
-              ? `overdue by ${Math.abs(review.daysLeft)} days`
-              : `next review in ${review.daysLeft} days`}
+            Loading review...
           </Typography>
+        ) : (
+          review && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: review.isOverdue
+                  ? theme.palette.error.main
+                  : theme.palette.text.secondary,
+              }}
+            >
+              {review.isOverdue
+                ? `overdue by ${Math.abs(review.daysLeft)} days`
+                : `next review in ${review.daysLeft} days`}
+            </Typography>
+          )
         )}
       </Box>
       <Button

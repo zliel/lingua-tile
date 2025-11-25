@@ -123,7 +123,7 @@ export const SectionTable = ({
   };
 
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "_id", headerName: "ID", width: 220, editable: false },
     {
       field: "name",
       headerName: "Name",
