@@ -108,11 +108,11 @@ const LessonList = () => {
 
   // Helper function to get review information for a specific lesson
   const getReviewForLesson = (lessonId: string): ReviewStats | null => {
-    const review = reviews?.find(
+    const review: Review = reviews?.find(
       (review: Review) => review.lesson_id === lessonId,
     );
     if (review) {
-      const daysLeft = dayjs(review.next_review_date).diff(dayjs(), "day");
+      const daysLeft = dayjs(review.next_review).diff(dayjs(), "day");
       return {
         daysLeft: daysLeft,
         isOverdue: daysLeft < 0,
