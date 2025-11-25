@@ -41,7 +41,7 @@ const LessonList = () => {
       return response.data;
     },
     enabled: !!authData,
-    staleTime: 5 * 60 * 1000,  
+    staleTime: 5 * 60 * 1000,
   });
 
   if (isError) {
@@ -65,7 +65,7 @@ const LessonList = () => {
       return response.data;
     },
     enabled: !!authData,
-    staleTime: 5 * 60 * 1000,  
+    staleTime: 5 * 60 * 1000,
   });
 
   if (sectionsError) {
@@ -89,7 +89,7 @@ const LessonList = () => {
       return response.data;
     },
     enabled: !authIsLoading && !!authData,
-    staleTime: 5 * 60 * 1000,  
+    staleTime: 5 * 60 * 1000,
   });
 
   if (reviewsError && authData?.token) {
