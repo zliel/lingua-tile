@@ -138,14 +138,14 @@ export const LessonTable = ({
     {
       field: "title",
       headerName: "Title",
-      width: 100,
+      width: 200,
       headerAlign: "left",
       editable: true,
     },
     {
       field: "section_id",
       headerName: "Section Name",
-      width: 150,
+      width: 200,
       editable: true,
       renderCell: (params) => {
         return (
@@ -173,6 +173,7 @@ export const LessonTable = ({
       field: "content",
       headerName: "Content",
       width: 300,
+      flex: 1,
       editable: true,
       renderEditCell: (params) => (
         <TextField
