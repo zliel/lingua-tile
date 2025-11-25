@@ -40,5 +40,5 @@ export interface Review {
   lesson_id: string;
   user_id: string;
   card_object: Card;
-  next_review_date: Date;
+  next_review: Date;
 }
