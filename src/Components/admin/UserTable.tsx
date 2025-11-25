@@ -26,9 +26,18 @@ export const UserTable = ({ users }: { users: User[] }) => {
           headers: { Authorization: `Bearer ${authData?.token}` },
         },
       );
+
+      return user;
     },
-    onSuccess: () => {
+    onSuccess: (user: User) => {
       showSnackbar("User updated successfully", "success");
+      queryClient.setQueryData<User[]>(
+        ["users", authData?.token],
+        (oldData) => {
+          if (!oldData) return [];
+          return oldData.map((u) => (u._id === user._id ? user : u));
+        },
+      );
       queryClient.invalidateQueries({ queryKey: ["users", authData?.token] });
     },
     onError: () => {
@@ -56,18 +65,17 @@ export const UserTable = ({ users }: { users: User[] }) => {
 
   const handleProcessRowUpdate = async (newRow: User, oldRow: User) => {
     if (JSON.stringify(newRow) === JSON.stringify(oldRow)) return oldRow;
-
     await updateMutation.mutateAsync(newRow);
     return newRow;
   };
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = async (userId: string) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-    deleteMutation.mutateAsync(userId);
+    await deleteMutation.mutateAsync(userId);
   };
 
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "_id", headerName: "ID", width: 220, editable: false },
     {
       field: "username",
       headerName: "Username",

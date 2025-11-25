@@ -124,7 +124,7 @@ export const LessonTable = ({
   };
 
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 220 },
+    { field: "_id", headerName: "ID", width: 220, editable: false },
     {
       field: "title",
       headerName: "Title",
@@ -155,7 +155,6 @@ export const LessonTable = ({
       editable: true,
       type: "singleSelect",
       valueOptions: ["Grammar", "Flashcards", "Practice"],
-      // Format in title case
       valueFormatter: (params: string) => {
         return params.charAt(0).toUpperCase() + params.slice(1).toLowerCase();
       },

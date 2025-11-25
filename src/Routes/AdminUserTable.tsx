@@ -8,22 +8,23 @@ import { UserTable } from "@/Components/admin/UserTable";
 const AdminUserTable = () => {
   const { authData, authIsLoading } = useAuth();
 
+  const token = authData?.token || localStorage.getItem("token");
   const {
     data: users = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["users", authData?.token],
+    queryKey: ["users", token],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/admin/all`,
         {
-          headers: { Authorization: `Bearer ${authData?.token}` },
+          headers: { Authorization: `Bearer ${token}` },
         },
       );
       return response.data;
     },
-    enabled: !!authData,
+    enabled: !!token,
   });
 
   if (isLoading || authIsLoading) {
