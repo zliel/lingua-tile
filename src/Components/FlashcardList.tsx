@@ -21,7 +21,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
-  const [isEnglishToJapanese, setIsEnglishToJapanese] = useState(true);
+  // const [_isEnglishToJapanese, _setIsEnglishToJapanese] = useState(true);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
@@ -43,7 +43,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   });
 
   useEffect(() => {
-    setIsEnglishToJapanese(Math.random() < 0.5);
+    // setIsEnglishToJapanese(Math.random() < 0.5);
   }, [currentCardIndex]);
 
   if (isLoading) {
@@ -125,14 +125,16 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
         <>
           <Flashcard
             frontText={
-              isEnglishToJapanese
-                ? currentCard?.back_text
-                : currentCard?.front_text
+              // isEnglishToJapanese
+              //   ? currentCard?.back_text
+              //   : currentCard?.front_text
+              currentCard?.front_text
             }
             backText={
-              isEnglishToJapanese
-                ? currentCard?.front_text
-                : currentCard?.back_text
+              // isEnglishToJapanese
+              //   ? currentCard?.front_text
+              //   : currentCard?.back_text
+              currentCard?.back_text
             }
             showTranslation={showTranslation}
             onShowTranslation={handleShowTranslation}
