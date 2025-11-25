@@ -27,7 +27,6 @@ function Login() {
 
   const loginMutation = useMutation({
     mutationFn: (credentials: { username: string; password: string }) => {
-      console.log("Logging into: " + import.meta.env.VITE_APP_API_BASE);
       return axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
         credentials,
