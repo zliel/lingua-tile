@@ -21,11 +21,11 @@ import axios from "axios";
 import { Card } from "@/types/cards";
 
 const categoryColumnVisibility: Record<string, GridColumnVisibilityModel> = {
-  All: { "_id": false },
-  Grammar: { "_id": false, "sentences": false, "card_ids": false },
-  Flashcards: { "_id": false, "sentences": false, "content": false },
-  Practice: { "_id": false, "card_ids": false, "content": false }
-}
+  All: { _id: false },
+  Grammar: { _id: false, sentences: false, card_ids: false },
+  Flashcards: { _id: false, sentences: false, content: false },
+  Practice: { _id: false, card_ids: false, content: false },
+};
 
 export const LessonTable = ({
   cards,
@@ -41,7 +41,10 @@ export const LessonTable = ({
   const { showSnackbar } = useSnackbar();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const categories = ["All", "Grammar", "Flashcards", "Practice"];
-  const filteredLessons = lessons.filter((lesson) => lesson.category?.toLowerCase() === selectedCategory.toLowerCase());
+  const filteredLessons = lessons.filter(
+    (lesson) =>
+      lesson.category?.toLowerCase() === selectedCategory.toLowerCase(),
+  );
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
@@ -249,19 +252,17 @@ export const LessonTable = ({
     },
   ];
 
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState(categoryColumnVisibility[selectedCategory])
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState(
+    categoryColumnVisibility[selectedCategory],
+  );
   const handleTabChange = (_: React.SyntheticEvent, newCategory: string) => {
     setSelectedCategory(newCategory);
-    setColumnVisibilityModel((categoryColumnVisibility[newCategory]));
-  }
+    setColumnVisibilityModel(categoryColumnVisibility[newCategory]);
+  };
 
   return (
     <Box sx={{ height: 600, width: "90%", mx: "auto" }}>
-      <Tabs
-        value={selectedCategory}
-        onChange={handleTabChange}
-        sx={{ mb: 2 }}
-      >
+      <Tabs value={selectedCategory} onChange={handleTabChange} sx={{ mb: 2 }}>
         {categories.map((category) => (
           <Tab key={category} label={category} value={category} />
         ))}
