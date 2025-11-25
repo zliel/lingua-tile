@@ -72,10 +72,7 @@ const LessonList = () => {
     showSnackbar("Failed to fetch sections", "error");
   }
 
-  const {
-    data: reviews,
-    isError: reviewsError,
-  } = useQuery({
+  const { data: reviews, isError: reviewsError } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
