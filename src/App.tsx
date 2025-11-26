@@ -25,11 +25,11 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import FlashcardLesson from "./Routes/FlashcardLesson";
 import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
+import LessonList from "./Routes/LessonList";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
 const AdminCardTable = lazy(() => import("./Routes/AdminCardTable"));
-const LessonList = lazy(() => import("./Routes/LessonList"));
 
 const purpleBase = "#8c00cc";
 const greenBase = "#00c500";

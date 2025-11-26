@@ -23,8 +23,8 @@ export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
 
   const reviewsPerDay = lastWeekDays().map((day) => {
     if (!reviews || reviews.length == 0) return 0;
-    return reviews.filter(
-      (review) => dayjs(review.card_object.last_review).isSame(day, "day")
+    return reviews.filter((review) =>
+      dayjs(review.card_object.last_review).isSame(day, "day"),
     ).length;
   });
 
@@ -35,7 +35,11 @@ export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
       </Typography>
       <BarChart
         xAxis={[
-          { id: "xAxis", data: lastWeekDays().map((day) => dayjs(day).format("ddd - MM/DD")), label: "Day of the Week" },
+          {
+            id: "xAxis",
+            data: lastWeekDays().map((day) => dayjs(day).format("ddd - MM/DD")),
+            label: "Day of the Week",
+          },
         ]}
         yAxis={[
           {
