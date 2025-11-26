@@ -19,7 +19,7 @@ import Translate from "./Routes/Translate";
 import About from "./Routes/About";
 import Login from "./Routes/Login";
 import Signup from "./Routes/Signup";
-import Profile from "./Routes/Profile";
+const Profile = lazy(() => import("./Routes/Profile"));
 import UpdateProfile from "./Routes/UpdateProfile";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import FlashcardLesson from "./Routes/FlashcardLesson";
@@ -82,7 +82,14 @@ function App() {
       { path: "/translate", element: <Translate /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
-      { path: "/profile", element: <Profile /> },
+      {
+        path: "/profile",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Profile />
+          </Suspense>
+        ),
+      },
       { path: "/update-profile", element: <UpdateProfile /> },
       {
         path: "/admin-users",
