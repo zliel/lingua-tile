@@ -6,6 +6,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
+import { PastWeekReviewsChart } from "@/Components/profile/PastWeekReviewsChart";
+import { ProjectedReviewsChart } from "@/Components/profile/ProjectedReviewsChart";
+import { LessonDifficultyChart } from "@/Components/profile/LessonDifficultyChart";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -26,6 +29,25 @@ function Profile() {
         `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
+      return response.data;
+    },
+    enabled: !!authData && !!authData.isLoggedIn,
+  });
+
+  const {
+    data: reviews,
+    isLoading: isFetchingReviews
+  } = useQuery({
+    queryKey: ["reviews", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
+        {
+          headers: {
+            Authorization: `Bearer ${authData?.token}`
+          },
         },
       );
       return response.data;
@@ -147,7 +169,7 @@ function Profile() {
 
   return (
     <>
-      <Fade in={isLoading} timeout={100}>
+      <Fade in={isLoading || isFetchingReviews} timeout={100}>
         <Box
           sx={{
             display: isLoading ? "flex" : "none",
@@ -189,6 +211,8 @@ function Profile() {
             flexDirection: "column",
             alignItems: "center",
             mt: 4,
+            width: "100%",
+            minWidth: 300,
           }}
         >
           <Typography variant="h4" gutterBottom>
@@ -197,7 +221,7 @@ function Profile() {
           <Typography variant="h6" gutterBottom>
             Username: {localStorage.getItem("username") || ""}
           </Typography>
-          <Grid container spacing={2} justifyContent="center">
+          <Grid container spacing={2} justifyContent="center" mb={2}>
             <Grid>
               <Button
                 variant="contained"
@@ -217,6 +241,9 @@ function Profile() {
               </Button>
             </Grid>
           </Grid>
+          <PastWeekReviewsChart reviews={reviews} />
+          <ProjectedReviewsChart reviews={reviews} />
+          <LessonDifficultyChart reviews={reviews} />
           <ConfirmationDialog
             open={dialogOpen}
             onClose={() => setDialogOpen(false)}
