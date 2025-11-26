@@ -36,17 +36,14 @@ function Profile() {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const {
-    data: reviews,
-    isLoading: isFetchingReviews
-  } = useQuery({
+  const { data: reviews, isLoading: isFetchingReviews } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
         {
           headers: {
-            Authorization: `Bearer ${authData?.token}`
+            Authorization: `Bearer ${authData?.token}`,
           },
         },
       );

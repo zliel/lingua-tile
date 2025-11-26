@@ -1,26 +1,28 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Review } from "@/types/lessons"
+import { Review } from "@/types/lessons";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from "@mui/x-charts/BarChart";
 import { useIsFetching } from "@tanstack/react-query";
 
 export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
   const { authData } = useAuth();
-  const isFetchingReviews = useIsFetching({ queryKey: ["reviews", authData?.token] });
+  const isFetchingReviews = useIsFetching({
+    queryKey: ["reviews", authData?.token],
+  });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const difficultyCounts = () => {
     const counts = Array(10).fill(0);
 
-    reviews?.forEach(review => {
+    reviews?.forEach((review) => {
       const difficulty = review.card_object.difficulty ?? 0; // Will be something like 7.13013
       const index = Math.min(Math.floor(difficulty / 10), 9); // Map to index 0-9
       counts[index]++;
     });
 
     return counts;
-  }
+  };
 
   return (
     <>
@@ -32,33 +34,36 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
           Used by FSRS to Help With Scheduling
         </Typography>
         <BarChart
-          xAxis={
-            [{
+          xAxis={[
+            {
               id: "xAxis",
               label: "Lesson Difficulty (%)",
               data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],
               valueFormatter: (value: number) => `${value}-${value + 10}%`,
               colorMap: {
-                type: 'continuous',
+                type: "continuous",
                 min: 0,
                 max: 90,
-                color: [theme.palette.primary.main, theme.palette.secondary.main]
-              }
-            }]
-          }
+                color: [
+                  theme.palette.primary.main,
+                  theme.palette.secondary.main,
+                ],
+              },
+            },
+          ]}
           series={[
             {
               data: difficultyCounts(),
-            }
+            },
           ]}
-          yAxis={
-            [{
+          yAxis={[
+            {
               id: "yAxis",
               label: "Number of Lessons",
               tickMinStep: 1,
-              width: 35
-            }]
-          }
+              width: 35,
+            },
+          ]}
           loading={isFetchingReviews > 0}
           height={300}
           sx={{ minWidth: isMobile ? 150 : 700 }}
@@ -66,5 +71,4 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
       </Box>
     </>
   );
-}
-
+};
