@@ -22,7 +22,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
-  const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([])
+  const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
@@ -43,17 +43,14 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     enabled: !!authData,
   });
 
-  const {
-    data: review,
-    isLoading: isReviewLoading,
-  } = useQuery({
+  const { data: review, isLoading: isReviewLoading } = useQuery({
     queryKey: ["review", lessonId, authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${authData?.token}` },
-        }
+        },
       );
       return response.data;
     },
@@ -68,9 +65,9 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
       setShuffledFlashcards(shuffled);
     } else {
-      setShuffledFlashcards([...flashcards])
+      setShuffledFlashcards([...flashcards]);
     }
-  }, [review, flashcards])
+  }, [review, flashcards]);
 
   if (isLoading || isReviewLoading) {
     return (
@@ -150,12 +147,8 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       {authData && (
         <>
           <Flashcard
-            frontText={
-              currentCard?.front_text
-            }
-            backText={
-              currentCard?.back_text
-            }
+            frontText={currentCard?.front_text}
+            backText={currentCard?.back_text}
             showTranslation={showTranslation}
             onShowTranslation={handleShowTranslation}
             onNextCard={handleNextCard}
@@ -172,7 +165,9 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
               variant="determinate"
               value={
                 // Keep the progress at 100% if they finished, but allow them to keep reviewing
-                hasFinished ? 100 : (currentCardIndex / shuffledFlashcards.length) * 100
+                hasFinished
+                  ? 100
+                  : (currentCardIndex / shuffledFlashcards.length) * 100
               }
               sx={{
                 width: isMobile ? "100%" : "95%",
