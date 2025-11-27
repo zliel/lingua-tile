@@ -15,13 +15,14 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
 import ReviewModal from "./ReviewModal";
+import { Card } from "@/types/cards";
 
 const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
-  // const [_isEnglishToJapanese, _setIsEnglishToJapanese] = useState(true);
+  const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
@@ -42,11 +43,33 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     enabled: !!authData,
   });
 
-  useEffect(() => {
-    // setIsEnglishToJapanese(Math.random() < 0.5);
-  }, [currentCardIndex]);
+  const { data: review, isLoading: isReviewLoading } = useQuery({
+    queryKey: ["review", lessonId, authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review/${lessonId}`,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
+      return response.data;
+    },
+    retry: false,
+    enabled: !!authData,
+  });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (flashcards.length === 0) return;
+
+    if (review && flashcards.length > 0) {
+      const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+      setShuffledFlashcards(shuffled);
+    } else {
+      setShuffledFlashcards([...flashcards]);
+    }
+  }, [review, flashcards]);
+
+  if (isLoading || isReviewLoading) {
     return (
       <Box
         sx={{
@@ -82,7 +105,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     setShowTranslation(false);
 
     setTimeout(() => {
-      if (currentCardIndex + 1 === flashcards.length) {
+      if (currentCardIndex + 1 === shuffledFlashcards.length) {
         // NOTE: Disallows reviewing when not logged in
         if (authData?.isLoggedIn) {
           showSnackbar("You have reached the end of the lesson!", "success");
@@ -107,7 +130,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     setShowTranslation((prevShowTranslation) => !prevShowTranslation);
   };
 
-  const currentCard = flashcards[currentCardIndex];
+  const currentCard: Card = shuffledFlashcards[currentCardIndex];
 
   return (
     <Box
@@ -124,18 +147,8 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       {authData && (
         <>
           <Flashcard
-            frontText={
-              // isEnglishToJapanese
-              //   ? currentCard?.back_text
-              //   : currentCard?.front_text
-              currentCard?.front_text
-            }
-            backText={
-              // isEnglishToJapanese
-              //   ? currentCard?.front_text
-              //   : currentCard?.back_text
-              currentCard?.back_text
-            }
+            frontText={currentCard?.front_text}
+            backText={currentCard?.back_text}
             showTranslation={showTranslation}
             onShowTranslation={handleShowTranslation}
             onNextCard={handleNextCard}
@@ -152,7 +165,9 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
               variant="determinate"
               value={
                 // Keep the progress at 100% if they finished, but allow them to keep reviewing
-                hasFinished ? 100 : (currentCardIndex / flashcards.length) * 100
+                hasFinished
+                  ? 100
+                  : (currentCardIndex / shuffledFlashcards.length) * 100
               }
               sx={{
                 width: isMobile ? "100%" : "95%",
