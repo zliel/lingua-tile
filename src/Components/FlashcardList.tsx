@@ -20,7 +20,6 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showTranslation, setShowTranslation] = useState(false);
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -108,8 +107,6 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   }
 
   const handleNextCard = () => {
-    setShowTranslation(false);
-
     setTimeout(() => {
       if (currentCardIndex + 1 === shuffledFlashcards.length) {
         // NOTE: Disallows reviewing when not logged in
@@ -132,10 +129,6 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     }, 10);
   };
 
-  const handleShowTranslation = () => {
-    setShowTranslation((prevShowTranslation) => !prevShowTranslation);
-  };
-
   const currentCard: Card = shuffledFlashcards[currentCardIndex];
 
   return (
@@ -155,8 +148,6 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
           <Flashcard
             frontText={currentCard?.front_text}
             backText={currentCard?.back_text}
-            showTranslation={showTranslation}
-            onShowTranslation={handleShowTranslation}
             onNextCard={handleNextCard}
           />
           <Box

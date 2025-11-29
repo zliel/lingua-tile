@@ -17,16 +17,12 @@ import "./Flashcard.css";
 interface FlashcardProps {
   frontText: string;
   backText: string;
-  showTranslation: boolean;
-  onShowTranslation: () => void;
   onNextCard: () => void;
 }
 
 const Flashcard = ({
   frontText,
   backText,
-  showTranslation,
-  onShowTranslation,
   onNextCard,
 }: FlashcardProps) => {
   const theme = useTheme();
@@ -37,13 +33,11 @@ const Flashcard = ({
 
   const handleShowTranslation = useCallback(() => {
     setIsFlipped(!isFlipped);
-    setTimeout(() => {
-      onShowTranslation();
-    }, 150); // Delay to match the flip animation
-  }, [isFlipped, onShowTranslation]);
+  }, [isFlipped]);
 
   const handleNextCard = useCallback(() => {
     setSlideIn(false);
+    setIsFlipped(false);
     setTimeout(() => {
       onNextCard();
       setSlideIn(true);
@@ -67,7 +61,7 @@ const Flashcard = ({
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [handleNextCard, handleShowTranslation, showTranslation]);
+  }, [handleNextCard, handleShowTranslation]);
 
   return (
     <Slide
@@ -110,46 +104,59 @@ const Flashcard = ({
               }}
             >
               <Box
-                className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
-                onClick={handleShowTranslation}
+                sx={{
+                  position: "relative",
+                  flexGrow: 1,
+                  width: "100%",
+                  perspective: "1000px",
+                }}
               >
-                {/* Front Side */}
-                <CardContent className="flashcard-front">
-                  <Typography
-                    component="div"
-                    sx={{
-                      fontSize: isMobile ? "2.5rem" : "4rem",
-                      fontWeight: 500,
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    {frontText}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      position: "absolute",
-                      bottom: 16,
-                      opacity: 0.6,
-                    }}
-                  >
-                    {isMobile ? "Tap" : "Click"} to flip
-                  </Typography>
-                </CardContent>
+                <Box
+                  className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
+                  onClick={handleShowTranslation}
+                  sx={{ height: "100%", width: "100%" }}
+                >
+                  {/* Front Side */}
+                  <CardContent className="flashcard-front">
+                    <Typography
+                      component="div"
+                      sx={{
+                        fontSize: isMobile ? "2.5rem" : "4rem",
+                        fontWeight: 500,
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      {frontText}
+                    </Typography>
+                  </CardContent>
 
-                {/* Back Side */}
-                <CardContent className="flashcard-back">
-                  <Typography
-                    component="div"
-                    sx={{
-                      fontSize: isMobile ? "2rem" : "3rem",
-                      fontWeight: 400,
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    {backText}
-                  </Typography>
-                </CardContent>
+                  {/* Back Side */}
+                  <CardContent className="flashcard-back">
+                    <Typography
+                      component="div"
+                      sx={{
+                        fontSize: isMobile ? "2rem" : "3rem",
+                        fontWeight: 400,
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      {backText}
+                    </Typography>
+                  </CardContent>
+                </Box>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    position: "absolute",
+                    bottom: 16,
+                    width: "100%",
+                    textAlign: "center",
+                    opacity: 0.6,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {isMobile ? "Tap" : "Click"} to flip
+                </Typography>
               </Box>
 
               {/* Controls */}
