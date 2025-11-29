@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
+  Card,
   TextField,
   Typography,
   useMediaQuery,
@@ -62,7 +63,6 @@ const TranslationQuestion = ({
   };
 
   const possibleAnswers = sentence.possible_answers.map((answer) =>
-    // remove all punctuation and make lowercase
     cleanString(answer),
   );
 
@@ -85,54 +85,135 @@ const TranslationQuestion = ({
   };
 
   return (
-    <Box
+    <Card
+      className={isCorrect === false ? "shake" : ""}
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
         m: isMobile ? 1 : 8,
-        p: isMobile ? 2 : 4,
+        p: 0,
         minWidth: isMobile ? "95%" : "50%",
         maxWidth: isMobile ? "100%" : "600px",
-        border: 1,
-        borderColor:
-          isCorrect != null && isCorrect
-            ? "success.main"
-            : isCorrect != null && !isCorrect
-              ? "error.main"
-              : "primary.main",
-        borderRadius: 2,
         backgroundColor:
           theme.palette.mode === "dark"
-            ? theme.palette.grey[900]
-            : theme.palette.grey[100],
-        transition: "transform 0.3s ease",
+            ? "rgba(30, 30, 30, 0.8)"
+            : "rgba(255, 255, 255, 0.8)",
+        backdropFilter: "blur(10px)",
+        borderRadius: 4,
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
+            : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+        border: `1px solid ${theme.palette.mode === "dark"
+          ? "rgba(255, 255, 255, 0.1)"
+          : "rgba(255, 255, 255, 0.4)"
+          }`,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
-          transform: "scale(1.1)",
+          transform: isMobile ? "none" : "translateY(-5px)",
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "0 12px 40px 0 rgba(0, 0, 0, 0.6)"
+              : "0 12px 40px 0 rgba(31, 38, 135, 0.2)",
         },
       }}
     >
-      <Typography variant="h6">
-        Please translate this sentence:
-        <br /> {sentence.full_sentence}
-      </Typography>
-      <TextField
-        label="Translate to English"
-        value={userAnswer}
-        onChange={(e) => setUserAnswer(e.target.value)}
-        sx={{ mt: 2, width: "100%" }}
-        inputRef={inputRef}
-      />
-      <Button onClick={checkAnswer} variant="contained" sx={{ mt: 2 }}>
-        Submit
-      </Button>
-      {isCorrect !== null && !isCorrect && (
-        <Typography variant="body1" color="error" sx={{ mt: 2 }}>
-          Incorrect! One correct answer is: "
-          {sentence.possible_answers[randomAnswer]}"
+      <Box sx={{ p: isMobile ? 3 : 5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ mb: 2, fontWeight: 500, textTransform: "uppercase", letterSpacing: 1, fontSize: "0.8rem" }}
+        >
+          Translate this sentence
         </Typography>
-      )}
-    </Box>
+
+        <Typography
+          variant="h4"
+          component="div"
+          align="center"
+          sx={{
+            mb: 4,
+            fontWeight: "bold",
+            color: theme.palette.text.primary,
+            fontSize: isMobile ? "1.5rem" : "2rem",
+          }}
+        >
+          {sentence.full_sentence}
+        </Typography>
+
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Type your answer in English..."
+          value={userAnswer}
+          onChange={(e) => setUserAnswer(e.target.value)}
+          inputRef={inputRef}
+          error={isCorrect === false}
+          disabled={isCorrect === true}
+          sx={{
+            mb: 3,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 3,
+              backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
+              "& fieldset": {
+                borderColor: theme.palette.divider,
+              },
+              "&:hover fieldset": {
+                borderColor: theme.palette.primary.main,
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: theme.palette.primary.main,
+                borderWidth: 2,
+              },
+            },
+          }}
+        />
+
+        <Button
+          onClick={checkAnswer}
+          variant="contained"
+          size="large"
+          fullWidth
+          color={isCorrect === true ? "success" : isCorrect === false ? "error" : "primary"}
+          sx={{
+            borderRadius: 3,
+            py: 1.5,
+            fontSize: "1.1rem",
+            fontWeight: "bold",
+            textTransform: "none",
+            boxShadow: "0 4px 14px 0 rgba(0,118,255,0.39)",
+            transition: "all 0.3s ease",
+          }}
+        >
+          {isCorrect === true ? "Correct!" : isCorrect === false ? "Try Again" : "Check Answer"}
+        </Button>
+
+        {isCorrect !== null && !isCorrect && (
+          <Box
+            sx={{
+              mt: 3,
+              p: 2,
+              width: "100%",
+              borderRadius: 2,
+              backgroundColor: theme.palette.mode === "dark" ? "rgba(211, 47, 47, 0.1)" : "rgba(211, 47, 47, 0.05)",
+              border: `1px solid ${theme.palette.error.main}`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              animation: "fadeIn 0.3s ease-in",
+            }}
+          >
+            <Typography variant="subtitle1" color="error" fontWeight="bold" gutterBottom>
+              Incorrect
+            </Typography>
+            <Typography variant="body1" color="text.primary" align="center">
+              One correct answer is: <br />
+              <Box component="span" fontWeight="bold" color="success.main">
+                "{sentence.possible_answers[randomAnswer]}"
+              </Box>
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    </Card>
   );
 };
 

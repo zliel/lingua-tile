@@ -5,8 +5,6 @@ import {
   Box,
   Skeleton,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
@@ -23,7 +21,6 @@ const PracticeLesson = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [animationClass, setAnimationClass] = useState<string>("slide-in");
   const nodeRef = useRef(null);
-  const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const {
     data: lesson,
@@ -92,16 +89,11 @@ const PracticeLesson = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: isMobile ? "90%" : "80%",
+        width: "100%",
         alignItems: "center",
         justifyContent: "center",
-        margin: "auto",
-        mt: 6,
-        p: isMobile ? "8px" : 3,
-        pb: "6em",
-        border: 2,
-        borderColor: "primary.main",
-        borderRadius: 2,
+        mt: 4,
+        pb: 8,
       }}
     >
       <Typography variant={"h4"}>{lesson.title}</Typography>
