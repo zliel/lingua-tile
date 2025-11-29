@@ -179,7 +179,6 @@ const TranslationQuestion = ({
             fontSize: "1.1rem",
             fontWeight: "bold",
             textTransform: "none",
-            boxShadow: "0 4px 14px 0 rgba(0,118,255,0.39)",
             transition: "all 0.3s ease",
           }}
         >
