@@ -18,7 +18,7 @@
   height: 100%;
   flex-grow: 1;
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .flashcard-content.flipped {
@@ -54,7 +54,7 @@
     max-height: 500px;
     margin-bottom: 0.1em;
   }
-  
+
   .flashcard-front,
   .flashcard-back {
     height: 100%;
