@@ -5,6 +5,7 @@ import axios from "axios";
 import {
   Box,
   Button,
+  Card,
   Icon,
   Skeleton,
   Tooltip,
@@ -65,66 +66,102 @@ const GrammarLesson = () => {
   }
 
   return (
-    <Box
+    <Card
       sx={{
-        display: "flex",
-        flexDirection: "column",
         width: "85%",
-        alignItems: "center",
-        justifyContent: "center",
         margin: "auto",
         mt: 4,
-        mb: 4,
-        p: 2.5,
-        border: 2,
-        borderColor: "primary.main",
-        borderRadius: 2,
+        mb: 8,
+        p: 0,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? "rgba(30, 30, 30, 0.8)"
+            : "rgba(255, 255, 255, 0.8)",
+        backdropFilter: "blur(10px)",
+        borderRadius: 4,
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
+            : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+        }`,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "0 12px 40px 0 rgba(0, 0, 0, 0.6)"
+              : "0 12px 40px 0 rgba(31, 38, 135, 0.2)",
+        },
       }}
     >
-      <MuiMarkdown
-        hideLineNumbers
-        overrides={getMarkdownOverrides(isMobile, theme)}
+      <Box
+        sx={{
+          p: isMobile ? 3 : 5,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-        {lesson.content}
-      </MuiMarkdown>
-      {/* NOTE: Tooltip and disabled button when user is not logged in */}
-      <Tooltip
-        title={
-          !authData?.isLoggedIn ? (
-            <Typography>You must be logged in to finish the lesson.</Typography>
-          ) : (
-            <Typography>Finish Lesson</Typography>
-          )
-        }
-        placement={isMobile ? "top" : "right"}
-        arrow
-      >
-        <span>
-          <Button
-            sx={{ mt: 2, mb: 2, display: "flex", alignItems: "center" }}
-            variant={"contained"}
-            disabled={!authData?.isLoggedIn}
-            onClick={() => {
-              if (authData?.isLoggedIn) {
-                setModalOpen(true);
-              }
-            }}
-          >
-            Finished
-            <Icon
-              sx={{ ml: 1, mb: 0.5, display: "flex", alignItems: "center" }}
+        <MuiMarkdown
+          hideLineNumbers
+          overrides={getMarkdownOverrides(isMobile, theme)}
+        >
+          {lesson.content}
+        </MuiMarkdown>
+        {/* NOTE: Tooltip and disabled button when user is not logged in */}
+        <Tooltip
+          title={
+            !authData?.isLoggedIn ? (
+              <Typography>
+                You must be logged in to finish the lesson.
+              </Typography>
+            ) : (
+              <Typography>Finish Lesson</Typography>
+            )
+          }
+          placement={isMobile ? "top" : "right"}
+          arrow
+        >
+          <span>
+            <Button
+              sx={{
+                mt: 4,
+                mb: 2,
+                px: 4,
+                py: 1.5,
+                borderRadius: 3,
+                fontSize: "1.1rem",
+                fontWeight: "bold",
+                textTransform: "none",
+                display: "flex",
+                alignItems: "center",
+              }}
+              variant={"contained"}
+              color="primary"
+              disabled={!authData?.isLoggedIn}
+              onClick={() => {
+                if (authData?.isLoggedIn) {
+                  setModalOpen(true);
+                }
+              }}
             >
-              <Done />
-            </Icon>
-          </Button>
-        </span>
-      </Tooltip>
-      <ReviewModal
-        open={modalOpen}
-        setOpen={setModalOpen}
-        lessonId={lessonId || ""}
-      />
-    </Box>
+              Finish Lesson
+              <Icon sx={{ ml: 1, display: "flex", alignItems: "center" }}>
+                <Done />
+              </Icon>
+            </Button>
+          </span>
+        </Tooltip>
+        <ReviewModal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          lessonId={lessonId || ""}
+        />
+      </Box>
+    </Card>
   );
 };
 
@@ -134,7 +171,10 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
     props: {
       style: {
         textAlign: "center",
-        fontSize: isMobile ? "1.5rem" : "3rem",
+        fontSize: isMobile ? "2rem" : "3rem",
+        fontWeight: 700,
+        color: theme.palette.primary.main,
+        marginBottom: "1rem",
       },
     },
   },
@@ -142,7 +182,10 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
     props: {
       style: {
         textAlign: "center",
-        fontSize: isMobile ? "1.25rem" : "2rem",
+        fontSize: isMobile ? "1.5rem" : "2rem",
+        fontWeight: 600,
+        marginTop: "1.5rem",
+        marginBottom: "1rem",
       },
     },
   },
@@ -150,7 +193,11 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
     props: {
       style: {
         textAlign: "center",
-        fontSize: isMobile ? "1.1rem" : "1.5rem",
+        fontSize: isMobile ? "1.25rem" : "1.5rem",
+        fontWeight: 600,
+        color: theme.palette.text.primary,
+        marginTop: "1rem",
+        marginBottom: "0.5rem",
       },
     },
   },
@@ -158,7 +205,9 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
     props: {
       style: {
         textAlign: "center",
-        fontSize: isMobile ? "1rem" : "1.25rem",
+        fontSize: isMobile ? "1.1rem" : "1.25rem",
+        fontWeight: 600,
+        marginTop: "1rem",
       },
     },
   },
@@ -166,21 +215,46 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
     props: {
       style: {
         textAlign: "center",
-        fontSize: isMobile ? "0.9rem" : "1.1rem",
+        fontSize: isMobile ? "1rem" : "1.1rem",
+        fontWeight: 600,
+        marginTop: "0.5rem",
       },
     },
   },
   p: {
     props: {
       style: {
-        fontSize: isMobile ? "1rem" : "1.25rem",
+        fontSize: isMobile ? "1rem" : "1.1rem",
+        lineHeight: 1.8,
+        color: theme.palette.text.primary,
+        marginBottom: "1rem",
       },
     },
   },
   img: {
     props: {
       style: {
-        border: `2px solid ${theme.palette.primary.dark}`,
+        maxWidth: "100%",
+        height: "auto",
+        borderRadius: "8px",
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? "0 4px 12px rgba(0,0,0,0.5)"
+            : "0 4px 12px rgba(0,0,0,0.15)",
+        marginTop: "1rem",
+        marginBottom: "1rem",
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
+      },
+    },
+  },
+  li: {
+    props: {
+      style: {
+        fontSize: isMobile ? "1rem" : "1.1rem",
+        lineHeight: 1.6,
+        marginBottom: "0.5rem",
       },
     },
   },

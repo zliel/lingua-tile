@@ -95,17 +95,28 @@ function ReviewModal({
         <Box
           sx={{
             position: "absolute",
-            top: "40%",
+            top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: isMobile ? "90vw" : 500,
             maxWidth: "95vw",
-            maxHeight: isMobile ? "80vh" : "60vh",
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
+            bgcolor:
+              theme.palette.mode === "dark"
+                ? "rgba(30, 30, 30, 0.8)"
+                : "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(10px)",
+            borderRadius: 4,
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
+                : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(255, 255, 255, 0.4)"
+            }`,
             p: 4,
-            borderRadius: 2,
+            outline: "none",
           }}
         >
           <IconButton
@@ -114,27 +125,70 @@ function ReviewModal({
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" component="h2" textAlign={"center"}>
+          <Typography
+            variant="h4"
+            component="h2"
+            textAlign={"center"}
+            sx={{
+              fontWeight: "bold",
+              mb: 1,
+              color: theme.palette.text.primary,
+            }}
+          >
             Lesson Complete!
           </Typography>
-          <Typography sx={{ mt: 2, textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              mt: 2,
+              textAlign: "center",
+              color: theme.palette.text.secondary,
+              fontWeight: 500,
+            }}
+          >
             How would you rate your performance?
           </Typography>
           <Box
-            sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}
-            gap={isMobile ? 2 : 2}
+            sx={{
+              mt: 4,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              flexWrap: isMobile ? "wrap" : "nowrap",
+            }}
           >
             {reviewOptions.map((option) => (
               <Button
                 key={option.label}
                 variant="contained"
                 color="primary"
-                sx={getButtonStyle(isMobile)}
+                sx={{
+                  flexGrow: 1,
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: "none",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  minWidth: isMobile ? "45%" : "auto",
+                }}
                 onClick={() => {
                   handlePerformanceReview(option.value);
                 }}
               >
-                {option.label} {option.keyBinding}
+                {option.label}
+                {!isMobile && (
+                  <Typography
+                    component="span"
+                    sx={{
+                      ml: 0.5,
+                      opacity: 0.7,
+                      fontSize: "0.8rem",
+                      fontWeight: "normal",
+                    }}
+                  >
+                    {option.keyBinding}
+                  </Typography>
+                )}
               </Button>
             ))}
           </Box>
@@ -143,11 +197,5 @@ function ReviewModal({
     </Modal>
   );
 }
-
-const getButtonStyle = (isMobile: boolean) => ({
-  minWidth: isMobile ? 48 : 85,
-  px: 1.25,
-  fontSize: "1rem",
-});
 
 export default ReviewModal;

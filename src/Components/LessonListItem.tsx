@@ -89,8 +89,8 @@ export const LessonListItem = ({
               }}
             >
               {review.isOverdue
-                ? `overdue by ${Math.abs(review.daysLeft)} days`
-                : `next review in ${review.daysLeft} days`}
+                ? `overdue by ${Math.abs(review.daysLeft)} day${review.daysLeft > 1 ? "s" : ""}`
+                : `next review in ${review.daysLeft} day${review.daysLeft !== 1 ? "s" : ""}`}
             </Typography>
           )
         )}
