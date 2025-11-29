@@ -1,15 +1,15 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import Logo from "../assets/LinguaTile Logo.png";
+import { Box } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
 import { useEffect } from "react";
+import { HeroSection } from "@/Components/home/HeroSection";
+import { CTASection } from "@/Components/home/CTASection";
+import { InfoSection } from "@/Components/home/InfoSection";
 
 function Home() {
   const { authData } = useAuth();
   const queryClient = useQueryClient();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (authData?.token) {
@@ -58,38 +58,10 @@ function Home() {
   }, [authData, queryClient]);
 
   return (
-    <Box
-      sx={{
-        height: "100%",
-        width: "100%",
-        margin: "auto",
-        display: "flex",
-        padding: 2,
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <Box
-        component={"img"}
-        sx={{
-          margin: "auto",
-          marginTop: 5,
-          display: "block",
-          marginBottom: 2,
-          transition: isMobile ? "" : "transform 0.3s ease",
-          "&:hover": {
-            transform: isMobile ? "" : "scale(1.1)",
-          },
-        }}
-        src={Logo}
-      />
-      <Typography
-        sx={{ textAlign: "center", fontSize: isMobile ? "1.2rem" : "1.5rem" }}
-      >
-        Welcome to LinguaTile, a learning platform focused on the Japanese
-        language.
-      </Typography>
+    <Box sx={{ width: "100%", overflowX: "hidden" }}>
+      <HeroSection />
+      <InfoSection />
+      <CTASection />
     </Box>
   );
 }
