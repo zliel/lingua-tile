@@ -95,6 +95,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ["authState"],
     queryFn: fetchAuthState,
+    initialData: () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return { isLoggedIn: false, isAdmin: false, token: "", username: "" };
+      }
+      return undefined;
+    },
     staleTime: 5 * 60 * 1000,
   });
 

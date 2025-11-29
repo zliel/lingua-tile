@@ -12,7 +12,7 @@ import { Lesson, ReviewStats } from "@/types/lessons";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
 
-type CategoryColor = "primary" | "secondary" | "warning";
+type CategoryColor = "primary" | "secondary" | "grammar";
 
 export const LessonListItem = ({
   lesson,
@@ -33,7 +33,7 @@ export const LessonListItem = ({
   const categoryColors: Record<string, CategoryColor> = {
     flashcards: "primary",
     practice: "secondary",
-    grammar: "warning",
+    grammar: "grammar",
   };
 
   const categoryRoutes = {
@@ -99,7 +99,6 @@ export const LessonListItem = ({
         variant="contained"
         color={categoryColors[lesson.category || "flashcards"]}
         sx={{
-          color: theme.palette.mode === "dark" ? "white" : "black",
           mt: isMobile ? 0 : 2,
         }}
         component={Link}
