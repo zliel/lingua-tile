@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Fade,
+  IconButton,
   Slide,
   Typography,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { FlipCameraAndroid, ArrowForward } from "@mui/icons-material";
 import "./Flashcard.css";
 
 interface FlashcardProps {
@@ -37,7 +39,7 @@ const Flashcard = ({
     setIsFlipped(!isFlipped);
     setTimeout(() => {
       onShowTranslation();
-    }, 50);
+    }, 150); // Delay to match the flip animation
   }, [isFlipped, onShowTranslation]);
 
   const handleNextCard = useCallback(() => {
@@ -45,20 +47,16 @@ const Flashcard = ({
     setTimeout(() => {
       onNextCard();
       setSlideIn(true);
-      // The timeout should be longer than the duration of the slide animation
-      // So that the first slide animation is done before the second one starts
     }, 350);
   }, [onNextCard]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Handle space for flipping the card
       if (event.code === "Space") {
         event.preventDefault();
         return handleShowTranslation();
       }
 
-      // Handle Enter and Right Arrow for next card
       if (["Enter", "ArrowRight"].includes(event.code)) {
         event.preventDefault();
         return handleNextCard();
@@ -81,99 +79,135 @@ const Flashcard = ({
     >
       <div
         style={{
-          transform: slideIn ? "translateX(100vw)" : "translateX(-100vw)",
+          transform: slideIn ? "translateX(0)" : "translateX(-100vw)",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Fade in={slideIn} timeout={300} easing={"ease"}>
-          <div>
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
             <Card
               className="flashcard"
               sx={{
                 backgroundColor: isDarkMode
-                  ? theme.palette.grey[900]
-                  : theme.palette.grey[100],
-                transition: isMobile ? "" : "transform 0.3s ease",
+                  ? "rgba(30, 30, 30, 0.8)"
+                  : "rgba(255, 255, 255, 0.8)",
+                backdropFilter: "blur(10px)",
+                borderRadius: 4,
+                boxShadow: isDarkMode
+                  ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
+                  : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+                border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
+                  }`,
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 "&:hover": {
-                  transform: isMobile ? "" : "scale(1.1)",
+                  transform: isMobile ? "none" : "translateY(-5px)",
+                  boxShadow: isDarkMode
+                    ? "0 12px 40px 0 rgba(0, 0, 0, 0.6)"
+                    : "0 12px 40px 0 rgba(31, 38, 135, 0.2)",
                 },
               }}
-              elevation={8}
             >
               <Box
                 className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
                 onClick={handleShowTranslation}
               >
-                <CardContent
-                  className="flashcard-front"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
+                {/* Front Side */}
+                <CardContent className="flashcard-front">
                   <Typography
                     component="div"
-                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                    sx={{
+                      fontSize: isMobile ? "2.5rem" : "4rem",
+                      fontWeight: 500,
+                      color: theme.palette.text.primary,
+                    }}
                   >
                     {frontText}
                   </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      position: "absolute",
+                      bottom: 16,
+                      opacity: 0.6,
+                    }}
+                  >
+                    {isMobile ? "Tap" : "Click"} to flip
+                  </Typography>
                 </CardContent>
-                <CardContent
-                  className="flashcard-back"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
+
+                {/* Back Side */}
+                <CardContent className="flashcard-back">
                   <Typography
                     component="div"
-                    sx={{ fontSize: isMobile ? "2rem" : "3rem" }}
+                    sx={{
+                      fontSize: isMobile ? "2rem" : "3rem",
+                      fontWeight: 400,
+                      color: theme.palette.text.primary,
+                    }}
                   >
                     {backText}
                   </Typography>
                 </CardContent>
               </Box>
+
+              {/* Controls */}
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
+                  alignItems: "center",
                   p: 2,
-                  gap: 2,
-                  backgroundColor: theme.palette.action.hover,
-                  borderTop: "1px solid",
-                  borderColor: theme.palette.divider,
+                  gap: 4,
                   mt: "auto",
+                  borderTop: `1px solid ${theme.palette.divider}`,
+                  backgroundColor: isDarkMode
+                    ? "rgba(255, 255, 255, 0.05)"
+                    : "rgba(0, 0, 0, 0.02)",
                 }}
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleShowTranslation}
-                  sx={{
-                    m: "auto",
-                    height: "80%",
-                    width: "55%",
-                    fontSize: isMobile ? "0.8rem" : "1rem",
-                  }}
-                >
-                  {showTranslation ? "Show Front" : "Show Back"}
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleNextCard}
-                  sx={{
-                    m: "auto",
-                    height: "80%",
-                    width: "55%",
-                    fontSize: isMobile ? "0.8rem" : "1rem",
-                  }}
-                >
-                  Next Card
-                </Button>
+                <Tooltip title="Flip Card (Space)">
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShowTranslation();
+                    }}
+                    size="large"
+                    sx={{
+                      bgcolor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.dark,
+                      },
+                      width: 56,
+                      height: 56,
+                    }}
+                  >
+                    <FlipCameraAndroid fontSize="medium" />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Next Card (Enter / Right Arrow)">
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextCard();
+                    }}
+                    size="large"
+                    sx={{
+                      bgcolor: theme.palette.secondary.main,
+                      color: theme.palette.secondary.contrastText,
+                      "&:hover": {
+                        bgcolor: theme.palette.secondary.dark,
+                      },
+                      width: 56,
+                      height: 56,
+                    }}
+                  >
+                    <ArrowForward fontSize="medium" />
+                  </IconButton>
+                </Tooltip>
               </Box>
             </Card>
           </div>
