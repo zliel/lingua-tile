@@ -39,19 +39,13 @@ const palette: ColorSystemOptions = {
       light: alpha(purpleBase, 0.5),
       main: alpha(purpleBase, 0.7),
       dark: alpha(purpleBase, 1),
-      contrastText:
-        getContrastRatio(alpha(purpleBase, 0.7), "#fff") >= 4.5
-          ? "#fff"
-          : "#000",
     },
     secondary: {
       light: alpha(greenBase, 0.5),
       main: alpha(greenBase, 0.7),
       dark: alpha(greenBase, 1),
-      contrastText:
-        getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5
-          ? "#fff"
-          : "#000",
+      contrastText: "#fff",
+    },
     grammar: {
       main: "#0288d1",
       light: "#5eb8ff",
