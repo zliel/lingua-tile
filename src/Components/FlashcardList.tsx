@@ -5,7 +5,6 @@ import {
   Box,
   LinearProgress,
   Skeleton,
-  Stack,
   Typography,
   Zoom,
   useMediaQuery,
@@ -53,6 +52,13 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
         },
       );
       return response.data;
+    },
+    initialData: () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return null;
+      }
+      return undefined;
     },
     retry: false,
     enabled: !!authData,
@@ -153,37 +159,44 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
             onShowTranslation={handleShowTranslation}
             onNextCard={handleNextCard}
           />
-          <Stack
-            direction={"row"}
+          <Box
             sx={{
+              width: "100%",
+              maxWidth: 600,
+              mt: 3,
               display: "flex",
-              width: isMobile ? "100%" : "90%",
               alignItems: "center",
+              gap: 2,
             }}
           >
-            <LinearProgress
-              variant="determinate"
-              value={
-                // Keep the progress at 100% if they finished, but allow them to keep reviewing
-                hasFinished
-                  ? 100
-                  : (currentCardIndex / shuffledFlashcards.length) * 100
-              }
-              sx={{
-                width: isMobile ? "100%" : "95%",
-                height: isMobile ? 4 : 5,
-                borderRadius: 2,
-                mt: 1.1,
-                ml: isMobile ? 2.5 : 1,
-                "& .MuiLinearProgress-bar": {
-                  background: `linear-gradient(to right, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
-                },
-              }}
-            />
+            <Box sx={{ width: "100%", mr: 1 }}>
+              <LinearProgress
+                variant="determinate"
+                value={
+                  hasFinished
+                    ? 100
+                    : (currentCardIndex / shuffledFlashcards.length) * 100
+                }
+                sx={{
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: theme.palette.action.hover,
+                  "& .MuiLinearProgress-bar": {
+                    borderRadius: 4,
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                  },
+                }}
+              />
+            </Box>
+            <Box sx={{ minWidth: 35 }}>
+              <Typography variant="body2" color="text.secondary">
+                {currentCardIndex + 1}/{shuffledFlashcards.length}
+              </Typography>
+            </Box>
             <Zoom in={hasFinished} easing={"ease"} timeout={500}>
               <Typography
                 sx={{
-                  mt: 0.8,
+                  mb: 0.5,
                   color: "transparent",
                   textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
                 }}
@@ -192,7 +205,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
                 🔥
               </Typography>
             </Zoom>
-          </Stack>
+          </Box>
         </>
       )}
       <ReviewModal
