@@ -102,10 +102,11 @@ const TranslationQuestion = ({
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${theme.palette.mode === "dark"
-          ? "rgba(255, 255, 255, 0.1)"
-          : "rgba(255, 255, 255, 0.4)"
-          }`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+        }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           transform: isMobile ? "none" : "translateY(-5px)",
@@ -116,11 +117,24 @@ const TranslationQuestion = ({
         },
       }}
     >
-      <Box sx={{ p: isMobile ? 3 : 5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box
+        sx={{
+          p: isMobile ? 3 : 5,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <Typography
           variant="h6"
           color="text.secondary"
-          sx={{ mb: 2, fontWeight: 500, textTransform: "uppercase", letterSpacing: 1, fontSize: "0.8rem" }}
+          sx={{
+            mb: 2,
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            fontSize: "0.8rem",
+          }}
         >
           Translate this sentence
         </Typography>
@@ -152,7 +166,10 @@ const TranslationQuestion = ({
             mb: 3,
             "& .MuiOutlinedInput-root": {
               borderRadius: 3,
-              backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? "rgba(255,255,255,0.05)"
+                  : "rgba(0,0,0,0.02)",
               "& fieldset": {
                 borderColor: theme.palette.divider,
               },
@@ -172,7 +189,13 @@ const TranslationQuestion = ({
           variant="contained"
           size="large"
           fullWidth
-          color={isCorrect === true ? "success" : isCorrect === false ? "error" : "primary"}
+          color={
+            isCorrect === true
+              ? "success"
+              : isCorrect === false
+                ? "error"
+                : "primary"
+          }
           sx={{
             borderRadius: 3,
             py: 1.5,
@@ -182,7 +205,11 @@ const TranslationQuestion = ({
             transition: "all 0.3s ease",
           }}
         >
-          {isCorrect === true ? "Correct!" : isCorrect === false ? "Try Again" : "Check Answer"}
+          {isCorrect === true
+            ? "Correct!"
+            : isCorrect === false
+              ? "Try Again"
+              : "Check Answer"}
         </Button>
 
         {isCorrect !== null && !isCorrect && (
@@ -192,7 +219,10 @@ const TranslationQuestion = ({
               p: 2,
               width: "100%",
               borderRadius: 2,
-              backgroundColor: theme.palette.mode === "dark" ? "rgba(211, 47, 47, 0.1)" : "rgba(211, 47, 47, 0.05)",
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? "rgba(211, 47, 47, 0.1)"
+                  : "rgba(211, 47, 47, 0.05)",
               border: `1px solid ${theme.palette.error.main}`,
               display: "flex",
               flexDirection: "column",
@@ -200,7 +230,12 @@ const TranslationQuestion = ({
               animation: "fadeIn 0.3s ease-in",
             }}
           >
-            <Typography variant="subtitle1" color="error" fontWeight="bold" gutterBottom>
+            <Typography
+              variant="subtitle1"
+              color="error"
+              fontWeight="bold"
+              gutterBottom
+            >
               Incorrect
             </Typography>
             <Typography variant="body1" color="text.primary" align="center">

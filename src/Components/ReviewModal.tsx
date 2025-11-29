@@ -110,10 +110,11 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(255, 255, 255, 0.4)"
-              }`,
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(255, 255, 255, 0.4)"
+            }`,
             p: 4,
             outline: "none",
           }}
@@ -128,7 +129,11 @@ function ReviewModal({
             variant="h4"
             component="h2"
             textAlign={"center"}
-            sx={{ fontWeight: "bold", mb: 1, color: theme.palette.text.primary }}
+            sx={{
+              fontWeight: "bold",
+              mb: 1,
+              color: theme.palette.text.primary,
+            }}
           >
             Lesson Complete!
           </Typography>
@@ -192,7 +197,5 @@ function ReviewModal({
     </Modal>
   );
 }
-
-
 
 export default ReviewModal;

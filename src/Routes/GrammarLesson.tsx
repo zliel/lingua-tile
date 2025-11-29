@@ -83,10 +83,11 @@ const GrammarLesson = () => {
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${theme.palette.mode === "dark"
-          ? "rgba(255, 255, 255, 0.1)"
-          : "rgba(255, 255, 255, 0.4)"
-          }`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+        }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           boxShadow:
@@ -96,7 +97,14 @@ const GrammarLesson = () => {
         },
       }}
     >
-      <Box sx={{ p: isMobile ? 3 : 5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box
+        sx={{
+          p: isMobile ? 3 : 5,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <MuiMarkdown
           hideLineNumbers
           overrides={getMarkdownOverrides(isMobile, theme)}
@@ -107,7 +115,9 @@ const GrammarLesson = () => {
         <Tooltip
           title={
             !authData?.isLoggedIn ? (
-              <Typography>You must be logged in to finish the lesson.</Typography>
+              <Typography>
+                You must be logged in to finish the lesson.
+              </Typography>
             ) : (
               <Typography>Finish Lesson</Typography>
             )
@@ -139,9 +149,7 @@ const GrammarLesson = () => {
               }}
             >
               Finish Lesson
-              <Icon
-                sx={{ ml: 1, display: "flex", alignItems: "center" }}
-              >
+              <Icon sx={{ ml: 1, display: "flex", alignItems: "center" }}>
                 <Done />
               </Icon>
             </Button>
@@ -229,9 +237,10 @@ const getMarkdownOverrides = (isMobile: boolean, theme: Theme) => ({
         maxWidth: "100%",
         height: "auto",
         borderRadius: "8px",
-        boxShadow: theme.palette.mode === "dark"
-          ? "0 4px 12px rgba(0,0,0,0.5)"
-          : "0 4px 12px rgba(0,0,0,0.15)",
+        boxShadow:
+          theme.palette.mode === "dark"
+            ? "0 4px 12px rgba(0,0,0,0.5)"
+            : "0 4px 12px rgba(0,0,0,0.15)",
         marginTop: "1rem",
         marginBottom: "1rem",
         display: "block",
