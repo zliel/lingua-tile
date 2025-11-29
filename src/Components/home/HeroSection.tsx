@@ -1,7 +1,14 @@
-import { Box, Container, Typography, Button, useTheme, useMediaQuery } from "@mui/material"
-import Logo from "../../assets/LinguaTile Logo.png"
-import { useNavigate } from "react-router"
-import { useAuth } from "@/Contexts/AuthContext"
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+import Logo from "../../assets/LinguaTile Logo.png";
+import { useNavigate } from "react-router";
+import { useAuth } from "@/Contexts/AuthContext";
 
 export const HeroSection = () => {
   const theme = useTheme();
@@ -88,6 +95,5 @@ export const HeroSection = () => {
         </Button>
       </Container>
     </Box>
-  )
-}
-
+  );
+};

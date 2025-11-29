@@ -1,8 +1,16 @@
-import { School, TrendingUp, Translate } from "@mui/icons-material"
-import { Container, Typography, Grid, Card, CardContent, Box, useTheme } from "@mui/material"
+import { School, TrendingUp, Translate } from "@mui/icons-material";
+import {
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Box,
+  useTheme,
+} from "@mui/material";
 
 export const InfoSection = () => {
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <Container maxWidth="lg" sx={{ py: 8 }}>
@@ -66,6 +74,5 @@ export const InfoSection = () => {
         ))}
       </Grid>
     </Container>
-  )
-}
-
+  );
+};

@@ -1,6 +1,4 @@
-import {
-  Box,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
 import axios from "axios";
@@ -58,7 +56,6 @@ function Home() {
       });
     }
   }, [authData, queryClient]);
-
 
   return (
     <Box sx={{ width: "100%", overflowX: "hidden" }}>

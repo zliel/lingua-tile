@@ -14,7 +14,12 @@ import {
 } from "@mui/material";
 import CodeIcon from "@mui/icons-material/Code";
 import LanguageIcon from "@mui/icons-material/Language";
-import { GitHub, Palette, RocketLaunch, QuestionAnswer } from "@mui/icons-material";
+import {
+  GitHub,
+  Palette,
+  RocketLaunch,
+  QuestionAnswer,
+} from "@mui/icons-material";
 
 function About() {
   const theme = useTheme();
@@ -36,11 +41,20 @@ function About() {
         }}
       >
         <Container maxWidth="md">
-          <Box display="flex" justifyContent="center" alignItems="center" gap={2} mb={2}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+            mb={2}
+          >
             <LanguageIcon sx={{ fontSize: 60 }} />
             <Typography
               variant="h1"
-              sx={{ fontWeight: "bold", fontSize: isMobile ? "2.5rem" : "3.5rem" }}
+              sx={{
+                fontWeight: "bold",
+                fontSize: isMobile ? "2.5rem" : "3.5rem",
+              }}
             >
               LinguaTile
             </Typography>
@@ -48,11 +62,16 @@ function About() {
           <Typography
             variant="h6"
             component="p"
-            sx={{ opacity: 0.9, maxWidth: "800px", mx: "auto", lineHeight: 1.6 }}
+            sx={{
+              opacity: 0.9,
+              maxWidth: "800px",
+              mx: "auto",
+              lineHeight: 1.6,
+            }}
           >
-            A passion project making Japanese learning accessible, engaging, and effective. Combining
-            proven techniques with modern technology to build confidence and
-            fluency.
+            A passion project making Japanese learning accessible, engaging, and
+            effective. Combining proven techniques with modern technology to
+            build confidence and fluency.
           </Typography>
         </Container>
       </Box>
@@ -70,11 +89,15 @@ function About() {
                     Why?
                   </Typography>
                 </Box>
-                <Typography variant="body1" component="p" sx={{ fontSize: "1.1rem" }}>
+                <Typography
+                  variant="body1"
+                  component="p"
+                  sx={{ fontSize: "1.1rem" }}
+                >
                   As I've spent more and more time learning, I've used many
                   different tools. Inspired by my own journey learning Japanese,
-                  I'm building LinguaTile to bring together the best features from
-                  the tools I’ve used, with a focus on simplicity and fun.
+                  I'm building LinguaTile to bring together the best features
+                  from the tools I’ve used, with a focus on simplicity and fun.
                   It’s also a project for me to learn more about full-stack
                   development and share my love for education.
                 </Typography>
@@ -88,7 +111,11 @@ function About() {
               <CardContent sx={{ p: 4 }}>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <RocketLaunch color="secondary" fontSize="large" />
-                  <Typography variant="h4" component="h2" color="secondary.main">
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    color="secondary.main"
+                  >
                     What’s Next?
                   </Typography>
                 </Box>
@@ -134,7 +161,17 @@ function About() {
                 </Box>
                 <Grid container spacing={4}>
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="h5" gutterBottom color="text.primary" sx={{ borderBottom: 1, borderColor: 'divider', pb: 1, mb: 2 }}>
+                    <Typography
+                      variant="h5"
+                      gutterBottom
+                      color="text.primary"
+                      sx={{
+                        borderBottom: 1,
+                        borderColor: "divider",
+                        pb: 1,
+                        mb: 2,
+                      }}
+                    >
                       Front End
                     </Typography>
                     <List>
@@ -142,34 +179,44 @@ function About() {
                         <ListItemText
                           primary="ReactJS"
                           secondary="Modern UI library for building interfaces"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="React-Router"
                           secondary="Simple navigation and routing"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="React-Query"
                           secondary="Efficient data fetching"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="Material-UI"
                           secondary="Beautiful, accessible components"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                     </List>
                   </Grid>
                   <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant="h5" gutterBottom color="text.primary" sx={{ borderBottom: 1, borderColor: 'divider', pb: 1, mb: 2 }}>
+                    <Typography
+                      variant="h5"
+                      gutterBottom
+                      color="text.primary"
+                      sx={{
+                        borderBottom: 1,
+                        borderColor: "divider",
+                        pb: 1,
+                        mb: 2,
+                      }}
+                    >
                       Back End
                     </Typography>
                     <List>
@@ -177,28 +224,28 @@ function About() {
                         <ListItemText
                           primary="FastAPI"
                           secondary="Simple, highly-performant Python API library"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="FSRS"
                           secondary="A modern, effective spaced-repetition algorithm"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="PyMongo & MongoDB"
                           secondary="Flexible, scalable database"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                       <ListItem disablePadding sx={{ mb: 1 }}>
                         <ListItemText
                           primary="Redis"
                           secondary="Fast caching for translations"
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         />
                       </ListItem>
                     </List>
@@ -214,14 +261,18 @@ function About() {
               <CardContent sx={{ p: 4 }}>
                 <Box display="flex" alignItems="center" gap={1} mb={2}>
                   <Palette color="secondary" fontSize="large" />
-                  <Typography variant="h4" component="h2" color="secondary.main">
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    color="secondary.main"
+                  >
                     Color Scheme
                   </Typography>
                 </Box>
                 <Typography variant="body1" sx={{ fontSize: "1.1rem" }}>
-                  Why green and purple? They are my favorite colors! Material-UI’s
-                  theming system makes it easy to keep the look consistent and
-                  vibrant across the entire application.
+                  Why green and purple? They are my favorite colors!
+                  Material-UI’s theming system makes it easy to keep the look
+                  consistent and vibrant across the entire application.
                 </Typography>
               </CardContent>
             </Card>
@@ -246,7 +297,11 @@ function About() {
                     target={"_blank"}
                     href="https://github.com/zliel/lingua-tile"
                     color="secondary"
-                    sx={{ fontWeight: "bold", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
+                    sx={{
+                      fontWeight: "bold",
+                      textDecoration: "none",
+                      "&:hover": { textDecoration: "underline" },
+                    }}
                   >
                     GitHub!
                   </Link>
@@ -256,7 +311,7 @@ function About() {
           </Grid>
         </Grid>
       </Container>
-    </Box >
+    </Box>
   );
 }
 
