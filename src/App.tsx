@@ -5,7 +5,6 @@ import {
   ColorSystemOptions,
   createTheme,
   CssBaseline,
-  getContrastRatio,
   ThemeProvider,
   useColorScheme,
 } from "@mui/material";
@@ -53,6 +52,10 @@ const palette: ColorSystemOptions = {
         getContrastRatio(alpha(greenBase, 0.7), "#fff") >= 4.5
           ? "#fff"
           : "#000",
+    grammar: {
+      main: "#0288d1",
+      light: "#5eb8ff",
+      dark: "#005b9f",
     },
   },
 };
