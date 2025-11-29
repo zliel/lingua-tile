@@ -84,6 +84,13 @@ const LessonList = () => {
 
       return response.data;
     },
+    initialData: () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return [];
+      }
+      return undefined;
+    },
     enabled: !authIsLoading && !!authData,
     staleTime: 5 * 60 * 1000,
   });
