@@ -26,6 +26,7 @@ import PracticeLesson from "./Routes/PracticeLesson";
 import LessonList from "./Routes/LessonList";
 const Dashboard = lazy(() => import("./Routes/Dashboard"));
 import { HomeRedirect } from "./Routes/HomeRedirect";
+import { OfflineProvider } from "./Contexts/OfflineContext";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
@@ -84,7 +85,7 @@ function App() {
         path: "/dashboard",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <ProtectedRoute isAdminPage={false}>
+            <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           </Suspense>
@@ -102,7 +103,7 @@ function App() {
       {
         path: "/admin-users",
         element: (
-          <ProtectedRoute isAdminPage={true}>
+          <ProtectedRoute isAdminPage>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminUserTable />
             </Suspense>
@@ -112,7 +113,7 @@ function App() {
       {
         path: "/admin-cards",
         element: (
-          <ProtectedRoute isAdminPage={true}>
+          <ProtectedRoute isAdminPage>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminCardTable />
             </Suspense>
@@ -122,7 +123,7 @@ function App() {
       {
         path: "/admin-lessons",
         element: (
-          <ProtectedRoute isAdminPage={true}>
+          <ProtectedRoute isAdminPage>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminLessonTable />
             </Suspense>
@@ -132,7 +133,7 @@ function App() {
       {
         path: "/admin-sections",
         element: (
-          <ProtectedRoute isAdminPage={true}>
+          <ProtectedRoute isAdminPage>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminSectionTable />
             </Suspense>
@@ -151,8 +152,10 @@ function App() {
         <CssBaseline />
         <BrowserRouter>
           <AuthProvider>
-            <NavBar />
-            <AppRoutes />
+            <OfflineProvider>
+              <NavBar />
+              <AppRoutes />
+            </OfflineProvider>
           </AuthProvider>
         </BrowserRouter>
       </SnackbarProvider>

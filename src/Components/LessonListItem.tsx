@@ -11,6 +11,7 @@ import { grey } from "@mui/material/colors";
 import { Lesson, ReviewStats } from "@/types/lessons";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { useOffline } from "@/Contexts/OfflineContext";
 
 type CategoryColor = "primary" | "secondary" | "grammar";
 
@@ -25,6 +26,8 @@ export const LessonListItem = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const queryClient = useQueryClient();
+  const { isPending } = useOffline();
+
   const isReviewLoading =
     queryClient.isFetching({
       queryKey: ["reviews", authData?.token],
@@ -56,11 +59,10 @@ export const LessonListItem = ({
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
+        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
+          ? theme.palette.primary.contrastText
+          : theme.palette.secondary.contrastText
+          }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
@@ -77,6 +79,13 @@ export const LessonListItem = ({
             sx={{ color: theme.palette.text.secondary }}
           >
             Loading review...
+          </Typography>
+        ) : isPending(lesson._id) ? (
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.warning.main, fontWeight: "bold" }}
+          >
+            Pending Sync
           </Typography>
         ) : (
           review && (
