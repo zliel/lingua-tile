@@ -4,7 +4,13 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useQuery } from "@tanstack/react-query";
 
-const ProtectedRoute = ({ isAdminPage, children }: { isAdminPage: boolean, children: React.ReactNode }) => {
+const ProtectedRoute = ({
+  isAdminPage,
+  children,
+}: {
+  isAdminPage: boolean;
+  children: React.ReactNode;
+}) => {
   const { authData, authIsLoading, checkAdmin } = useAuth();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -34,16 +40,16 @@ const ProtectedRoute = ({ isAdminPage, children }: { isAdminPage: boolean, child
   useEffect(() => {
     if (!isLoading) {
       if (isAdminPage && (isError || !isAdmin)) {
-        showSnackbar("You do not have permission to view that page", "error")
+        showSnackbar("You do not have permission to view that page", "error");
 
-        return navigate("/")
+        return navigate("/");
       }
 
       // Otherwise it's just a page for logged-in users
       if (isError || !authData?.isLoggedIn) {
         console.log("Redirecting to login page from ProtectedRoute");
-        showSnackbar("You must be logged in to view that page", "error")
-        return navigate("/login")
+        showSnackbar("You must be logged in to view that page", "error");
+        return navigate("/login");
       }
     }
   }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
