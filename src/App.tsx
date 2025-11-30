@@ -24,7 +24,7 @@ import FlashcardLesson from "./Routes/FlashcardLesson";
 import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
 import LessonList from "./Routes/LessonList";
-import Dashboard from "./Routes/Dashboard";
+const Dashboard = lazy(() => import("./Routes/Dashboard"));
 import { HomeRedirect } from "./Routes/HomeRedirect";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
@@ -81,10 +81,14 @@ function App() {
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       {
-        path: "/dashboard", element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>)
+        path: "/dashboard",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          </Suspense>
+        ),
       },
       {
         path: "/profile",
