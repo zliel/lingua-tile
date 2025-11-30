@@ -27,15 +27,19 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => { },
+  addToQueue: () => {},
   isPending: () => false,
-  sync: async () => { },
-  clearQueue: () => { },
+  sync: async () => {},
+  clearQueue: () => {},
 });
 
 export const useOffline = () => useContext(OfflineContext);
 
-export const OfflineProvider = ({ children }: { children: React.ReactNode }) => {
+export const OfflineProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
@@ -84,7 +88,8 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     setQueue((prev) => {
       // Remove existing pending review for this lesson AND user to avoid duplicates
       const filtered = prev.filter(
-        (r) => !(r.lesson_id === review.lesson_id && r.username === review.username)
+        (r) =>
+          !(r.lesson_id === review.lesson_id && r.username === review.username),
       );
       return [...filtered, review];
     });
@@ -93,7 +98,9 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
   const isPending = useCallback(
     (lessonId: string) => {
       if (!authData?.username) return false;
-      return queue.some((r) => r.lesson_id === lessonId && r.username === authData.username);
+      return queue.some(
+        (r) => r.lesson_id === lessonId && r.username === authData.username,
+      );
     },
     [queue, authData],
   );
@@ -106,13 +113,23 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
   const sync = useCallback(async () => {
     const currentQueue = queueRef.current;
-    if (currentQueue.length === 0 || !navigator.onLine || !authData?.token || !authData?.username) return;
+    if (
+      currentQueue.length === 0 ||
+      !navigator.onLine ||
+      !authData?.token ||
+      !authData?.username
+    )
+      return;
 
     // Only sync items for the current user
-    const userQueue = currentQueue.filter(r => r.username === authData.username);
+    const userQueue = currentQueue.filter(
+      (r) => r.username === authData.username,
+    );
     if (userQueue.length === 0) return;
 
-    const otherUsersQueue = currentQueue.filter(r => r.username !== authData.username);
+    const otherUsersQueue = currentQueue.filter(
+      (r) => r.username !== authData.username,
+    );
 
     const failedReviews: ReviewData[] = [];
     let successCount = 0;
@@ -156,7 +173,10 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
       showSnackbar(`Synced ${successCount} offline reviews`, "success");
     }
     if (authError) {
-      showSnackbar("Sync paused: Authentication failed. Please log in again.", "error");
+      showSnackbar(
+        "Sync paused: Authentication failed. Please log in again.",
+        "error",
+      );
     }
   }, [authData, showSnackbar]);
 
@@ -168,7 +188,9 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
   }, [isOnline, sync]);
 
   return (
-    <OfflineContext.Provider value={{ isOnline, addToQueue, isPending, sync, clearQueue }}>
+    <OfflineContext.Provider
+      value={{ isOnline, addToQueue, isPending, sync, clearQueue }}
+    >
       {children}
     </OfflineContext.Provider>
   );

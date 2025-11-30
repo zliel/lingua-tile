@@ -48,7 +48,10 @@ const useLessonReview = (
         handleLessonComplete.mutate(rating);
       } else {
         if (!authData?.username) {
-          showSnackbar("You must be logged in to save progress offline.", "error");
+          showSnackbar(
+            "You must be logged in to save progress offline.",
+            "error",
+          );
           return;
         }
         addToQueue({
