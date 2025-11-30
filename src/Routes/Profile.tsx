@@ -76,7 +76,8 @@ function Profile() {
 
   // Calculate stats
   const stats = useMemo(() => {
-    if (!reviews || !user) return { totalReviews: 0, activeLessons: 0, avgDifficulty: 0 };
+    if (!reviews || !user)
+      return { totalReviews: 0, activeLessons: 0, avgDifficulty: 0 };
 
     const totalReviews = reviews.length;
     // Calculate unique active lessons from reviews
@@ -87,7 +88,8 @@ function Profile() {
       return acc + (review.card_object?.difficulty || 0);
     }, 0);
 
-    const avgDifficulty = totalReviews > 0 ? (totalDifficulty / totalReviews).toFixed(1) : 0;
+    const avgDifficulty =
+      totalReviews > 0 ? (totalDifficulty / totalReviews).toFixed(1) : 0;
 
     return { totalReviews, activeLessons, avgDifficulty };
   }, [reviews, user]);
@@ -208,7 +210,9 @@ function Profile() {
     <>
       <Fade in={isLoading || isFetchingReviews} timeout={100}>
         <div>
-          <ProfileSkeleton sx={{ display: isLoading || isFetchingReviews ? "block" : "none" }} />
+          <ProfileSkeleton
+            sx={{ display: isLoading || isFetchingReviews ? "block" : "none" }}
+          />
         </div>
       </Fade>
       <Fade in={showLoaded} timeout={500} unmountOnExit>
@@ -382,7 +386,7 @@ function Profile() {
               p: 3,
               borderRadius: 4,
               border: `1px solid ${theme.palette.error.main}`,
-              bgcolor: theme.palette.error.main + "10"
+              bgcolor: theme.palette.error.main + "10",
             }}
           >
             <Typography variant="h6" color="error">

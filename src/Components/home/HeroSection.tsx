@@ -77,7 +77,15 @@ export const HeroSection = () => {
           A comprehensive learning platform designed to help you read, write,
           and speak Japanese fluently.
         </Typography>
-        <Container sx={{ display: "flex", flexDirection: "column", width: "50%", mb: 2, gap: 2 }}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "50%",
+            mb: 2,
+            gap: 2,
+          }}
+        >
           <Button
             variant="contained"
             color="secondary"
@@ -111,7 +119,6 @@ export const HeroSection = () => {
             >
               View Dashboard
             </Button>
-
           )}
         </Container>
       </Container>

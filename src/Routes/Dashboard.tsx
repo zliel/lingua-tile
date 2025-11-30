@@ -34,7 +34,11 @@ const Dashboard = () => {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const { data: reviews, isLoading: isFetchingReviews, error: reviewsError } = useQuery({
+  const {
+    data: reviews,
+    isLoading: isFetchingReviews,
+    error: reviewsError,
+  } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
@@ -100,13 +104,26 @@ const Dashboard = () => {
           <Typography variant="h4" gutterBottom>
             Loading Dashboard...
           </Typography>
-          <Skeleton variant="rectangular" width="80%" height={200} sx={{ mb: 2, borderRadius: 2 }} />
+          <Skeleton
+            variant="rectangular"
+            width="80%"
+            height={200}
+            sx={{ mb: 2, borderRadius: 2 }}
+          />
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 2 }} />
+              <Skeleton
+                variant="rectangular"
+                height={300}
+                sx={{ borderRadius: 2 }}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Skeleton variant="rectangular" height={300} sx={{ borderRadius: 2 }} />
+              <Skeleton
+                variant="rectangular"
+                height={300}
+                sx={{ borderRadius: 2 }}
+              />
             </Grid>
           </Grid>
         </Box>
@@ -115,7 +132,12 @@ const Dashboard = () => {
       <Fade in={showLoaded} timeout={500} unmountOnExit>
         <Box>
           <Box sx={{ mb: 4, textAlign: "center" }}>
-            <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: "bold", color: theme.palette.primary.main }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
+            >
               Welcome back, {user?.username || "Learner"}!
             </Typography>
             <Typography variant="h6" color="text.secondary">
@@ -128,31 +150,46 @@ const Dashboard = () => {
 
             {/* Charts Section */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{
-                p: 2,
-                bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-                borderRadius: 4,
-                height: '100%'
-              }}>
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.05)"
+                      : "rgba(0,0,0,0.02)",
+                  borderRadius: 4,
+                  height: "100%",
+                }}
+              >
                 <PastWeekReviewsChart reviews={reviews} />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{
-                p: 2,
-                bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-                borderRadius: 4,
-                height: '100%'
-              }}>
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.05)"
+                      : "rgba(0,0,0,0.02)",
+                  borderRadius: 4,
+                  height: "100%",
+                }}
+              >
                 <LessonProgressChart reviews={reviews} />
               </Box>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Box sx={{
-                p: 2,
-                bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-                borderRadius: 4,
-              }}>
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.05)"
+                      : "rgba(0,0,0,0.02)",
+                  borderRadius: 4,
+                }}
+              >
                 <ProjectedReviewsChart reviews={reviews} />
               </Box>
             </Grid>

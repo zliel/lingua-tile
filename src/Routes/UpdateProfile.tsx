@@ -179,10 +179,27 @@ function UpdateProfile() {
     return (
       <Container maxWidth="sm" sx={{ mt: 8 }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
-          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
-          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
-          <Skeleton variant="rectangular" height={40} width="50%" sx={{ borderRadius: 2 }} />
+          <Skeleton
+            variant="rectangular"
+            height={60}
+            sx={{ borderRadius: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={60}
+            sx={{ borderRadius: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={60}
+            sx={{ borderRadius: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={40}
+            width="50%"
+            sx={{ borderRadius: 2 }}
+          />
         </Box>
       </Container>
     );
@@ -276,7 +293,8 @@ function UpdateProfile() {
             />
 
             <Alert severity="warning" sx={{ borderRadius: 2 }}>
-              Changing your username or password will require you to log in again.
+              Changing your username or password will require you to log in
+              again.
             </Alert>
 
             <Button

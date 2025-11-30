@@ -1,10 +1,20 @@
-import { Container, Paper, Grid, Skeleton, Stack, Card, CardContent, Box, useTheme, SxProps } from "@mui/material"
+import {
+  Container,
+  Paper,
+  Grid,
+  Skeleton,
+  Stack,
+  Card,
+  CardContent,
+  Box,
+  useTheme,
+  SxProps,
+} from "@mui/material";
 
 export const ProfileSkeleton = ({ sx }: { sx: SxProps }) => {
   const theme = useTheme();
   return (
-    <Container maxWidth="lg"
-      sx={{ mt: 4, mb: 4, ...sx }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4, ...sx }}>
       {/* Header Skeleton */}
       <Paper
         elevation={0}
@@ -28,7 +38,12 @@ export const ProfileSkeleton = ({ sx }: { sx: SxProps }) => {
             </Stack>
           </Grid>
           <Grid>
-            <Skeleton variant="rounded" width={120} height={36} sx={{ mt: 6 }} />
+            <Skeleton
+              variant="rounded"
+              width={120}
+              height={36}
+              sx={{ mt: 6 }}
+            />
           </Grid>
         </Grid>
       </Paper>
@@ -102,6 +117,5 @@ export const ProfileSkeleton = ({ sx }: { sx: SxProps }) => {
         </Grid>
       </Grid>
     </Container>
-  )
-}
-
+  );
+};

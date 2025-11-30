@@ -29,10 +29,30 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
     });
 
     return [
-      { id: 0, value: counts.new, label: "New", color: theme.palette.info.main },
-      { id: 1, value: counts.learning, label: "Learning", color: theme.palette.warning.main },
-      { id: 2, value: counts.review, label: "Review", color: theme.palette.success.main },
-      { id: 3, value: counts.relearning, label: "Relearning", color: theme.palette.error.main },
+      {
+        id: 0,
+        value: counts.new,
+        label: "New",
+        color: theme.palette.info.main,
+      },
+      {
+        id: 1,
+        value: counts.learning,
+        label: "Learning",
+        color: theme.palette.warning.main,
+      },
+      {
+        id: 2,
+        value: counts.review,
+        label: "Review",
+        color: theme.palette.success.main,
+      },
+      {
+        id: 3,
+        value: counts.relearning,
+        label: "Relearning",
+        color: theme.palette.error.main,
+      },
     ].filter((item) => item.value > 0);
   };
 
@@ -58,7 +78,10 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
         slotProps={{
           legend: {
             direction: (isMobile ? "row" : "column") as any,
-            position: { vertical: isMobile ? "bottom" : "middle", horizontal: isMobile ? "center" : "end" } as any,
+            position: {
+              vertical: isMobile ? "bottom" : "middle",
+              horizontal: isMobile ? "center" : "end",
+            } as any,
           },
         }}
         sx={{ width: "100%", minWidth: isMobile ? 200 : "auto" }}
