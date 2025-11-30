@@ -1,14 +1,35 @@
-import { useState, useEffect } from "react";
-import { Box, Button, Fade, Grid, Skeleton, Typography } from "@mui/material";
+import { useState, useEffect, useMemo } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Fade,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  School as SchoolIcon,
+  TrendingUp as TrendingUpIcon,
+} from "@mui/icons-material";
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
-import { PastWeekReviewsChart } from "@/Components/profile/PastWeekReviewsChart";
-import { ProjectedReviewsChart } from "@/Components/profile/ProjectedReviewsChart";
-import { LessonDifficultyChart } from "@/Components/profile/LessonDifficultyChart";
+import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
+import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
+import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart";
+import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -17,6 +38,7 @@ function Profile() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showLoaded, setShowLoaded] = useState(false);
   const queryClient = useQueryClient();
+  const theme = useTheme();
 
   const {
     data: user,
@@ -51,6 +73,24 @@ function Profile() {
     },
     enabled: !!authData && !!authData.isLoggedIn,
   });
+
+  // Calculate stats
+  const stats = useMemo(() => {
+    if (!reviews || !user) return { totalReviews: 0, activeLessons: 0, avgDifficulty: 0 };
+
+    const totalReviews = reviews.length;
+    // Calculate unique active lessons from reviews
+    const uniqueLessons = new Set(reviews.map((r: any) => r.lesson_id));
+    const activeLessons = uniqueLessons.size;
+
+    const totalDifficulty = reviews.reduce((acc: number, review: any) => {
+      return acc + (review.card_object?.difficulty || 0);
+    }, 0);
+
+    const avgDifficulty = totalReviews > 0 ? (totalDifficulty / totalReviews).toFixed(1) : 0;
+
+    return { totalReviews, activeLessons, avgDifficulty };
+  }, [reviews, user]);
 
   // Handle query errors
   useEffect(() => {
@@ -167,80 +207,201 @@ function Profile() {
   return (
     <>
       <Fade in={isLoading || isFetchingReviews} timeout={100}>
-        <Box
-          sx={{
-            display: isLoading ? "flex" : "none",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 4,
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
-            Loading...
-          </Typography>
-          <Skeleton
-            variant="rectangular"
-            animation={"wave"}
-            width="50%"
-            height={40}
-            sx={{ mb: 2 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            animation={"wave"}
-            width="50%"
-            height={30}
-            sx={{ mb: 2 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            animation={"wave"}
-            width="50%"
-            height={20}
-            sx={{ mb: 2 }}
-          />
-        </Box>
+        <div>
+          <ProfileSkeleton sx={{ display: isLoading || isFetchingReviews ? "block" : "none" }} />
+        </div>
       </Fade>
-      <Fade in={showLoaded} timeout={100} unmountOnExit>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 4,
-            width: "100%",
-            minWidth: 300,
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
-            Profile
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            Username: {localStorage.getItem("username") || ""}
-          </Typography>
-          <Grid container spacing={2} justifyContent="center" mb={2}>
-            <Grid>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleUpdate}
-              >
-                Update Profile
-              </Button>
+      <Fade in={showLoaded} timeout={500} unmountOnExit>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          {/* Header Section */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 3,
+              borderRadius: 4,
+              bgcolor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Grid container spacing={2} alignItems="center">
+              <Grid>
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    bgcolor: theme.palette.primary.main,
+                    fontSize: "2rem",
+                  }}
+                >
+                  {user?.username?.charAt(0).toUpperCase()}
+                </Avatar>
+              </Grid>
+              <Grid size="grow">
+                <Typography variant="h4" fontWeight="bold">
+                  {user?.username}
+                </Typography>
+                <Stack direction="row" spacing={1} mt={1}>
+                  {user?.roles?.map((role: string) => (
+                    <Chip
+                      key={role}
+                      label={role}
+                      size="small"
+                      color={role === "admin" ? "secondary" : "default"}
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
+              </Grid>
+              <Grid size={{ xs: 12, sm: "auto" }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<EditIcon />}
+                  onClick={handleUpdate}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Edit Profile
+                </Button>
+              </Grid>
             </Grid>
-            <Grid>
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={handleDelete}
+          </Paper>
+
+          {/* Stats Section */}
+          <Grid container spacing={3} mb={4}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 4,
+                  border: `1px solid ${theme.palette.divider}`,
+                  height: "100%",
+                }}
               >
-                Delete Profile
-              </Button>
+                <CardContent>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Avatar
+                      sx={{
+                        bgcolor: theme.palette.success.light,
+                        color: theme.palette.success.contrastText,
+                      }}
+                    >
+                      <SchoolIcon />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h4" fontWeight="bold">
+                        {stats.activeLessons}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Active Lessons
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Card
+                elevation={0}
+                sx={{
+                  borderRadius: 4,
+                  border: `1px solid ${theme.palette.divider}`,
+                  height: "100%",
+                }}
+              >
+                <CardContent>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Avatar
+                      sx={{
+                        bgcolor: theme.palette.warning.light,
+                        color: theme.palette.warning.contrastText,
+                      }}
+                    >
+                      <TrendingUpIcon />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h4" fontWeight="bold">
+                        {stats.avgDifficulty}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Average Lesson Difficulty
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
-          <PastWeekReviewsChart reviews={reviews} />
-          <ProjectedReviewsChart reviews={reviews} />
-          <LessonDifficultyChart reviews={reviews} />
+
+          {/* Charts Section */}
+          <Grid container spacing={3} mb={4}>
+            <Grid size={{ xs: 12, lg: 8 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                  border: `1px solid ${theme.palette.divider}`,
+                  height: "100%",
+                }}
+              >
+                <PastWeekReviewsChart reviews={reviews} />
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12, lg: 4 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                  border: `1px solid ${theme.palette.divider}`,
+                  height: "100%",
+                }}
+              >
+                <LessonDifficultyChart reviews={reviews} />
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                  border: `1px solid ${theme.palette.divider}`,
+                }}
+              >
+                <ProjectedReviewsChart reviews={reviews} />
+              </Paper>
+            </Grid>
+          </Grid>
+
+          {/* Danger Zone */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: `1px solid ${theme.palette.error.main}`,
+              bgcolor: theme.palette.error.main + "10"
+            }}
+          >
+            <Typography variant="h6" color="error">
+              Danger Zone
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              Once you delete your account, there is no going back. Please be
+              certain.
+            </Typography>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+            >
+              Delete Profile
+            </Button>
+          </Paper>
+
           <ConfirmationDialog
             open={dialogOpen}
             onClose={() => setDialogOpen(false)}
@@ -248,7 +409,7 @@ function Profile() {
             title={"Delete Profile"}
             message={"Are you sure you want to delete your profile?"}
           />
-        </Box>
+        </Container>
       </Fade>
     </>
   );
