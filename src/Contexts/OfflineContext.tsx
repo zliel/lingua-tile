@@ -27,10 +27,10 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => {},
+  addToQueue: () => { },
   isPending: () => false,
-  sync: async () => {},
-  clearQueue: () => {},
+  sync: async () => { },
+  clearQueue: () => { },
 });
 
 export const useOffline = () => useContext(OfflineContext);
@@ -70,19 +70,6 @@ export const OfflineProvider = ({
     localStorage.setItem("offlineReviewQueue", encoded);
   }, [queue]);
 
-  // Monitor network status
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
 
   const addToQueue = useCallback((review: ReviewData) => {
     setQueue((prev) => {
@@ -179,6 +166,43 @@ export const OfflineProvider = ({
       );
     }
   }, [authData, showSnackbar]);
+
+  // Monitor network status and app visibility
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      sync();
+    };
+    const handleOffline = () => setIsOnline(false);
+
+    // Also check when app comes into focus/visibility
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && navigator.onLine) {
+        setIsOnline(true);
+        sync();
+      }
+    };
+
+    const handleFocus = () => {
+      if (navigator.onLine) {
+        setIsOnline(true);
+        sync();
+      }
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [sync]);
+
 
   // Auto-sync when coming online
   useEffect(() => {
