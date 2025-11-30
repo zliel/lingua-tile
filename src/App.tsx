@@ -13,7 +13,6 @@ import NavBar from "./Components/NavBar";
 import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "./Contexts/SnackbarContext";
 import { AuthProvider } from "./Contexts/AuthContext";
-import Home from "./Routes/Home";
 import Translate from "./Routes/Translate";
 import About from "./Routes/About";
 import Login from "./Routes/Login";
@@ -25,6 +24,8 @@ import FlashcardLesson from "./Routes/FlashcardLesson";
 import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
 import LessonList from "./Routes/LessonList";
+const Dashboard = lazy(() => import("./Routes/Dashboard"));
+import { HomeRedirect } from "./Routes/HomeRedirect";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
@@ -73,12 +74,22 @@ function App() {
 
   const AppRoutes = () =>
     useRoutes([
-      { path: "/", element: <Home /> },
-      { path: "/home", element: <Home /> },
+      { path: "/", element: <HomeRedirect /> },
+      { path: "/home", element: <HomeRedirect /> },
       { path: "/about", element: <About /> },
       { path: "/translate", element: <Translate /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
+      {
+        path: "/dashboard",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProtectedRoute isAdminPage={false}>
+              <Dashboard />
+            </ProtectedRoute>
+          </Suspense>
+        ),
+      },
       {
         path: "/profile",
         element: (
@@ -91,7 +102,7 @@ function App() {
       {
         path: "/admin-users",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminUserTable />
             </Suspense>
@@ -101,7 +112,7 @@ function App() {
       {
         path: "/admin-cards",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminCardTable />
             </Suspense>
@@ -111,7 +122,7 @@ function App() {
       {
         path: "/admin-lessons",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminLessonTable />
             </Suspense>
@@ -121,7 +132,7 @@ function App() {
       {
         path: "/admin-sections",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminSectionTable />
             </Suspense>

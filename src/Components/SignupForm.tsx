@@ -1,7 +1,7 @@
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { NewUser } from "@/types/users";
-import { LoadingButton } from "@mui/lab";
 import {
+  Button,
   Card,
   CardContent,
   Grid,
@@ -151,7 +151,7 @@ export const SignupForm = () => {
               />
             </Grid>
             <Grid>
-              <LoadingButton
+              <Button
                 loading={signupMutation.isPending}
                 variant={"contained"}
                 color={"primary"}
@@ -159,7 +159,7 @@ export const SignupForm = () => {
                 size="large"
               >
                 Login
-              </LoadingButton>
+              </Button>
             </Grid>
           </Grid>
         </form>

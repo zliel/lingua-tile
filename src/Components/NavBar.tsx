@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -32,13 +32,6 @@ type Page = {
   action?: () => void;
 };
 
-const basePages = [
-  { name: "Home", endpoint: "/home" },
-  { name: "About", endpoint: "/about" },
-  { name: "Lessons", endpoint: "/lessons" },
-  { name: "Translate", endpoint: "/translate" },
-];
-
 const adminPages = [
   { name: "User Table", endpoint: "/admin-users" },
   { name: "Card Table", endpoint: "/admin-cards" },
@@ -54,7 +47,6 @@ function NavBar() {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [pages, setPages] = useState<Page[]>(basePages);
 
   const handleMenuOpen = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -77,51 +69,39 @@ function NavBar() {
     handleProfileMenuClose();
   }, [logout, navigate]);
 
-  useEffect(() => {
-    if (authData && authData.isAdmin) {
-      if (!pages.find((page) => page.name === "User Table")) {
-        let mobileExtraPages: Page[] = isMobile
-          ? [
-              { name: "Profile", endpoint: "/profile" },
-              { name: "Logout", action: handleLogout },
-            ]
-          : [];
+  const menuItems = useMemo(() => {
+    const links: Page[] = [];
 
-        setPages((prevPages) => {
-          // Filter out the login/signup pages if they exist
-          const filteredPrevPages = prevPages.filter(
-            (page) => page.name !== "Login" && page.name !== "Sign Up",
-          );
+    // Base pages
+    links.push(
+      { name: "Home", endpoint: "/home" },
+      { name: "About", endpoint: "/about" },
+      { name: "Lessons", endpoint: "/lessons" },
+      { name: "Translate", endpoint: "/translate" },
+    );
 
-          return [...filteredPrevPages, ...adminPages, ...mobileExtraPages];
-        });
-      }
-    } else {
-      let pagesToAdd: Page[] = [
-        { name: "Home", endpoint: "/home" },
-        { name: "About", endpoint: "/about" },
-        { name: "Lessons", endpoint: "/lessons" },
-        { name: "Translate", endpoint: "/translate" },
-      ];
-
-      if (isMobile) {
-        if (authData && authData.isLoggedIn) {
-          pagesToAdd.push(
-            { name: "Profile", endpoint: "/profile" },
-            { name: "Logout", action: handleLogout },
-          );
-        } else {
-          pagesToAdd.push(
-            { name: "Login", endpoint: "/login" },
-            { name: "Sign Up", endpoint: "/signup" },
-          );
-        }
-      }
-
-      setPages(pagesToAdd);
+    // Admin pages
+    if (authData?.isAdmin) {
+      links.push(...adminPages);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authData, handleLogout, isMobile]);
+
+    // Mobile specific pages
+    if (isMobile) {
+      if (authData?.isLoggedIn) {
+        links.push(
+          { name: "Profile", endpoint: "/profile" },
+          { name: "Logout", action: handleLogout },
+        );
+      } else {
+        links.push(
+          { name: "Login", endpoint: "/login" },
+          { name: "Sign Up", endpoint: "/signup" },
+        );
+      }
+    }
+
+    return links;
+  }, [authData, isMobile, handleLogout]);
 
   return (
     <AppBar
@@ -176,7 +156,7 @@ function NavBar() {
             onClick={handleMenuClose}
             onKeyDown={handleMenuClose}
           >
-            {pages.map((page) =>
+            {menuItems.map((page) =>
               page.endpoint ? (
                 <MenuItem
                   key={page.name}
