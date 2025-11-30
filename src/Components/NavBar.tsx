@@ -80,11 +80,6 @@ function NavBar() {
       { name: "Translate", endpoint: "/translate" },
     );
 
-    // Logged in pages
-    if (authData?.isLoggedIn) {
-      links.splice(1, 0, { name: "Dashboard", endpoint: "/dashboard" });
-    }
-
     // Admin pages
     if (authData?.isAdmin) {
       links.push(...adminPages);
