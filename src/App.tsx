@@ -84,7 +84,7 @@ function App() {
         path: "/dashboard",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <ProtectedRoute>
+            <ProtectedRoute isAdminPage={false}>
               <Dashboard />
             </ProtectedRoute>
           </Suspense>
@@ -102,7 +102,7 @@ function App() {
       {
         path: "/admin-users",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminUserTable />
             </Suspense>
@@ -112,7 +112,7 @@ function App() {
       {
         path: "/admin-cards",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminCardTable />
             </Suspense>
@@ -122,7 +122,7 @@ function App() {
       {
         path: "/admin-lessons",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminLessonTable />
             </Suspense>
@@ -132,7 +132,7 @@ function App() {
       {
         path: "/admin-sections",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute isAdminPage={true}>
             <Suspense fallback={<div>Loading...</div>}>
               <AdminSectionTable />
             </Suspense>
