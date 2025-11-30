@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Grid,
@@ -14,7 +15,6 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
-import { LoadingButton } from "@mui/lab";
 
 function Login() {
   const [username, setUsername] = useState<string>("");
@@ -112,7 +112,7 @@ function Login() {
                 />
               </Grid>
               <Grid>
-                <LoadingButton
+                <Button
                   loading={loginMutation.isPending}
                   variant={"contained"}
                   color={"primary"}
@@ -120,7 +120,7 @@ function Login() {
                   size="large"
                 >
                   Log in
-                </LoadingButton>
+                </Button>
               </Grid>
             </Grid>
           </form>
