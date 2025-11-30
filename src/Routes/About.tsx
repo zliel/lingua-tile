@@ -125,20 +125,20 @@ function About() {
                 <List>
                   <ListItem>
                     <ListItemText
-                      primary="Spaced Repetition System"
-                      secondary="Optimize your review intervals for maximum retention."
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary="Vocabulary Flashcards"
-                      secondary="Expand your word bank with interactive cards."
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
                       primary="Guided Curriculum"
                       secondary="A structured path for Japanese grammar and vocabulary."
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Rich Media Flashcards"
+                      secondary="Flaschards with images, audio, and example sentences."
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Dashboard"
+                      secondary="Track your progress and stay motivated!"
                     />
                   </ListItem>
                 </List>
