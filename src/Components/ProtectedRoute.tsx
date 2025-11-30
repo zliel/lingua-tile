@@ -5,10 +5,10 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useQuery } from "@tanstack/react-query";
 
 const ProtectedRoute = ({
-  isAdminPage,
+  isAdminPage = false,
   children,
 }: {
-  isAdminPage: boolean;
+  isAdminPage?: boolean;
   children: React.ReactNode;
 }) => {
   const { authData, authIsLoading, checkAdmin } = useAuth();

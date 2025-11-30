@@ -15,6 +15,7 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useOffline } from "../Contexts/OfflineContext";
 
 function Login() {
   const [username, setUsername] = useState<string>("");
@@ -24,6 +25,7 @@ function Login() {
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { clearQueue } = useOffline();
 
   const loginMutation = useMutation({
     mutationFn: (credentials: { username: string; password: string }) => {
@@ -120,6 +122,17 @@ function Login() {
                   size="large"
                 >
                   Log in
+                </Button>
+              </Grid>
+              <Grid>
+                <Button
+                  variant="text"
+                  color="secondary"
+                  size="small"
+                  onClick={clearQueue}
+                  sx={{ mt: 1 }}
+                >
+                  Clear Offline Data
                 </Button>
               </Grid>
             </Grid>
