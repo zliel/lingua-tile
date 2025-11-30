@@ -26,6 +26,7 @@ const useLessonReview = (
           { lesson_id: lessonId, overall_performance: rating },
           {
             headers: { Authorization: `Bearer ${authData?.token}` },
+            timeout: 3000,
           },
         );
         return { offline: false };
