@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { Box, Grid, Skeleton, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Divider,
+  Paper,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
-import { LoadingButton } from "@mui/lab";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();
@@ -16,6 +28,7 @@ function UpdateProfile() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { showSnackbar } = useSnackbar();
+  const theme = useTheme();
 
   const {
     data: user,
@@ -145,128 +158,142 @@ function UpdateProfile() {
 
   if (!authData?.isLoggedIn) {
     return (
-      <Typography variant="h6" textAlign="center">
-        Please log in to update your profile.
-      </Typography>
+      <Container maxWidth="sm" sx={{ mt: 8 }}>
+        <Paper sx={{ p: 4, textAlign: "center", borderRadius: 4 }}>
+          <Typography variant="h6">
+            Please log in to update your profile.
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{ mt: 2 }}
+            onClick={() => navigate("/login")}
+          >
+            Log In
+          </Button>
+        </Paper>
+      </Container>
     );
   }
 
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Loading...
-        </Typography>
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={40}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={20}
-          sx={{ mb: 2 }}
-        />
-        <Skeleton
-          variant="rectangular"
-          animation={"wave"}
-          width="90%"
-          height={10}
-          sx={{ mb: 2 }}
-        />
-      </Box>
+      <Container maxWidth="sm" sx={{ mt: 8 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
+          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
+          <Skeleton variant="rectangular" height={60} sx={{ borderRadius: 2 }} />
+          <Skeleton variant="rectangular" height={40} width="50%" sx={{ borderRadius: 2 }} />
+        </Box>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <Typography variant="h6" textAlign="center">
-        Failed to load profile data.
-      </Typography>
+      <Container maxWidth="sm" sx={{ mt: 8 }}>
+        <Paper sx={{ p: 4, textAlign: "center", borderRadius: 4 }}>
+          <Typography variant="h6" color="error">
+            Failed to load profile data.
+          </Typography>
+          <Button
+            variant="outlined"
+            sx={{ mt: 2 }}
+            onClick={() => navigate("/profile")}
+          >
+            Back to Profile
+          </Button>
+        </Paper>
+      </Container>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 4,
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h4" gutterBottom>
-        Update Profile
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Current Username: {user.username}
-      </Typography>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSave();
-        }}
-        style={{ width: "100%" }}
+    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+      <Button
+        startIcon={<ArrowBackIcon />}
+        onClick={() => navigate("/profile")}
+        sx={{ mb: 2 }}
       >
-        <Grid
-          container
-          spacing={2}
-          justifyContent="center"
-          alignItems={"center"}
-          direction={"column"}
+        Back to Profile
+      </Button>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          borderRadius: 4,
+          border: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold" gutterBottom align="center">
+          Update Profile
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          align="center"
+          sx={{ mb: 4 }}
         >
-          <Grid>
+          Update your account information below.
+        </Typography>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+        >
+          <Stack spacing={3}>
             <TextField
-              variant={"outlined"}
-              label="New Username"
+              label="Username"
+              variant="outlined"
+              fullWidth
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              helperText={`Current: ${user.username}`}
             />
-          </Grid>
-          <Grid>
+
+            <Divider sx={{ my: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                CHANGE PASSWORD (OPTIONAL)
+              </Typography>
+            </Divider>
+
             <TextField
-              variant={"outlined"}
               label="New Password"
+              type="password"
+              variant="outlined"
+              fullWidth
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-          </Grid>
-          <Grid>
             <TextField
-              variant={"outlined"}
               label="Confirm New Password"
+              type="password"
+              variant="outlined"
+              fullWidth
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-          </Grid>
-          <Grid>
-            <LoadingButton
+
+            <Alert severity="warning" sx={{ borderRadius: 2 }}>
+              Changing your username or password will require you to log in again.
+            </Alert>
+
+            <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               type="submit"
-              size={"small"}
+              size="large"
+              loading={updateMutation.isPending}
+              fullWidth
+              sx={{ py: 1.5, borderRadius: 2, fontSize: "1.1rem" }}
             >
               Save Changes
-            </LoadingButton>
-          </Grid>
-        </Grid>
-      </form>
-      <Typography variant={"body1"} color={"error"} gutterBottom>
-        Note that after saving changes, you will need to log back in.
-      </Typography>
-    </Box>
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Container>
   );
 }
 
