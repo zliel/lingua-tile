@@ -25,6 +25,7 @@
     "react-transition-group": "^4.4.5",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
+    "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4",
     "wanakana": "^5.3.1",
