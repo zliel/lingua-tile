@@ -53,7 +53,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = (callback?: () => void) => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-    queryClient.invalidateQueries({ queryKey: ["authState"] });
+    queryClient.setQueryData(["authState"], {
+      isLoggedIn: false,
+      isAdmin: false,
+      token: "",
+      username: "",
+    });
     if (callback) callback();
   };
 
