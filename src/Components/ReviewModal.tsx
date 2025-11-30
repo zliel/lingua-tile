@@ -35,16 +35,16 @@ function ReviewModal({
       if (open && !isLoading) {
         switch (event.key) {
           case "1":
-            handlePerformanceReview(0.1);
+            handlePerformanceReview(1);
             break;
           case "2":
-            handlePerformanceReview(0.45);
+            handlePerformanceReview(2);
             break;
           case "3":
-            handlePerformanceReview(0.7);
+            handlePerformanceReview(3);
             break;
           case "4":
-            handlePerformanceReview(0.9);
+            handlePerformanceReview(4);
             break;
           default:
             break;
@@ -59,10 +59,10 @@ function ReviewModal({
   }, [open, handlePerformanceReview, isLoading]);
 
   const reviewOptions = [
-    { label: "Again", value: 0.1, keyBinding: isMobile ? "" : "(1)" },
-    { label: "Hard", value: 0.45, keyBinding: isMobile ? "" : "(2)" },
-    { label: "Good", value: 0.7, keyBinding: isMobile ? "" : "(3)" },
-    { label: "Easy", value: 0.9, keyBinding: isMobile ? "" : "(4)" },
+    { label: "Again", value: 1, keyBinding: isMobile ? "" : "(1)" },
+    { label: "Hard", value: 2, keyBinding: isMobile ? "" : "(2)" },
+    { label: "Good", value: 3, keyBinding: isMobile ? "" : "(3)" },
+    { label: "Easy", value: 4, keyBinding: isMobile ? "" : "(4)" },
   ];
 
   return (
@@ -110,11 +110,10 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(255, 255, 255, 0.4)"
-            }`,
+            border: `1px solid ${theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(255, 255, 255, 0.4)"
+              }`,
             p: 4,
             outline: "none",
           }}
