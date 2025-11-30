@@ -77,22 +77,43 @@ export const HeroSection = () => {
           A comprehensive learning platform designed to help you read, write,
           and speak Japanese fluently.
         </Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="large"
-          onClick={handleStartLearning}
-          sx={{
-            fontSize: "1.2rem",
-            px: 4,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: "bold",
-          }}
-        >
-          {authData?.isLoggedIn ? "Continue Learning" : "Start Learning Now"}
-        </Button>
+        <Container sx={{ display: "flex", flexDirection: "column", width: "50%", mb: 2, gap: 2 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            onClick={handleStartLearning}
+            sx={{
+              fontSize: "1.2rem",
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
+            {authData?.isLoggedIn ? "Continue Learning" : "Start Learning Now"}
+          </Button>
+          {authData?.isLoggedIn && (
+            <Button
+              variant="contained"
+              color="inherit"
+              size="large"
+              onClick={() => navigate("/dashboard")}
+              sx={{
+                fontSize: "1.2rem",
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: "bold",
+              }}
+            >
+              View Dashboard
+            </Button>
+
+          )}
+        </Container>
       </Container>
     </Box>
   );
