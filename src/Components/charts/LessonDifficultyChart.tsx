@@ -10,7 +10,7 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
     queryKey: ["reviews", authData?.token],
   });
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const difficultyCounts = () => {
     const counts = Array(10).fill(0);
@@ -62,7 +62,7 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
         ]}
         loading={isFetchingReviews > 0}
         height={300}
-        sx={{ minWidth: isMobile ? 150 : 700 }}
+        sx={{ width: "100%", minWidth: isMobile ? 100 : "auto" }}
       />
     </Box>
   );

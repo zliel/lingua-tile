@@ -11,7 +11,7 @@ export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
     queryKey: ["reviews", authData?.token],
   });
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const lastWeekDays = () => {
     return Array.from({ length: 7 }, (_, i) =>
@@ -57,7 +57,7 @@ export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
         ]}
         height={300}
         loading={isFetchingReviews > 0}
-        sx={{ minWidth: isMobile ? 100 : 600 }}
+        sx={{ width: "100%", minWidth: isMobile ? 150 : "auto" }}
       />
     </Box>
   );

@@ -11,7 +11,7 @@ export const ProjectedReviewsChart = ({ reviews }: { reviews: Review[] }) => {
     queryKey: ["reviews", authData?.token],
   });
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const upcomingMonth = () => {
     return Array.from({ length: 30 }, (_, i) =>
@@ -51,7 +51,7 @@ export const ProjectedReviewsChart = ({ reviews }: { reviews: Review[] }) => {
         ]}
         height={300}
         loading={isFetchingReviews > 0}
-        sx={{ minWidth: isMobile ? 100 : 600 }}
+        sx={{ width: "100%", minWidth: isMobile ? 100 : "auto" }}
       />
     </Box>
   );
