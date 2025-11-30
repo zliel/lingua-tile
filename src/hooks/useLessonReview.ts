@@ -20,21 +20,48 @@ const useLessonReview = (
   const handleLessonComplete = useMutation({
     mutationFn: async (rating: number) => {
       setModalLoading(true);
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
-        { lesson_id: lessonId, overall_performance: rating },
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      try {
+        await axios.post(
+          `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
+          { lesson_id: lessonId, overall_performance: rating },
+          {
+            headers: { Authorization: `Bearer ${authData?.token}` },
+          },
+        );
+        return { offline: false };
+      } catch (error: any) {
+        // Check for network error (no response) or timeout
+        if (!error.response || error.code === "ERR_NETWORK" || error.code === "ECONNABORTED") {
+          if (!authData?.username) {
+            throw new Error("User not logged in");
+          }
+          addToQueue({
+            lesson_id: lessonId,
+            overall_performance: rating,
+            timestamp: Date.now(),
+            username: authData.username,
+          });
+          return { offline: true };
+        }
+        throw error;
+      }
     },
-    onError: () => {
-      showSnackbar("Failed to mark lesson as complete", "error");
+    onError: (error: any) => {
+      showSnackbar(
+        error.message === "User not logged in"
+          ? "You must be logged in to save progress."
+          : "Failed to mark lesson as complete",
+        "error"
+      );
       setModalLoading(false);
       setModalOpen(false);
     },
-    onSuccess: () => {
-      showSnackbar("Lesson marked as complete", "success");
+    onSuccess: (data) => {
+      if (data.offline) {
+        showSnackbar("Saved offline. Will sync when online.", "success");
+      } else {
+        showSnackbar("Lesson marked as complete", "success");
+      }
       setModalLoading(false);
       setModalOpen(false);
       queryClient.invalidateQueries("lessons" as any);
