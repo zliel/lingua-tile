@@ -43,20 +43,6 @@ export const useOfflineData = () => {
           staleTime: 1000 * 60 * 60 * 24,
         });
       }
-
-      if (token) {
-        await queryClient.prefetchQuery({
-          queryKey: ["review", lessonId, token],
-          queryFn: async () => {
-            const response = await axios.get(
-              `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review/${lessonId}`,
-              { headers: { Authorization: `Bearer ${token}` } },
-            );
-            return response.data;
-          },
-          staleTime: 1000 * 60 * 60 * 24,
-        });
-      }
     },
     [authData, queryClient],
   );
