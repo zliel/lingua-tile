@@ -31,7 +31,11 @@ const useLessonReview = (
         return { offline: false };
       } catch (error: any) {
         // Check for network error (no response) or timeout
-        if (!error.response || error.code === "ERR_NETWORK" || error.code === "ECONNABORTED") {
+        if (
+          !error.response ||
+          error.code === "ERR_NETWORK" ||
+          error.code === "ECONNABORTED"
+        ) {
           if (!authData?.username) {
             throw new Error("User not logged in");
           }
@@ -51,7 +55,7 @@ const useLessonReview = (
         error.message === "User not logged in"
           ? "You must be logged in to save progress."
           : "Failed to mark lesson as complete",
-        "error"
+        "error",
       );
       setModalLoading(false);
       setModalOpen(false);
