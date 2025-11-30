@@ -5,7 +5,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
 import { Lesson, ReviewStats } from "@/types/lessons";
@@ -18,15 +18,18 @@ type CategoryColor = "primary" | "secondary" | "grammar";
 export const LessonListItem = ({
   lesson,
   review,
+  onLessonStart,
 }: {
   lesson: Lesson;
   review: ReviewStats | null;
+  onLessonStart: (lesson: Lesson) => void;
 }) => {
   const { authData } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const queryClient = useQueryClient();
   const { isPending } = useOffline();
+  const navigate = useNavigate();
 
   const isReviewLoading =
     queryClient.isFetching({
@@ -59,11 +62,10 @@ export const LessonListItem = ({
         height: "100%",
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
+        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
+          ? theme.palette.primary.contrastText
+          : theme.palette.secondary.contrastText
+          }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
@@ -111,8 +113,10 @@ export const LessonListItem = ({
         sx={{
           mt: isMobile ? 0 : 2,
         }}
-        component={Link}
-        to={`${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`}
+        onClick={() => {
+          onLessonStart(lesson);
+          navigate(`${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`);
+        }}
       >
         {lesson.category}
       </Button>
