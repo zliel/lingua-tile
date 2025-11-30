@@ -38,7 +38,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       );
       return response.data;
     },
-    enabled: !!authData,
+    // enabled: !!authData,
   });
 
   const { data: review, isLoading: isReviewLoading } = useQuery({
@@ -143,62 +143,58 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
         px: isMobile ? 1 : 0,
       }}
     >
-      {authData && (
-        <>
-          <Flashcard
-            frontText={currentCard?.front_text}
-            backText={currentCard?.back_text}
-            onNextCard={handleNextCard}
-          />
-          <Box
+      <Flashcard
+        frontText={currentCard?.front_text}
+        backText={currentCard?.back_text}
+        onNextCard={handleNextCard}
+      />
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          mt: 3,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Box sx={{ width: "100%", mr: 1 }}>
+          <LinearProgress
+            variant="determinate"
+            value={
+              hasFinished
+                ? 100
+                : (currentCardIndex / shuffledFlashcards.length) * 100
+            }
             sx={{
-              width: "100%",
-              maxWidth: 600,
-              mt: 3,
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: theme.palette.action.hover,
+              "& .MuiLinearProgress-bar": {
+                borderRadius: 4,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              },
             }}
+          />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">
+            {currentCardIndex + 1}/{shuffledFlashcards.length}
+          </Typography>
+        </Box>
+        <Zoom in={hasFinished} easing={"ease"} timeout={500}>
+          <Typography
+            sx={{
+              mb: 0.5,
+              color: "transparent",
+              textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
+            }}
+            variant={"h5"}
           >
-            <Box sx={{ width: "100%", mr: 1 }}>
-              <LinearProgress
-                variant="determinate"
-                value={
-                  hasFinished
-                    ? 100
-                    : (currentCardIndex / shuffledFlashcards.length) * 100
-                }
-                sx={{
-                  height: 8,
-                  borderRadius: 4,
-                  backgroundColor: theme.palette.action.hover,
-                  "& .MuiLinearProgress-bar": {
-                    borderRadius: 4,
-                    background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                  },
-                }}
-              />
-            </Box>
-            <Box sx={{ minWidth: 35 }}>
-              <Typography variant="body2" color="text.secondary">
-                {currentCardIndex + 1}/{shuffledFlashcards.length}
-              </Typography>
-            </Box>
-            <Zoom in={hasFinished} easing={"ease"} timeout={500}>
-              <Typography
-                sx={{
-                  mb: 0.5,
-                  color: "transparent",
-                  textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
-                }}
-                variant={"h5"}
-              >
-                🔥
-              </Typography>
-            </Zoom>
-          </Box>
-        </>
-      )}
+            🔥
+          </Typography>
+        </Zoom>
+      </Box>
       <ReviewModal
         open={modalOpen}
         setOpen={setModalOpen}

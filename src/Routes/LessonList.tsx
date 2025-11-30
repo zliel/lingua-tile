@@ -9,6 +9,8 @@ import {
   Divider,
   useMediaQuery,
   Grid,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -17,10 +19,14 @@ import { LessonListItem } from "../Components/LessonListItem";
 import { LessonListSkeleton } from "../Components/LessonListSkeleton";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
 import { Section } from "@/types/sections";
+import { useOfflineData } from "@/hooks/useOfflineData";
+import { Download } from "@mui/icons-material";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
   const { authData, authIsLoading } = useAuth();
+  const { downloadSection, downloadingSections, prefetchActiveSection } =
+    useOfflineData();
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -150,6 +156,27 @@ const LessonList = () => {
     );
   }
 
+  const handleLessonStart = async (lesson: Lesson) => {
+    console.log("Lesson started:", lesson.title);
+    if (lesson.section_id && groupedLessons) {
+      const sectionName = Object.keys(groupedLessons).find((name) =>
+        groupedLessons[name].some((l) => l._id === lesson._id),
+      );
+
+      if (sectionName) {
+        const siblings = groupedLessons[sectionName];
+        const currentIndex = siblings.findIndex((l) => l._id === lesson._id);
+
+        if (currentIndex !== -1) {
+          const nextLessons = siblings.slice(currentIndex + 1);
+          if (nextLessons.length > 0) {
+            await prefetchActiveSection(nextLessons);
+          }
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Fade in={isLoading || sectionsLoading} timeout={100} unmountOnExit>
@@ -180,6 +207,36 @@ const LessonList = () => {
             >
               <Typography variant="h5" gutterBottom>
                 {sectionName}
+                {sectionName !== "Extras" &&
+                  groupedLessons[sectionName]?.length > 0 && (
+                    <IconButton
+                      onClick={() => {
+                        const sectionId =
+                          groupedLessons[sectionName][0].section_id;
+                        if (sectionId) {
+                          downloadSection(
+                            sectionId,
+                            groupedLessons[sectionName],
+                          );
+                        }
+                      }}
+                      disabled={
+                        downloadingSections[
+                          groupedLessons[sectionName][0].section_id || ""
+                        ]
+                      }
+                      size="small"
+                      sx={{ ml: 1 }}
+                    >
+                      {downloadingSections[
+                        groupedLessons[sectionName][0].section_id || ""
+                      ] ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        <Download fontSize="small" />
+                      )}
+                    </IconButton>
+                  )}
               </Typography>
               <Divider
                 sx={{
@@ -201,6 +258,7 @@ const LessonList = () => {
                         <LessonListItem
                           lesson={lesson}
                           review={review || null}
+                          onLessonStart={handleLessonStart}
                         />
                       </Box>
                     );
@@ -211,7 +269,11 @@ const LessonList = () => {
                       const review = getReviewForLesson(lesson._id);
                       return (
                         <Grid size={{ xs: 12, sm: 6, md: 4 }} key={lesson._id}>
-                          <LessonListItem lesson={lesson} review={review} />
+                          <LessonListItem
+                            lesson={lesson}
+                            review={review || null}
+                            onLessonStart={handleLessonStart}
+                          />
                         </Grid>
                       );
                     })}

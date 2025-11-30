@@ -104,25 +104,26 @@ const Dashboard = () => {
           <Typography variant="h4" gutterBottom>
             Loading Dashboard...
           </Typography>
-          <Skeleton
-            variant="rectangular"
-            width="80%"
-            height={200}
-            sx={{ mb: 2, borderRadius: 2 }}
-          />
-          <Grid container spacing={2}>
+          <Grid width="100%" container spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Skeleton
                 variant="rectangular"
                 height={300}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: 4 }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Skeleton
                 variant="rectangular"
                 height={300}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: 4 }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Skeleton
+                variant="rectangular"
+                height={300}
+                sx={{ borderRadius: 4 }}
               />
             </Grid>
           </Grid>
