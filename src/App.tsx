@@ -25,6 +25,7 @@ import FlashcardLesson from "./Routes/FlashcardLesson";
 import GrammarLesson from "./Routes/GrammarLesson";
 import PracticeLesson from "./Routes/PracticeLesson";
 import LessonList from "./Routes/LessonList";
+import Dashboard from "./Routes/Dashboard";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
@@ -79,6 +80,12 @@ function App() {
       { path: "/translate", element: <Translate /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
+      {
+        path: "/dashboard", element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>)
+      },
       {
         path: "/profile",
         element: (
