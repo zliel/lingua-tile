@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { cloneElement, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -15,6 +15,8 @@ import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
 import ReviewModal from "./ReviewModal";
 import { Card } from "@/types/cards";
+import { useSwipeable } from "react-swipeable";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const { authData } = useAuth();
@@ -23,6 +25,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("left");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -74,6 +77,51 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     }
   }, [review, flashcards]);
 
+  // Handle reaching the end of the flashcards
+  useEffect(() => {
+    if (shuffledFlashcards.length > 0 && currentCardIndex === shuffledFlashcards.length) {
+      if (authData?.isLoggedIn) {
+        showSnackbar("You have reached the end of the lesson!", "success");
+        setHasFinished(true);
+        setModalOpen(true);
+        setCurrentCardIndex(0);
+      } else {
+        showSnackbar(
+          "Please log in to complete the lesson to get personalized lesson scheduling.",
+          "info",
+        );
+        setHasFinished(false);
+        setCurrentCardIndex(0);
+      }
+    }
+  }, [currentCardIndex, shuffledFlashcards.length, authData, showSnackbar]);
+
+  const handleNextCard = () => {
+    setSlideDirection("left");
+    setCurrentCardIndex((prevIndex) => {
+      if (prevIndex + 1 > shuffledFlashcards.length) return prevIndex;
+
+      return prevIndex + 1;
+    });
+  };
+
+  const handlePreviousCard = () => {
+    if (currentCardIndex > 0) {
+      setSlideDirection("right");
+      setCurrentCardIndex((prevIndex) => {
+        if (prevIndex <= 0) return 0;
+        return prevIndex - 1;
+      });
+    }
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => handleNextCard(),
+    onSwipedRight: () => handlePreviousCard(),
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
+
   if (isLoading || isReviewLoading) {
     return (
       <Box
@@ -106,29 +154,6 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
     return <Typography>Error loading flashcards.</Typography>;
   }
 
-  const handleNextCard = () => {
-    setTimeout(() => {
-      if (currentCardIndex + 1 === shuffledFlashcards.length) {
-        // NOTE: Disallows reviewing when not logged in
-        if (authData?.isLoggedIn) {
-          showSnackbar("You have reached the end of the lesson!", "success");
-          setHasFinished(true);
-          setCurrentCardIndex(0);
-          setModalOpen(true);
-        } else {
-          showSnackbar(
-            "Please log in to complete the lesson to get personalized lesson scheduling.",
-            "info",
-          );
-          setHasFinished(false);
-          setCurrentCardIndex(0);
-        }
-      } else {
-        setCurrentCardIndex((prevIndex) => prevIndex + 1);
-      }
-    }, 10);
-  };
-
   const currentCard: Card = shuffledFlashcards[currentCardIndex];
 
   return (
@@ -139,15 +164,49 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
         alignItems: "center",
         justifyContent: "center",
         mt: isMobile ? 2 : 4,
-        width: isMobile ? "100%" : "auto",
+        width: "100%",
         px: isMobile ? 1 : 0,
+        overflow: "hidden",
       }}
+      {...handlers}
     >
-      <Flashcard
-        frontText={currentCard?.front_text}
-        backText={currentCard?.back_text}
-        onNextCard={handleNextCard}
-      />
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateAreas: '"card"',
+          width: "auto",
+          justifyItems: "center",
+        }}
+      >
+        <TransitionGroup
+          component={null}
+          childFactory={(child: any) => cloneElement(child, {
+            classNames: `slide-${slideDirection}`
+          })}
+        >
+          <CSSTransition
+            key={currentCardIndex}
+            timeout={300}
+            classNames={`slide-${slideDirection}`}
+          >
+            <Box
+              sx={{
+                gridArea: "card",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Flashcard
+                frontText={currentCard?.front_text}
+                backText={currentCard?.back_text}
+                onNextCard={handleNextCard}
+                onPreviousCard={handlePreviousCard}
+              />
+            </Box>
+          </CSSTransition>
+        </TransitionGroup>
+      </Box>
       <Box
         sx={{
           width: "100%",
@@ -185,6 +244,7 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
         <Zoom in={hasFinished} easing={"ease"} timeout={500}>
           <Typography
             sx={{
+              display: hasFinished ? "block" : "none",
               mb: 0.5,
               color: "transparent",
               textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
