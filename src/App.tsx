@@ -27,6 +27,7 @@ import LessonList from "./Routes/LessonList";
 const Dashboard = lazy(() => import("./Routes/Dashboard"));
 import { HomeRedirect } from "./Routes/HomeRedirect";
 import { OfflineProvider } from "./Contexts/OfflineContext";
+import PWAInstallPrompt from "./Components/PWAInstallPrompt";
 const AdminSectionTable = lazy(() => import("./Routes/AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./Routes/AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./Routes/AdminLessonTable"));
@@ -155,6 +156,7 @@ function App() {
             <OfflineProvider>
               <NavBar />
               <AppRoutes />
+              <PWAInstallPrompt />
             </OfflineProvider>
           </AuthProvider>
         </BrowserRouter>
