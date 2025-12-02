@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {
+  CircularProgress,
   Grid,
+  InputAdornment,
   TextField,
   Typography,
   useMediaQuery,
@@ -11,15 +13,25 @@ import axios from "axios";
 function TranslationForm() {
   const [srcText, setSrcText] = useState("Hello!");
   const [translatedText, setTranslatedText] = useState("こんにちは！");
+  const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const translateText = setTimeout(async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
-      );
-      setTranslatedText(response.data.translatedText);
+      if (!srcText || srcText.trim() === "") return;
+
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
+        );
+        setTranslatedText(response.data.translatedText);
+      } catch (error) {
+        console.error("Translation error:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }, 1000);
 
     return () => clearTimeout(translateText);
@@ -31,22 +43,29 @@ function TranslationForm() {
 
   return (
     <>
-      <Typography variant={"h5"} textAlign={"center"}>
+      <Typography
+        variant={"h4"}
+        textAlign={"center"}
+        gutterBottom
+        sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
+      >
         Translate Text
       </Typography>
-      <Typography variant={"body1"} textAlign={"center"}>
-        Enter text in the box below to translate it from English to Japanese or
-        from Japanese to English
+      <Typography
+        variant={"body1"}
+        textAlign={"center"}
+        color="text.secondary"
+        sx={{ mb: 4 }}
+      >
+        Enter text below to translate between English and Japanese.
       </Typography>
       <Grid
         container
-        alignItems={"center"}
-        justifyContent={"center"}
+        spacing={3}
         direction={isMobile ? "column" : "row"}
-        gap={"2em"}
-        paddingTop={"1.5em"}
+        alignItems="stretch"
       >
-        <Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             id={"src-text-input"}
             name={"src-text"}
@@ -54,21 +73,41 @@ function TranslationForm() {
             type={"text"}
             value={srcText}
             onChange={handleInputChange}
+            fullWidth
+            multiline
+            minRows={4}
+            variant="outlined"
+            sx={{ bgcolor: "background.paper" }}
           />
         </Grid>
-        <Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             id={"translated-text-output"}
             name={"translated-text"}
             label={"Translated Text"}
             type={"text"}
             value={translatedText}
+            fullWidth
+            multiline
+            minRows={4}
             slotProps={{
               input: {
                 readOnly: true,
+                endAdornment: isLoading ? (
+                  <InputAdornment position="end">
+                    <CircularProgress size={40} />
+                  </InputAdornment>
+                ) : null,
               },
             }}
             color={"secondary"}
+            variant="filled"
+            sx={{
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.05)"
+                  : "rgba(0, 0, 0, 0.04)",
+            }}
           />
         </Grid>
       </Grid>
