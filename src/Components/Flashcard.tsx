@@ -19,7 +19,12 @@ interface FlashcardProps {
   onPreviousCard: () => void;
 }
 
-const Flashcard = ({ frontText, backText, onNextCard, onPreviousCard }: FlashcardProps) => {
+const Flashcard = ({
+  frontText,
+  backText,
+  onNextCard,
+  onPreviousCard,
+}: FlashcardProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isDarkMode = theme.palette.mode === "dark";
@@ -54,7 +59,6 @@ const Flashcard = ({ frontText, backText, onNextCard, onPreviousCard }: Flashcar
         event.preventDefault();
         return handlePreviousCard();
       }
-
     };
 
     window.addEventListener("keydown", handleKeyPress);
@@ -83,10 +87,9 @@ const Flashcard = ({ frontText, backText, onNextCard, onPreviousCard }: Flashcar
           boxShadow: isDarkMode
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${isDarkMode
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(255, 255, 255, 0.4)"
-            }`,
+          border: `1px solid ${
+            isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
+          }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             transform: isMobile ? "none" : "translateY(-5px)",

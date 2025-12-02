@@ -25,7 +25,9 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">("left");
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "left",
+  );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -79,7 +81,10 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
 
   // Handle reaching the end of the flashcards
   useEffect(() => {
-    if (shuffledFlashcards.length > 0 && currentCardIndex === shuffledFlashcards.length) {
+    if (
+      shuffledFlashcards.length > 0 &&
+      currentCardIndex === shuffledFlashcards.length
+    ) {
       if (authData?.isLoggedIn) {
         showSnackbar("You have reached the end of the lesson!", "success");
         setHasFinished(true);
@@ -180,9 +185,11 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       >
         <TransitionGroup
           component={null}
-          childFactory={(child: any) => cloneElement(child, {
-            classNames: `slide-${slideDirection}`
-          })}
+          childFactory={(child: any) =>
+            cloneElement(child, {
+              classNames: `slide-${slideDirection}`,
+            })
+          }
         >
           <CSSTransition
             key={currentCardIndex}
