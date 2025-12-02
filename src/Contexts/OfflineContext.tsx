@@ -27,10 +27,10 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => { },
+  addToQueue: () => {},
   isPending: () => false,
-  sync: async () => { },
-  clearQueue: () => { },
+  sync: async () => {},
+  clearQueue: () => {},
 });
 
 export const useOffline = () => useContext(OfflineContext);
@@ -69,7 +69,6 @@ export const OfflineProvider = ({
     const encoded = btoa(json);
     localStorage.setItem("offlineReviewQueue", encoded);
   }, [queue]);
-
 
   const addToQueue = useCallback((review: ReviewData) => {
     setQueue((prev) => {
@@ -202,7 +201,6 @@ export const OfflineProvider = ({
       window.removeEventListener("focus", handleFocus);
     };
   }, [sync]);
-
 
   // Auto-sync when coming online
   useEffect(() => {
