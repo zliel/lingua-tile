@@ -40,7 +40,9 @@ const FlashcardLesson = () => {
           mt: 4,
         }}
       >
-        <Typography>Loading lesson...</Typography>
+        <Typography sx={{ fontSize: isMobile ? "1.5rem" : "2.5rem" }}>
+          Loading lesson...
+        </Typography>
       </Box>
     );
   }

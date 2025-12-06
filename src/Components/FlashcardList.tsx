@@ -4,7 +4,6 @@ import axios from "axios";
 import {
   Box,
   LinearProgress,
-  Skeleton,
   Typography,
   Zoom,
   useMediaQuery,
@@ -18,6 +17,7 @@ import { Card } from "@/types/cards";
 import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Lesson } from "@/types/lessons";
+import FlashcardListSkeleton from "./skeletons/FlashcardListSkeleton";
 
 const FlashcardList = ({
   lessonId,
@@ -140,29 +140,7 @@ const FlashcardList = ({
 
   if (isLoading || isReviewLoading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Skeleton
-          animation={"wave"}
-          variant="rectangular"
-          width="70%"
-          height={80}
-          sx={{ borderRadius: 2, mb: 2 }}
-        />
-        <Skeleton
-          animation={"wave"}
-          variant="rectangular"
-          width="70%"
-          height={160}
-          sx={{ borderRadius: 2 }}
-        />
-      </Box>
+      <FlashcardListSkeleton />
     );
   }
 
