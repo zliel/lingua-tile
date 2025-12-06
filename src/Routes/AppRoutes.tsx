@@ -40,9 +40,7 @@ export const AppRoutes = () => {
         {
           path: "/lessons",
           element: (
-            <ProtectedRoute>
-              <LessonList />
-            </ProtectedRoute>
+            <LessonList />
           ),
         },
         {
@@ -64,36 +62,27 @@ export const AppRoutes = () => {
         {
           path: "/flashcards/:lessonId",
           element: (
-            <ProtectedRoute>
-              <FlashcardLesson />
-            </ProtectedRoute>
+            <FlashcardLesson />
           ),
         },
         {
           path: "/practice/:lessonId",
           element: (
-            <ProtectedRoute>
-              <PracticeLesson />
-            </ProtectedRoute>
+            <PracticeLesson />
           ),
         },
         {
           path: "/grammar/:lessonId",
           element: (
-            <ProtectedRoute>
-              <GrammarLesson />
-            </ProtectedRoute>
+            <GrammarLesson />
           ),
         },
         {
           path: "/translate",
           element: (
-            <ProtectedRoute>
-              <Translate />
-            </ProtectedRoute>
+            <Translate />
           ),
         },
-        // Admin Routes
         {
           path: "/admin-users",
           element: (
