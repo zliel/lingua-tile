@@ -44,6 +44,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("username", data.username);
     queryClient.invalidateQueries({ queryKey: ["authState"] });
+    // While this will be overwritten when the refetch finishes, this will
+    // allow users to see the logged-in state immediately.
+    queryClient.setQueryData(["authState"], {
+      isLoggedIn: true,
+      isAdmin: false,
+      token: data.token,
+      username: data.username,
+    });
 
     setTimeout(() => {
       if (callback) callback();
