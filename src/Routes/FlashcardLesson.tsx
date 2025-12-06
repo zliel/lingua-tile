@@ -66,7 +66,7 @@ const FlashcardLesson = () => {
       >
         {lesson && lesson.title}
       </Typography>
-      <FlashcardsList lessonId={lessonId || ""} />
+      <FlashcardsList lessonId={lessonId || ""} lesson={lesson} />
     </Box>
   );
 };

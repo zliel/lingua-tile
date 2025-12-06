@@ -17,8 +17,15 @@ import ReviewModal from "./ReviewModal";
 import { Card } from "@/types/cards";
 import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { Lesson } from "@/types/lessons";
 
-const FlashcardList = ({ lessonId }: { lessonId: string }) => {
+const FlashcardList = ({
+  lessonId,
+  lesson,
+}: {
+  lessonId: string;
+  lesson: Lesson;
+}) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -38,12 +45,12 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
   } = useQuery({
     queryKey: ["flashcards", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/lesson/${lessonId}`,
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_API_BASE}/api/cards/by-ids`,
+        lesson.card_ids,
       );
       return response.data;
     },
-    // enabled: !!authData,
   });
 
   const { data: review, isLoading: isReviewLoading } = useQuery({
@@ -75,7 +82,11 @@ const FlashcardList = ({ lessonId }: { lessonId: string }) => {
       const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
       setShuffledFlashcards(shuffled);
     } else {
-      setShuffledFlashcards([...flashcards]);
+      setShuffledFlashcards(
+        [...flashcards].sort((a, b) =>
+          a.front_text.localeCompare(b.front_text),
+        ),
+      );
     }
   }, [review, flashcards]);
 
