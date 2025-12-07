@@ -23,3 +23,69 @@ body {
   opacity: 0;
   transition: opacity 300ms;
 }
+
+@keyframes swipe-out-in {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Hold */
+  50% {
+    transform: translateX(50px) rotate(5deg);
+    opacity: 0;
+  }
+
+  /* Swipe Out */
+  50.01% {
+    transform: translateX(0) scale(0.9);
+    opacity: 0;
+  }
+
+  /* Reset Behind */
+  70% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  /* Fade In New */
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Hold */
+}
+
+@keyframes shuffle-1 {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-40px) rotate(-1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes shuffle-2 {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(40px) rotate(1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
