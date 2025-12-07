@@ -23,8 +23,21 @@ const FlashcardListSkeleton = () => {
         sx={{ borderRadius: 4, mb: 3 }}
       />
 
-      <Box sx={{ width: "100%", maxWidth: 600, display: "flex", gap: 2, alignItems: "center" }}>
-        <Skeleton variant="rectangular" width="100%" height={8} sx={{ borderRadius: 4 }} />
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+        }}
+      >
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={8}
+          sx={{ borderRadius: 4 }}
+        />
         <Skeleton variant="text" width={40} height={20} />
       </Box>
     </Box>
@@ -32,4 +45,3 @@ const FlashcardListSkeleton = () => {
 };
 
 export default FlashcardListSkeleton;
-

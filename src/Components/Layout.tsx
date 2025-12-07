@@ -33,7 +33,11 @@ export default function Layout() {
       <NavBar />
       <Box component="main" sx={{ flexGrow: 1 }}>
         <TransitionGroup component={null}>
-          <CSSTransition key={location.pathname} classNames="fade" timeout={300}>
+          <CSSTransition
+            key={location.pathname}
+            classNames="fade"
+            timeout={300}
+          >
             <Box sx={{ width: "100%" }}>
               <Suspense fallback={<PageSkeleton />}>
                 <Outlet />

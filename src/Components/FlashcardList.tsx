@@ -139,9 +139,7 @@ const FlashcardList = ({
   });
 
   if (isLoading || isReviewLoading) {
-    return (
-      <FlashcardListSkeleton />
-    );
+    return <FlashcardListSkeleton />;
   }
 
   if (isError) {
