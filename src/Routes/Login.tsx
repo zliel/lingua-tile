@@ -36,7 +36,7 @@ function Login() {
     },
     onSuccess: (response) => {
       showSnackbar("Login successful", "success");
-      login(response.data, () => navigate("/"));
+      login(response.data, () => navigate("/dashboard"));
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {

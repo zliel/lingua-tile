@@ -40,7 +40,9 @@ const FlashcardLesson = () => {
           mt: 4,
         }}
       >
-        <Typography>Loading lesson...</Typography>
+        <Typography sx={{ fontSize: isMobile ? "1.5rem" : "2.5rem" }}>
+          Loading lesson...
+        </Typography>
       </Box>
     );
   }
@@ -66,7 +68,7 @@ const FlashcardLesson = () => {
       >
         {lesson && lesson.title}
       </Typography>
-      <FlashcardsList lessonId={lessonId || ""} />
+      <FlashcardsList lessonId={lessonId || ""} lesson={lesson} />
     </Box>
   );
 };
