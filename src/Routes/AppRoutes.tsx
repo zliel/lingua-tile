@@ -39,9 +39,7 @@ export const AppRoutes = () => {
         },
         {
           path: "/lessons",
-          element: (
-            <LessonList />
-          ),
+          element: <LessonList />,
         },
         {
           path: "/profile",
@@ -61,27 +59,19 @@ export const AppRoutes = () => {
         },
         {
           path: "/flashcards/:lessonId",
-          element: (
-            <FlashcardLesson />
-          ),
+          element: <FlashcardLesson />,
         },
         {
           path: "/practice/:lessonId",
-          element: (
-            <PracticeLesson />
-          ),
+          element: <PracticeLesson />,
         },
         {
           path: "/grammar/:lessonId",
-          element: (
-            <GrammarLesson />
-          ),
+          element: <GrammarLesson />,
         },
         {
           path: "/translate",
-          element: (
-            <Translate />
-          ),
+          element: <Translate />,
         },
         {
           path: "/admin-users",
