@@ -122,7 +122,6 @@ export const HeroSection = () => {
           >
             Log In
           </Button>
-
         </Container>
       </Container>
     </Box>
