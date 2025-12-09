@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   Icon,
-  Skeleton,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -18,6 +17,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { Theme, useTheme } from "@mui/material/styles";
 import ReviewModal from "../Components/ReviewModal";
+import GrammarLessonSkeleton from "@/Components/skeletons/GrammarLessonSkeleton";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
@@ -46,18 +46,7 @@ const GrammarLesson = () => {
   });
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 4,
-        }}
-      >
-        <Skeleton variant="rectangular" width="80%" height={200} />
-      </Box>
-    );
+    return <GrammarLessonSkeleton />;
   }
 
   if (isError) {

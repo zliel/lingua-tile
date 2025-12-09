@@ -23,3 +23,217 @@ body {
   opacity: 0;
   transition: opacity 300ms;
 }
+
+@keyframes swipe-out-in {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Hold */
+  50% {
+    transform: translateX(50px) rotate(5deg);
+    opacity: 0;
+  }
+
+  /* Swipe Out */
+  50.01% {
+    transform: translateX(0) scale(0.9);
+    opacity: 0;
+  }
+
+  /* Reset Behind */
+  70% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  /* Fade In New */
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Hold */
+}
+
+@keyframes shuffle-1 {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-40px) rotate(-1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes shuffle-2 {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(40px) rotate(1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drop-in-out {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  15%,
+  70% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  85%,
+  100% {
+    transform: translateY(20px);
+    /* Drop down slightly while fading */
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-out-left {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+
+  15%,
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  85%,
+  100% {
+    transform: translateX(-20px);
+    /* Slide back slightly */
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-out-right {
+  0% {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+
+  15%,
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  85%,
+  100% {
+    transform: translateX(20px);
+    /* Slide back slightly */
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-source {
+  0%,
+  15% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  5%,
+  10% {
+    transform: scale(1.02);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes stream-flow {
+  0% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0;
+  }
+
+  5% {
+    transform: scaleX(1.05) scaleY(1);
+    opacity: 0.5;
+  }
+
+  30% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0.5;
+  }
+
+  80% {
+    transform: translateY(140px) scaleX(1);
+    /* Reduced distance to hit Input only */
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(110px) scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-target {
+  0%,
+  45% {
+    transform: scale(1);
+    opacity: 1;
+    border-color: transparent;
+  }
+
+  50%,
+  65% {
+    transform: scale(1.02);
+    opacity: 1;
+    border-color: rgba(0, 197, 0, 0.6);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    border-color: transparent;
+  }
+}
+
+@keyframes pulse-button {
+  0%,
+  65% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  75%,
+  85% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
