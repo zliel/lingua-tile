@@ -110,4 +110,3 @@ const PracticeLessonSkeleton = () => {
 };
 
 export default PracticeLessonSkeleton;
-

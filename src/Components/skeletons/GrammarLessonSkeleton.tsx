@@ -57,7 +57,12 @@ const GrammarLessonSkeleton = () => {
             }}
           >
             {/* Subtitle */}
-            <Skeleton variant="text" width="40%" height={30} sx={{ alignSelf: index % 2 === 0 ? "flex-start" : "flex-end" }} />
+            <Skeleton
+              variant="text"
+              width="40%"
+              height={30}
+              sx={{ alignSelf: index % 2 === 0 ? "flex-start" : "flex-end" }}
+            />
 
             {/* Paragraph lines */}
             <Skeleton variant="text" width="100%" height={20} />

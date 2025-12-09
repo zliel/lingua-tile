@@ -62,9 +62,7 @@ const PracticeLesson = () => {
   };
 
   if (isLoading) {
-    return (
-      <PracticeLessonSkeleton />
-    );
+    return <PracticeLessonSkeleton />;
   }
 
   if (isError) {
