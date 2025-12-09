@@ -80,8 +80,10 @@ export const HeroSection = () => {
         <Container
           sx={{
             display: "flex",
-            flexDirection: "column",
-            width: "50%",
+            flexDirection: isMobile ? "column" : "row",
+            width: isMobile ? "100%" : "80%",
+            justifyContent: "center",
+            alignItems: "center",
             mb: 2,
             gap: 2,
           }}
@@ -94,32 +96,32 @@ export const HeroSection = () => {
             sx={{
               fontSize: "1.2rem",
               px: 4,
+              width: isMobile ? "100%" : "60%",
               py: 1.5,
               borderRadius: 2,
               textTransform: "none",
               fontWeight: "bold",
             }}
           >
-            {authData?.isLoggedIn ? "Continue Learning" : "Start Learning Now"}
+            Start Learning Now
           </Button>
-          {authData?.isLoggedIn && (
-            <Button
-              variant="contained"
-              color="inherit"
-              size="large"
-              onClick={() => navigate("/dashboard")}
-              sx={{
-                fontSize: "1.2rem",
-                px: 4,
-                py: 1.5,
-                borderRadius: 2,
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
-            >
-              View Dashboard
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={() => navigate("/login")}
+            sx={{
+              fontSize: "1.2rem",
+              px: 4,
+              width: isMobile ? "100%" : "60%",
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Log In
+          </Button>
         </Container>
       </Container>
     </Box>
