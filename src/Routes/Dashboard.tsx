@@ -1,19 +1,19 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Box, Fade, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
 import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
 import { LessonProgressChart } from "@/Components/charts/LessonProgressChart";
+import DashboardSkeleton from "@/Components/skeletons/DashboardSkeleton";
 
 const Dashboard = () => {
   const { authData, logout } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
-  const [showLoaded, setShowLoaded] = useState(false);
   const theme = useTheme();
 
   const {
@@ -36,8 +36,8 @@ const Dashboard = () => {
 
   const {
     data: reviews,
-    isLoading: isFetchingReviews,
     error: reviewsError,
+    isLoading: isReviewsLoading,
   } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
@@ -73,130 +73,84 @@ const Dashboard = () => {
     }
   }, [userError, reviewsError, logout, navigate, showSnackbar]);
 
-  // Manage the animation in-between loading and loaded
-  useEffect(() => {
-    if (isUserLoading || isFetchingReviews) {
-      setShowLoaded(false);
-    } else {
-      const timer = setTimeout(() => setShowLoaded(true), 150);
-      return () => clearTimeout(timer);
-    }
-  }, [isUserLoading, isFetchingReviews]);
-
   if (!authData?.isLoggedIn) {
     // Should be handled by protected route, but safety check
     return null;
   }
 
-  const isLoading = isUserLoading || isFetchingReviews;
+  const isLoading = isUserLoading || isReviewsLoading;
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", p: 2 }}>
-      <Fade in={isLoading} timeout={100}>
-        <Box
-          sx={{
-            display: isLoading ? "flex" : "none",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 4,
-          }}
-        >
-          <Typography variant="h4" gutterBottom>
-            Loading Dashboard...
+      <Box>
+        <Box sx={{ mb: 4, textAlign: "center" }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
+          >
+            Welcome back, {user?.username || "Learner"}!
           </Typography>
-          <Grid width="100%" container spacing={4}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Skeleton
-                variant="rectangular"
-                height={300}
-                sx={{ borderRadius: 4 }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Skeleton
-                variant="rectangular"
-                height={300}
-                sx={{ borderRadius: 4 }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Skeleton
-                variant="rectangular"
-                height={300}
-                sx={{ borderRadius: 4 }}
-              />
-            </Grid>
-          </Grid>
+          <Typography variant="h6" color="text.secondary">
+            Here's your progress overview.
+          </Typography>
         </Box>
-      </Fade>
 
-      <Fade in={showLoaded} timeout={500} unmountOnExit>
-        <Box>
-          <Box sx={{ mb: 4, textAlign: "center" }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              gutterBottom
-              sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
+        <Grid container spacing={4}>
+          {/* Summary Cards could go here in the future */}
+
+          {/* Charts Section */}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(0,0,0,0.02)",
+                borderRadius: 4,
+                height: "100%",
+              }}
             >
-              Welcome back, {user?.username || "Learner"}!
-            </Typography>
-            <Typography variant="h6" color="text.secondary">
-              Here's your progress overview.
-            </Typography>
-          </Box>
-
-          <Grid container spacing={4}>
-            {/* Summary Cards could go here in the future */}
-
-            {/* Charts Section */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Box
-                sx={{
-                  p: 2,
-                  bgcolor:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(0,0,0,0.02)",
-                  borderRadius: 4,
-                  height: "100%",
-                }}
-              >
-                <PastWeekReviewsChart reviews={reviews} />
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Box
-                sx={{
-                  p: 2,
-                  bgcolor:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(0,0,0,0.02)",
-                  borderRadius: 4,
-                  height: "100%",
-                }}
-              >
-                <LessonProgressChart reviews={reviews} />
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Box
-                sx={{
-                  p: 2,
-                  bgcolor:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(0,0,0,0.02)",
-                  borderRadius: 4,
-                }}
-              >
-                <ProjectedReviewsChart reviews={reviews} />
-              </Box>
-            </Grid>
+              <PastWeekReviewsChart reviews={reviews} />
+            </Box>
           </Grid>
-        </Box>
-      </Fade>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(0,0,0,0.02)",
+                borderRadius: 4,
+                height: "100%",
+              }}
+            >
+              <LessonProgressChart reviews={reviews} />
+            </Box>
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(0,0,0,0.02)",
+                borderRadius: 4,
+              }}
+            >
+              <ProjectedReviewsChart reviews={reviews} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </Box>
   );
 };
