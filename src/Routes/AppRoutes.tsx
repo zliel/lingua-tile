@@ -46,7 +46,7 @@ export const AppRoutes = () => {
                 <Settings />
               </Suspense>
             </ProtectedRoute>
-          )
+          ),
         },
         {
           path: "/dashboard",

@@ -65,7 +65,7 @@ function Settings() {
               { endpoint: subscription.endpoint }, // Only need endpoint to identify
               {
                 headers: { Authorization: `Bearer ${authData?.token}` },
-              }
+              },
             );
           }
         }
@@ -86,7 +86,7 @@ function Settings() {
 
         // Get VAPID key
         const keyResponse = await axios.get(
-          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`
+          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`,
         );
         const vapidPublicKey = keyResponse.data.publicKey;
 
@@ -102,7 +102,7 @@ function Settings() {
           subscription.toJSON(),
           {
             headers: { Authorization: `Bearer ${authData?.token}` },
-          }
+          },
         );
 
         setNotificationsEnabled(true);
@@ -112,7 +112,7 @@ function Settings() {
       console.error("Notification error:", error);
       showSnackbar(
         `Error: ${error.response?.data?.detail || error.message}`,
-        "error"
+        "error",
       );
     } finally {
       setIsLoading(false);
@@ -166,4 +166,3 @@ function Settings() {
 }
 
 export default Settings;
-
