@@ -27,6 +27,21 @@ export default defineConfig({
             type: "image/png",
           },
         ],
+        shortcuts: [
+          {
+            name: "Lessons",
+            short_name: "Lessons",
+            description: "Go to your lessons list",
+            url: "/lessons",
+            icons: [
+              {
+                src: "android-chrome-192x192.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+        ],
       },
       workbox: {
         runtimeCaching: [
