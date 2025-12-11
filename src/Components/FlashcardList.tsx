@@ -217,7 +217,7 @@ const FlashcardList = ({
             value={
               hasFinished
                 ? 100
-                : (currentCardIndex / shuffledFlashcards.length) * 100
+                : (currentCardIndex / (shuffledFlashcards?.length || 1)) * 100
             }
             sx={{
               height: 8,
