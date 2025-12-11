@@ -17,6 +17,7 @@ const GrammarLesson = lazy(() => import("./GrammarLesson"));
 const PracticeLesson = lazy(() => import("./PracticeLesson"));
 const Translate = lazy(() => import("./Translate"));
 const About = lazy(() => import("./About"));
+const Settings = lazy(() => import("./Settings"));
 const AdminSectionTable = lazy(() => import("./AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./AdminLessonTable"));
@@ -36,6 +37,16 @@ export const AppRoutes = () => {
               <About />
             </Suspense>
           ),
+        },
+        {
+          path: "/settings",
+          element: (
+            <ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <Settings />
+              </Suspense>
+            </ProtectedRoute>
+          )
         },
         {
           path: "/dashboard",
