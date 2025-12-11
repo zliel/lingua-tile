@@ -150,10 +150,11 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(255, 255, 255, 0.4)"
-              }`,
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(255, 255, 255, 0.4)"
+            }`,
             p: 4,
             outline: "none",
             animation: `${popIn} 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)`,
@@ -199,7 +200,7 @@ function ReviewModal({
                   backdropFilter: "blur(10px)",
                   border: `1px solid ${theme.palette.divider}`,
                 },
-              }
+              },
             }}
           >
             <Typography variant="subtitle1" fontWeight="bold">
@@ -324,10 +325,9 @@ function ReviewModal({
               </Button>
             ))}
           </Box>
-        </Box >
-      )
-      }
-    </Modal >
+        </Box>
+      )}
+    </Modal>
   );
 }
 

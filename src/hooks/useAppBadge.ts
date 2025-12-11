@@ -41,4 +41,3 @@ export const useAppBadge = () => {
     setBadge();
   }, [reviews]);
 };
-
