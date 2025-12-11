@@ -36,7 +36,7 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
         xAxis={[
           {
             id: "xAxis",
-            label: "Lesson Difficulty (%)",
+            label: "Lesson Difficulty",
             data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
             valueFormatter: (value: number) => `${value}-${value + 1}`,
             colorMap: {

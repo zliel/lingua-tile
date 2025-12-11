@@ -3,9 +3,12 @@ import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 import PWAInstallPrompt from "./PWAInstallPrompt";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { useAppBadge } from "@/hooks/useAppBadge";
 
 export default function Layout() {
   const location = useLocation();
+
+  useAppBadge();
 
   return (
     <Box

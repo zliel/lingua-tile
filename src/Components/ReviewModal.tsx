@@ -6,11 +6,14 @@ import {
   Modal,
   Typography,
   CircularProgress,
+  Popover,
+  Stack,
   useTheme,
   useMediaQuery,
   keyframes,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import confetti from "canvas-confetti";
 import useLessonReview from "../hooks/useLessonReview";
 
@@ -40,6 +43,7 @@ function ReviewModal({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { handlePerformanceReview } = useLessonReview(
     lessonId,
     setOpen,
@@ -157,17 +161,109 @@ function ReviewModal({
           }}
         >
           <IconButton
+            sx={{ position: "absolute", top: 8, right: 48 }}
+            onClick={(e) => setAnchorEl(e.currentTarget)}
+          >
+            <HelpOutlineIcon />
+          </IconButton>
+          <IconButton
             sx={{ position: "absolute", top: 8, right: 8 }}
             onClick={() => setOpen(false)}
           >
             <CloseIcon />
           </IconButton>
+
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            slotProps={{
+              paper: {
+                sx: {
+                  py: 1,
+                  px: 2,
+                  mx: 0.5,
+                  maxWidth: isMobile ? "90vw" : 320,
+                  borderRadius: 2,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(30, 30, 30, 0.95)"
+                      : "rgba(255, 255, 255, 0.95)",
+                  backdropFilter: "blur(10px)",
+                  border: `1px solid ${theme.palette.divider}`,
+                },
+              },
+            }}
+          >
+            <Typography variant="subtitle1" fontWeight="bold">
+              Grading Guide
+            </Typography>
+            <Stack spacing={1}>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="error.main"
+                  fontWeight="bold"
+                >
+                  Again
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Incorrect response. The lesson will be shown again soon.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="warning.main"
+                  fontWeight="bold"
+                >
+                  Hard
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Correct, but required significant effort or hesitation.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="info.main"
+                  fontWeight="bold"
+                >
+                  Good
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Correct with a reasonable amount of effort.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="success.main"
+                  fontWeight="bold"
+                >
+                  Easy
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Correct immediately without hesitation.
+                </Typography>
+              </Box>
+            </Stack>
+          </Popover>
           <Typography
             variant="h4"
             component="h2"
             textAlign={"center"}
             sx={{
               fontWeight: "bold",
+              mt: isMobile ? 1 : 0,
               mb: 1,
               color: theme.palette.text.primary,
             }}

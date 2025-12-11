@@ -62,7 +62,8 @@ function Login() {
     <Box
       sx={{
         height: "90vh",
-        p: 8,
+        pt: 8,
+        px: 4,
         display: "flex",
         justifyContent: "center",
       }}
@@ -70,7 +71,6 @@ function Login() {
       <Card
         elevation={1}
         sx={{
-          pt: isMobile ? 2 : 0,
           width: isMobile ? "100%" : 400,
           maxWidth: isMobile ? "100%" : "90%",
           height: "fit-content",
