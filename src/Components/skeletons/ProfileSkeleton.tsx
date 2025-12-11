@@ -11,7 +11,7 @@ import {
   SxProps,
 } from "@mui/material";
 
-export const ProfileSkeleton = ({ sx }: { sx: SxProps }) => {
+export const ProfileSkeleton = ({ sx }: { sx?: SxProps }) => {
   const theme = useTheme();
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4, ...sx }}>
