@@ -38,7 +38,7 @@ const ProtectedRoute = ({
   });
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !authIsLoading) {
       if (isAdminPage && (isError || !isAdmin)) {
         showSnackbar("You do not have permission to view that page", "error");
 
