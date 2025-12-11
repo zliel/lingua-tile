@@ -8,9 +8,25 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
+  keyframes,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import confetti from "canvas-confetti";
 import useLessonReview from "../hooks/useLessonReview";
+
+const popIn = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+`;
 
 function ReviewModal({
   open,
@@ -29,6 +45,26 @@ function ReviewModal({
     setOpen,
     setIsLoading,
   );
+
+  useEffect(() => {
+    if (open && !isLoading) {
+      const colors = [
+        theme.palette.primary.main,
+        theme.palette.secondary.main,
+        theme.palette.grammar.main,
+        "#FFC107",
+        "#4CAF50",
+      ];
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: colors,
+        disableForReducedMotion: true,
+        zIndex: theme.zIndex.modal + 1,
+      });
+    }
+  }, [open, isLoading, theme]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -110,13 +146,13 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(255, 255, 255, 0.4)"
-            }`,
+            border: `1px solid ${theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(255, 255, 255, 0.4)"
+              }`,
             p: 4,
             outline: "none",
+            animation: `${popIn} 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)`,
           }}
         >
           <IconButton
