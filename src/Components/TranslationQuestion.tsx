@@ -89,6 +89,7 @@ const TranslationQuestion = ({
       className={isCorrect === false ? "shake" : ""}
       sx={{
         m: isMobile ? 1 : 8,
+        mt: isMobile ? 2 : 8,
         p: 0,
         minWidth: isMobile ? "95%" : "50%",
         maxWidth: isMobile ? "100%" : "600px",

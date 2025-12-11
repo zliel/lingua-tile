@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -82,12 +82,54 @@ const PracticeLesson = () => {
         pb: 8,
       }}
     >
-      <Typography variant={"h4"}>{lesson.title}</Typography>
+      <Typography variant={"h4"} gutterBottom>
+        {lesson.title}
+      </Typography>
       <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
           sentence={lesson.sentences[currentSentence]}
           onNext={handleNext}
         />
+      </Box>
+      <Box
+        sx={{
+          width: "90%",
+          maxWidth: 600,
+          mt: 3,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Box sx={{ width: "100%", mr: 1 }}>
+          <LinearProgress
+            variant="determinate"
+            value={
+              modalOpen
+                ? 100
+                : (currentSentence / (lesson?.sentences?.length || 1)) * 100
+            }
+            sx={{
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "rgba(255,255,255,0.1)"
+                  : "rgba(0,0,0,0.1)",
+              "& .MuiLinearProgress-bar": {
+                borderRadius: 4,
+                background: (theme) =>
+                  `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">
+            {modalOpen ? lesson.sentences.length : currentSentence + 1}/
+            {lesson.sentences.length}
+          </Typography>
+        </Box>
       </Box>
       <ReviewModal
         open={modalOpen}
