@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 import Layout from "@/Components/Layout";
 import ProtectedRoute from "@/Components/ProtectedRoute";
@@ -6,6 +6,7 @@ import ProtectedRoute from "@/Components/ProtectedRoute";
 import Login from "./Login";
 import Signup from "./Signup";
 import { HomeRedirect } from "./HomeRedirect";
+import PageSkeleton from "@/Components/skeletons/PageSkeleton";
 
 const Dashboard = lazy(() => import("./Dashboard"));
 const LessonList = lazy(() => import("./LessonList"));
@@ -28,24 +29,38 @@ export const AppRoutes = () => {
       children: [
         { path: "/", element: <HomeRedirect /> },
         { path: "/home", element: <HomeRedirect /> },
-        { path: "/about", element: <About /> },
+        {
+          path: "/about", element: (
+            <Suspense fallback={<PageSkeleton />}>
+              <About />
+            </Suspense>
+          ),
+        },
         {
           path: "/dashboard",
           element: (
             <ProtectedRoute>
-              <Dashboard />
+              <Suspense>
+                <Dashboard />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
         {
           path: "/lessons",
-          element: <LessonList />,
+          element: (
+            <Suspense>
+              <LessonList />
+            </Suspense>
+          ),
         },
         {
           path: "/profile",
           element: (
             <ProtectedRoute>
-              <Profile />
+              <Suspense>
+                <Profile />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
@@ -53,31 +68,51 @@ export const AppRoutes = () => {
           path: "/update-profile",
           element: (
             <ProtectedRoute>
-              <UpdateProfile />
+              <Suspense>
+                <UpdateProfile />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
         {
           path: "/flashcards/:lessonId",
-          element: <FlashcardLesson />,
+          element: (
+            <Suspense>
+              <FlashcardLesson />
+            </Suspense>
+          ),
         },
         {
           path: "/practice/:lessonId",
-          element: <PracticeLesson />,
+          element: (
+            <Suspense>
+              <PracticeLesson />
+            </Suspense>
+          ),
         },
         {
           path: "/grammar/:lessonId",
-          element: <GrammarLesson />,
+          element: (
+            <Suspense>
+              <GrammarLesson />
+            </Suspense>
+          ),
         },
         {
           path: "/translate",
-          element: <Translate />,
+          element: (
+            <Suspense fallback={<PageSkeleton />}>
+              <Translate />
+            </Suspense>
+          ),
         },
         {
           path: "/admin-users",
           element: (
             <ProtectedRoute isAdminPage={true}>
-              <AdminUserTable />
+              <Suspense>
+                <AdminUserTable />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
@@ -85,7 +120,9 @@ export const AppRoutes = () => {
           path: "/admin-cards",
           element: (
             <ProtectedRoute isAdminPage={true}>
-              <AdminCardTable />
+              <Suspense>
+                <AdminCardTable />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
@@ -93,7 +130,9 @@ export const AppRoutes = () => {
           path: "/admin-lessons",
           element: (
             <ProtectedRoute isAdminPage={true}>
-              <AdminLessonTable />
+              <Suspense>
+                <AdminLessonTable />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
@@ -101,7 +140,9 @@ export const AppRoutes = () => {
           path: "/admin-sections",
           element: (
             <ProtectedRoute isAdminPage={true}>
-              <AdminSectionTable />
+              <Suspense>
+                <AdminSectionTable />
+              </Suspense>
             </ProtectedRoute>
           ),
         },
