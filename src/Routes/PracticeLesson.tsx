@@ -82,7 +82,9 @@ const PracticeLesson = () => {
         pb: 8,
       }}
     >
-      <Typography variant={"h4"} gutterBottom>{lesson.title}</Typography>
+      <Typography variant={"h4"} gutterBottom>
+        {lesson.title}
+      </Typography>
       <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
           sentence={lesson.sentences[currentSentence]}
