@@ -23,7 +23,7 @@ const ProtectedRoute = ({
   } = useQuery({
     queryKey: ["checkAdmin", token],
     queryFn: async () => {
-      if (!authIsLoading && authData && typeof authData.isAdmin === "boolean") {
+      if (authData?.isLoggedIn) {
         return authData.isAdmin;
       }
 
