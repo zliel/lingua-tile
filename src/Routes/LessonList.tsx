@@ -222,7 +222,7 @@ const LessonList = () => {
                       }}
                       disabled={
                         downloadingSections[
-                        groupedLessons[sectionName][0].section_id || ""
+                          groupedLessons[sectionName][0].section_id || ""
                         ]
                       }
                       size="small"

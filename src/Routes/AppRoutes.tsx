@@ -30,7 +30,8 @@ export const AppRoutes = () => {
         { path: "/", element: <HomeRedirect /> },
         { path: "/home", element: <HomeRedirect /> },
         {
-          path: "/about", element: (
+          path: "/about",
+          element: (
             <Suspense fallback={<PageSkeleton />}>
               <About />
             </Suspense>
