@@ -12,7 +12,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
+import ArrowBack from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -227,7 +227,7 @@ function UpdateProfile() {
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Button
-        startIcon={<ArrowBackIcon />}
+        startIcon={<ArrowBack />}
         onClick={() => navigate("/profile")}
         sx={{ mb: 2 }}
       >

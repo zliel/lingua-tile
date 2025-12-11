@@ -20,7 +20,7 @@ import { LessonListSkeleton } from "../Components/LessonListSkeleton";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
 import { Section } from "@/types/sections";
 import { useOfflineData } from "@/hooks/useOfflineData";
-import { Download } from "@mui/icons-material";
+import Download from "@mui/icons-material/Download";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);

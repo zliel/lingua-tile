@@ -18,12 +18,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useColorScheme, useTheme } from "@mui/material/styles";
-import {
-  DarkMode,
-  LightMode,
-  Menu as MenuIcon,
-  Close as CloseIcon,
-} from "@mui/icons-material";
+import DarkMode from "@mui/icons-material/DarkMode";
+import LightMode from "@mui/icons-material/LightMode";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "../Contexts/AuthContext";
 
 type Page = {
@@ -177,7 +175,7 @@ function NavBar() {
         {/* </Menu> */}
         <Typography variant={"h6"} sx={{ paddingRight: "10px" }}>
           <Link
-            to={"/"}
+            to={authData?.isLoggedIn ? "/dashboard" : "/"}
             style={{
               textDecoration: "none",
               color: theme.palette.primary.contrastText,

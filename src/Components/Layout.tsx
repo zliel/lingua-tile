@@ -2,23 +2,10 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 import PWAInstallPrompt from "./PWAInstallPrompt";
-import PageSkeleton from "./skeletons/PageSkeleton";
-import { Suspense } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-import { useAuth } from "@/Contexts/AuthContext";
 
 export default function Layout() {
   const location = useLocation();
-  const { authIsLoading } = useAuth();
-
-  if (authIsLoading) {
-    return (
-      <Box>
-        <NavBar />
-        <PageSkeleton />
-      </Box>
-    );
-  }
 
   return (
     <Box
@@ -39,9 +26,7 @@ export default function Layout() {
             timeout={300}
           >
             <Box sx={{ width: "100%" }}>
-              <Suspense fallback={<PageSkeleton />}>
-                <Outlet />
-              </Suspense>
+              <Outlet />
             </Box>
           </CSSTransition>
         </TransitionGroup>

@@ -104,11 +104,7 @@ const PracticeLesson = () => {
         <Box sx={{ width: "100%", mr: 1 }}>
           <LinearProgress
             variant="determinate"
-            value={
-              modalOpen
-                ? 100
-                : (currentSentence / (lesson?.sentences?.length || 1)) * 100
-            }
+            value={(currentSentence / (lesson?.sentences?.length || 1)) * 100}
             sx={{
               height: 8,
               borderRadius: 4,

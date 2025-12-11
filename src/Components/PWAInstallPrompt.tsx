@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   Fade,
 } from "@mui/material";
-import { Download } from "@mui/icons-material";
+import Download from "@mui/icons-material/Download";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 
 const PWAInstallPrompt = () => {

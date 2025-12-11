@@ -9,7 +9,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { FlipCameraAndroid, ArrowForward } from "@mui/icons-material";
+import FlipCameraAndroid from "@mui/icons-material/FlipCameraAndroid";
+import ArrowForward from "@mui/icons-material/ArrowForward";
 import "./Flashcard.css";
 
 interface FlashcardProps {
