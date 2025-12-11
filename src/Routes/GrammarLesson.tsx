@@ -11,7 +11,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Done } from "@mui/icons-material";
+import Done from "@mui/icons-material/Done";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
@@ -72,11 +72,10 @@ const GrammarLesson = () => {
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${
-          theme.palette.mode === "dark"
+        border: `1px solid ${theme.palette.mode === "dark"
             ? "rgba(255, 255, 255, 0.1)"
             : "rgba(255, 255, 255, 0.4)"
-        }`,
+          }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           boxShadow:

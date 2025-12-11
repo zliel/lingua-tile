@@ -9,7 +9,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Analytics, LibraryBooks, School } from "@mui/icons-material";
+import Analytics from "@mui/icons-material/Analytics";
+import LibraryBooks from "@mui/icons-material/LibraryBooks";
+import School from "@mui/icons-material/School";
 import { SignupForm } from "@/Components/SignupForm";
 
 function Signup() {

@@ -14,12 +14,10 @@ import {
 } from "@mui/material";
 import CodeIcon from "@mui/icons-material/Code";
 import LanguageIcon from "@mui/icons-material/Language";
-import {
-  GitHub,
-  Palette,
-  RocketLaunch,
-  QuestionAnswer,
-} from "@mui/icons-material";
+import GitHub from "@mui/icons-material/GitHub";
+import Palette from "@mui/icons-material/Palette";
+import RocketLaunch from "@mui/icons-material/RocketLaunch";
+import QuestionAnswer from "@mui/icons-material/QuestionAnswer";
 
 function About() {
   const theme = useTheme();

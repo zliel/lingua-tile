@@ -20,7 +20,7 @@ import { LessonListSkeleton } from "../Components/LessonListSkeleton";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
 import { Section } from "@/types/sections";
 import { useOfflineData } from "@/hooks/useOfflineData";
-import { Download } from "@mui/icons-material";
+import Download from "@mui/icons-material/Download";
 
 const LessonList = () => {
   const [showLoaded, setShowLoaded] = useState(false);
@@ -222,7 +222,7 @@ const LessonList = () => {
                       }}
                       disabled={
                         downloadingSections[
-                          groupedLessons[sectionName][0].section_id || ""
+                        groupedLessons[sectionName][0].section_id || ""
                         ]
                       }
                       size="small"

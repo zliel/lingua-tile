@@ -14,12 +14,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  School as SchoolIcon,
-  TrendingUp as TrendingUpIcon,
-} from "@mui/icons-material";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
+import School from "@mui/icons-material/School";
+import TrendingUp from "@mui/icons-material/TrendingUp";
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -260,7 +258,7 @@ function Profile() {
               <Grid size={{ xs: 12, sm: "auto" }}>
                 <Button
                   variant="outlined"
-                  startIcon={<EditIcon />}
+                  startIcon={<Edit />}
                   onClick={handleUpdate}
                   sx={{ borderRadius: 2 }}
                 >
@@ -289,7 +287,7 @@ function Profile() {
                         color: theme.palette.success.contrastText,
                       }}
                     >
-                      <SchoolIcon />
+                      <School />
                     </Avatar>
                     <Box>
                       <Typography variant="h4" fontWeight="bold">
@@ -321,7 +319,7 @@ function Profile() {
                         color: theme.palette.warning.contrastText,
                       }}
                     >
-                      <TrendingUpIcon />
+                      <TrendingUp />
                     </Avatar>
                     <Box>
                       <Typography variant="h4" fontWeight="bold">
@@ -399,7 +397,7 @@ function Profile() {
             <Button
               variant="contained"
               color="error"
-              startIcon={<DeleteIcon />}
+              startIcon={<Delete />}
               onClick={handleDelete}
             >
               Delete Profile

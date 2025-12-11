@@ -1,4 +1,6 @@
-import { School, TrendingUp, Translate } from "@mui/icons-material";
+import School from "@mui/icons-material/School";
+import TrendingUp from "@mui/icons-material/TrendingUp";
+import Translate from "@mui/icons-material/Translate";
 import {
   Container,
   Typography,
