@@ -9,6 +9,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "LinguaTile",
@@ -43,23 +46,9 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
+      devOptions: {
+        enabled: true,
+        type: "module",
       },
     }),
   ],
