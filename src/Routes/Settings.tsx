@@ -65,19 +65,19 @@ function Settings() {
               { endpoint: subscription.endpoint }, // Only need endpoint to identify
               {
                 headers: { Authorization: `Bearer ${authData?.token}` },
-              }
+              },
             );
           }
         }
         setNotificationsEnabled(false);
         showSnackbar("Notifications disabled", "success");
       } else {
+        // Subscribe
         if (!("serviceWorker" in navigator)) {
           showSnackbar("Service Worker not supported", "error");
           return;
         }
 
-        showSnackbar("Requesting permission...", "info");
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
           showSnackbar("Permission denied", "error");
@@ -85,64 +85,32 @@ function Settings() {
         }
 
         // Get VAPID key
-        showSnackbar("Fetching public key...", "info");
+        showSnackbar("Enabling notifications...", "info");
         const keyResponse = await axios.get(
-          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`
+          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`,
         );
         const vapidPublicKey = keyResponse.data.publicKey;
 
-        showSnackbar("Registering push...", "info");
-
-        // Debugging SW state
-        if (!navigator.serviceWorker.controller) {
-          console.warn("No active SW controller found, waiting for ready...");
-        }
-
-        // Race ready against a 5s timeout
-        const readyPromise = navigator.serviceWorker.ready;
-        const timeoutPromise = new Promise<ServiceWorkerRegistration>((_, reject) =>
-          setTimeout(() => reject(new Error("Service Worker registration timed out. Try reloading.")), 5000)
-        );
-
-        let registration: ServiceWorkerRegistration;
-        try {
-          registration = await Promise.race([readyPromise, timeoutPromise]);
-        } catch (e: any) {
-          // Attempt manual registration recovery if simple ready fails
-          console.log("Timed out waiting for ready, trying manual update/check...");
-          try {
-            registration = await navigator.serviceWorker.register('/sw.js');
-            // Wait for it to be active
-            if (registration.installing) {
-              await new Promise(resolve => {
-                const worker = registration.installing;
-                if (worker) {
-                  worker.addEventListener('statechange', () => {
-                    if (worker.state === 'activated') resolve(null);
-                  });
-                } else {
-                  resolve(null);
-                }
-              });
-            }
-          } catch (registerError: any) {
-            throw new Error(`SW Registration failed: ${e.message} -> ${registerError.message}`);
-          }
-        }
-
+        showSnackbar("Awaiting Service Worker Ready...", "info");
+        console.log("Waiting for service worker to be ready...");
+        const registration = await navigator.serviceWorker.ready;
+        console.log("Service worker ready.");
+        showSnackbar("Subscribing to push manager...", "info");
+        console.log("Subscribing to push manager...");
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
         });
+        console.log("Push manager subscribed:", subscription);
 
         // Send to backend
-        showSnackbar("Saving subscription...", "info");
+        showSnackbar("Registering subscription...", "info");
         await axios.post(
           `${import.meta.env.VITE_APP_API_BASE}/api/notifications/subscribe`,
           subscription.toJSON(),
           {
             headers: { Authorization: `Bearer ${authData?.token}` },
-          }
+          },
         );
 
         setNotificationsEnabled(true);
@@ -152,7 +120,7 @@ function Settings() {
       console.error("Notification error:", error);
       showSnackbar(
         `Error: ${error.response?.data?.detail || error.message}`,
-        "error"
+        "error",
       );
     } finally {
       setIsLoading(false);
@@ -163,7 +131,7 @@ function Settings() {
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Button
         startIcon={<ArrowBack />}
-        onClick={() => navigate("/profile")} // Or wherever back should go
+        onClick={() => navigate("/dashboard")}
         sx={{ mb: 2 }}
       >
         Back
