@@ -28,4 +28,10 @@ registerSW({
   onOfflineReady() {
     console.log("App ready to work offline");
   },
+  onRegistered(r) {
+    console.log("SW Registered:", r);
+  },
+  onRegisterError(error) {
+    console.error("SW Registration Error:", error);
+  },
 });
