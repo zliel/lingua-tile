@@ -88,6 +88,7 @@ function NavBar() {
       if (authData?.isLoggedIn) {
         links.push(
           { name: "Profile", endpoint: "/profile" },
+          { name: "Settings", endpoint: "/settings" },
           { name: "Logout", action: handleLogout },
         );
       } else {
@@ -226,6 +227,13 @@ function NavBar() {
                     to="/profile"
                   >
                     My Profile
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleProfileMenuClose}
+                    component={Link}
+                    to="/settings"
+                  >
+                    Settings
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
