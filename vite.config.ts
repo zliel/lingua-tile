@@ -9,10 +9,6 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      strategies: "injectManifest",
-      srcDir: "src",
-      filename: "sw.ts",
-      injectRegister: null, // We register manually in index.tsx
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "LinguaTile",
@@ -31,25 +27,24 @@ export default defineConfig({
             type: "image/png",
           },
         ],
-        shortcuts: [
+      },
+      workbox: {
+        runtimeCaching: [
           {
-            name: "Lessons",
-            short_name: "Lessons",
-            description: "Go to your lessons list",
-            url: "/lessons",
-            icons: [
-              {
-                src: "android-chrome-192x192.png",
-                sizes: "192x192",
-                type: "image/png",
+            urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "api-cache",
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
               },
-            ],
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
           },
         ],
-      },
-      devOptions: {
-        enabled: true,
-        type: "module",
       },
     }),
   ],
