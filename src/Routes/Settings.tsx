@@ -85,6 +85,7 @@ function Settings() {
         }
 
         // Get VAPID key
+        showSnackbar("Enabling notifications...", "info");
         const keyResponse = await axios.get(
           `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`,
         );
@@ -97,6 +98,7 @@ function Settings() {
         });
 
         // Send to backend
+        showSnackbar("Registering subscription...", "info");
         await axios.post(
           `${import.meta.env.VITE_APP_API_BASE}/api/notifications/subscribe`,
           subscription.toJSON(),
@@ -123,7 +125,7 @@ function Settings() {
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Button
         startIcon={<ArrowBack />}
-        onClick={() => navigate("/profile")} // Or wherever back should go
+        onClick={() => navigate("/dashboard")}
         sx={{ mb: 2 }}
       >
         Back

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Review } from "@/types/lessons";
 
 export const useAppBadge = () => {
   const { authData } = useAuth();
@@ -29,7 +30,11 @@ export const useAppBadge = () => {
     const setBadge = async () => {
       try {
         if (reviews && reviews.length > 0) {
-          await navigator.setAppBadge(reviews.length);
+          const numOverdueReviews = reviews.filter(
+            (review: Review) => new Date(review.next_review) <= new Date(),
+          ).length;
+
+          await navigator.setAppBadge(numOverdueReviews);
         } else {
           await navigator.clearAppBadge();
         }
