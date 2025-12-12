@@ -31,7 +31,15 @@ export const useAppBadge = () => {
       try {
         if (reviews && reviews.length > 0) {
           const numOverdueReviews = reviews.filter(
-            (review: Review) => new Date(review.next_review) <= new Date(),
+            (review: Review) => {
+              const reviewDate = new Date(review.next_review);
+              reviewDate.setHours(0, 0, 0, 0);
+
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              return reviewDate <= today;
+            }
           ).length;
 
           await navigator.setAppBadge(numOverdueReviews);
