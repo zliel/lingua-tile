@@ -29,7 +29,6 @@ function Settings() {
     }
   };
 
-
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Button
