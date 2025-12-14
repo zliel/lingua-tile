@@ -2,8 +2,18 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 import PWAInstallPrompt from "./PWAInstallPrompt";
+import PWAPrompt from "react-ios-pwa-prompt";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { useAppBadge } from "@/hooks/useAppBadge";
+
+const IOSPrompt: React.FC = () => (
+  <PWAPrompt
+    appIconPath="/apple-touch-icon.png"
+    copyTitle="Install LinguaTile"
+    copySubtitle="LinguaTile"
+    copyDescription="Add this app to your home screen for the best experience."
+  />
+);
 
 export default function Layout() {
   const location = useLocation();
@@ -35,6 +45,7 @@ export default function Layout() {
         </TransitionGroup>
       </Box>
       <PWAInstallPrompt />
+      <IOSPrompt />
     </Box>
   );
 }
