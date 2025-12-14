@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Container,
   Paper,
@@ -13,117 +12,20 @@ import {
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
+import { usePushSubscription } from "../hooks/usePushSubscription";
 
 function Settings() {
   const navigate = useNavigate();
   const theme = useTheme();
-  const { authData } = useAuth();
-  const { showSnackbar } = useSnackbar();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Check if already subscribed
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.pushManager.getSubscription().then((subscription) => {
-          setNotificationsEnabled(!!subscription);
-        });
-      });
-    }
-  }, []);
+  const { isSubscribed, isLoading, subscribe, unsubscribe } =
+    usePushSubscription();
 
   const handleNotificationToggle = async () => {
-    setIsLoading(true);
-    try {
-      if (notificationsEnabled) {
-        // Unsubscribe
-        if ("serviceWorker" in navigator) {
-          const registration = await navigator.serviceWorker.ready;
-          const subscription = await registration.pushManager.getSubscription();
-          if (subscription) {
-            await subscription.unsubscribe();
-            // Tell backend
-            await axios.post(
-              `${import.meta.env.VITE_APP_API_BASE}/api/notifications/unsubscribe`,
-              { endpoint: subscription.endpoint }, // Only need endpoint to identify
-              {
-                headers: { Authorization: `Bearer ${authData?.token}` },
-              },
-            );
-          }
-        }
-        setNotificationsEnabled(false);
-        showSnackbar("Notifications disabled", "success");
-      } else {
-        // Subscribe
-        if (!("serviceWorker" in navigator)) {
-          showSnackbar("Service Worker not supported", "error");
-          return;
-        }
-
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
-          showSnackbar("Permission denied", "error");
-          return;
-        }
-
-        // Get VAPID key
-        showSnackbar("Enabling notifications...", "info");
-        const keyResponse = await axios.get(
-          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`,
-        );
-        const vapidPublicKey = keyResponse.data.publicKey;
-
-        showSnackbar("Awaiting Service Worker Ready...", "info");
-        console.log("Waiting for service worker to be ready...");
-        const registration = await navigator.serviceWorker.ready;
-        console.log("Service worker ready.");
-        showSnackbar("Subscribing to push manager...", "info");
-        console.log("Subscribing to push manager...");
-        const subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-        });
-        console.log("Push manager subscribed:", subscription);
-
-        // Send to backend
-        showSnackbar("Registering subscription...", "info");
-        await axios.post(
-          `${import.meta.env.VITE_APP_API_BASE}/api/notifications/subscribe`,
-          subscription.toJSON(),
-          {
-            headers: { Authorization: `Bearer ${authData?.token}` },
-          },
-        );
-
-        setNotificationsEnabled(true);
-        showSnackbar("Notifications enabled!", "success");
-      }
-    } catch (error: any) {
-      console.error("Notification error:", error);
-      showSnackbar(
-        `Error: ${error.response?.data?.detail || error.message}`,
-        "error",
-      );
-    } finally {
-      setIsLoading(false);
+    if (isSubscribed) {
+      await unsubscribe();
+    } else {
+      await subscribe();
     }
   };
 
@@ -161,7 +63,7 @@ function Settings() {
             <ListItemSecondaryAction>
               <Switch
                 edge="end"
-                checked={notificationsEnabled}
+                checked={isSubscribed}
                 onChange={handleNotificationToggle}
                 disabled={isLoading}
               />

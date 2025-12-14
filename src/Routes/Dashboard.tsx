@@ -9,12 +9,49 @@ import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
 import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
 import { LessonProgressChart } from "@/Components/charts/LessonProgressChart";
 import DashboardSkeleton from "@/Components/skeletons/DashboardSkeleton";
+import { usePushSubscription } from "@/hooks/usePushSubscription";
+import { NotificationPermissionModal } from "@/Components/NotificationPermissionModal";
+import { useState } from "react";
 
 const Dashboard = () => {
   const { authData, logout } = useAuth();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+
   const theme = useTheme();
+
+  const {
+    isSubscribed,
+    isLoading: isSubscriptionLoading,
+    subscribe,
+  } = usePushSubscription();
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+
+  useEffect(() => {
+    if (
+      authData?.isLoggedIn &&
+      !isSubscriptionLoading &&
+      !isSubscribed &&
+      !("serviceWorker" in navigator && Notification.permission === "denied") &&
+      !localStorage.getItem("notification_prompt_dismissed")
+    ) {
+      // Small delay to ensure UI is settled
+      const timer = setTimeout(() => {
+        setShowNotificationModal(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [authData, isSubscriptionLoading, isSubscribed]);
+
+  const handleEnableNotifications = async () => {
+    await subscribe();
+    setShowNotificationModal(false);
+  };
+
+  const handleDismissNotifications = () => {
+    localStorage.setItem("notification_prompt_dismissed", "true");
+    setShowNotificationModal(false);
+  };
 
   const {
     data: user,
@@ -151,6 +188,14 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
+
+      <NotificationPermissionModal
+        open={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+        onEnable={handleEnableNotifications}
+        onDismiss={handleDismissNotifications}
+        loading={isSubscriptionLoading}
+      />
     </Box>
   );
 };
