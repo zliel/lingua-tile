@@ -27,7 +27,7 @@ self.addEventListener("push", (event) => {
     icon: "/android-chrome-192x192.png",
     badge: "/masked-icon.svg",
     data: {
-      url: "/dashboard", // or wherever you want them to land
+      url: "/lessons",
     },
   };
 
