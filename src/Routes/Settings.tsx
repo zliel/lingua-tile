@@ -12,16 +12,11 @@ import {
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
 import { usePushSubscription } from "../hooks/usePushSubscription";
 
 function Settings() {
   const navigate = useNavigate();
   const theme = useTheme();
-  const { authData } = useAuth();
-  const { showSnackbar } = useSnackbar();
 
   const { isSubscribed, isLoading, subscribe, unsubscribe } =
     usePushSubscription();
