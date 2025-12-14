@@ -34,12 +34,6 @@ function Settings() {
     }
   };
 
-    } catch (error: any) {
-      showSnackbar(
-        "error",
-      );
-    }
-  };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
