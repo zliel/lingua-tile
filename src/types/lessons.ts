@@ -10,6 +10,7 @@ export interface Lesson {
   _id: string;
   title: string;
   section_id?: string;
+  order_index?: number;
   sentences?: Sentence[];
   card_ids?: string[];
   content?: string;
@@ -19,6 +20,7 @@ export interface Lesson {
 export interface NewLesson {
   title: string;
   section_id?: string;
+  order_index?: number;
   sentences?: Sentence[];
   card_ids?: string[];
   content?: string;
