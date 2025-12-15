@@ -141,16 +141,16 @@ const LessonList = () => {
       .sort(
         (a: Section, b: Section) => (a.order_index || 0) - (b.order_index || 0),
       )
-      .reduce(
-        (acc: Record<string, Lesson[]>, section: Section) => {
-          if (!section || !section.name) return acc;
-          acc[section.name] = lessons
-            .filter((lesson: Lesson) => lesson.section_id === section._id)
-            .sort((a: Lesson, b: Lesson) => (a.order_index || 0) - (b.order_index || 0));
-          return acc;
-        },
-        {},
-      );
+      .reduce((acc: Record<string, Lesson[]>, section: Section) => {
+        if (!section || !section.name) return acc;
+        acc[section.name] = lessons
+          .filter((lesson: Lesson) => lesson.section_id === section._id)
+          .sort(
+            (a: Lesson, b: Lesson) =>
+              (a.order_index || 0) - (b.order_index || 0),
+          );
+        return acc;
+      }, {});
 
     // Handle lessons without sections in an "Extras" segment
     groupedLessons["Extras"] = lessons
@@ -161,7 +161,9 @@ const LessonList = () => {
             (section: Section) => section._id === lesson.section_id,
           ),
       )
-      .sort((a: Lesson, b: Lesson) => (a.order_index || 0) - (b.order_index || 0));
+      .sort(
+        (a: Lesson, b: Lesson) => (a.order_index || 0) - (b.order_index || 0),
+      );
   }
 
   const handleLessonStart = async (lesson: Lesson) => {
@@ -230,7 +232,7 @@ const LessonList = () => {
                       }}
                       disabled={
                         downloadingSections[
-                        groupedLessons[sectionName][0].section_id || ""
+                          groupedLessons[sectionName][0].section_id || ""
                         ]
                       }
                       size="small"
