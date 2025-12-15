@@ -131,6 +131,18 @@ const NewLessonForm = ({
           sx={{ mb: 2, width: "300px" }}
           required
         />
+        <TextField
+          label="Order Index"
+          type="number"
+          value={newLesson.order_index || 0}
+          onChange={(e) =>
+            setNewLesson({
+              ...newLesson,
+              order_index: parseInt(e.target.value) || 0,
+            })
+          }
+          sx={{ mb: 2, width: "300px" }}
+        />
         <Autocomplete
           options={sections}
           getOptionLabel={(option) => option.name}
