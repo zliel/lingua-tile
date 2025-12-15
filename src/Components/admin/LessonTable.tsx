@@ -146,6 +146,15 @@ export const LessonTable = ({
       editable: true,
     },
     {
+      field: "order_index",
+      headerName: "Order Index",
+      width: 120,
+      headerAlign: "left",
+      align: "left",
+      editable: true,
+      type: "number",
+    },
+    {
       field: "section_id",
       headerName: "Section Name",
       width: 200,

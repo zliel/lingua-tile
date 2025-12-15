@@ -132,6 +132,15 @@ export const SectionTable = ({
       editable: true,
     },
     {
+      field: "order_index",
+      headerName: "Order Index",
+      width: 120,
+      headerAlign: "left",
+      align: "left",
+      editable: true,
+      type: "number",
+    },
+    {
       field: "lesson_ids",
       headerName: "Lessons",
       width: 300,
