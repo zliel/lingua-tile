@@ -50,3 +50,11 @@ export interface FSRSData {
   difficulty: number | null;
   last_review: string;
 }
+
+export interface ReviewLog {
+  _id: string;
+  lesson_id: string;
+  user_id: string;
+  review_date: string;
+  rating: number;
+}
