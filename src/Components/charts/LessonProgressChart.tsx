@@ -21,7 +21,7 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
       );
       return response.data.total;
     },
-  })
+  });
 
   const getStateCounts = () => {
     const counts = {
@@ -90,7 +90,7 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
           },
         ]}
         height={300}
-        loading={(isFetchingReviews > 0) || isLoadingLessonCount}
+        loading={isFetchingReviews > 0 || isLoadingLessonCount}
         slotProps={{
           legend: {
             direction: isMobile ? "vertical" : "horizontal",
