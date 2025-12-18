@@ -2,7 +2,8 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { Review } from "@/types/lessons";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { useIsFetching } from "@tanstack/react-query";
+import { useIsFetching, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
   const { authData } = useAuth();
@@ -11,6 +12,16 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
   });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const { data: lessonCount, isLoading: isLoadingLessonCount } = useQuery({
+    queryKey: ["lessonCount"],
+    queryFn: async () => {
+      const response = await axios.get<{ total: number }>(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/total`,
+      );
+      return response.data.total;
+    },
+  })
 
   const getStateCounts = () => {
     const counts = {
@@ -27,6 +38,11 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
       else if (state === 2) counts.review++;
       else if (state === 3) counts.relearning++;
     });
+
+    // Any lessons not reviewed yet are considered "new"
+    if (lessonCount) {
+      counts.new += lessonCount - reviews.length;
+    }
 
     return [
       {
@@ -74,13 +90,13 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
           },
         ]}
         height={300}
-        loading={isFetchingReviews > 0}
+        loading={(isFetchingReviews > 0) || isLoadingLessonCount}
         slotProps={{
           legend: {
-            direction: (isMobile ? "row" : "column") as any,
+            direction: isMobile ? "vertical" : "horizontal",
             position: {
-              vertical: isMobile ? "bottom" : "middle",
-              horizontal: isMobile ? "center" : "end",
+              vertical: "middle",
+              horizontal: "center",
             } as any,
           },
         }}
