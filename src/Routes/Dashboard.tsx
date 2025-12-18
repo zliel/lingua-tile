@@ -91,9 +91,29 @@ const Dashboard = () => {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
+  const {
+    data: reviewHistory,
+    error: reviewHistoryError,
+    isLoading: isReviewHistoryLoading,
+  } = useQuery({
+    queryKey: ["reviewHistory", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews/history/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${authData?.token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+    enabled: !!authData && !!authData.isLoggedIn,
+  });
+
   // Handle query errors
   useEffect(() => {
-    const error = userError || reviewsError;
+    const error = userError || reviewsError || reviewHistoryError;
     if (!error) return;
     if (axios.isAxiosError(error) && error.response) {
       if (error.response.status === 401) {
@@ -108,14 +128,21 @@ const Dashboard = () => {
     } else {
       showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
     }
-  }, [userError, reviewsError, logout, navigate, showSnackbar]);
+  }, [
+    userError,
+    reviewsError,
+    reviewHistoryError,
+    logout,
+    navigate,
+    showSnackbar,
+  ]);
 
   if (!authData?.isLoggedIn) {
     // Should be handled by protected route, but safety check
     return null;
   }
 
-  const isLoading = isUserLoading || isReviewsLoading;
+  const isLoading = isUserLoading || isReviewsLoading || isReviewHistoryLoading;
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -154,7 +181,7 @@ const Dashboard = () => {
                 height: "100%",
               }}
             >
-              <PastWeekReviewsChart reviews={reviews} />
+              <PastWeekReviewsChart reviews={reviewHistory || []} />
             </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
