@@ -1,14 +1,14 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Review } from "@/types/lessons";
+import { ReviewLog } from "@/types/lessons";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { useIsFetching } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
-export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
+export const PastWeekReviewsChart = ({ reviews }: { reviews: ReviewLog[] }) => {
   const { authData } = useAuth();
   const isFetchingReviews = useIsFetching({
-    queryKey: ["reviews", authData?.token],
+    queryKey: ["reviewHistory", authData?.token],
   });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -24,7 +24,7 @@ export const PastWeekReviewsChart = ({ reviews }: { reviews: Review[] }) => {
   const reviewsPerDay = lastWeekDays().map((day) => {
     if (!reviews || reviews.length == 0) return 0;
     return reviews.filter((review) =>
-      dayjs(review.card_object.last_review).isSame(day, "day"),
+      dayjs(review.review_date).isSame(day, "day"),
     ).length;
   });
 
