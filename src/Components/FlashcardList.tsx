@@ -1,4 +1,4 @@
-import { cloneElement, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -14,10 +14,25 @@ import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
 import ReviewModal from "./ReviewModal";
 import { Card } from "@/types/cards";
-import { useSwipeable } from "react-swipeable";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { AnimatePresence, motion } from "framer-motion";
 import { Lesson } from "@/types/lessons";
 import FlashcardListSkeleton from "./skeletons/FlashcardListSkeleton";
+import { useSwipeable } from "react-swipeable";
+
+const variants = {
+  enter: (direction: "left" | "right") => ({
+    x: direction === "left" ? 300 : -300,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: "left" | "right") => ({
+    x: direction === "left" ? -300 : 300,
+    opacity: 0,
+  }),
+};
 
 const FlashcardList = ({
   lessonId,
@@ -28,15 +43,13 @@ const FlashcardList = ({
 }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [[currentCardIndex, slideDirection], setPage] = useState<[number, "left" | "right"]>([0, "left"]);
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
-    "left",
-  );
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const isNavigating = useRef(false);
 
   const {
     data: flashcards = [],
@@ -100,33 +113,41 @@ const FlashcardList = ({
         showSnackbar("You have reached the end of the lesson!", "success");
         setHasFinished(true);
         setModalOpen(true);
-        setCurrentCardIndex(0);
+        // Reset safely using current direction
+        setPage([0, "left"]);
       } else {
         showSnackbar(
           "Please log in to complete the lesson to get personalized lesson scheduling.",
           "info",
         );
         setHasFinished(false);
-        setCurrentCardIndex(0);
+        setPage([0, "left"]);
       }
     }
   }, [currentCardIndex, shuffledFlashcards.length, authData, showSnackbar]);
 
   const handleNextCard = () => {
-    setSlideDirection("left");
-    setCurrentCardIndex((prevIndex) => {
-      if (prevIndex + 1 > shuffledFlashcards.length) return prevIndex;
+    if (isNavigating.current) return;
 
-      return prevIndex + 1;
+    isNavigating.current = true;
+    setTimeout(() => { isNavigating.current = false; }, 300);
+
+    setPage(([currentIndex]) => {
+      if (currentIndex + 1 > shuffledFlashcards.length) return [currentIndex, "left"];
+      return [currentIndex + 1, "left"];
     });
   };
 
   const handlePreviousCard = () => {
+    if (isNavigating.current) return;
+
     if (currentCardIndex > 0) {
-      setSlideDirection("right");
-      setCurrentCardIndex((prevIndex) => {
-        if (prevIndex <= 0) return 0;
-        return prevIndex - 1;
+      isNavigating.current = true;
+      setTimeout(() => { isNavigating.current = false; }, 300);
+
+      setPage(([currentIndex]) => {
+        if (currentIndex <= 0) return [0, "right"];
+        return [currentIndex - 1, "right"];
       });
     }
   };
@@ -170,36 +191,28 @@ const FlashcardList = ({
           justifyItems: "center",
         }}
       >
-        <TransitionGroup
-          component={null}
-          childFactory={(child: any) =>
-            cloneElement(child, {
-              classNames: `slide-${slideDirection}`,
-            })
-          }
-        >
-          <CSSTransition
+        <AnimatePresence initial={false} custom={slideDirection}>
+          <motion.div
             key={currentCardIndex}
-            timeout={300}
-            classNames={`slide-${slideDirection}`}
+            custom={slideDirection}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+            style={{ gridArea: "card", width: "100%", display: "flex", justifyContent: "center" }}
           >
-            <Box
-              sx={{
-                gridArea: "card",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Flashcard
-                frontText={currentCard?.front_text}
-                backText={currentCard?.back_text}
-                onNextCard={handleNextCard}
-                onPreviousCard={handlePreviousCard}
-              />
-            </Box>
-          </CSSTransition>
-        </TransitionGroup>
+            <Flashcard
+              frontText={currentCard?.front_text}
+              backText={currentCard?.back_text}
+              onNextCard={handleNextCard}
+              onPreviousCard={handlePreviousCard}
+            />
+          </motion.div>
+        </AnimatePresence>
       </Box>
       <Box
         sx={{
@@ -242,6 +255,7 @@ const FlashcardList = ({
               mb: 0.5,
               color: "transparent",
               textShadow: `0 0 0 ${theme.palette.secondary.dark}`,
+              cursor: "default",
             }}
             variant={"h5"}
           >
