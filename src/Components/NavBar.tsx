@@ -49,13 +49,12 @@ function NavBar() {
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
-
   const { data: user } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        { headers: { Authorization: `Bearer ${authData?.token}` } }
+        { headers: { Authorization: `Bearer ${authData?.token}` } },
       );
       return response.data;
     },
