@@ -16,6 +16,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import confetti from "canvas-confetti";
 import useLessonReview from "../hooks/useLessonReview";
+import { useNavigate } from "react-router";
+import { XpSummary } from "./XpSummary";
 
 const popIn = keyframes`
   0% {
@@ -44,14 +46,27 @@ function ReviewModal({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [summaryData, setSummaryData] = useState<any>(null);
+  const navigate = useNavigate();
+
+  const handleReviewComplete = (data: any) => {
+    setSummaryData(data);
+  };
+
   const { handlePerformanceReview } = useLessonReview(
     lessonId,
     setOpen,
     setIsLoading,
+    handleReviewComplete
   );
 
+  const handleContinue = () => {
+    setOpen(false);
+    navigate("/lessons");
+  };
+
   useEffect(() => {
-    if (open && !isLoading) {
+    if (summaryData?.leveled_up || (open && !isLoading && !summaryData)) {
       const colors = [
         theme.palette.primary.main,
         theme.palette.secondary.main,
@@ -60,19 +75,20 @@ function ReviewModal({
         "#4CAF50",
       ];
       confetti({
-        particleCount: 150,
-        spread: 100,
+        particleCount: summaryData?.leveled_up ? 300 : 150,
+        spread: summaryData?.leveled_up ? 180 : 100,
         origin: { y: 0.6 },
         colors: colors,
         disableForReducedMotion: true,
         zIndex: theme.zIndex.modal + 1,
       });
     }
-  }, [open, isLoading, theme]);
+  }, [open, isLoading, theme, summaryData]);
+
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (open && !isLoading) {
+      if (open && !isLoading && !summaryData) {
         switch (event.key) {
           case "1":
             handlePerformanceReview(1);
@@ -96,7 +112,7 @@ function ReviewModal({
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [open, handlePerformanceReview, isLoading]);
+  }, [open, handlePerformanceReview, isLoading, summaryData]);
 
   const reviewOptions = [
     { label: "Again", value: 1, keyBinding: isMobile ? "" : "(1)" },
@@ -109,7 +125,9 @@ function ReviewModal({
     <Modal
       open={open}
       sx={{ backdropFilter: "blur(4px)" }}
-      onClose={() => setOpen(false)}
+      onClose={() => {
+        if (!isLoading && !summaryData) setOpen(false);
+      }}
     >
       {isLoading ? (
         <Box
@@ -131,6 +149,8 @@ function ReviewModal({
             }}
           />
         </Box>
+      ) : summaryData ? (
+        <XpSummary summaryData={summaryData} handleContinue={handleContinue} />
       ) : (
         <Box
           sx={{
@@ -150,11 +170,10 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(255, 255, 255, 0.4)"
-            }`,
+            border: `1px solid ${theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(255, 255, 255, 0.4)"
+              }`,
             p: 4,
             outline: "none",
             animation: `${popIn} 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)`,
