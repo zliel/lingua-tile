@@ -142,6 +142,22 @@ const Dashboard = () => {
     return null;
   }
 
+  useEffect(() => {
+    if (user) {
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (user.timezone !== browserTimezone) {
+        // Update user timezone
+        axios
+          .put(
+            `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
+            { timezone: browserTimezone },
+            { headers: { Authorization: `Bearer ${authData?.token}` } },
+          )
+          .catch((err) => console.error("Failed to sync timezone", err));
+      }
+    }
+  }, [user, authData?.token]);
+
   const isLoading = isUserLoading || isReviewsLoading || isReviewHistoryLoading;
 
   if (isLoading) {

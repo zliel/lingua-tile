@@ -5,6 +5,8 @@ export interface User {
   username: string;
   roles: Role[];
   completedLessons?: string[];
+  current_streak?: number;
+  timezone?: string;
 }
 
 export interface NewUser {

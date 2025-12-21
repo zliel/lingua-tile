@@ -23,6 +23,9 @@ import LightMode from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "../Contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import StreakCounter from "./StreakCounter";
 
 type Page = {
   name: string;
@@ -45,6 +48,18 @@ function NavBar() {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ["user", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
+        { headers: { Authorization: `Bearer ${authData?.token}` } },
+      );
+      return response.data;
+    },
+    enabled: !!authData?.isLoggedIn && !!authData?.token,
+  });
 
   const handleMenuOpen = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -187,6 +202,9 @@ function NavBar() {
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction={"row"} alignItems={"center"}>
+          {authData?.isLoggedIn && user && (
+            <StreakCounter streak={user.current_streak || 0} />
+          )}
           <Icon>
             <LightMode />
           </Icon>
