@@ -18,6 +18,7 @@
     "@vitejs/plugin-react-swc": "^4.2.2",
     "axios": "^1.11.0",
     "canvas-confetti": "^1.9.4",
+    "damerau-levenshtein": "^1.0.8",
     "dayjs": "^1.11.13",
     "mui-markdown": "^1.2.6",
     "react": "^18.3.1",
@@ -40,6 +41,7 @@
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/damerau-levenshtein": "^1.0.2",
     "@vitest/coverage-v8": "^4.0.10",
     "jsdom": "^27.2.0",
     "vitest": "^4.0.10"
