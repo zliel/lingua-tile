@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   Container,
   Fade,
   Grid,
@@ -14,7 +13,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import School from "@mui/icons-material/School";
 import TrendingUp from "@mui/icons-material/TrendingUp";
@@ -28,6 +26,7 @@ import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
 import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
 import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart";
 import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
+import { ProfileHeader } from "@/Components/profile/ProfileHeader";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -216,57 +215,7 @@ function Profile() {
       <Fade in={showLoaded} timeout={500} unmountOnExit>
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           {/* Header Section */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              mb: 3,
-              borderRadius: 4,
-              bgcolor: theme.palette.background.paper,
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <Grid container spacing={2} alignItems="center">
-              <Grid>
-                <Avatar
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    bgcolor: theme.palette.primary.main,
-                    fontSize: "2rem",
-                  }}
-                >
-                  {user?.username?.charAt(0).toUpperCase()}
-                </Avatar>
-              </Grid>
-              <Grid size="grow">
-                <Typography variant="h4" fontWeight="bold">
-                  {user?.username}
-                </Typography>
-                <Stack direction="row" spacing={1} mt={1}>
-                  {user?.roles?.map((role: string) => (
-                    <Chip
-                      key={role}
-                      label={role}
-                      size="small"
-                      color={role === "admin" ? "secondary" : "default"}
-                      variant="outlined"
-                    />
-                  ))}
-                </Stack>
-              </Grid>
-              <Grid size={{ xs: 12, sm: "auto" }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Edit />}
-                  onClick={handleUpdate}
-                  sx={{ borderRadius: 2 }}
-                >
-                  Edit Profile
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
+          <ProfileHeader user={user} handleUpdate={handleUpdate} />
 
           {/* Stats Section */}
           <Grid container spacing={3} mb={4}>

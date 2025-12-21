@@ -7,6 +7,8 @@ export interface User {
   completedLessons?: string[];
   current_streak?: number;
   timezone?: string;
+  level?: number;
+  xp?: number;
 }
 
 export interface NewUser {
