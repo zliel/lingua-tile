@@ -57,7 +57,7 @@ function ReviewModal({
     lessonId,
     setOpen,
     setIsLoading,
-    handleReviewComplete
+    handleReviewComplete,
   );
 
   const handleContinue = () => {
@@ -84,7 +84,6 @@ function ReviewModal({
       });
     }
   }, [open, isLoading, theme, summaryData]);
-
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -170,10 +169,11 @@ function ReviewModal({
               theme.palette.mode === "dark"
                 ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
                 : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            border: `1px solid ${theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(255, 255, 255, 0.4)"
-              }`,
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(255, 255, 255, 0.4)"
+            }`,
             p: 4,
             outline: "none",
             animation: `${popIn} 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)`,

@@ -1,16 +1,28 @@
-import { Box, Typography, Button, useTheme, useMediaQuery } from "@mui/material"
-import LevelProgressBar from "./charts/LevelProgressBar"
+import {
+  Box,
+  Typography,
+  Button,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+import LevelProgressBar from "./charts/LevelProgressBar";
 
 interface SummaryData {
-  xp_gained: number
-  new_xp: number
-  new_level: number
-  leveled_up: boolean
+  xp_gained: number;
+  new_xp: number;
+  new_level: number;
+  leveled_up: boolean;
 }
 
-export const XpSummary = ({ summaryData, handleContinue }: { summaryData: SummaryData, handleContinue: () => void }) => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+export const XpSummary = ({
+  summaryData,
+  handleContinue,
+}: {
+  summaryData: SummaryData;
+  handleContinue: () => void;
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box
@@ -44,7 +56,10 @@ export const XpSummary = ({ summaryData, handleContinue }: { summaryData: Summar
       )}
 
       <Box sx={{ mt: 2, mb: 3 }}>
-        <LevelProgressBar level={summaryData.new_level} xp={summaryData.new_xp} />
+        <LevelProgressBar
+          level={summaryData.new_level}
+          xp={summaryData.new_xp}
+        />
       </Box>
 
       <Button
@@ -57,6 +72,5 @@ export const XpSummary = ({ summaryData, handleContinue }: { summaryData: Summar
         Continue
       </Button>
     </Box>
-  )
-}
-
+  );
+};

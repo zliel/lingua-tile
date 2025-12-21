@@ -1,9 +1,25 @@
-import { Edit } from "@mui/icons-material"
-import { Paper, Grid, Avatar, Typography, Stack, Chip, Box, Button, useTheme } from "@mui/material"
-import LevelProgressBar from "../charts/LevelProgressBar"
-import { User } from "@/types/users"
+import { Edit } from "@mui/icons-material";
+import {
+  Paper,
+  Grid,
+  Avatar,
+  Typography,
+  Stack,
+  Chip,
+  Box,
+  Button,
+  useTheme,
+} from "@mui/material";
+import LevelProgressBar from "../charts/LevelProgressBar";
+import { User } from "@/types/users";
 
-export const ProfileHeader = ({ user, handleUpdate }: { user: User, handleUpdate: () => void }) => {
+export const ProfileHeader = ({
+  user,
+  handleUpdate,
+}: {
+  user: User;
+  handleUpdate: () => void;
+}) => {
   const theme = useTheme();
 
   return (
@@ -63,6 +79,5 @@ export const ProfileHeader = ({ user, handleUpdate }: { user: User, handleUpdate
         </Grid>
       </Grid>
     </Paper>
-  )
-}
-
+  );
+};

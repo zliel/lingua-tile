@@ -41,4 +41,3 @@ const LevelProgressBar = ({ level, xp }: LevelProgressBarProps) => {
 };
 
 export default LevelProgressBar;
-

@@ -10,7 +10,7 @@ const useLessonReview = (
   lessonId: string,
   setModalOpen: (open: boolean) => void,
   setModalLoading: (loading: boolean) => void,
-  onReviewComplete?: (data: any) => void
+  onReviewComplete?: (data: any) => void,
 ) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
