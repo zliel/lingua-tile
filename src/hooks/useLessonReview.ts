@@ -10,6 +10,7 @@ const useLessonReview = (
   lessonId: string,
   setModalOpen: (open: boolean) => void,
   setModalLoading: (loading: boolean) => void,
+  onReviewComplete?: (data: any) => void
 ) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
@@ -21,7 +22,7 @@ const useLessonReview = (
     mutationFn: async (rating: number) => {
       setModalLoading(true);
       try {
-        await axios.post(
+        const response = await axios.post(
           `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
           { lesson_id: lessonId, overall_performance: rating },
           {
@@ -29,7 +30,7 @@ const useLessonReview = (
             timeout: 3000,
           },
         );
-        return { offline: false };
+        return { offline: false, ...response.data };
       } catch (error: any) {
         // Check for network error (no response) or timeout
         if (
@@ -64,13 +65,21 @@ const useLessonReview = (
     onSuccess: (data) => {
       if (data.offline) {
         showSnackbar("Saved offline. Will sync when online.", "success");
+        setModalLoading(false);
+        setModalOpen(false);
+        navigate("/lessons");
       } else {
-        showSnackbar("Lesson marked as complete", "success");
+        setModalLoading(false);
+        if (onReviewComplete) {
+          onReviewComplete(data);
+        } else {
+          showSnackbar("Lesson marked as complete", "success");
+          setModalOpen(false);
+          navigate("/lessons");
+        }
       }
-      setModalLoading(false);
-      setModalOpen(false);
       queryClient.invalidateQueries("lessons" as any);
-      navigate("/lessons");
+      queryClient.invalidateQueries("user" as any);
     },
   });
 
