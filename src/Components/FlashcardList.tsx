@@ -43,12 +43,14 @@ const FlashcardList = ({
 }) => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
-  const [[currentCardIndex, slideDirection], setPage] = useState<[number, "left" | "right"]>([0, "left"]);
+  const [[currentCardIndex, slideDirection], setPage] = useState<
+    [number, "left" | "right"]
+  >([0, "left"]);
   const [shuffledFlashcards, setShuffledFlashcards] = useState<Card[]>([]);
   const [hasFinished, setHasFinished] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isNavigating = useRef(false);
 
   const {
@@ -130,10 +132,13 @@ const FlashcardList = ({
     if (isNavigating.current) return;
 
     isNavigating.current = true;
-    setTimeout(() => { isNavigating.current = false; }, 300);
+    setTimeout(() => {
+      isNavigating.current = false;
+    }, 300);
 
     setPage(([currentIndex]) => {
-      if (currentIndex + 1 > shuffledFlashcards.length) return [currentIndex, "left"];
+      if (currentIndex + 1 > shuffledFlashcards.length)
+        return [currentIndex, "left"];
       return [currentIndex + 1, "left"];
     });
   };
@@ -143,7 +148,9 @@ const FlashcardList = ({
 
     if (currentCardIndex > 0) {
       isNavigating.current = true;
-      setTimeout(() => { isNavigating.current = false; }, 300);
+      setTimeout(() => {
+        isNavigating.current = false;
+      }, 300);
 
       setPage(([currentIndex]) => {
         if (currentIndex <= 0) return [0, "right"];
@@ -203,7 +210,12 @@ const FlashcardList = ({
               x: { type: "spring", stiffness: 300, damping: 30 },
               opacity: { duration: 0.2 },
             }}
-            style={{ gridArea: "card", width: "100%", display: "flex", justifyContent: "center" }}
+            style={{
+              gridArea: "card",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
             <Flashcard
               frontText={currentCard?.front_text}

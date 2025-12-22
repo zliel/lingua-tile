@@ -16,7 +16,10 @@ export const cleanString = (inputString: string): string => {
     .replaceAll(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 };
 
-export const checkAnswer = (userAnswer: string, possibleAnswers: string[]): AnswerResult => {
+export const checkAnswer = (
+  userAnswer: string,
+  possibleAnswers: string[],
+): AnswerResult => {
   const cleanedUserAnswer = cleanString(userAnswer);
 
   if (!cleanedUserAnswer) {
@@ -59,11 +62,10 @@ export const checkAnswer = (userAnswer: string, possibleAnswers: string[]): Answ
         isCorrect: true,
         matchedAnswer: answer,
         isFuzzy: true,
-        userFeedback: `You typed: "${userAnswer}". Correct answer: "${answer}"`
+        userFeedback: `You typed: "${userAnswer}". Correct answer: "${answer}"`,
       };
     }
   }
 
   return { isCorrect: false };
 };
-

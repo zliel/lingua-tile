@@ -31,14 +31,17 @@ export default function Layout() {
       }}
     >
       <NavBar />
-      <Box component="main" sx={{
-        flexGrow: 1,
-        display: "grid",
-        gridTemplateAreas: '"content"',
-        "& > *": {
-          gridArea: "content"
-        },
-      }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          display: "grid",
+          gridTemplateAreas: '"content"',
+          "& > *": {
+            gridArea: "content",
+          },
+        }}
+      >
         <AnimatePresence initial={false}>
           <motion.div
             key={location.pathname}
@@ -52,7 +55,8 @@ export default function Layout() {
               <Outlet />
             </Box>
           </motion.div>
-        </AnimatePresence>      </Box>
+        </AnimatePresence>{" "}
+      </Box>
       <PWAInstallPrompt />
       <IOSPrompt />
     </Box>

@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-  Fade
+  Fade,
 } from "@mui/material";
 import { checkAnswer as checkAnswerUtil } from "../utils/answerUtils";
 import WordBank from "./WordBank";
@@ -34,9 +34,13 @@ const TranslationQuestion = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const inputRef = useRef<HTMLInputElement>(null);
-  const [mode, setMode] = useState<'keyboard' | 'word_bank'>('word_bank');
-  const [availableWords, setAvailableWords] = useState<{ id: string, text: string }[]>([]);
-  const [selectedWords, setSelectedWords] = useState<{ id: string, text: string }[]>([]); // For Word Bank mode reconstruction
+  const [mode, setMode] = useState<"keyboard" | "word_bank">("word_bank");
+  const [availableWords, setAvailableWords] = useState<
+    { id: string; text: string }[]
+  >([]);
+  const [selectedWords, setSelectedWords] = useState<
+    { id: string; text: string }[]
+  >([]); // For Word Bank mode reconstruction
 
   // Reset state on each sentence
   useEffect(() => {
@@ -50,62 +54,68 @@ const TranslationQuestion = ({
       const correctWords = primaryAnswer
         .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
         .split(/\s+/)
-        .filter(w => w.length > 0);
+        .filter((w) => w.length > 0);
 
       // Distractors logic
       const distractors: string[] = [];
       if (allSentences.length > 0) {
         // Flatten all possible answers from OTHER sentences
         const candidateWords = allSentences
-          .filter(s => s.full_sentence !== sentence.full_sentence) // Exclude current sentence
-          .flatMap(s => s.possible_answers)
+          .filter((s) => s.full_sentence !== sentence.full_sentence) // Exclude current sentence
+          .flatMap((s) => s.possible_answers)
           .join(" ")
           .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
           .split(/\s+/)
-          .filter(w => w.length > 0 && !correctWords.includes(w)); // Exclude words already in correct answer
+          .filter((w) => w.length > 0 && !correctWords.includes(w)); // Exclude words already in correct answer
 
         // Get unique candidates
         const uniqueCandidates = [...new Set(candidateWords)];
 
         // Shuffle and pick 3
-        distractors.push(...uniqueCandidates.sort(() => Math.random() - 0.5).slice(0, 3));
+        distractors.push(
+          ...uniqueCandidates.sort(() => Math.random() - 0.5).slice(0, 3),
+        );
       }
 
       // Combine and shuffle
       const combinedWords = [...correctWords, ...distractors];
-      const shuffled = combinedWords.map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+      const shuffled = combinedWords
+        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
         .sort(() => Math.random() - 0.5);
 
       setAvailableWords(shuffled);
     }
 
-    if (mode === 'keyboard') {
+    if (mode === "keyboard") {
       inputRef.current?.focus();
     }
   }, [sentence, mode, allSentences]);
 
   // Sync selected words to userAnswer for checking
   useEffect(() => {
-    if (mode === 'word_bank') {
-      const constructedSentence = selectedWords.map(w => w.text).join(" ");
+    if (mode === "word_bank") {
+      const constructedSentence = selectedWords.map((w) => w.text).join(" ");
       setUserAnswer(constructedSentence);
     }
   }, [selectedWords, mode]);
 
-  const handleWordClick = (word: { id: string, text: string }, fromBank: boolean) => {
+  const handleWordClick = (
+    word: { id: string; text: string },
+    fromBank: boolean,
+  ) => {
     if (fromBank) {
       // Move from bank to selected
-      setAvailableWords(prev => prev.filter(w => w.id !== word.id));
-      setSelectedWords(prev => [...prev, word]);
+      setAvailableWords((prev) => prev.filter((w) => w.id !== word.id));
+      setSelectedWords((prev) => [...prev, word]);
     } else {
       // Move from selected to bank
-      setSelectedWords(prev => prev.filter(w => w.id !== word.id));
-      setAvailableWords(prev => [...prev, word]);
+      setSelectedWords((prev) => prev.filter((w) => w.id !== word.id));
+      setAvailableWords((prev) => [...prev, word]);
     }
   };
 
   const toggleMode = () => {
-    setMode(prev => prev === 'keyboard' ? 'word_bank' : 'keyboard');
+    setMode((prev) => (prev === "keyboard" ? "word_bank" : "keyboard"));
     // Clear answer on mode switch to avoid confusion? or try to preserve?
     // Clearing is safer.
     setUserAnswer("");
@@ -115,13 +125,13 @@ const TranslationQuestion = ({
       const words = sentence.possible_answers[0]
         .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
         .split(/\s+/)
-        .filter(w => w.length > 0);
-      const shuffled = words.map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+        .filter((w) => w.length > 0);
+      const shuffled = words
+        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
         .sort(() => Math.random() - 0.5);
       setAvailableWords(shuffled);
     }
   };
-
 
   // Listener for the enter key if the input is focused
   useEffect(() => {
@@ -184,10 +194,11 @@ const TranslationQuestion = ({
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${theme.palette.mode === "dark"
-          ? "rgba(255, 255, 255, 0.1)"
-          : "rgba(255, 255, 255, 0.4)"
-          }`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+        }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           transform: isMobile ? "none" : "translateY(-5px)",
@@ -234,13 +245,24 @@ const TranslationQuestion = ({
           {sentence.full_sentence}
         </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mb: 1 }}>
-          <Button onClick={toggleMode} size="small" sx={{ textTransform: 'none' }}>
-            {mode === 'keyboard' ? 'Switch to Word Bank' : 'Switch to Keyboard'}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            width: "100%",
+            mb: 1,
+          }}
+        >
+          <Button
+            onClick={toggleMode}
+            size="small"
+            sx={{ textTransform: "none" }}
+          >
+            {mode === "keyboard" ? "Switch to Word Bank" : "Switch to Keyboard"}
           </Button>
         </Box>
 
-        {mode === 'keyboard' ? (
+        {mode === "keyboard" ? (
           <Fade in={true} timeout={300}>
             <TextField
               fullWidth
@@ -275,7 +297,7 @@ const TranslationQuestion = ({
           </Fade>
         ) : (
           <Fade in={true} timeout={300}>
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: "100%" }}>
               <WordBank
                 availableWords={availableWords}
                 selectedWords={selectedWords}
