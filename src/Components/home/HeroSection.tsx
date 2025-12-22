@@ -6,9 +6,9 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import Logo from "../../assets/LinguaTile Logo.png";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/Contexts/AuthContext";
+import AnimatedLogo from "./AnimatedLogo";
 
 export const HeroSection = () => {
   const theme = useTheme();
@@ -37,26 +37,17 @@ export const HeroSection = () => {
       }}
     >
       <Container maxWidth="md">
+        {/*<Container maxWidth="md" sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>*/}
         <Box
-          component="img"
-          src={Logo}
-          alt="LinguaTile Logo"
           sx={{
-            width: 120,
-            height: 120,
             mb: 2,
-            bgcolor: "white",
-            borderRadius: "10%",
-            p: 1,
-            boxShadow: 3,
-            animation: "float 3s ease-in-out infinite",
-            "@keyframes float": {
-              "0%": { transform: "translateY(0px)" },
-              "50%": { transform: "translateY(-9px)" },
-              "100%": { transform: "translateY(0px)" },
-            },
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
           }}
-        />
+        >
+          <AnimatedLogo size={isMobile ? 100 : 120} />
+        </Box>
         <Typography
           variant="h2"
           component="h1"

@@ -6,7 +6,10 @@ import {
   TextField,
   Typography,
   useMediaQuery,
+  Fade,
 } from "@mui/material";
+import { checkAnswer as checkAnswerUtil } from "../utils/answerUtils";
+import WordBank from "./WordBank";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 
@@ -17,9 +20,11 @@ interface Sentence {
 
 const TranslationQuestion = ({
   sentence,
+  allSentences = [],
   onNext,
 }: {
   sentence: Sentence;
+  allSentences?: Sentence[];
   onNext: () => void;
 }) => {
   const [userAnswer, setUserAnswer] = useState("");
@@ -29,13 +34,104 @@ const TranslationQuestion = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const inputRef = useRef<HTMLInputElement>(null);
+  const [mode, setMode] = useState<"keyboard" | "word_bank">("word_bank");
+  const [availableWords, setAvailableWords] = useState<
+    { id: string; text: string }[]
+  >([]);
+  const [selectedWords, setSelectedWords] = useState<
+    { id: string; text: string }[]
+  >([]); // For Word Bank mode reconstruction
 
   // Reset state on each sentence
   useEffect(() => {
     setUserAnswer("");
     setIsCorrect(null);
-    inputRef.current?.focus();
-  }, [sentence]);
+    setSelectedWords([]);
+
+    // Generate word bank words
+    if (sentence.possible_answers && sentence.possible_answers.length > 0) {
+      const primaryAnswer = sentence.possible_answers[0];
+      const correctWords = primaryAnswer
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+        .split(/\s+/)
+        .filter((w) => w.length > 0);
+
+      // Distractors logic
+      const distractors: string[] = [];
+      if (allSentences.length > 0) {
+        // Flatten all possible answers from OTHER sentences
+        const candidateWords = allSentences
+          .filter((s) => s.full_sentence !== sentence.full_sentence) // Exclude current sentence
+          .flatMap((s) => s.possible_answers)
+          .join(" ")
+          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+          .split(/\s+/)
+          .filter((w) => w.length > 0 && !correctWords.includes(w)); // Exclude words already in correct answer
+
+        // Get unique candidates
+        const uniqueCandidates = [...new Set(candidateWords)];
+
+        // Shuffle and pick 3
+        distractors.push(
+          ...uniqueCandidates.sort(() => Math.random() - 0.5).slice(0, 3),
+        );
+      }
+
+      // Combine and shuffle
+      const combinedWords = [...correctWords, ...distractors];
+      const shuffled = combinedWords
+        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+        .sort(() => Math.random() - 0.5);
+
+      setAvailableWords(shuffled);
+    }
+
+    if (mode === "keyboard") {
+      inputRef.current?.focus();
+    }
+  }, [sentence, mode, allSentences]);
+
+  // Sync selected words to userAnswer for checking
+  useEffect(() => {
+    if (mode === "word_bank") {
+      const constructedSentence = selectedWords.map((w) => w.text).join(" ");
+      setUserAnswer(constructedSentence);
+    }
+  }, [selectedWords, mode]);
+
+  const handleWordClick = (
+    word: { id: string; text: string },
+    fromBank: boolean,
+  ) => {
+    if (fromBank) {
+      // Move from bank to selected
+      setAvailableWords((prev) => prev.filter((w) => w.id !== word.id));
+      setSelectedWords((prev) => [...prev, word]);
+    } else {
+      // Move from selected to bank
+      setSelectedWords((prev) => prev.filter((w) => w.id !== word.id));
+      setAvailableWords((prev) => [...prev, word]);
+    }
+  };
+
+  const toggleMode = () => {
+    setMode((prev) => (prev === "keyboard" ? "word_bank" : "keyboard"));
+    // Clear answer on mode switch to avoid confusion? or try to preserve?
+    // Clearing is safer.
+    setUserAnswer("");
+    setSelectedWords([]);
+    // Restore words to bank
+    if (sentence.possible_answers && sentence.possible_answers.length > 0) {
+      const words = sentence.possible_answers[0]
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+        .split(/\s+/)
+        .filter((w) => w.length > 0);
+      const shuffled = words
+        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+        .sort(() => Math.random() - 0.5);
+      setAvailableWords(shuffled);
+    }
+  };
 
   // Listener for the enter key if the input is focused
   useEffect(() => {
@@ -54,26 +150,21 @@ const TranslationQuestion = ({
     };
   });
 
-  // Helper function to remove punctuation and extra spaces, and make it lowercase
-  const cleanString = (inputString: string) => {
-    return inputString
-      .trim()
-      .toLowerCase()
-      .replaceAll(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
-  };
-
-  const possibleAnswers = sentence.possible_answers.map((answer) =>
-    cleanString(answer),
-  );
-
-  // Check if the user's answer is correct by comparing it to all answers in the sentence's possible_answers array
+  // Check if the user's answer is correct using the utility function
   const checkAnswer = () => {
-    if (possibleAnswers.includes(cleanString(userAnswer))) {
+    const result = checkAnswerUtil(userAnswer, sentence.possible_answers);
+
+    if (result.isCorrect) {
       setIsCorrect(true);
-      // NOTE: Shortened timeout to 500ms for quicker feedback and to allow
-      // the "please login" snackbar to show before moving to the next sentence
-      showSnackbar("Correct!", "success", 500);
-      setTimeout(onNext, 500);
+
+      // Give specific feedback if it was a fuzzy match
+      if (result.isFuzzy) {
+        showSnackbar("Close enough!", "success", 1500);
+        setTimeout(onNext, 1500);
+      } else {
+        showSnackbar("Correct!", "success", 500);
+        setTimeout(onNext, 500);
+      }
     } else {
       // Select a random answer to show the user if they are incorrect
       setRandomAnswer(
@@ -88,10 +179,10 @@ const TranslationQuestion = ({
     <Card
       className={isCorrect === false ? "shake" : ""}
       sx={{
-        m: isMobile ? 1 : 8,
-        mt: isMobile ? 2 : 8,
+        m: isMobile ? 1 : 4,
+        mb: 1,
         p: 0,
-        minWidth: isMobile ? "95%" : "50%",
+        minWidth: isMobile ? "80%" : "40vw",
         maxWidth: isMobile ? "100%" : "600px",
         backgroundColor:
           theme.palette.mode === "dark"
@@ -154,36 +245,68 @@ const TranslationQuestion = ({
           {sentence.full_sentence}
         </Typography>
 
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Type your answer in English..."
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-          inputRef={inputRef}
-          error={isCorrect === false}
-          disabled={isCorrect === true}
+        <Box
           sx={{
-            mb: 3,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 3,
-              backgroundColor:
-                theme.palette.mode === "dark"
-                  ? "rgba(255,255,255,0.05)"
-                  : "rgba(0,0,0,0.02)",
-              "& fieldset": {
-                borderColor: theme.palette.divider,
-              },
-              "&:hover fieldset": {
-                borderColor: theme.palette.primary.main,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: theme.palette.primary.main,
-                borderWidth: 2,
-              },
-            },
+            display: "flex",
+            justifyContent: "flex-end",
+            width: "100%",
+            mb: 1,
           }}
-        />
+        >
+          <Button
+            onClick={toggleMode}
+            size="small"
+            sx={{ textTransform: "none" }}
+          >
+            {mode === "keyboard" ? "Switch to Word Bank" : "Switch to Keyboard"}
+          </Button>
+        </Box>
+
+        {mode === "keyboard" ? (
+          <Fade in={true} timeout={300}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Type your answer in English..."
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              inputRef={inputRef}
+              error={isCorrect === false}
+              disabled={isCorrect === true}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 3,
+                  backgroundColor:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.05)"
+                      : "rgba(0,0,0,0.02)",
+                  "& fieldset": {
+                    borderColor: theme.palette.divider,
+                  },
+                  "&:hover fieldset": {
+                    borderColor: theme.palette.primary.main,
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.primary.main,
+                    borderWidth: 2,
+                  },
+                },
+              }}
+            />
+          </Fade>
+        ) : (
+          <Fade in={true} timeout={300}>
+            <Box sx={{ width: "100%" }}>
+              <WordBank
+                availableWords={availableWords}
+                selectedWords={selectedWords}
+                onWordClick={handleWordClick}
+                isCorrect={!!isCorrect}
+              />
+            </Box>
+          </Fade>
+        )}
 
         <Button
           onClick={checkAnswer}

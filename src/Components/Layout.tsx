@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import NavBar from "./NavBar";
 import PWAInstallPrompt from "./PWAInstallPrompt";
 import PWAPrompt from "react-ios-pwa-prompt";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAppBadge } from "@/hooks/useAppBadge";
 
 const IOSPrompt: React.FC = () => (
@@ -31,18 +31,31 @@ export default function Layout() {
       }}
     >
       <NavBar />
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <TransitionGroup component={null}>
-          <CSSTransition
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          display: "grid",
+          gridTemplateAreas: '"content"',
+          "& > *": {
+            gridArea: "content",
+          },
+        }}
+      >
+        <AnimatePresence initial={false}>
+          <motion.div
             key={location.pathname}
-            classNames="fade"
-            timeout={300}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ width: "100%" }}
           >
             <Box sx={{ width: "100%" }}>
               <Outlet />
             </Box>
-          </CSSTransition>
-        </TransitionGroup>
+          </motion.div>
+        </AnimatePresence>{" "}
       </Box>
       <PWAInstallPrompt />
       <IOSPrompt />

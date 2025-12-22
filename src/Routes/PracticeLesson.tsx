@@ -79,6 +79,7 @@ const PracticeLesson = () => {
         alignItems: "center",
         justifyContent: "center",
         mt: 4,
+        px: 2,
         pb: 8,
       }}
     >
@@ -88,6 +89,7 @@ const PracticeLesson = () => {
       <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
           sentence={lesson.sentences[currentSentence]}
+          allSentences={lesson.sentences}
           onNext={handleNext}
         />
       </Box>

@@ -23,10 +23,11 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
-import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
+// import { ProjectedReviewsChart } from "@/Components/charts/ProjectedReviewsChart";
 import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart";
 import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
 import { ProfileHeader } from "@/Components/profile/ProfileHeader";
+import { ActivityHeatmap } from "@/Components/charts/ActivityHeatmap";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -60,6 +61,22 @@ function Profile() {
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
+        {
+          headers: {
+            Authorization: `Bearer ${authData?.token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+    enabled: !!authData && !!authData.isLoggedIn,
+  });
+
+  const { data: activityData, isLoading: isFetchingActivity } = useQuery({
+    queryKey: ["activity", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/activity`,
         {
           headers: {
             Authorization: `Bearer ${authData?.token}`,
@@ -205,10 +222,18 @@ function Profile() {
 
   return (
     <>
-      <Fade in={isLoading || isFetchingReviews} timeout={100}>
+      <Fade
+        in={isLoading || isFetchingReviews || isFetchingActivity}
+        timeout={100}
+      >
         <div>
           <ProfileSkeleton
-            sx={{ display: isLoading || isFetchingReviews ? "block" : "none" }}
+            sx={{
+              display:
+                isLoading || isFetchingReviews || isFetchingActivity
+                  ? "block"
+                  : "none",
+            }}
           />
         </div>
       </Fade>
@@ -286,7 +311,10 @@ function Profile() {
 
           {/* Charts Section */}
           <Grid container spacing={3} mb={4}>
-            <Grid size={{ xs: 12, lg: 8 }}>
+            <Grid size={{ xs: 12 }}>
+              <ActivityHeatmap data={activityData || []} />
+            </Grid>
+            <Grid size={{ xs: 12, lg: 6 }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -299,7 +327,7 @@ function Profile() {
                 <PastWeekReviewsChart reviews={reviews} />
               </Paper>
             </Grid>
-            <Grid size={{ xs: 12, lg: 4 }}>
+            <Grid size={{ xs: 12, lg: 6 }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -312,18 +340,18 @@ function Profile() {
                 <LessonDifficultyChart reviews={reviews} />
               </Paper>
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 4,
-                  border: `1px solid ${theme.palette.divider}`,
-                }}
-              >
-                <ProjectedReviewsChart reviews={reviews} />
-              </Paper>
-            </Grid>
+            {/* <Grid size={{ xs: 12 }}> */}
+            {/*   <Paper */}
+            {/*     elevation={0} */}
+            {/*     sx={{ */}
+            {/*       p: 2, */}
+            {/*       borderRadius: 4, */}
+            {/*       border: `1px solid ${theme.palette.divider}`, */}
+            {/*     }} */}
+            {/*   > */}
+            {/*     <ProjectedReviewsChart reviews={reviews} /> */}
+            {/*   </Paper> */}
+            {/* </Grid> */}
           </Grid>
 
           {/* Danger Zone */}

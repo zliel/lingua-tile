@@ -43,7 +43,7 @@ export const LessonDifficultyChart = ({ reviews }: { reviews: Review[] }) => {
               type: "continuous",
               min: 0,
               max: 10,
-              color: [theme.palette.primary.main, theme.palette.secondary.main],
+              color: [theme.palette.secondary.main, theme.palette.primary.main],
             },
           },
         ]}
