@@ -32,8 +32,7 @@ const WordTile = ({
       layoutId={word.id}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
       onClick={() => !disabled && onClick()}
       style={{
         display: "inline-block",
@@ -104,10 +103,7 @@ const WordBank: React.FC<WordBankProps> = ({
             mb: 3,
             borderRadius: 4,
             border: "2px dashed",
-            borderColor:
-              isCorrect === false
-                ? theme.palette.error.main
-                : theme.palette.divider,
+            borderColor: theme.palette.divider,
             backgroundColor:
               theme.palette.mode === "dark"
                 ? "rgba(255,255,255,0.02)"
@@ -119,9 +115,10 @@ const WordBank: React.FC<WordBankProps> = ({
             transition: "border-color 0.3s ease",
           }}
         >
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {selectedWords.length === 0 && (
               <Box
+                key="placeholder"
                 component={motion.div}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -136,16 +133,16 @@ const WordBank: React.FC<WordBankProps> = ({
                 </Typography>
               </Box>
             )}
-            {selectedWords.map((word) => (
-              <WordTile
-                key={word.id}
-                word={word}
-                onClick={() => onWordClick(word, false)}
-                isSelected={true}
-                disabled={!!isCorrect}
-              />
-            ))}
           </AnimatePresence>
+          {selectedWords.map((word) => (
+            <WordTile
+              key={word.id}
+              word={word}
+              onClick={() => onWordClick(word, false)}
+              isSelected={true}
+              disabled={!!isCorrect}
+            />
+          ))}
         </Box>
 
         {/* Available Words Bank */}
@@ -158,7 +155,7 @@ const WordBank: React.FC<WordBankProps> = ({
             p: 2,
             borderRadius: 4,
             backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
-            minHeight: 100
+            minHeight: 100,
           }}
         >
           {availableWords.map((word) => (
@@ -177,4 +174,5 @@ const WordBank: React.FC<WordBankProps> = ({
 };
 
 export default WordBank;
+
 
