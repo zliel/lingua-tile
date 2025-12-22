@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { registerSW } from "virtual:pwa-register";
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
-console.dir(root);
 const queryClient = new QueryClient();
 root.render(
   <QueryClientProvider client={queryClient}>
@@ -22,16 +21,16 @@ root.render(
 // reportWebVitals();
 
 registerSW({
-  onNeedRefresh() {
-    console.log("New content available, verify to update.");
-  },
-  onOfflineReady() {
-    console.log("App ready to work offline");
-  },
-  onRegistered(r) {
-    console.log("SW Registered:", r);
-  },
-  onRegisterError(error) {
-    console.error("SW Registration Error:", error);
-  },
+  // onNeedRefresh() {
+  //   console.log("New content available, verify to update.");
+  // },
+  // onOfflineReady() {
+  //   console.log("App ready to work offline");
+  // },
+  // onRegistered(r) {
+  //   console.log("SW Registered:", r);
+  // },
+  // onRegisterError(error) {
+  //   console.error("SW Registration Error:", error);
+  // },
 });
