@@ -8,10 +8,14 @@ import {
 import { useNavigate } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import { Lesson, ReviewStats } from "@/types/lessons";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useOffline } from "@/Contexts/OfflineContext";
+import { JSX } from "react";
 
 type CategoryColor = "primary" | "secondary" | "grammar";
 
@@ -48,6 +52,12 @@ export const LessonListItem = ({
     grammar: "/grammar",
   };
 
+  const categoryIcons: Record<string, JSX.Element> = {
+    flashcards: <ViewCarouselIcon sx={{ mb: 0.2 }} />,
+    practice: <EditNoteIcon />,
+    grammar: <MenuBookIcon sx={{ mb: 0.3 }} />,
+  }
+
   return (
     <Box
       key={lesson._id}
@@ -60,20 +70,20 @@ export const LessonListItem = ({
         justifyContent: "space-between",
         width: "100%",
         height: "100%",
+        gap: 2,
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
+        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
+          ? theme.palette.primary.contrastText
+          : theme.palette.secondary.contrastText
+          }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",
         },
       }}
     >
-      <Box>
+      <Box width={isMobile ? "60%" : "100%"}>
         <Typography variant="h6" fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}>
           {lesson.title}
         </Typography>
@@ -113,6 +123,7 @@ export const LessonListItem = ({
         color={categoryColors[lesson.category || "flashcards"]}
         sx={{
           mt: isMobile ? 0 : 2,
+          minWidth: isMobile ? "40%" : "auto",
         }}
         onClick={() => {
           onLessonStart(lesson);
@@ -121,6 +132,7 @@ export const LessonListItem = ({
           );
         }}
       >
+        {categoryIcons[lesson.category || "flashcards"]} &nbsp;
         {lesson.category}
       </Button>
     </Box>
