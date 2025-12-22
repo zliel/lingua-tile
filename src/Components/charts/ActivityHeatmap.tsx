@@ -14,18 +14,23 @@ interface ActivityHeatmapProps {
   title?: string;
 }
 
-export function ActivityHeatmap({ data, title = "Study Activity" }: ActivityHeatmapProps) {
+export function ActivityHeatmap({
+  data,
+  title = "Study Activity",
+}: ActivityHeatmapProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // Determine start/end dates (last 365 days)
   const today = dayjs();
-  const startDate = isMobile ? today.subtract(6, "months").toDate() : today.subtract(1, "year").toDate();
+  const startDate = isMobile
+    ? today.subtract(6, "months").toDate()
+    : today.subtract(1, "year").toDate();
   const endDate = today.toDate();
 
   // Map count to classForValue (scale 0-4)
   const getClassForValue = (value: ActivityData | null) => {
-    const darkPrefix = theme.palette.mode === 'dark' ? 'dark' : '';
+    const darkPrefix = theme.palette.mode === "dark" ? "dark" : "";
     if (!value || !value.count) {
       return `${darkPrefix} grade-0`;
     }
@@ -45,12 +50,15 @@ export function ActivityHeatmap({ data, title = "Study Activity" }: ActivityHeat
   } as React.CSSProperties;
 
   return (
-    <Card elevation={0} sx={{
-      borderRadius: 4,
-      border: `1px solid ${theme.palette.divider}`,
-      height: '100%',
-      p: 2
-    }}>
+    <Card
+      elevation={0}
+      sx={{
+        borderRadius: 4,
+        border: `1px solid ${theme.palette.divider}`,
+        height: "100%",
+        p: 2,
+      }}
+    >
       <Typography variant="h6" gutterBottom fontWeight="bold">
         {title}
       </Typography>
@@ -67,10 +75,11 @@ export function ActivityHeatmap({ data, title = "Study Activity" }: ActivityHeat
           }}
           showWeekdayLabels={false}
           gutterSize={2}
-          titleForValue={(value: any) => (value ? `${value.date}: ${value.count} reviews` : "No reviews")}
+          titleForValue={(value: any) =>
+            value ? `${value.date}: ${value.count} reviews` : "No reviews"
+          }
         />
       </Box>
     </Card>
   );
 }
-

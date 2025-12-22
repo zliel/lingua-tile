@@ -72,7 +72,6 @@ function Profile() {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],
     queryFn: async () => {
@@ -223,10 +222,18 @@ function Profile() {
 
   return (
     <>
-      <Fade in={isLoading || isFetchingReviews || isFetchingActivity} timeout={100}>
+      <Fade
+        in={isLoading || isFetchingReviews || isFetchingActivity}
+        timeout={100}
+      >
         <div>
           <ProfileSkeleton
-            sx={{ display: isLoading || isFetchingReviews || isFetchingActivity ? "block" : "none" }}
+            sx={{
+              display:
+                isLoading || isFetchingReviews || isFetchingActivity
+                  ? "block"
+                  : "none",
+            }}
           />
         </div>
       </Fade>

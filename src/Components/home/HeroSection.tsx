@@ -38,7 +38,14 @@ export const HeroSection = () => {
     >
       <Container maxWidth="md">
         {/*<Container maxWidth="md" sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>*/}
-        <Box sx={{ mb: 2, display: "flex", justifyContent: "center", width: "100%" }}>
+        <Box
+          sx={{
+            mb: 2,
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
           <AnimatedLogo size={isMobile ? 100 : 120} />
         </Box>
         <Typography

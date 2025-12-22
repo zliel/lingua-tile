@@ -8,9 +8,9 @@ import {
 import { useNavigate } from "react-router-dom";
 // Border colors from @mui/color
 import { grey } from "@mui/material/colors";
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import { Lesson, ReviewStats } from "@/types/lessons";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -56,7 +56,7 @@ export const LessonListItem = ({
     flashcards: <ViewCarouselIcon sx={{ mb: 0.2 }} />,
     practice: <EditNoteIcon />,
     grammar: <MenuBookIcon sx={{ mb: 0.3 }} />,
-  }
+  };
 
   return (
     <Box
@@ -73,10 +73,11 @@ export const LessonListItem = ({
         gap: 2,
         border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
         borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${theme.palette.mode === "dark"
-          ? theme.palette.primary.contrastText
-          : theme.palette.secondary.contrastText
-          }`,
+        boxShadow: `0px 0px 5px 0px ${
+          theme.palette.mode === "dark"
+            ? theme.palette.primary.contrastText
+            : theme.palette.secondary.contrastText
+        }`,
         transition: "transform 0.3s ease",
         "&:hover": {
           transform: "scale(1.05)",

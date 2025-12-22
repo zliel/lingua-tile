@@ -5,7 +5,7 @@ import {
   BLUEPRINT_COLOR,
   BLUEPRINT_TRANSFORM,
   TILE_PATHS,
-  LOGO_DEFS
+  LOGO_DEFS,
 } from "./LogoData";
 
 interface AnimatedLogoProps {
@@ -18,7 +18,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 200 }) => {
     hidden: {
       pathLength: 0,
       opacity: 0,
-      fillOpacity: 0
+      fillOpacity: 0,
     },
     visible: {
       pathLength: 1,
@@ -27,7 +27,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 200 }) => {
       transition: {
         pathLength: { duration: 0.6, ease: "easeInOut" },
         opacity: { duration: 0.3 },
-        fillOpacity: { delay: 0.5, duration: 0.5 }
+        fillOpacity: { delay: 0.5, duration: 0.5 },
       },
     } as any,
   };
@@ -52,7 +52,12 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 200 }) => {
       <motion.div
         initial={{ y: 0 }}
         animate={{ y: [-3, 3, -3] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.2,
+        }}
         style={{
           width: size,
           height: size,
