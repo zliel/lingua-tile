@@ -65,12 +65,13 @@ const WordTile = ({
           boxShadow: isSelected
             ? `0 4px 12px ${theme.palette.primary.main}40`
             : "0 2px 4px rgba(0,0,0,0.05)",
-          border: `1px solid ${isSelected
-            ? theme.palette.primary.main
-            : theme.palette.mode === "dark"
-              ? "rgba(255,255,255,0.1)"
-              : "rgba(0,0,0,0.05)"
-            }`,
+          border: `1px solid ${
+            isSelected
+              ? theme.palette.primary.main
+              : theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(0,0,0,0.05)"
+          }`,
           fontWeight: 500,
           userSelect: "none",
           transition: "transform 0.1s ease, box-shadow 0.1s ease",
@@ -84,7 +85,7 @@ const WordTile = ({
           },
           "&:active": {
             transform: disabled ? "none" : "translateY(0px)",
-          }
+          },
         }}
       >
         {showFurigana && hasFurigana ? (
@@ -145,11 +146,15 @@ const WordBank: React.FC<WordBankProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
               >
                 <Typography
                   color="text.secondary"
-                  sx={{ fontStyle: "italic", textAlign: "center", width: "100%" }}
+                  sx={{
+                    fontStyle: "italic",
+                    textAlign: "center",
+                    width: "100%",
+                  }}
                 >
                   Tap words to build sentence...
                 </Typography>
@@ -179,8 +184,11 @@ const WordBank: React.FC<WordBankProps> = ({
             justifyContent: "center",
             p: 2,
             borderRadius: 4,
-            backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',
-            minHeight: 100
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? "rgba(0,0,0,0.2)"
+                : "rgba(0,0,0,0.03)",
+            minHeight: 100,
           }}
         >
           {availableWords.map((word) => (

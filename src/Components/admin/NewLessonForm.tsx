@@ -108,7 +108,6 @@ const NewLessonForm = ({
         flexDirection: "column",
         alignItems: "center",
         m: 2,
-
       }}
     >
       <Box
@@ -192,21 +191,26 @@ const NewLessonForm = ({
         )}
 
         {newLesson.category === "practice" && (
-          <Box sx={{
-            width: "100%",
-            mb: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
+          <Box
+            sx={{
+              width: "100%",
+              mb: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
             <Box
-              sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 2, mb: 1 }}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                gap: 2,
+                mb: 1,
+              }}
             >
               {newLesson?.sentences?.map(
                 (sentence: Sentence, sentenceIndex: number) => (
                   <Card key={sentenceIndex} sx={{ mb: 2 }}>
-
                     <CardContent>
                       <TextField
                         label="Full Sentence"
@@ -223,12 +227,21 @@ const NewLessonForm = ({
                       />
                       {sentence.possible_answers.map(
                         (answer: string, answerIndex: number) => (
-                          <Box key={answerIndex} sx={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+                          <Box
+                            key={answerIndex}
+                            sx={{
+                              flexDirection: "row",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
                             <TextField
                               key={answerIndex}
                               label={`Possible Answer ${answerIndex + 1}`}
                               value={answer}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) =>
                                 handlePossibleAnswerChange(
                                   sentenceIndex,
                                   answerIndex,
@@ -240,12 +253,14 @@ const NewLessonForm = ({
                             />
                             <IconButton
                               color="error"
-                              sx={{ mb: 1, marginLeft: "8px", height: '40px' }}
+                              sx={{ mb: 1, marginLeft: "8px", height: "40px" }}
                               onClick={() => {
                                 const updatedSentences = newLesson.sentences
                                   ? [...newLesson.sentences]
                                   : [];
-                                updatedSentences[sentenceIndex].possible_answers.splice(answerIndex, 1);
+                                updatedSentences[
+                                  sentenceIndex
+                                ].possible_answers.splice(answerIndex, 1);
                                 setNewLesson({
                                   ...newLesson,
                                   sentences: updatedSentences,
@@ -320,7 +335,7 @@ const NewLessonForm = ({
           Add Lesson
         </Button>
       </Box>
-    </Box >
+    </Box>
   );
 };
 
