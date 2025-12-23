@@ -314,7 +314,7 @@ const TranslationQuestion = ({
                 availableWords={availableWords}
                 selectedWords={selectedWords}
                 onWordClick={handleWordClick}
-                isCorrect={!!isCorrect}
+                isCorrect={isCorrect ?? null}
                 showFurigana={showFurigana}
               />
             </Box>
