@@ -12,6 +12,7 @@ interface WordBankProps {
   selectedWords: Word[];
   onWordClick: (word: Word, fromBank: boolean) => void;
   isCorrect: boolean | null;
+  showFurigana?: boolean;
 }
 
 const WordTile = ({
@@ -19,13 +20,21 @@ const WordTile = ({
   onClick,
   isSelected,
   disabled,
+  showFurigana = false,
 }: {
   word: Word;
   onClick: () => void;
   isSelected: boolean;
   disabled: boolean;
+  showFurigana?: boolean;
 }) => {
   const theme = useTheme();
+
+  // Parse Kanji(Furigana) format
+  const match = word.text.match(/^(.*?)\((.*?)\)$/);
+  const hasFurigana = !!match;
+  const baseText = match ? match[1] : word.text;
+  const furigana = match ? match[2] : "";
 
   return (
     <motion.div
@@ -43,7 +52,7 @@ const WordTile = ({
       <Box
         sx={{
           px: 2,
-          py: 1,
+          py: showFurigana ? 1.5 : 1,
           borderRadius: "12px",
           backgroundColor: isSelected
             ? theme.palette.primary.main
@@ -79,7 +88,14 @@ const WordTile = ({
           },
         }}
       >
-        {word.text}
+        {showFurigana && hasFurigana ? (
+          <ruby style={{ rubyPosition: "over" }}>
+            {baseText}
+            <rt style={{ fontSize: "0.6em", opacity: 0.8 }}>{furigana}</rt>
+          </ruby>
+        ) : (
+          baseText
+        )}
       </Box>
     </motion.div>
   );
@@ -90,6 +106,7 @@ const WordBank: React.FC<WordBankProps> = ({
   selectedWords,
   onWordClick,
   isCorrect,
+  showFurigana = false,
 }) => {
   const theme = useTheme();
 
@@ -98,13 +115,18 @@ const WordBank: React.FC<WordBankProps> = ({
       <Box sx={{ width: "100%", mb: 3 }}>
         {/* Sentence Strip (Selected Words) */}
         <Box
+          component={motion.div}
+          layout
           sx={{
             minHeight: 72,
             p: 2,
             mb: 3,
             borderRadius: 4,
             border: "2px dashed",
-            borderColor: theme.palette.divider,
+            borderColor:
+              isCorrect === false
+                ? theme.palette.error.main
+                : theme.palette.divider,
             backgroundColor:
               theme.palette.mode === "dark"
                 ? "rgba(255,255,255,0.02)"
@@ -146,12 +168,15 @@ const WordBank: React.FC<WordBankProps> = ({
               onClick={() => onWordClick(word, false)}
               isSelected={true}
               disabled={!!isCorrect}
+              showFurigana={showFurigana}
             />
           ))}
         </Box>
 
         {/* Available Words Bank */}
         <Box
+          component={motion.div}
+          layout
           sx={{
             display: "flex",
             flexWrap: "wrap",
@@ -173,6 +198,7 @@ const WordBank: React.FC<WordBankProps> = ({
               onClick={() => onWordClick(word, true)}
               isSelected={false}
               disabled={!!isCorrect}
+              showFurigana={showFurigana}
             />
           ))}
         </Box>

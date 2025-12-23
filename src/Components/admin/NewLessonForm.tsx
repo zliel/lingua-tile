@@ -6,6 +6,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -13,6 +14,7 @@ import MarkdownPreviewer from "../MarkdownPreviewer";
 import { Section } from "@/types/sections";
 import { LessonCategory, NewLesson, Sentence } from "@/types/lessons";
 import { Card as CardType } from "@/types/cards";
+import { Close, Delete } from "@mui/icons-material";
 
 const NewLessonForm = ({
   cards,
@@ -105,7 +107,7 @@ const NewLessonForm = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        mb: 4,
+        m: 2,
       }}
     >
       <Box
@@ -117,6 +119,7 @@ const NewLessonForm = ({
           p: 2,
           border: "1px solid #ccc",
           borderRadius: 2,
+          width: "100%",
         }}
       >
         <Typography variant="h6" gutterBottom>
@@ -174,7 +177,7 @@ const NewLessonForm = ({
         />
 
         {newLesson.category === "grammar" && (
-          <Box sx={{ width: 600, mb: 2 }}>
+          <Box sx={{ width: "100%", mb: 2 }}>
             <Typography variant="h6" gutterBottom textAlign={"center"}>
               Add Content
             </Typography>
@@ -188,55 +191,118 @@ const NewLessonForm = ({
         )}
 
         {newLesson.category === "practice" && (
-          <Box sx={{ mb: 2, width: "300px" }}>
-            {newLesson?.sentences?.map(
-              (sentence: Sentence, sentenceIndex: number) => (
-                <Card key={sentenceIndex} sx={{ mb: 2 }}>
-                  <CardContent>
-                    <TextField
-                      label="Full Sentence"
-                      value={sentence.full_sentence}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleSentenceChange(
-                          sentenceIndex,
-                          "full_sentence",
-                          e.target.value,
-                        )
-                      }
-                      sx={{ mb: 1, width: "100%" }}
-                      required
-                    />
-                    {sentence.possible_answers.map(
-                      (answer: string, answerIndex: number) => (
-                        <TextField
-                          key={answerIndex}
-                          label={`Possible Answer ${answerIndex + 1}`}
-                          value={answer}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handlePossibleAnswerChange(
-                              sentenceIndex,
-                              answerIndex,
-                              e.target.value,
-                            )
-                          }
-                          sx={{ mb: 1, width: "100%" }}
-                          required
-                        />
-                      ),
-                    )}
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="outlined"
-                      onClick={() => addNewPossibleAnswer(sentenceIndex)}
-                      sx={{ mb: 1 }}
-                    >
-                      Add Possible Answer
-                    </Button>
-                  </CardActions>
-                </Card>
-              ),
-            )}
+          <Box
+            sx={{
+              width: "100%",
+              mb: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                gap: 2,
+                mb: 1,
+              }}
+            >
+              {newLesson?.sentences?.map(
+                (sentence: Sentence, sentenceIndex: number) => (
+                  <Card key={sentenceIndex} sx={{ mb: 2 }}>
+                    <CardContent>
+                      <TextField
+                        label="Full Sentence"
+                        value={sentence.full_sentence}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleSentenceChange(
+                            sentenceIndex,
+                            "full_sentence",
+                            e.target.value,
+                          )
+                        }
+                        sx={{ mb: 1, width: "100%" }}
+                        required
+                      />
+                      {sentence.possible_answers.map(
+                        (answer: string, answerIndex: number) => (
+                          <Box
+                            key={answerIndex}
+                            sx={{
+                              flexDirection: "row",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <TextField
+                              key={answerIndex}
+                              label={`Possible Answer ${answerIndex + 1}`}
+                              value={answer}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) =>
+                                handlePossibleAnswerChange(
+                                  sentenceIndex,
+                                  answerIndex,
+                                  e.target.value,
+                                )
+                              }
+                              sx={{ mb: 1, width: "100%" }}
+                              required
+                            />
+                            <IconButton
+                              color="error"
+                              sx={{ mb: 1, marginLeft: "8px", height: "40px" }}
+                              onClick={() => {
+                                const updatedSentences = newLesson.sentences
+                                  ? [...newLesson.sentences]
+                                  : [];
+                                updatedSentences[
+                                  sentenceIndex
+                                ].possible_answers.splice(answerIndex, 1);
+                                setNewLesson({
+                                  ...newLesson,
+                                  sentences: updatedSentences,
+                                });
+                              }}
+                            >
+                              <Close />
+                            </IconButton>
+                          </Box>
+                        ),
+                      )}
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        variant="outlined"
+                        onClick={() => addNewPossibleAnswer(sentenceIndex)}
+                        sx={{ mb: 1 }}
+                      >
+                        Add Possible Answer
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        sx={{ mb: 1, marginLeft: "auto" }}
+                        onClick={() => {
+                          const updatedSentences = newLesson.sentences
+                            ? [...newLesson.sentences]
+                            : [];
+                          updatedSentences.splice(sentenceIndex, 1);
+                          setNewLesson({
+                            ...newLesson,
+                            sentences: updatedSentences,
+                          });
+                        }}
+                      >
+                        <Delete />
+                      </Button>
+                    </CardActions>
+                  </Card>
+                ),
+              )}
+            </Box>
             <Button variant="outlined" onClick={addNewSentence}>
               Add New Sentence
             </Button>
