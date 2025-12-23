@@ -79,7 +79,6 @@ const PracticeLesson = () => {
         alignItems: "center",
         justifyContent: "center",
         mt: 4,
-        px: 2,
         pb: 8,
       }}
     >
