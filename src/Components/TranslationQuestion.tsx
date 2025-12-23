@@ -81,10 +81,10 @@ const TranslationQuestion = ({
           // Target is English: Use 'possible_answers' that aren't Japanese
           candidateWords = allSentences
             .filter((s) => s.full_sentence !== sentence.full_sentence)
-            .flatMap((s) => s.possible_answers)
-            .filter((ans) => !japaneseRegex.test(ans)) // Exclude Japanese answers
-            .flatMap((ans) =>
-              ans.replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "").split(/\s+/),
+            .flatMap((s) => [...s.possible_answers, s.full_sentence])
+            .filter((text) => !japaneseRegex.test(text)) // Exclude Japanese text
+            .flatMap((text) =>
+              text.replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "").split(/\s+/),
             )
             .filter((w) => w.length > 0 && !correctWords.includes(w));
         }
