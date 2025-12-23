@@ -7,6 +7,8 @@ import {
   Typography,
   useMediaQuery,
   Fade,
+  FormControlLabel,
+  Switch
 } from "@mui/material";
 import { checkAnswer as checkAnswerUtil } from "../utils/answerUtils";
 import WordBank from "./WordBank";
@@ -16,6 +18,7 @@ import { useTheme } from "@mui/material/styles";
 interface Sentence {
   full_sentence: string;
   possible_answers: string[];
+  words?: string[];
 }
 
 const TranslationQuestion = ({
@@ -34,13 +37,10 @@ const TranslationQuestion = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const inputRef = useRef<HTMLInputElement>(null);
-  const [mode, setMode] = useState<"keyboard" | "word_bank">("word_bank");
-  const [availableWords, setAvailableWords] = useState<
-    { id: string; text: string }[]
-  >([]);
-  const [selectedWords, setSelectedWords] = useState<
-    { id: string; text: string }[]
-  >([]); // For Word Bank mode reconstruction
+  const [mode, setMode] = useState<'keyboard' | 'word_bank'>('word_bank');
+  const [showFurigana, setShowFurigana] = useState(true);
+  const [availableWords, setAvailableWords] = useState<{ id: string, text: string }[]>([]);
+  const [selectedWords, setSelectedWords] = useState<{ id: string, text: string }[]>([]); // For Word Bank mode reconstruction
 
   // Reset state on each sentence
   useEffect(() => {
@@ -52,82 +52,96 @@ const TranslationQuestion = ({
     if (sentence.possible_answers && sentence.possible_answers.length > 0) {
       const primaryAnswer = sentence.possible_answers[0];
       const correctWords = primaryAnswer
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+        .replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "")
         .split(/\s+/)
-        .filter((w) => w.length > 0);
+        .filter(w => w.length > 0);
 
       // Distractors logic
       const distractors: string[] = [];
       if (allSentences.length > 0) {
-        // Flatten all possible answers from OTHER sentences
-        const candidateWords = allSentences
-          .filter((s) => s.full_sentence !== sentence.full_sentence) // Exclude current sentence
-          .flatMap((s) => s.possible_answers)
-          .join(" ")
-          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-          .split(/\s+/)
-          .filter((w) => w.length > 0 && !correctWords.includes(w)); // Exclude words already in correct answer
+        const japaneseRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
+        const isJapaneseTarget = japaneseRegex.test(primaryAnswer);
+
+        let candidateWords: string[] = [];
+
+        if (isJapaneseTarget) {
+          // Use 'words' (Japanese tokens) from ALL sentences
+          // This avoids an issue where a fallback unspaced answer in 'possible_answers' gets treated as a single giant token
+          candidateWords = allSentences
+            .filter(s => s.full_sentence !== sentence.full_sentence)
+            .flatMap(s => s.words || [])
+            .map(w => w.replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "")) // Clean punctuation from tokens
+            .filter(w => w.length > 0 && !correctWords.includes(w));
+        } else {
+          // Target is English: Use 'possible_answers' that aren't Japanese
+          candidateWords = allSentences
+            .filter(s => s.full_sentence !== sentence.full_sentence)
+            .flatMap(s => s.possible_answers)
+            .filter(ans => !japaneseRegex.test(ans)) // Exclude Japanese answers
+            .flatMap(ans => ans.replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "").split(/\s+/))
+            .filter(w => w.length > 0 && !correctWords.includes(w));
+        }
 
         // Get unique candidates
         const uniqueCandidates = [...new Set(candidateWords)];
 
         // Shuffle and pick 3
-        distractors.push(
-          ...uniqueCandidates.sort(() => Math.random() - 0.5).slice(0, 3),
-        );
+        distractors.push(...uniqueCandidates.sort(() => Math.random() - 0.5).slice(0, 3));
       }
 
       // Combine and shuffle
       const combinedWords = [...correctWords, ...distractors];
-      const shuffled = combinedWords
-        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+      const shuffled = combinedWords.map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
         .sort(() => Math.random() - 0.5);
 
       setAvailableWords(shuffled);
     }
 
-    if (mode === "keyboard") {
+    if (mode === 'keyboard') {
       inputRef.current?.focus();
     }
   }, [sentence, mode, allSentences]);
 
   // Sync selected words to userAnswer for checking
   useEffect(() => {
-    if (mode === "word_bank") {
-      const constructedSentence = selectedWords.map((w) => w.text).join(" ");
+    if (mode === 'word_bank') {
+      // Strip furigana for validation: "学生(がくせい)" -> "学生"
+      const cleanText = (text: string) => text.replace(/\(.*\)/g, "");
+
+      // If any word has Japanese characters or furigana syntax, join with "", else " "
+      const hasJapanese = selectedWords.some(w =>
+        /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(w.text) || /\(.*\)/.test(w.text)
+      );
+
+      const joinChar = hasJapanese ? "" : " ";
+
+      const constructedSentence = selectedWords.map(w => cleanText(w.text)).join(joinChar);
       setUserAnswer(constructedSentence);
     }
   }, [selectedWords, mode]);
 
-  const handleWordClick = (
-    word: { id: string; text: string },
-    fromBank: boolean,
-  ) => {
+  const handleWordClick = (word: { id: string, text: string }, fromBank: boolean) => {
     if (fromBank) {
       // Move from bank to selected
-      setAvailableWords((prev) => prev.filter((w) => w.id !== word.id));
-      setSelectedWords((prev) => [...prev, word]);
+      setAvailableWords(prev => prev.filter(w => w.id !== word.id));
+      setSelectedWords(prev => [...prev, word]);
     } else {
       // Move from selected to bank
-      setSelectedWords((prev) => prev.filter((w) => w.id !== word.id));
-      setAvailableWords((prev) => [...prev, word]);
+      setSelectedWords(prev => prev.filter(w => w.id !== word.id));
+      setAvailableWords(prev => [...prev, word]);
     }
   };
 
   const toggleMode = () => {
-    setMode((prev) => (prev === "keyboard" ? "word_bank" : "keyboard"));
-    // Clear answer on mode switch to avoid confusion? or try to preserve?
-    // Clearing is safer.
+    setMode(prev => prev === 'keyboard' ? 'word_bank' : 'keyboard');
     setUserAnswer("");
     setSelectedWords([]);
-    // Restore words to bank
     if (sentence.possible_answers && sentence.possible_answers.length > 0) {
       const words = sentence.possible_answers[0]
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+        .replace(/[.,/#!$%^&*;:{}=\-_`~]/g, "")
         .split(/\s+/)
-        .filter((w) => w.length > 0);
-      const shuffled = words
-        .map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
+        .filter(w => w.length > 0);
+      const shuffled = words.map((w, i) => ({ id: `${w}-${i}-${Math.random()}`, text: w }))
         .sort(() => Math.random() - 0.5);
       setAvailableWords(shuffled);
     }
@@ -179,7 +193,7 @@ const TranslationQuestion = ({
     <Card
       className={isCorrect === false ? "shake" : ""}
       sx={{
-        m: isMobile ? 1 : 4,
+        m: isMobile ? 1 : 2,
         mb: 1,
         p: 0,
         minWidth: isMobile ? "80%" : "40vw",
@@ -194,11 +208,10 @@ const TranslationQuestion = ({
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(255, 255, 255, 0.4)"
-        }`,
+        border: `1px solid ${theme.palette.mode === "dark"
+          ? "rgba(255, 255, 255, 0.1)"
+          : "rgba(255, 255, 255, 0.4)"
+          }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           transform: isMobile ? "none" : "translateY(-5px)",
@@ -245,24 +258,23 @@ const TranslationQuestion = ({
           {sentence.full_sentence}
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            width: "100%",
-            mb: 1,
-          }}
-        >
-          <Button
-            onClick={toggleMode}
-            size="small"
-            sx={{ textTransform: "none" }}
-          >
-            {mode === "keyboard" ? "Switch to Word Bank" : "Switch to Keyboard"}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', mb: 1 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showFurigana}
+                onChange={(e) => setShowFurigana(e.target.checked)}
+                size="small"
+              />
+            }
+            label={<Typography variant="body2" color="text.secondary">Furigana</Typography>}
+          />
+          <Button onClick={toggleMode} size="small" sx={{ textTransform: 'none' }}>
+            {mode === 'keyboard' ? 'Switch to Word Bank' : 'Switch to Keyboard'}
           </Button>
         </Box>
 
-        {mode === "keyboard" ? (
+        {mode === 'keyboard' ? (
           <Fade in={true} timeout={300}>
             <TextField
               fullWidth
@@ -297,12 +309,13 @@ const TranslationQuestion = ({
           </Fade>
         ) : (
           <Fade in={true} timeout={300}>
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ width: '100%' }}>
               <WordBank
                 availableWords={availableWords}
                 selectedWords={selectedWords}
                 onWordClick={handleWordClick}
                 isCorrect={!!isCorrect}
+                showFurigana={showFurigana}
               />
             </Box>
           </Fade>
