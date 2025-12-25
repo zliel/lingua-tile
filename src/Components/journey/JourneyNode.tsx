@@ -1,10 +1,13 @@
 import { useState, JSX } from "react";
-import { Button, Popover, Typography, Box, useTheme, useMediaQuery } from "@mui/material";
+import { Button, Popover, Typography, Box, useTheme, useMediaQuery, alpha } from "@mui/material";
 import { Lesson, ReviewStats } from "@/types/lessons";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import WarningIcon from "@mui/icons-material/Warning";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 
 interface JourneyNodeProps {
@@ -91,6 +94,7 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
 
       <Popover
         open={open}
+
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
@@ -101,20 +105,102 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
           vertical: "top",
           horizontal: "center",
         }}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+              border: `3px solid ${theme.palette[color].main}`,
+              bgcolor: theme.palette.background.paper,
+              backgroundImage: `radial-gradient(${theme.palette.action.focus} 1px, transparent 1px)`,
+              backgroundSize: '10px 10px',
+              overflow: 'visible', // Allow button 3D effect to not clip if needed
+              mt: 1,
+              boxShadow: theme.shadows[5],
+            }
+          }
+        }}
       >
-        <Box sx={{ p: 2, minWidth: 200, textAlign: "center" }}>
-          <Typography variant="h6" gutterBottom>
-            {lesson.title}
-          </Typography>
+        <Box sx={{ p: 2, minWidth: 260, maxWidth: 300 }}>
+          {/* Header: Icon + Title */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+            <Box
+              sx={{
+                p: 1,
+                borderRadius: 2,
+                bgcolor: theme.palette[color].main,
+                color: theme.palette[color].contrastText,
+                boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.2)"
+              }}
+            >
+              {categoryIcons[lesson.category || "flashcards"]}
+            </Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: "800",
+                lineHeight: 1.2,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                fontSize: "1rem"
+              }}
+            >
+              {lesson.title}
+            </Typography>
+          </Box>
 
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color={review ? (review.isOverdue ? "error" : "textSecondary") : "textSecondary"}>
+          {/* Stats Panel */}
+          <Box
+            sx={{
+              bgcolor: theme.palette.background.default,
+              borderRadius: 2,
+              p: 2,
+              mb: 2,
+              border: `2px solid ${theme.palette.divider}`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              textAlign: 'left'
+            }}
+          >
+            {/* Status Icon */}
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              bgcolor: review
+                ? review.isOverdue ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.success.main, 0.1)
+                : theme.palette.action.hover,
+              color: review
+                ? review.isOverdue ? theme.palette.error.main : theme.palette.success.main
+                : theme.palette.text.secondary
+            }}>
               {review
                 ? review.isOverdue
-                  ? `Overdue by ${Math.abs(review.daysLeft)} day(s)`
-                  : `Next review in ${review.daysLeft} day(s)`
-                : "Not started yet"}
-            </Typography>
+                  ? <WarningIcon fontSize="large" />
+                  : <CheckCircleIcon fontSize="large" />
+                : <AddIcon fontSize="large" />
+              }
+            </Box>
+
+            {/* Status Text */}
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', textTransform: 'uppercase', lineHeight: 1.1 }}>
+                {review
+                  ? review.isOverdue ? "Overdue" : "On Track"
+                  : "New Lesson"
+                }
+              </Typography>
+              <Typography variant="caption" color={review ? (review.isOverdue ? "error" : "success.main") : "textSecondary"}>
+                {review
+                  ? review.isOverdue
+                    ? `Due ${Math.abs(review.daysLeft)} day(s) ago`
+                    : `Next review in ${review.daysLeft} day(s)`
+                  : "Ready to start"}
+              </Typography>
+            </Box>
           </Box>
 
           <Button
@@ -128,6 +214,18 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
             }}
             sx={{
               borderRadius: 2,
+              py: 1,
+              fontWeight: 'bold',
+              boxShadow: `0 4px 0 ${theme.palette[color].dark}`, // 3D Button
+              transition: 'all 0.1s',
+              "&:active": {
+                boxShadow: `0 0 0 ${theme.palette[color].dark}`,
+                transform: 'translateY(4px)',
+              },
+              "&:hover": {
+                transform: `translateY(-1px)`,
+                boxShadow: `0 5px 0 ${theme.palette[color].dark}`,
+              }
             }}
           >
             Start Lesson
