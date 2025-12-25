@@ -23,7 +23,7 @@ export const JourneySkeleton = () => {
     startX: number,
     startY: number,
     endX: number,
-    endY: number
+    endY: number,
   ) => {
     const deltaY = endY - startY;
     const midY = startY + deltaY * 0.5;
@@ -39,26 +39,33 @@ export const JourneySkeleton = () => {
       const nextRow = dummyRows[rowIndex + 1];
 
       if (nextRow) {
-        const rowWidth = row.nodes.length * NODE_WIDTH + (row.nodes.length - 1) * ROW_GAP;
+        const rowWidth =
+          row.nodes.length * NODE_WIDTH + (row.nodes.length - 1) * ROW_GAP;
         const rowStartX = (CONTAINER_WIDTH - rowWidth) / 2;
 
-        const nextRowWidth = nextRow.nodes.length * NODE_WIDTH + (nextRow.nodes.length - 1) * ROW_GAP;
+        const nextRowWidth =
+          nextRow.nodes.length * NODE_WIDTH +
+          (nextRow.nodes.length - 1) * ROW_GAP;
         const nextRowStartX = (CONTAINER_WIDTH - nextRowWidth) / 2;
 
         // Simple 1-to-N or N-to-N logic simplified for skeleton
         row.nodes.forEach((_, nodeIndex) => {
-          const nodeX = rowStartX + nodeIndex * (NODE_WIDTH + ROW_GAP) + NODE_WIDTH / 2;
+          const nodeX =
+            rowStartX + nodeIndex * (NODE_WIDTH + ROW_GAP) + NODE_WIDTH / 2;
           const nodeY = currentY + 78; // Bottom of current node (approx)
 
           nextRow.nodes.forEach((_, nextNodeIndex) => {
             // Connect if indices logically match (simplified)
             const shouldConnect =
-              (row.nodes.length === 1) || // 1 connects to all
-              (nextRow.nodes.length === 1) || // All connect to 1
-              (nodeIndex === nextNodeIndex); // Parallel
+              row.nodes.length === 1 || // 1 connects to all
+              nextRow.nodes.length === 1 || // All connect to 1
+              nodeIndex === nextNodeIndex; // Parallel
 
             if (shouldConnect) {
-              const nextNodeX = nextRowStartX + nextNodeIndex * (NODE_WIDTH + ROW_GAP) + NODE_WIDTH / 2;
+              const nextNodeX =
+                nextRowStartX +
+                nextNodeIndex * (NODE_WIDTH + ROW_GAP) +
+                NODE_WIDTH / 2;
               const nextNodeY = currentY + 120; // Top of next node (approx gap)
               paths.push(generatePath(nodeX, nodeY, nextNodeX, nextNodeY));
             }
@@ -69,7 +76,6 @@ export const JourneySkeleton = () => {
     });
     return paths;
   }, [NODE_WIDTH, ROW_GAP, CONTAINER_WIDTH]);
-
 
   return (
     <Box
@@ -138,4 +144,3 @@ export const JourneySkeleton = () => {
     </Box>
   );
 };
-

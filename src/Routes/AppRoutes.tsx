@@ -45,7 +45,7 @@ export const AppRoutes = () => {
             <Suspense>
               <JourneyMap />
             </Suspense>
-          )
+          ),
         },
         {
           path: "/settings",

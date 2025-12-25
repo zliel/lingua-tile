@@ -6,10 +6,11 @@ import { motion, AnimatePresence, Variants, Transition } from "framer-motion";
 import { useOffline } from "@/Contexts/OfflineContext";
 
 const JourneyMap = () => {
-  const { journeyRows, extraRows, isLoading, getLessonReviewStatus } = useJourneyData();
+  const { journeyRows, extraRows, isLoading, getLessonReviewStatus } =
+    useJourneyData();
   const { isPending } = useOffline();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Layout Constants
   const CONTAINER_WIDTH = isMobile ? 350 : 600;
@@ -58,7 +59,7 @@ const JourneyMap = () => {
           targets = [targetIndex];
         }
 
-        targets.forEach(targetIndex => {
+        targets.forEach((targetIndex) => {
           const endX = getNodeCenterX(nextRow.lessons.length, targetIndex);
           const cpY1 = startY + verticalGap * 0.5;
           const cpY2 = endY - verticalGap * 0.5;
@@ -71,7 +72,8 @@ const JourneyMap = () => {
   };
 
   const allRows = [...journeyRows, ...extraRows];
-  const totalHeight = allRows.length > 0 ? allRows[allRows.length - 1].offsetY + 100 : 800;
+  const totalHeight =
+    allRows.length > 0 ? allRows[allRows.length - 1].offsetY + 100 : 800;
 
   // --- ANIMATION VARIANTS ---
   // Container: Controls orchestration
@@ -82,15 +84,15 @@ const JourneyMap = () => {
       transition: {
         when: "beforeChildren",
         staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
   const commonTransition = {
     type: "spring",
     stiffness: 300,
-    damping: 20
+    damping: 20,
   } as Transition;
 
   const centerVariants: Variants = {
@@ -98,15 +100,15 @@ const JourneyMap = () => {
       opacity: 0,
       scale: 0.9,
       x: "-50%",
-      y: "-50%"
+      y: "-50%",
     },
     visible: {
       opacity: 1,
       scale: 1,
       x: "-50%",
       y: "-50%",
-      transition: commonTransition
-    }
+      transition: commonTransition,
+    },
   };
 
   const centerXVariants: Variants = {
@@ -114,15 +116,15 @@ const JourneyMap = () => {
       opacity: 0,
       scale: 0.9,
       x: "-50%",
-      y: -20
+      y: -20,
     },
     visible: {
       opacity: 1,
       scale: 1,
       x: "-50%",
       y: 0,
-      transition: commonTransition
-    }
+      transition: commonTransition,
+    },
   };
 
   const centerYVariants: Variants = {
@@ -130,15 +132,15 @@ const JourneyMap = () => {
       opacity: 0,
       scale: 0.9,
       x: 0,
-      y: "-50%"
+      y: "-50%",
     },
     visible: {
       opacity: 1,
       scale: 1,
       x: 0,
       y: "-50%",
-      transition: commonTransition
-    }
+      transition: commonTransition,
+    },
   };
 
   const pathVariants: Variants = {
@@ -146,8 +148,8 @@ const JourneyMap = () => {
     visible: {
       pathLength: 1,
       opacity: 1,
-      transition: { duration: 1.25, ease: "easeInOut" }
-    }
+      transition: { duration: 1.25, ease: "easeInOut" },
+    },
   };
 
   return (
@@ -178,7 +180,7 @@ const JourneyMap = () => {
               position: "relative",
               width: "100%",
               maxWidth: CONTAINER_WIDTH,
-              minHeight: Math.max(totalHeight, 600)
+              minHeight: Math.max(totalHeight, 600),
             }}
           >
             {/* SVG Background Layer */}
@@ -228,10 +230,13 @@ const JourneyMap = () => {
                   top: extraRows[0].offsetY - 100, // Place above first extra row
                   left: "50%",
                   width: "100%",
-                  textAlign: "center"
+                  textAlign: "center",
                 }}
               >
-                <Typography variant="h5" sx={{ opacity: 0.7, fontWeight: 'bold' }}>
+                <Typography
+                  variant="h5"
+                  sx={{ opacity: 0.7, fontWeight: "bold" }}
+                >
                   Extras
                 </Typography>
                 <Typography variant="caption" sx={{ opacity: 0.5 }}>
@@ -255,7 +260,7 @@ const JourneyMap = () => {
                       width: 150,
                       textAlign: "right",
                       pr: 2,
-                      display: { xs: "none", sm: "block" }
+                      display: { xs: "none", sm: "block" },
                     }}
                   >
                     <Typography
@@ -279,10 +284,14 @@ const JourneyMap = () => {
                       left: "50%",
                       width: "100%",
                       textAlign: "center",
-                      display: { xs: "block", sm: "none" }
+                      display: { xs: "block", sm: "none" },
                     }}
                   >
-                    <Typography variant="h6" color="primary" sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      variant="h6"
+                      color="primary"
+                      sx={{ fontWeight: "bold" }}
+                    >
                       {row.sectionStartTitle}
                     </Typography>
                   </Box>
@@ -301,8 +310,8 @@ const JourneyMap = () => {
                         left: centerX,
                         zIndex: 1,
                         width: NODE_WIDTH,
-                        display: 'flex',
-                        justifyContent: 'center',
+                        display: "flex",
+                        justifyContent: "center",
                       }}
                     >
                       <JourneyNode
@@ -311,7 +320,7 @@ const JourneyMap = () => {
                         pending={isPending(lesson._id)}
                       />
                     </Box>
-                  )
+                  );
                 })}
               </Box>
             ))}

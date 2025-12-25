@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  Typography,
-  useTheme,
-  alpha,
-} from "@mui/material";
+import { Box, Button, Typography, useTheme, alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -116,7 +110,7 @@ export const LessonListItem = ({
               textTransform: "uppercase",
               letterSpacing: "0.5px",
               fontSize: "1rem",
-              wordBreak: "break-word"
+              wordBreak: "break-word",
             }}
           >
             {lesson.title}
@@ -194,7 +188,11 @@ export const LessonListItem = ({
                       : "On Track"
                     : "New Lesson"}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1, display: 'block' }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ lineHeight: 1.1, display: "block" }}
+            >
               {pending
                 ? "Waiting for connection"
                 : review

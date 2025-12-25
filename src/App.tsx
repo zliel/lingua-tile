@@ -18,7 +18,7 @@ const greenBase = "#00c800";
 const palette: ColorSystemOptions = {
   palette: {
     primary: {
-      main: purpleBase
+      main: purpleBase,
     },
     secondary: {
       main: greenBase,

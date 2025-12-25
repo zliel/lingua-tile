@@ -20,9 +20,12 @@ export const useJourneyData = () => {
   const { data: lessons = [], isLoading: isLessonsLoading } = useQuery({
     queryKey: ["lessons", authData?.token],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`, {
-        headers: { Authorization: `Bearer ${authData?.token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
       return res.data;
     },
     enabled: !!authData,
@@ -31,9 +34,12 @@ export const useJourneyData = () => {
   const { data: sections = [] } = useQuery({
     queryKey: ["sections", authData?.token],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/sections/all`, {
-        headers: { Authorization: `Bearer ${authData?.token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
       return res.data;
     },
     enabled: !!authData,
@@ -42,9 +48,12 @@ export const useJourneyData = () => {
   const { data: reviews = [] } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`, {
-        headers: { Authorization: `Bearer ${authData?.token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
       return res.data;
     },
     enabled: !!authData,
@@ -52,7 +61,9 @@ export const useJourneyData = () => {
 
   // Helper function to get whether the review is overdue
   const getLessonReviewStatus = (lessonId: string): ReviewStats | null => {
-    const review: Review = reviews?.find((r: Review) => r.lesson_id === lessonId);
+    const review: Review = reviews?.find(
+      (r: Review) => r.lesson_id === lessonId,
+    );
     if (!review) return null;
     const daysLeft = dayjs(review.next_review).diff(dayjs(), "day");
     return {
@@ -73,7 +84,9 @@ export const useJourneyData = () => {
     let lastSectionId = "";
 
     const processListToRows = (list: Lesson[], targetArray: JourneyRow[]) => {
-      const sorted = [...list].sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+      const sorted = [...list].sort(
+        (a, b) => (a.order_index || 0) - (b.order_index || 0),
+      );
       const grouped = new Map<number, Lesson[]>();
 
       sorted.forEach((lesson) => {
@@ -82,34 +95,43 @@ export const useJourneyData = () => {
         grouped.get(idx)?.push(lesson);
       });
 
-      Array.from(grouped.keys()).sort((a, b) => a - b).forEach((idx) => {
-        const rowLessons = grouped.get(idx) || [];
+      Array.from(grouped.keys())
+        .sort((a, b) => a - b)
+        .forEach((idx) => {
+          const rowLessons = grouped.get(idx) || [];
 
-        // Determine if this is the start of a new section
-        let sectionTitle = undefined;
-        const currentSectionId = rowLessons[0]?.section_id;
+          // Determine if this is the start of a new section
+          let sectionTitle = undefined;
+          const currentSectionId = rowLessons[0]?.section_id;
 
-        if (currentSectionId) {
-          if (currentSectionId !== lastSectionId) {
-            lastSectionId = currentSectionId;
-            const section = sections.find((s: Section) => s._id === currentSectionId);
-            if (section) {
-              sectionTitle = section.name;
-              console.log(`[JourneyData] Found Section Start: ${sectionTitle} for row ${idx}`);
-            } else {
-              console.warn(`[JourneyData] Section ID ${currentSectionId} not found in sections list`, sections);
+          if (currentSectionId) {
+            if (currentSectionId !== lastSectionId) {
+              lastSectionId = currentSectionId;
+              const section = sections.find(
+                (s: Section) => s._id === currentSectionId,
+              );
+              if (section) {
+                sectionTitle = section.name;
+                console.log(
+                  `[JourneyData] Found Section Start: ${sectionTitle} for row ${idx}`,
+                );
+              } else {
+                console.warn(
+                  `[JourneyData] Section ID ${currentSectionId} not found in sections list`,
+                  sections,
+                );
+              }
             }
           }
-        }
 
-        targetArray.push({
-          index: idx,
-          lessons: rowLessons,
-          offsetY: currentY,
-          sectionStartTitle: sectionTitle
+          targetArray.push({
+            index: idx,
+            lessons: rowLessons,
+            offsetY: currentY,
+            sectionStartTitle: sectionTitle,
+          });
+          currentY += ROW_HEIGHT;
         });
-        currentY += ROW_HEIGHT;
-      });
     };
 
     processListToRows(mainLessons, journeyRows);
@@ -124,6 +146,6 @@ export const useJourneyData = () => {
     journeyRows,
     extraRows,
     isLoading: isLessonsLoading,
-    getLessonReviewStatus
+    getLessonReviewStatus,
   };
 };

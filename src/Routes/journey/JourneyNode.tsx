@@ -1,5 +1,13 @@
 import { useState, JSX } from "react";
-import { Button, Popover, Typography, Box, useTheme, useMediaQuery, alpha } from "@mui/material";
+import {
+  Button,
+  Popover,
+  Typography,
+  Box,
+  useTheme,
+  useMediaQuery,
+  alpha,
+} from "@mui/material";
 import { Lesson, ReviewStats } from "@/types/lessons";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -108,7 +116,7 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
               justifyContent: "center",
               boxShadow: 2,
               zIndex: 2,
-              border: `2px solid ${theme.palette.background.paper}`
+              border: `2px solid ${theme.palette.background.paper}`,
             }}
           >
             {pending ? (
@@ -127,7 +135,7 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
           sx={{
             fontWeight: "bold",
             lineHeight: 1.1,
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           {lesson.title}
@@ -153,24 +161,24 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
               border: `3px solid ${theme.palette[color].main}`,
               bgcolor: theme.palette.background.paper,
               backgroundImage: `radial-gradient(${theme.palette.action.focus} 1px, transparent 1px)`,
-              backgroundSize: '10px 10px',
-              overflow: 'visible',
+              backgroundSize: "10px 10px",
+              overflow: "visible",
               mt: 1,
               boxShadow: theme.shadows[5],
-            }
-          }
+            },
+          },
         }}
       >
         <Box sx={{ p: 2, minWidth: 260, maxWidth: 300 }}>
           {/* Header: Icon + Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
             <Box
               sx={{
                 p: 1,
                 borderRadius: 2,
                 bgcolor: theme.palette[color].main,
                 color: theme.palette[color].contrastText,
-                boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.2)"
+                boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.2)",
               }}
             >
               {categoryIcons[lesson.category || "flashcards"]}
@@ -182,7 +190,7 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
                 lineHeight: 1.2,
                 textTransform: "uppercase",
                 letterSpacing: "0.5px",
-                fontSize: "1rem"
+                fontSize: "1rem",
               }}
             >
               {lesson.title}
@@ -197,37 +205,45 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
               p: 2,
               mb: 2,
               border: `2px solid ${theme.palette.divider}`,
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 2,
-              textAlign: 'left'
+              textAlign: "left",
             }}
           >
             {/* Status Icon */}
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 48,
-              height: 48,
-              borderRadius: '50%',
-              bgcolor: pending
-                ? alpha(theme.palette.warning.main, 0.1)
-                : review
-                  ? review.isOverdue ? alpha(theme.palette.warning.main, 0.1) : alpha(theme.palette.success.main, 0.1)
-                  : theme.palette.action.hover,
-              color: pending
-                ? theme.palette.warning.main
-                : review
-                  ? review.isOverdue ? theme.palette.warning.main : theme.palette.success.main
-                  : theme.palette.text.secondary
-            }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                bgcolor: pending
+                  ? alpha(theme.palette.warning.main, 0.1)
+                  : review
+                    ? review.isOverdue
+                      ? alpha(theme.palette.warning.main, 0.1)
+                      : alpha(theme.palette.success.main, 0.1)
+                    : theme.palette.action.hover,
+                color: pending
+                  ? theme.palette.warning.main
+                  : review
+                    ? review.isOverdue
+                      ? theme.palette.warning.main
+                      : theme.palette.success.main
+                    : theme.palette.text.secondary,
+              }}
+            >
               {pending ? (
                 <SyncIcon fontSize="large" />
               ) : review ? (
-                review.isOverdue
-                  ? <WarningIcon fontSize="large" />
-                  : <CheckCircleIcon fontSize="large" />
+                review.isOverdue ? (
+                  <WarningIcon fontSize="large" />
+                ) : (
+                  <CheckCircleIcon fontSize="large" />
+                )
               ) : (
                 <AddIcon fontSize="large" />
               )}
@@ -235,15 +251,34 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
 
             {/* Status Text */}
             <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', textTransform: 'uppercase', lineHeight: 1.1 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                  lineHeight: 1.1,
+                }}
+              >
                 {pending
                   ? "Pending Sync"
                   : review
-                    ? review.isOverdue ? "Overdue" : "On Track"
-                    : "New Lesson"
-                }
+                    ? review.isOverdue
+                      ? "Overdue"
+                      : "On Track"
+                    : "New Lesson"}
               </Typography>
-              <Typography variant="caption" color={pending ? "warning.main" : review ? (review.isOverdue ? "warning.main" : "success.main") : "textSecondary"}>
+              <Typography
+                variant="caption"
+                color={
+                  pending
+                    ? "warning.main"
+                    : review
+                      ? review.isOverdue
+                        ? "warning.main"
+                        : "success.main"
+                      : "textSecondary"
+                }
+              >
                 {pending
                   ? "Waiting for connection"
                   : review
@@ -261,30 +296,31 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
             fullWidth
             startIcon={<PlayArrowIcon />}
             onClick={() => {
-              navigate(`${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`);
+              navigate(
+                `${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`,
+              );
               handleClose();
             }}
             sx={{
               borderRadius: 2,
               py: 1,
-              fontWeight: 'bold',
+              fontWeight: "bold",
               boxShadow: `0 4px 0 ${theme.palette[color].dark}`, // 3D Button
-              transition: 'all 0.1s',
+              transition: "all 0.1s",
               "&:active": {
                 boxShadow: `0 0 0 ${theme.palette[color].dark}`,
-                transform: 'translateY(4px)',
+                transform: "translateY(4px)",
               },
               "&:hover": {
                 transform: `translateY(-1px)`,
                 boxShadow: `0 5px 0 ${theme.palette[color].dark}`,
-              }
+              },
             }}
           >
             Start Lesson
           </Button>
         </Box>
-      </Popover >
+      </Popover>
     </>
   );
 };
-
