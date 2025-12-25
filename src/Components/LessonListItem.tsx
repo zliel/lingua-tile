@@ -3,14 +3,17 @@ import {
   Button,
   Typography,
   useTheme,
-  useMediaQuery,
+  alpha,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-// Border colors from @mui/color
-import { grey } from "@mui/material/colors";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import WarningIcon from "@mui/icons-material/Warning";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AddIcon from "@mui/icons-material/Add";
+import SyncIcon from "@mui/icons-material/Sync";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Lesson, ReviewStats } from "@/types/lessons";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,7 +33,6 @@ export const LessonListItem = ({
 }) => {
   const { authData } = useAuth();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const queryClient = useQueryClient();
   const { isPending } = useOffline();
   const navigate = useNavigate();
@@ -53,88 +55,177 @@ export const LessonListItem = ({
   };
 
   const categoryIcons: Record<string, JSX.Element> = {
-    flashcards: <ViewCarouselIcon sx={{ mb: 0.2 }} />,
+    flashcards: <ViewCarouselIcon />,
     practice: <EditNoteIcon />,
-    grammar: <MenuBookIcon sx={{ mb: 0.3 }} />,
+    grammar: <MenuBookIcon />,
   };
+
+  const color = categoryColors[lesson.category || "flashcards"] || "primary";
+  const pending = isPending(lesson._id);
 
   return (
     <Box
       key={lesson._id}
       sx={{
-        p: 1.5,
+        p: 2,
         mb: 2,
-        display: "flex",
-        flexDirection: isMobile ? "row" : "column",
-        alignItems: isMobile ? "center" : "flex-start",
-        justifyContent: "space-between",
         width: "100%",
-        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
         gap: 2,
-        border: `2px solid ${theme.palette.mode === "dark" ? grey["400"] : grey["200"]}`,
-        borderRadius: 2,
-        boxShadow: `0px 0px 5px 0px ${
-          theme.palette.mode === "dark"
-            ? theme.palette.primary.contrastText
-            : theme.palette.secondary.contrastText
-        }`,
-        transition: "transform 0.3s ease",
+        borderRadius: 3,
+        border: `3px solid ${theme.palette[color].main}`,
+        bgcolor: theme.palette.background.paper,
+        backgroundImage: `radial-gradient(${theme.palette.action.hover} 1px, transparent 1px)`,
+        backgroundSize: "10px 10px",
+        boxShadow: theme.shadows[3],
+        position: "relative",
+        transition: "transform 0.2s, box-shadow 0.2s",
+        height: "100%",
+        justifyContent: "space-between",
         "&:hover": {
-          transform: "scale(1.05)",
+          transform: "translateY(-2px)",
+          boxShadow: theme.shadows[6],
         },
       }}
     >
-      <Box width={isMobile ? "60%" : "100%"}>
-        <Typography variant="h6" fontSize={"clamp(1.1rem, 2vw, 1.3rem)"}>
-          {lesson.title}
-        </Typography>
-        {isReviewLoading ? (
-          <Typography
-            variant="body2"
-            sx={{ color: theme.palette.text.secondary }}
+      {/* Content Area */}
+      <Box>
+        {/* Header */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+          <Box
+            sx={{
+              p: 1,
+              borderRadius: 2,
+              bgcolor: theme.palette[color].main,
+              color: theme.palette[color].contrastText,
+              boxShadow: "inset 0 -2px 0 rgba(0,0,0,0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            Loading review...
-          </Typography>
-        ) : isPending(lesson._id) ? (
+            {categoryIcons[lesson.category || "flashcards"]}
+          </Box>
           <Typography
-            variant="body2"
-            sx={{ color: theme.palette.warning.main, fontWeight: "bold" }}
+            variant="h6"
+            sx={{
+              fontWeight: "800",
+              lineHeight: 1.2,
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              fontSize: "1rem",
+              wordBreak: "break-word"
+            }}
           >
-            Pending Sync
+            {lesson.title}
           </Typography>
-        ) : (
-          review && (
-            <Typography
-              variant="body2"
-              sx={{
-                color: review.isOverdue
-                  ? theme.palette.error.main
+        </Box>
+
+        {/* Status Indicator */}
+        <Box
+          sx={{
+            bgcolor: theme.palette.background.default,
+            borderRadius: 2,
+            p: 1.5,
+            border: `2px solid ${theme.palette.divider}`,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          {/* Icon Box */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 40,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: pending
+                ? alpha(theme.palette.warning.main, 0.1)
+                : review
+                  ? review.isOverdue
+                    ? alpha(theme.palette.error.main, 0.1)
+                    : alpha(theme.palette.success.main, 0.1)
+                  : theme.palette.action.hover,
+              color: pending
+                ? theme.palette.warning.main
+                : review
+                  ? review.isOverdue
+                    ? theme.palette.error.main
+                    : theme.palette.success.main
                   : theme.palette.text.secondary,
+            }}
+          >
+            {pending ? (
+              <SyncIcon />
+            ) : review ? (
+              review.isOverdue ? (
+                <WarningIcon />
+              ) : (
+                <CheckCircleIcon />
+              )
+            ) : (
+              <AddIcon />
+            )}
+          </Box>
+
+          {/* Status Text */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                fontSize: "0.8rem",
               }}
             >
-              {review.isOverdue
-                ? `overdue by ${Math.abs(review.daysLeft)} day${review.daysLeft > 1 ? "s" : ""}`
-                : `next review in ${review.daysLeft} day${review.daysLeft !== 1 ? "s" : ""}`}
+              {pending
+                ? "Pending Sync"
+                : isReviewLoading
+                  ? "Loading..."
+                  : review
+                    ? review.isOverdue
+                      ? "Overdue"
+                      : "On Track"
+                    : "New Lesson"}
             </Typography>
-          )
-        )}
+            <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1, display: 'block' }}>
+              {pending
+                ? "Waiting for connection"
+                : review
+                  ? review.isOverdue
+                    ? `Due ${Math.abs(review.daysLeft)} day(s) ago`
+                    : `Next review in ${review.daysLeft} day(s)`
+                  : "Ready to start"}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
+
       <Button
         variant="contained"
-        color={categoryColors[lesson.category || "flashcards"]}
-        sx={{
-          mt: isMobile ? 0 : 2,
-          minWidth: isMobile ? "40%" : "auto",
-        }}
+        color={color}
         onClick={() => {
           onLessonStart(lesson);
           navigate(
             `${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`,
           );
         }}
+        startIcon={<PlayArrowIcon />}
+        fullWidth
+        sx={{
+          py: 1.5,
+          borderRadius: 2,
+          fontWeight: "bold",
+          transition: "all 0.1s",
+        }}
       >
-        {categoryIcons[lesson.category || "flashcards"]} &nbsp;
-        {lesson.category}
+        Start Lesson
       </Button>
     </Box>
   );
