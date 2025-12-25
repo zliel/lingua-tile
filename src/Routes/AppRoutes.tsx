@@ -10,6 +10,7 @@ import PageSkeleton from "@/Components/skeletons/PageSkeleton";
 
 const Dashboard = lazy(() => import("./Dashboard"));
 const LessonList = lazy(() => import("./LessonList"));
+const JourneyMap = lazy(() => import("./journey/JourneyMap"));
 const Profile = lazy(() => import("./Profile"));
 const UpdateProfile = lazy(() => import("./UpdateProfile"));
 const FlashcardLesson = lazy(() => import("./FlashcardLesson"));
@@ -37,6 +38,14 @@ export const AppRoutes = () => {
               <About />
             </Suspense>
           ),
+        },
+        {
+          path: "/journey",
+          element: (
+            <Suspense>
+              <JourneyMap />
+            </Suspense>
+          )
         },
         {
           path: "/settings",
