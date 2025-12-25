@@ -8,16 +8,18 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AddIcon from "@mui/icons-material/Add";
+import SyncIcon from "@mui/icons-material/Sync";
 import { useNavigate } from "react-router-dom";
 
 interface JourneyNodeProps {
   lesson: Lesson;
   review: ReviewStats | null;
+  pending?: boolean;
 }
 
 type CategoryColor = "primary" | "secondary" | "grammar";
 
-export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
+export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -53,6 +55,10 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
 
   const color = categoryColors[lesson.category || "flashcards"] || "primary";
 
+  // Status Logic
+  const isOverdue = review?.isOverdue;
+  const isCompleted = !!review && !isOverdue;
+
   return (
     <>
       <Button
@@ -74,11 +80,47 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
           justifyContent: "center",
           gap: isMobile ? 0.5 : 1,
           transition: "transform 0.2s",
+          position: "relative",
+          overflow: "visible",
           "&:hover": {
             transform: "scale(1.05)",
           },
         }}
       >
+        {/* Status Badge */}
+        {(pending || isOverdue || isCompleted) && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: -6,
+              right: -6,
+              width: 22,
+              height: 22,
+              borderRadius: "50%",
+              bgcolor: pending
+                ? theme.palette.warning.main
+                : isOverdue
+                  ? theme.palette.warning.main
+                  : theme.palette.success.main,
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: 2,
+              zIndex: 2,
+              border: `2px solid ${theme.palette.background.paper}`
+            }}
+          >
+            {pending ? (
+              <SyncIcon sx={{ fontSize: 14 }} />
+            ) : isOverdue ? (
+              <WarningIcon sx={{ fontSize: 14 }} />
+            ) : (
+              <CheckCircleIcon sx={{ fontSize: 14 }} />
+            )}
+          </Box>
+        )}
+
         {categoryIcons[lesson.category || "flashcards"]}
         <Typography
           variant={isMobile ? "caption" : "body2"}
@@ -94,7 +136,6 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
 
       <Popover
         open={open}
-
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
@@ -113,7 +154,7 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
               bgcolor: theme.palette.background.paper,
               backgroundImage: `radial-gradient(${theme.palette.action.focus} 1px, transparent 1px)`,
               backgroundSize: '10px 10px',
-              overflow: 'visible', // Allow button 3D effect to not clip if needed
+              overflow: 'visible',
               mt: 1,
               boxShadow: theme.shadows[5],
             }
@@ -170,35 +211,46 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
               width: 48,
               height: 48,
               borderRadius: '50%',
-              bgcolor: review
-                ? review.isOverdue ? alpha(theme.palette.error.main, 0.1) : alpha(theme.palette.success.main, 0.1)
-                : theme.palette.action.hover,
-              color: review
-                ? review.isOverdue ? theme.palette.error.main : theme.palette.success.main
-                : theme.palette.text.secondary
+              bgcolor: pending
+                ? alpha(theme.palette.warning.main, 0.1)
+                : review
+                  ? review.isOverdue ? alpha(theme.palette.warning.main, 0.1) : alpha(theme.palette.success.main, 0.1)
+                  : theme.palette.action.hover,
+              color: pending
+                ? theme.palette.warning.main
+                : review
+                  ? review.isOverdue ? theme.palette.warning.main : theme.palette.success.main
+                  : theme.palette.text.secondary
             }}>
-              {review
-                ? review.isOverdue
+              {pending ? (
+                <SyncIcon fontSize="large" />
+              ) : review ? (
+                review.isOverdue
                   ? <WarningIcon fontSize="large" />
                   : <CheckCircleIcon fontSize="large" />
-                : <AddIcon fontSize="large" />
-              }
+              ) : (
+                <AddIcon fontSize="large" />
+              )}
             </Box>
 
             {/* Status Text */}
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 'bold', textTransform: 'uppercase', lineHeight: 1.1 }}>
-                {review
-                  ? review.isOverdue ? "Overdue" : "On Track"
-                  : "New Lesson"
+                {pending
+                  ? "Pending Sync"
+                  : review
+                    ? review.isOverdue ? "Overdue" : "On Track"
+                    : "New Lesson"
                 }
               </Typography>
-              <Typography variant="caption" color={review ? (review.isOverdue ? "error" : "success.main") : "textSecondary"}>
-                {review
-                  ? review.isOverdue
-                    ? `Due ${Math.abs(review.daysLeft)} day(s) ago`
-                    : `Next review in ${review.daysLeft} day(s)`
-                  : "Ready to start"}
+              <Typography variant="caption" color={pending ? "warning.main" : review ? (review.isOverdue ? "warning.main" : "success.main") : "textSecondary"}>
+                {pending
+                  ? "Waiting for connection"
+                  : review
+                    ? review.isOverdue
+                      ? `Due ${Math.abs(review.daysLeft)} day(s) ago`
+                      : `Next review in ${review.daysLeft} day(s)`
+                    : "Ready to start"}
               </Typography>
             </Box>
           </Box>
@@ -235,3 +287,4 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
     </>
   );
 };
+

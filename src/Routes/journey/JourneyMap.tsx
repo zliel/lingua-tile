@@ -3,9 +3,11 @@ import { useJourneyData, JourneyRow } from "./useJourneyData";
 import { JourneyNode } from "./JourneyNode";
 import { JourneySkeleton } from "@/Components/skeletons/JourneyMapSkeleton";
 import { motion, AnimatePresence, Variants, Transition } from "framer-motion";
+import { useOffline } from "@/Contexts/OfflineContext";
 
 const JourneyMap = () => {
   const { journeyRows, extraRows, isLoading, getLessonReviewStatus } = useJourneyData();
+  const { isPending } = useOffline();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -306,6 +308,7 @@ const JourneyMap = () => {
                       <JourneyNode
                         lesson={lesson}
                         review={getLessonReviewStatus(lesson._id)}
+                        pending={isPending(lesson._id)}
                       />
                     </Box>
                   )
