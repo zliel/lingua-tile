@@ -90,6 +90,7 @@ function NavBar() {
       { name: "Home", endpoint: "/home" },
       { name: "About", endpoint: "/about" },
       { name: "Lessons", endpoint: "/lessons" },
+      { name: "Journey", endpoint: "/journey" },
       { name: "Translate", endpoint: "/translate" },
     );
 
@@ -225,7 +226,7 @@ function NavBar() {
                 <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
                   <Avatar
                     sx={{
-                      backgroundColor: theme.palette.secondary.dark,
+                      backgroundColor: theme.palette.secondary.main,
                       color: theme.palette.primary.contrastText,
                     }}
                   >
