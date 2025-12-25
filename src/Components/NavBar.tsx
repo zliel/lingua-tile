@@ -89,8 +89,7 @@ function NavBar() {
     links.push(
       { name: "Home", endpoint: "/home" },
       { name: "About", endpoint: "/about" },
-      { name: "Lessons", endpoint: "/lessons" },
-      { name: "Journey", endpoint: "/journey" },
+      { name: "Lessons", endpoint: "/learn" },
       { name: "Translate", endpoint: "/translate" },
     );
 
