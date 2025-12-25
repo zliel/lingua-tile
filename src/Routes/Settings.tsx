@@ -53,7 +53,7 @@ function Settings() {
       await axios.put(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
         { learning_mode: newMode },
-        { headers: { Authorization: `Bearer ${authData?.token}` } }
+        { headers: { Authorization: `Bearer ${authData?.token}` } },
       );
       queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
     } catch (error) {
@@ -96,7 +96,11 @@ function Settings() {
               <Switch
                 edge="end"
                 checked={user?.learning_mode === "map"}
-                onChange={() => handleLearningModeToggle(user?.learning_mode === "map" ? "list" : "map")}
+                onChange={() =>
+                  handleLearningModeToggle(
+                    user?.learning_mode === "map" ? "list" : "map",
+                  )
+                }
                 disabled={isUserLoading}
               />
             </ListItemSecondaryAction>
