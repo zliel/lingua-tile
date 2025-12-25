@@ -15,7 +15,8 @@ export const JourneySkeleton = () => {
     { id: 3, nodes: [1] },
     { id: 4, nodes: [1, 2] },
     { id: 5, nodes: [1, 2] },
-    { id: 6, nodes: [1] },
+    { id: 6, nodes: [1, 2] },
+    { id: 7, nodes: [1] },
   ];
 
   const generatePath = (
