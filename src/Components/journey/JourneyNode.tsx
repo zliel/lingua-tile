@@ -108,11 +108,11 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
           </Typography>
 
           <Box sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color={review ? (review.isOverdue ? "error" : "textSecondary") : "textSecondary"}>
               {review
                 ? review.isOverdue
-                  ? `Overdue by ${Math.abs(review.daysLeft)} days`
-                  : `Next review in ${review.daysLeft} days`
+                  ? `Overdue by ${Math.abs(review.daysLeft)} day(s)`
+                  : `Next review in ${review.daysLeft} day(s)`
                 : "Not started yet"}
             </Typography>
           </Box>
@@ -126,7 +126,9 @@ export const JourneyNode = ({ lesson, review }: JourneyNodeProps) => {
               navigate(`${categoryRoutes[lesson.category || "flashcards"]}/${lesson._id}`);
               handleClose();
             }}
-            sx={{ opacity: 1 }}
+            sx={{
+              borderRadius: 2,
+            }}
           >
             Start Lesson
           </Button>
