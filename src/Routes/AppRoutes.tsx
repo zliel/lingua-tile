@@ -10,7 +10,6 @@ import PageSkeleton from "@/Components/skeletons/PageSkeleton";
 
 const Dashboard = lazy(() => import("./Dashboard"));
 const LessonList = lazy(() => import("./LessonList"));
-const JourneyMap = lazy(() => import("./journey/JourneyMap"));
 const Profile = lazy(() => import("./Profile"));
 const UpdateProfile = lazy(() => import("./UpdateProfile"));
 const FlashcardLesson = lazy(() => import("./FlashcardLesson"));
@@ -23,6 +22,8 @@ const AdminSectionTable = lazy(() => import("./AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./AdminLessonTable"));
 const AdminCardTable = lazy(() => import("./AdminCardTable"));
+const JourneyMap = lazy(() => import("./journey/JourneyMap"));
+const LearnContainer = lazy(() => import("./LearnContainer"));
 
 export const AppRoutes = () => {
   return useRoutes([
@@ -36,14 +37,6 @@ export const AppRoutes = () => {
           element: (
             <Suspense fallback={<PageSkeleton />}>
               <About />
-            </Suspense>
-          ),
-        },
-        {
-          path: "/journey",
-          element: (
-            <Suspense>
-              <JourneyMap />
             </Suspense>
           ),
         },
@@ -63,6 +56,26 @@ export const AppRoutes = () => {
             <ProtectedRoute>
               <Suspense>
                 <Dashboard />
+              </Suspense>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/journey",
+          element: (
+            <ProtectedRoute>
+              <Suspense>
+                <JourneyMap />
+              </Suspense>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/learn",
+          element: (
+            <ProtectedRoute>
+              <Suspense>
+                <LearnContainer />
               </Suspense>
             </ProtectedRoute>
           ),
