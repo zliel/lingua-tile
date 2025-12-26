@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../Contexts/AuthContext";
-import axios from "axios";
+import { fetchLessons, fetchReviews, fetchSections } from "@/hooks/useLessons";
 import { useEffect } from "react";
 import { HeroSection } from "@/Components/home/HeroSection";
 import { CTASection } from "@/Components/home/CTASection";
@@ -15,43 +15,19 @@ function Home() {
     if (authData?.token) {
       queryClient.prefetchQuery({
         queryKey: ["lessons", authData.token],
-        queryFn: async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
-            {
-              headers: { Authorization: `Bearer ${authData.token}` },
-            },
-          );
-          return response.data;
-        },
+        queryFn: () => fetchLessons(authData.token),
         staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
         queryKey: ["sections", authData.token],
-        queryFn: async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
-            {
-              headers: { Authorization: `Bearer ${authData.token}` },
-            },
-          );
-          return response.data;
-        },
+        queryFn: () => fetchSections(authData.token),
         staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
         queryKey: ["reviews", authData.token],
-        queryFn: async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews/`,
-            {
-              headers: { Authorization: `Bearer ${authData.token}` },
-            },
-          );
-          return response.data;
-        },
+        queryFn: () => fetchReviews(authData.token),
         initialData: () => {
           const token = localStorage.getItem("token");
           if (!token) {

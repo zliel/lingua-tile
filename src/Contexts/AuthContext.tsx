@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./SnackbarContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface AuthData {
+export interface AuthData {
   isLoggedIn: boolean;
   isAdmin: boolean;
   token: string;

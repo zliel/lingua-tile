@@ -1,8 +1,7 @@
 import { useAuth } from "../Contexts/AuthContext";
-import axios from "axios";
+import { useLessons, useSections } from "@/hooks/useLessons";
 import { Box, Typography } from "@mui/material";
 import NewSectionForm from "../Components/admin/NewSectionForm";
-import { useQuery } from "@tanstack/react-query";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { SectionTable } from "@/Components/admin/SectionTable";
@@ -14,33 +13,13 @@ const AdminSectionTable = () => {
     data: lessons = [],
     isLoading: isLoadingLessons,
     isError: isErrorLessons,
-  } = useQuery({
-    queryKey: ["lessons", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
-      );
-
-      return response.data;
-    },
-    enabled: !!authData,
-  });
+  } = useLessons(authData);
 
   const {
     data: sections = [],
     isLoading: isLoadingSections,
     isError: isErrorSections,
-  } = useQuery({
-    queryKey: ["sections", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
-      );
-
-      return response.data;
-    },
-    enabled: !!authData,
-  });
+  } = useSections(authData);
 
   if (isLoadingLessons || isLoadingSections || authIsLoading) {
     return (

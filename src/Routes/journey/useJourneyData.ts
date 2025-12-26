@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useAuth } from "@/Contexts/AuthContext";
+import { useLessons, useReviews, useSections } from "@/hooks/useLessons";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
 import dayjs from "dayjs";
 
@@ -17,47 +16,10 @@ export const useJourneyData = () => {
   const { authData } = useAuth();
   const ROW_HEIGHT = 120;
 
-  const { data: lessons = [], isLoading: isLessonsLoading } = useQuery({
-    queryKey: ["lessons", authData?.token],
-    queryFn: async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-      return res.data;
-    },
-    enabled: !!authData,
-  });
-
-  const { data: sections = [] } = useQuery({
-    queryKey: ["sections", authData?.token],
-    queryFn: async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-      return res.data;
-    },
-    enabled: !!authData,
-  });
-
-  const { data: reviews = [] } = useQuery({
-    queryKey: ["reviews", authData?.token],
-    queryFn: async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-      return res.data;
-    },
-    enabled: !!authData,
-  });
+  const { data: lessons = [], isLoading: isLoadingLessons } =
+    useLessons(authData);
+  const { data: sections = [] } = useSections(authData);
+  const { data: reviews = [] } = useReviews(authData);
 
   // Helper function to get whether the review is overdue
   const getLessonReviewStatus = (lessonId: string): ReviewStats | null => {
@@ -145,7 +107,7 @@ export const useJourneyData = () => {
   return {
     journeyRows,
     extraRows,
-    isLoading: isLessonsLoading,
+    isLoading: isLoadingLessons,
     getLessonReviewStatus,
   };
 };

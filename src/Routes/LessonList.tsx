@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useLessons, useSections, useReviews } from "@/hooks/useLessons";
 import {
   Box,
   Fade,
@@ -31,24 +30,7 @@ const LessonList = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const {
-    data: lessons,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["lessons", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-      return response.data;
-    },
-    enabled: !!authData,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: lessons, isLoading, isError } = useLessons(authData);
 
   if (isError) {
     showSnackbar("Failed to fetch lessons", "error");
@@ -58,48 +40,16 @@ const LessonList = () => {
     data: sections,
     isLoading: sectionsLoading,
     isError: sectionsError,
-  } = useQuery({
-    queryKey: ["sections", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-
-      return response.data;
-    },
-    enabled: !!authData,
-    staleTime: 5 * 60 * 1000,
-  });
+  } = useSections(authData);
 
   if (sectionsError) {
     showSnackbar("Failed to fetch sections", "error");
   }
 
-  const { data: reviews, isError: reviewsError } = useQuery({
-    queryKey: ["reviews", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-
-      return response.data;
-    },
-    initialData: () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return [];
-      }
-      return undefined;
-    },
-    enabled: !authIsLoading && !!authData,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: reviews, isError: reviewsError } = useReviews(
+    authData,
+    authIsLoading,
+  );
 
   if (reviewsError && authData?.token) {
     showSnackbar("Failed to fetch reviews", "error");

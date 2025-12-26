@@ -7,6 +7,7 @@ import { Review } from "@/types/lessons";
 export const useAppBadge = () => {
   const { authData } = useAuth();
 
+  // Won't use the useReviews hook for this due to its unique requirements
   const { data: reviews } = useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: async () => {

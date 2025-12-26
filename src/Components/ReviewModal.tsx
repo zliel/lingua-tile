@@ -62,7 +62,7 @@ function ReviewModal({
 
   const handleContinue = () => {
     setOpen(false);
-    navigate("/lessons");
+    navigate("/learn");
   };
 
   useEffect(() => {
