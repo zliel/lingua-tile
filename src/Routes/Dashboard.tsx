@@ -1,5 +1,6 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Box, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useTheme, Button } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
@@ -170,15 +171,32 @@ const Dashboard = () => {
         <Box sx={{ mb: 4, textAlign: "center" }}>
           <Typography
             variant="h3"
-            component="h1"
             gutterBottom
             sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
           >
             Welcome back, {user?.username || "Learner"}!
           </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Here's your progress overview.
-          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2 }}>
+            <Typography variant="h6" color="text.secondary">
+              Here's your progress overview.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => navigate("/learn")}
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                fontWeight: "bold",
+                textTransform: "none",
+              }}
+            >
+              Go To Lessons
+            </Button>
+          </Box>
         </Box>
 
         <Grid container spacing={4}>
