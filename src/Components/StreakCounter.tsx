@@ -28,7 +28,7 @@ const StreakCounter = ({ streak, loading = false }: StreakCounterProps) => {
           mx: 2,
           color:
             streak > 0
-              ? theme.palette.secondary.dark
+              ? theme.palette.secondary.main
               : theme.palette.text.disabled,
           cursor: "default",
         }}
@@ -40,7 +40,7 @@ const StreakCounter = ({ streak, loading = false }: StreakCounterProps) => {
             animation: streak > 0 ? `${pulse} 1s ease-in-out 1` : "none",
             filter:
               streak > 0
-                ? "drop-shadow(0 0 8px " + theme.palette.secondary.dark + ")"
+                ? "drop-shadow(0 0 8px " + theme.palette.secondary.main + ")"
                 : "none",
           }}
         />

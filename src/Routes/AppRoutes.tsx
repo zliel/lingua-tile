@@ -22,6 +22,8 @@ const AdminSectionTable = lazy(() => import("./AdminSectionTable"));
 const AdminUserTable = lazy(() => import("./AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./AdminLessonTable"));
 const AdminCardTable = lazy(() => import("./AdminCardTable"));
+const JourneyMap = lazy(() => import("./journey/JourneyMap"));
+const LearnContainer = lazy(() => import("./LearnContainer"));
 
 export const AppRoutes = () => {
   return useRoutes([
@@ -54,6 +56,26 @@ export const AppRoutes = () => {
             <ProtectedRoute>
               <Suspense>
                 <Dashboard />
+              </Suspense>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/journey",
+          element: (
+            <ProtectedRoute>
+              <Suspense>
+                <JourneyMap />
+              </Suspense>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/learn",
+          element: (
+            <ProtectedRoute>
+              <Suspense>
+                <LearnContainer />
               </Suspense>
             </ProtectedRoute>
           ),

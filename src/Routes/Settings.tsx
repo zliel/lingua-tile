@@ -14,18 +14,50 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { usePushSubscription } from "../hooks/usePushSubscription";
 
+import { useAuth } from "@/Contexts/AuthContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+
 function Settings() {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { authData } = useAuth();
+  const queryClient = useQueryClient();
 
   const { isSubscribed, isLoading, subscribe, unsubscribe } =
     usePushSubscription();
+
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ["user", authData?.token],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
+        { headers: { Authorization: `Bearer ${authData?.token}` } },
+      );
+      return response.data;
+    },
+    enabled: !!authData?.isLoggedIn && !!authData?.token,
+  });
 
   const handleNotificationToggle = async () => {
     if (isSubscribed) {
       await unsubscribe();
     } else {
       await subscribe();
+    }
+  };
+
+  const handleLearningModeToggle = async (newMode: string) => {
+    if (!user) return;
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
+        { learning_mode: newMode },
+        { headers: { Authorization: `Bearer ${authData?.token}` } },
+      );
+      queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
+    } catch (error) {
+      console.error("Failed to update learning mode", error);
     }
   };
 
@@ -55,6 +87,24 @@ function Settings() {
           Settings
         </Typography>
         <List>
+          <ListItem divider>
+            <ListItemText
+              primary="Journey Map View"
+              secondary="Use the interactive map instead of the lesson list"
+            />
+            <ListItemSecondaryAction>
+              <Switch
+                edge="end"
+                checked={user?.learning_mode === "map"}
+                onChange={() =>
+                  handleLearningModeToggle(
+                    user?.learning_mode === "map" ? "list" : "map",
+                  )
+                }
+                disabled={isUserLoading}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
           <ListItem divider>
             <ListItemText
               primary="Push Notifications"
