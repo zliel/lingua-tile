@@ -57,10 +57,7 @@ function Profile() {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const {
-    data: reviews,
-    isLoading: isFetchingReviews,
-  } = useReviews(authData);
+  const { data: reviews, isLoading: isFetchingReviews } = useReviews(authData);
 
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],

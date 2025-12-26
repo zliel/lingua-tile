@@ -30,11 +30,7 @@ const LessonList = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const {
-    data: lessons,
-    isLoading,
-    isError,
-  } = useLessons(authData);
+  const { data: lessons, isLoading, isError } = useLessons(authData);
 
   if (isError) {
     showSnackbar("Failed to fetch lessons", "error");
@@ -50,7 +46,10 @@ const LessonList = () => {
     showSnackbar("Failed to fetch sections", "error");
   }
 
-  const { data: reviews, isError: reviewsError } = useReviews(authData, authIsLoading);
+  const { data: reviews, isError: reviewsError } = useReviews(
+    authData,
+    authIsLoading,
+  );
 
   if (reviewsError && authData?.token) {
     showSnackbar("Failed to fetch reviews", "error");
@@ -183,7 +182,7 @@ const LessonList = () => {
                       }}
                       disabled={
                         downloadingSections[
-                        groupedLessons[sectionName][0].section_id || ""
+                          groupedLessons[sectionName][0].section_id || ""
                         ]
                       }
                       size="small"

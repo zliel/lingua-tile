@@ -176,7 +176,14 @@ const Dashboard = () => {
           >
             Welcome back, {user?.username || "Learner"}!
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             <Typography variant="h6" color="text.secondary">
               Here's your progress overview.
             </Typography>

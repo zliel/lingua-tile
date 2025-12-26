@@ -7,7 +7,7 @@ export const fetchLessons = async (token: string | undefined) => {
     `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
     {
       headers: { Authorization: `Bearer ${token}` },
-    }
+    },
   );
   return response.data;
 };
@@ -17,7 +17,7 @@ export const fetchSections = async (token: string | undefined) => {
     `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
     {
       headers: { Authorization: `Bearer ${token}` },
-    }
+    },
   );
   return response.data;
 };
@@ -27,7 +27,7 @@ export const fetchReviews = async (token: string | undefined) => {
     `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
     {
       headers: { Authorization: `Bearer ${token}` },
-    }
+    },
   );
   return response.data;
 };
@@ -50,7 +50,10 @@ export const useSections = (authData: AuthData | null) => {
   });
 };
 
-export const useReviews = (authData: AuthData | null, authIsLoading: boolean = false) => {
+export const useReviews = (
+  authData: AuthData | null,
+  authIsLoading: boolean = false,
+) => {
   return useQuery({
     queryKey: ["reviews", authData?.token],
     queryFn: () => fetchReviews(authData?.token),
@@ -65,4 +68,3 @@ export const useReviews = (authData: AuthData | null, authIsLoading: boolean = f
     staleTime: 5 * 60 * 1000,
   });
 };
-
