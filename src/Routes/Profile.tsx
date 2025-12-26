@@ -28,6 +28,7 @@ import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart
 import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
 import { ProfileHeader } from "@/Components/profile/ProfileHeader";
 import { ActivityHeatmap } from "@/Components/charts/ActivityHeatmap";
+import { useReviews } from "@/hooks/useLessons";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -56,21 +57,10 @@ function Profile() {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const { data: reviews, isLoading: isFetchingReviews } = useQuery({
-    queryKey: ["reviews", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
-      return response.data;
-    },
-    enabled: !!authData && !!authData.isLoggedIn,
-  });
+  const {
+    data: reviews,
+    isLoading: isFetchingReviews,
+  } = useReviews(authData);
 
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],

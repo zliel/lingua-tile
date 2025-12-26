@@ -3,6 +3,7 @@ import { useSnackbar } from "../Contexts/SnackbarContext";
 import NewLessonForm from "../Components/admin/NewLessonForm";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLessons, useSections } from "@/hooks/useLessons";
 import { Box, Typography } from "@mui/material";
 import { NewLesson } from "@/types/lessons";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
@@ -18,33 +19,13 @@ const AdminLessonTable = () => {
     data: lessons = [],
     isLoading: isLoadingLessons,
     isError: isErrorLessons,
-  } = useQuery({
-    queryKey: ["lessons", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`,
-      );
-
-      return response.data;
-    },
-    enabled: !!authData,
-  });
+  } = useLessons(authData);
 
   const {
     data: sections = [],
     isLoading: isLoadingSections,
     isError: isErrorSections,
-  } = useQuery({
-    queryKey: ["sections", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/all`,
-      );
-
-      return response.data;
-    },
-    enabled: !!authData,
-  });
+  } = useSections(authData);
 
   const {
     data: cards = [],
