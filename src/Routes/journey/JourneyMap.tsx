@@ -159,7 +159,6 @@ const JourneyMap = () => {
         minHeight: "100vh",
         pt: isMobile ? 4 : 2,
         pb: isMobile ? 10 : 2,
-        bgcolor: theme.palette.background.default,
         overflowX: "hidden",
         width: "100%",
         display: "flex",
