@@ -13,42 +13,44 @@ export const useOfflineData = () => {
     Record<string, boolean>
   >({});
 
-  const prefetchLessonData = useCallback(
-    async (lessonId: string) => {
+  const fetchSectionData = useCallback(
+    async (sectionId: string) => {
       const token = authData?.token;
-
-      await queryClient.prefetchQuery({
-        queryKey: ["lesson", lessonId, token],
-        queryFn: async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
-          );
-          return response.data as Lesson;
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE}/api/sections/${sectionId}/download`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        staleTime: 1000 * 60 * 60 * 24,
+      );
+
+      const { lessons, cards } = response.data;
+
+      // Cache lessons
+      lessons.forEach((lesson: Lesson) => {
+        queryClient.setQueryData(["lesson", lesson._id, token], lesson);
       });
 
-      if (
-        (queryClient.getQueryState(["lesson", lessonId, token])?.data as Lesson)
-          .category === "flashcards"
-      ) {
-        await queryClient.prefetchQuery({
-          queryKey: ["flashcards", lessonId, token],
-          queryFn: async () => {
-            const response = await axios.get(
-              `${import.meta.env.VITE_APP_API_BASE}/api/cards/lesson/${lessonId}`,
-            );
-            return response.data;
-          },
-          staleTime: 1000 * 60 * 60 * 24,
-        });
-      }
+      // Cache cards for flashcard lessons
+      lessons.forEach((lesson: Lesson) => {
+        if (lesson.category === "flashcards") {
+          const lessonCards = cards.filter((card: any) =>
+            card.lesson_ids && card.lesson_ids.includes(lesson._id)
+          );
+          queryClient.setQueryData(
+            ["flashcards", lesson._id, token],
+            lessonCards,
+          );
+        }
+      });
+      return lessons.length;
     },
     [authData, queryClient],
   );
 
   const downloadSection = useCallback(
-    async (sectionId: string, lessons: Lesson[]) => {
+    async (sectionId: string) => {
       if (!navigator.onLine) {
         showSnackbar("You must be online to download lessons.", "error");
         return;
@@ -57,38 +59,44 @@ export const useOfflineData = () => {
       setDownloadingSections((prev) => ({ ...prev, [sectionId]: true }));
 
       try {
-        let count = 0;
-        for (const lesson of lessons) {
-          await prefetchLessonData(lesson._id);
-          count++;
-        }
-        showSnackbar(`Downloaded ${count} lessons for offline use.`, "success");
+        const count = await fetchSectionData(sectionId);
+        showSnackbar(
+          `Downloaded ${count} lessons for offline use.`,
+          "success",
+        );
       } catch (error) {
-        showSnackbar("Failed to download some lessons.", "error");
+        console.error(error);
+        showSnackbar("Failed to download lessons.", "error");
       } finally {
         setDownloadingSections((prev) => ({ ...prev, [sectionId]: false }));
       }
     },
-    [prefetchLessonData, showSnackbar],
+    [fetchSectionData, showSnackbar],
   );
 
   const prefetchActiveSection = useCallback(
     async (lessonsInSection: Lesson[]) => {
-      if (!navigator.onLine) return;
+      if (!navigator.onLine || lessonsInSection.length === 0) return;
 
-      const lessonsToPrefetch = lessonsInSection.slice(0, 5);
+      const nextLesson = lessonsInSection[0];
+      const token = authData?.token;
 
-      try {
-        for (const lesson of lessonsToPrefetch) {
-          await prefetchLessonData(lesson._id).catch((err) =>
-            console.error("Background prefetch failed", err),
-          );
+      // Check if the next lesson is already cached. If so, assume section is reasonably fresh.
+      const cachedLesson = queryClient.getQueryData(["lesson", nextLesson._id, token]);
+      if (cachedLesson) {
+        return;
+      }
+
+      // If next lesson is NOT in cache, bulk download the section to warm it up
+      if (nextLesson.section_id) {
+        try {
+          await fetchSectionData(nextLesson.section_id);
+        } catch (error) {
+          console.error("Background prefetch failed", error);
         }
-      } catch (error) {
-        console.error("Background prefetch error", error);
       }
     },
-    [authData, prefetchLessonData],
+    [authData, queryClient, fetchSectionData],
   );
 
   return {
