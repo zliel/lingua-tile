@@ -5,6 +5,7 @@ import PWAInstallPrompt from "./PWAInstallPrompt";
 import PWAPrompt from "react-ios-pwa-prompt";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppBadge } from "@/hooks/useAppBadge";
+import TileBackground from "./TileBackground";
 
 const IOSPrompt: React.FC = () => (
   <PWAPrompt
@@ -26,10 +27,10 @@ export default function Layout() {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        bgcolor: "background.default",
         color: "text.primary",
       }}
     >
+      <TileBackground />
       <NavBar />
       <Box
         component="main"
