@@ -35,8 +35,9 @@ export const useOfflineData = () => {
       // Cache cards for flashcard lessons
       lessons.forEach((lesson: Lesson) => {
         if (lesson.category === "flashcards") {
-          const lessonCards = cards.filter((card: any) =>
-            card.lesson_ids && card.lesson_ids.includes(lesson._id)
+          const lessonCards = cards.filter(
+            (card: any) =>
+              card.lesson_ids && card.lesson_ids.includes(lesson._id),
           );
           queryClient.setQueryData(
             ["flashcards", lesson._id, token],
@@ -60,10 +61,7 @@ export const useOfflineData = () => {
 
       try {
         const count = await fetchSectionData(sectionId);
-        showSnackbar(
-          `Downloaded ${count} lessons for offline use.`,
-          "success",
-        );
+        showSnackbar(`Downloaded ${count} lessons for offline use.`, "success");
       } catch (error) {
         console.error(error);
         showSnackbar("Failed to download lessons.", "error");
@@ -82,7 +80,11 @@ export const useOfflineData = () => {
       const token = authData?.token;
 
       // Check if the next lesson is already cached. If so, assume section is reasonably fresh.
-      const cachedLesson = queryClient.getQueryData(["lesson", nextLesson._id, token]);
+      const cachedLesson = queryClient.getQueryData([
+        "lesson",
+        nextLesson._id,
+        token,
+      ]);
       if (cachedLesson) {
         return;
       }

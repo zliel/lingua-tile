@@ -174,10 +174,7 @@ const LessonList = () => {
                         const sectionId =
                           groupedLessons[sectionName][0].section_id;
                         if (sectionId) {
-                          downloadSection(
-                            sectionId,
-                            groupedLessons[sectionName],
-                          );
+                          downloadSection(sectionId);
                         }
                       }}
                       disabled={
