@@ -51,7 +51,7 @@ export function ActivityHeatmap({
 
   return (
     <Card
-      elevation={0}
+      elevation={3}
       sx={{
         borderRadius: 4,
         border: `1px solid ${theme.palette.divider}`,

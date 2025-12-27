@@ -1,5 +1,13 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Box, Grid, Typography, useTheme, Button, Paper, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  useTheme,
+  Button,
+  Paper,
+  useMediaQuery,
+} from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -178,7 +186,15 @@ const Dashboard = () => {
           >
             Welcome back, {user?.username || "Learner"}!
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "center", alignItems: "center", gap: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
             <Typography variant="h6" color="text.secondary">
               Here's your progress overview.
             </Typography>
@@ -206,7 +222,6 @@ const Dashboard = () => {
 
           {/* Charts Section */}
           <Grid size={{ xs: 12, md: 6 }}>
-
             <motion.div
               whileHover={{ y: -5 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}

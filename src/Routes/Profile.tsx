@@ -58,10 +58,7 @@ function Profile() {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const {
-    data: reviews,
-    isLoading: isFetchingReviews,
-  } = useReviews(authData);
+  const { data: reviews, isLoading: isFetchingReviews } = useReviews(authData);
 
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],
@@ -409,8 +406,8 @@ function Profile() {
             title={"Delete Profile"}
             message={"Are you sure you want to delete your profile?"}
           />
-        </Container >
-      </Fade >
+        </Container>
+      </Fade>
     </>
   );
 }
