@@ -6,6 +6,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import LevelProgressBar from "./charts/LevelProgressBar";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect } from "react";
 
 interface SummaryData {
   xp_gained: number;
@@ -23,6 +25,19 @@ export const XpSummary = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const xpCount = useMotionValue(0);
+  const roundedXp = useTransform(xpCount, (latest: number) =>
+    Math.round(latest),
+  );
+
+  useEffect(() => {
+    const controls = animate(xpCount, summaryData.xp_gained, {
+      duration: 1.5,
+      ease: "easeOut",
+    });
+    return controls.stop;
+  }, [summaryData.xp_gained, xpCount]);
 
   return (
     <Box
@@ -46,7 +61,7 @@ export const XpSummary = ({
       </Typography>
 
       <Typography variant="h2" sx={{ my: 4, fontWeight: "bold" }}>
-        +{summaryData.xp_gained} XP
+        +<motion.span>{roundedXp}</motion.span> XP
       </Typography>
 
       {summaryData.leveled_up && (

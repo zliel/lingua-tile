@@ -1,4 +1,5 @@
-import { Box, LinearProgress, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import { motion } from "framer-motion";
 
 interface LevelProgressBarProps {
   level: number;
@@ -20,22 +21,29 @@ const LevelProgressBar = ({ level, xp }: LevelProgressBarProps) => {
           {xp} / {xpNeeded} XP
         </Typography>
       </Box>
-      <LinearProgress
-        variant="determinate"
-        value={progress}
+      <Box
         sx={{
           height: 10,
-          borderRadius: 5,
-          backgroundColor:
+          width: "100%",
+          bgcolor:
             theme.palette.mode === "dark"
               ? "rgba(255,255,255,0.1)"
               : "rgba(0,0,0,0.1)",
-          "& .MuiLinearProgress-bar": {
-            borderRadius: 5,
-            backgroundColor: theme.palette.secondary.main,
-          },
+          borderRadius: 5,
+          overflow: "hidden",
         }}
-      />
+      >
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 1.5, type: "spring", bounce: 0 }}
+          style={{
+            height: "100%",
+            backgroundColor: theme.palette.secondary.main,
+            borderRadius: 5,
+          }}
+        />
+      </Box>
     </Box>
   );
 };
