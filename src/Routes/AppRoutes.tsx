@@ -63,21 +63,17 @@ export const AppRoutes = () => {
         {
           path: "/journey",
           element: (
-            <ProtectedRoute>
-              <Suspense>
-                <JourneyMap />
-              </Suspense>
-            </ProtectedRoute>
+            <Suspense>
+              <JourneyMap />
+            </Suspense>
           ),
         },
         {
           path: "/learn",
           element: (
-            <ProtectedRoute>
-              <Suspense>
-                <LearnContainer />
-              </Suspense>
-            </ProtectedRoute>
+            <Suspense>
+              <LearnContainer />
+            </Suspense>
           ),
         },
         {

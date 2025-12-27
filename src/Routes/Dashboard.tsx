@@ -1,5 +1,12 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import { Box, Grid, Typography, useTheme, Button } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  useTheme,
+  Button,
+  useMediaQuery,
+} from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -20,6 +27,7 @@ const Dashboard = () => {
   const { showSnackbar } = useSnackbar();
 
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const {
     isSubscribed,
@@ -179,6 +187,7 @@ const Dashboard = () => {
           <Box
             sx={{
               display: "flex",
+              flexDirection: isMobile ? "column" : "row",
               justifyContent: "center",
               alignItems: "center",
               gap: 2,
