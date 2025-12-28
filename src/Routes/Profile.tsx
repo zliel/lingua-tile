@@ -29,6 +29,7 @@ import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
 import { ProfileHeader } from "@/Components/profile/ProfileHeader";
 import { ActivityHeatmap } from "@/Components/charts/ActivityHeatmap";
 import { useReviews } from "@/hooks/useLessons";
+import { motion } from "framer-motion";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -232,101 +233,131 @@ function Profile() {
           {/* Stats Section */}
           <Grid container spacing={3} mb={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  borderRadius: 4,
-                  border: `1px solid ${theme.palette.divider}`,
-                  height: "100%",
-                }}
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ height: "100%" }}
               >
-                <CardContent>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar
-                      sx={{
-                        bgcolor: theme.palette.success.light,
-                        color: theme.palette.success.contrastText,
-                      }}
-                    >
-                      <School />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="h4" fontWeight="bold">
-                        {stats.activeLessons}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Active Lessons
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
+                <Card
+                  elevation={5}
+                  sx={{
+                    borderRadius: 4,
+                    border: `1px solid ${theme.palette.divider}`,
+                    height: "100%",
+                  }}
+                >
+                  <CardContent>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar
+                        sx={{
+                          bgcolor: theme.palette.success.light,
+                          color: theme.palette.success.contrastText,
+                        }}
+                      >
+                        <School />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h4" fontWeight="bold">
+                          {stats.activeLessons}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Active Lessons
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  borderRadius: 4,
-                  border: `1px solid ${theme.palette.divider}`,
-                  height: "100%",
-                }}
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ height: "100%" }}
               >
-                <CardContent>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar
-                      sx={{
-                        bgcolor: theme.palette.warning.light,
-                        color: theme.palette.warning.contrastText,
-                      }}
-                    >
-                      <TrendingUp />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="h4" fontWeight="bold">
-                        {stats.avgDifficulty}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Average Lesson Difficulty
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </CardContent>
-              </Card>
+                <Card
+                  elevation={5}
+                  sx={{
+                    borderRadius: 4,
+                    border: `1px solid ${theme.palette.divider}`,
+                    height: "100%",
+                  }}
+                >
+                  <CardContent>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar
+                        sx={{
+                          bgcolor: theme.palette.warning.light,
+                          color: theme.palette.warning.contrastText,
+                        }}
+                      >
+                        <TrendingUp />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h4" fontWeight="bold">
+                          {stats.avgDifficulty}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Average Lesson Difficulty
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </Grid>
           </Grid>
 
           {/* Charts Section */}
           <Grid container spacing={3} mb={4}>
             <Grid size={{ xs: 12 }}>
-              <ActivityHeatmap data={activityData || []} />
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <ActivityHeatmap data={activityData || []} />
+              </motion.div>
             </Grid>
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 4,
-                  border: `1px solid ${theme.palette.divider}`,
-                  height: "100%",
-                }}
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ height: "100%" }}
               >
-                <PastWeekReviewsChart reviews={reviews} />
-              </Paper>
+                <Paper
+                  elevation={5}
+                  sx={{
+                    p: 2,
+                    borderRadius: 4,
+                    border: `1px solid ${theme.palette.divider}`,
+                    height: "100%",
+                  }}
+                >
+                  <PastWeekReviewsChart reviews={reviews} />
+                </Paper>
+              </motion.div>
             </Grid>
             <Grid size={{ xs: 12, lg: 6 }}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  borderRadius: 4,
-                  border: `1px solid ${theme.palette.divider}`,
-                  height: "100%",
-                }}
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                style={{ height: "100%" }}
               >
-                <LessonDifficultyChart reviews={reviews} />
-              </Paper>
+                <Paper
+                  elevation={5}
+                  sx={{
+                    p: 2,
+                    borderRadius: 4,
+                    border: `1px solid ${theme.palette.divider}`,
+                    height: "100%",
+                  }}
+                >
+                  <LessonDifficultyChart reviews={reviews} />
+                </Paper>
+              </motion.div>
             </Grid>
+
             {/* <Grid size={{ xs: 12 }}> */}
             {/*   <Paper */}
             {/*     elevation={0} */}

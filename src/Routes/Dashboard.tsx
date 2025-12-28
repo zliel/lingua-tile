@@ -5,6 +5,7 @@ import {
   Typography,
   useTheme,
   Button,
+  Paper,
   useMediaQuery,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -20,6 +21,7 @@ import DashboardSkeleton from "@/Components/skeletons/DashboardSkeleton";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
 import { NotificationPermissionModal } from "@/Components/NotificationPermissionModal";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
   const { authData, logout } = useAuth();
@@ -27,7 +29,7 @@ const Dashboard = () => {
   const { showSnackbar } = useSnackbar();
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const {
     isSubscribed,
@@ -220,48 +222,57 @@ const Dashboard = () => {
 
           {/* Charts Section */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <Box
-              sx={{
-                p: 2,
-                bgcolor:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.05)"
-                    : "rgba(0,0,0,0.02)",
-                borderRadius: 4,
-                height: "100%",
-              }}
+            <motion.div
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              style={{ height: "100%" }}
             >
-              <PastWeekReviewsChart reviews={reviewHistory || []} />
-            </Box>
+              <Paper
+                elevation={5}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                  height: "100%",
+                }}
+              >
+                <PastWeekReviewsChart reviews={reviewHistory || []} />
+              </Paper>
+            </motion.div>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Box
-              sx={{
-                p: 2,
-                bgcolor:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.05)"
-                    : "rgba(0,0,0,0.02)",
-                borderRadius: 4,
-                height: "100%",
-              }}
+            <motion.div
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              style={{ height: "100%" }}
             >
-              <LessonProgressChart reviews={reviews} />
-            </Box>
+              <Paper
+                elevation={5}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                  height: "100%",
+                }}
+              >
+                <LessonProgressChart reviews={reviews} />
+              </Paper>
+            </motion.div>
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <Box
-              sx={{
-                p: 2,
-                bgcolor:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.05)"
-                    : "rgba(0,0,0,0.02)",
-                borderRadius: 4,
-              }}
+            <motion.div
+              whileHover={{ y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              style={{ height: "100%" }}
             >
-              <ProjectedReviewsChart reviews={reviews} />
-            </Box>
+              <Paper
+                elevation={5}
+                sx={{
+                  p: 2,
+                  borderRadius: 4,
+                }}
+              >
+                <ProjectedReviewsChart reviews={reviews} />
+              </Paper>
+            </motion.div>
           </Grid>
         </Grid>
       </Box>
