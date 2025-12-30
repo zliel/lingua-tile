@@ -60,8 +60,8 @@ function Profile() {
 
   const { data: reviews, isLoading: isFetchingReviews } = useReviews(authData);
 
-
-  const { data: reviewHistory, isLoading: isFetchingReviewHistory } = useReviewHistory(authData);
+  const { data: reviewHistory, isLoading: isFetchingReviewHistory } =
+    useReviewHistory(authData);
 
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],
@@ -214,14 +214,22 @@ function Profile() {
   return (
     <>
       <Fade
-        in={isLoading || isFetchingReviews || isFetchingActivity || isFetchingReviewHistory}
+        in={
+          isLoading ||
+          isFetchingReviews ||
+          isFetchingActivity ||
+          isFetchingReviewHistory
+        }
         timeout={100}
       >
         <div>
           <ProfileSkeleton
             sx={{
               display:
-                isLoading || isFetchingReviews || isFetchingActivity || isFetchingReviewHistory
+                isLoading ||
+                isFetchingReviews ||
+                isFetchingActivity ||
+                isFetchingReviewHistory
                   ? "block"
                   : "none",
             }}

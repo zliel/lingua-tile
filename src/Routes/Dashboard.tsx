@@ -83,9 +83,17 @@ const Dashboard = () => {
     enabled: !!authData && !!authData.isLoggedIn,
   });
 
-  const { data: reviews, isLoading: isReviewsLoading, isError: reviewsError } = useReviews(authData)
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    isError: reviewsError,
+  } = useReviews(authData);
 
-  const { data: reviewHistory, isLoading: isReviewHistoryLoading, isError: reviewHistoryError } = useReviewHistory(authData)
+  const {
+    data: reviewHistory,
+    isLoading: isReviewHistoryLoading,
+    isError: reviewHistoryError,
+  } = useReviewHistory(authData);
 
   // Handle query errors
   useEffect(() => {
