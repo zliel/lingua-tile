@@ -68,3 +68,22 @@ export const useReviews = (
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const fetchReviewHistory = async (token: string | undefined) => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews/history/all`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+  return response.data;
+};
+
+export const useReviewHistory = (authData: AuthData | null) => {
+  return useQuery({
+    queryKey: ["reviewHistory", authData?.token],
+    queryFn: () => fetchReviewHistory(authData?.token),
+    enabled: !!authData,
+    staleTime: 5 * 60 * 1000,
+  });
+};
