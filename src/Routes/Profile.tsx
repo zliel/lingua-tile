@@ -28,7 +28,7 @@ import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart
 import { ProfileSkeleton } from "@/Components/skeletons/ProfileSkeleton";
 import { ProfileHeader } from "@/Components/profile/ProfileHeader";
 import { ActivityHeatmap } from "@/Components/charts/ActivityHeatmap";
-import { useReviews } from "@/hooks/useLessons";
+import { useReviewHistory, useReviews } from "@/hooks/useLessons";
 import { motion } from "framer-motion";
 
 function Profile() {
@@ -59,6 +59,9 @@ function Profile() {
   });
 
   const { data: reviews, isLoading: isFetchingReviews } = useReviews(authData);
+
+  const { data: reviewHistory, isLoading: isFetchingReviewHistory } =
+    useReviewHistory(authData);
 
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],
@@ -211,14 +214,22 @@ function Profile() {
   return (
     <>
       <Fade
-        in={isLoading || isFetchingReviews || isFetchingActivity}
+        in={
+          isLoading ||
+          isFetchingReviews ||
+          isFetchingActivity ||
+          isFetchingReviewHistory
+        }
         timeout={100}
       >
         <div>
           <ProfileSkeleton
             sx={{
               display:
-                isLoading || isFetchingReviews || isFetchingActivity
+                isLoading ||
+                isFetchingReviews ||
+                isFetchingActivity ||
+                isFetchingReviewHistory
                   ? "block"
                   : "none",
             }}
@@ -334,7 +345,7 @@ function Profile() {
                     height: "100%",
                   }}
                 >
-                  <PastWeekReviewsChart reviews={reviews} />
+                  <PastWeekReviewsChart reviews={reviewHistory || []} />
                 </Paper>
               </motion.div>
             </Grid>

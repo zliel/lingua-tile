@@ -78,8 +78,11 @@ const useLessonReview = (
           navigate("/lessons");
         }
       }
-      queryClient.invalidateQueries("lessons" as any);
-      queryClient.invalidateQueries("user" as any);
+      queryClient.invalidateQueries({ queryKey: ["lessons"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["reviewHistory"] });
+      queryClient.invalidateQueries({ queryKey: ["activity"] });
     },
   });
 
@@ -105,7 +108,10 @@ const useLessonReview = (
         setModalOpen(false);
         // We invalidate queries so that when we navigate back, the UI can potentially
         // check the queue and show "Pending Sync" instead of the old status.
-        queryClient.invalidateQueries("lessons" as any);
+        queryClient.invalidateQueries({ queryKey: ["lessons"] });
+        queryClient.invalidateQueries({ queryKey: ["reviews"] });
+        queryClient.invalidateQueries({ queryKey: ["reviewHistory"] });
+        queryClient.invalidateQueries({ queryKey: ["activity"] });
         navigate("/lessons");
       }
     },

@@ -22,6 +22,7 @@ import { usePushSubscription } from "@/hooks/usePushSubscription";
 import { NotificationPermissionModal } from "@/Components/NotificationPermissionModal";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useReviewHistory, useReviews } from "@/hooks/useLessons";
 
 const Dashboard = () => {
   const { authData, logout } = useAuth();
@@ -84,43 +85,15 @@ const Dashboard = () => {
 
   const {
     data: reviews,
-    error: reviewsError,
     isLoading: isReviewsLoading,
-  } = useQuery({
-    queryKey: ["reviews", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
-      return response.data;
-    },
-    enabled: !!authData && !!authData.isLoggedIn,
-  });
+    isError: reviewsError,
+  } = useReviews(authData);
 
   const {
     data: reviewHistory,
-    error: reviewHistoryError,
     isLoading: isReviewHistoryLoading,
-  } = useQuery({
-    queryKey: ["reviewHistory", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews/history/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
-      return response.data;
-    },
-    enabled: !!authData && !!authData.isLoggedIn,
-  });
+    isError: reviewHistoryError,
+  } = useReviewHistory(authData);
 
   // Handle query errors
   useEffect(() => {
@@ -137,7 +110,7 @@ const Dashboard = () => {
         );
       }
     } else {
-      showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
+      showSnackbar(`Error: "Unknown error"`, "error");
     }
   }, [
     userError,
