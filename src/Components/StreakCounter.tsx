@@ -24,7 +24,7 @@ const StreakCounter = ({ streak, loading = false }: StreakCounterProps) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          mt: 0.7,
+          mt: 0.5,
           mx: 2,
           color:
             streak > 0

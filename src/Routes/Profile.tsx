@@ -16,6 +16,7 @@ import {
 import Delete from "@mui/icons-material/Delete";
 import School from "@mui/icons-material/School";
 import TrendingUp from "@mui/icons-material/TrendingUp";
+import RestartAlt from "@mui/icons-material/RestartAlt";
 import ConfirmationDialog from "../Components/ConfirmationDialog";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -36,6 +37,7 @@ function Profile() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [showLoaded, setShowLoaded] = useState(false);
   const queryClient = useQueryClient();
   const theme = useTheme();
@@ -98,6 +100,36 @@ function Profile() {
 
     return { totalReviews, activeLessons, avgDifficulty };
   }, [reviews, user]);
+
+  const resetMutation = useMutation({
+    mutationFn: async () => {
+      await axios.post(
+        `${import.meta.env.VITE_APP_API_BASE}/api/users/reset-progress`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${authData?.token}` },
+        },
+      );
+    },
+    onSuccess: () => {
+      showSnackbar("Progress reset successfully", "success");
+      queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
+      queryClient.invalidateQueries({ queryKey: ["lessons", authData?.token] });
+      queryClient.invalidateQueries({ queryKey: ["reviews", authData?.token] });
+      queryClient.invalidateQueries({
+        queryKey: ["reviewHistory", authData?.token],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity", authData?.token],
+      });
+      setResetDialogOpen(false);
+    },
+    onError: (error) => {
+      console.error("Failed to reset progress", error);
+      showSnackbar("Failed to reset progress", "error");
+      setResetDialogOpen(false);
+    },
+  });
 
   // Handle query errors
   useEffect(() => {
@@ -183,6 +215,14 @@ function Profile() {
   const handleDeleteConfirmation = async () => {
     deleteMutation.mutate();
     setDialogOpen(false);
+  };
+
+  const handleResetConfirmation = async () => {
+    resetMutation.mutate();
+  };
+
+  const handleReset = () => {
+    setResetDialogOpen(true);
   };
 
   // Manage the animation in-between loading and loaded
@@ -408,6 +448,15 @@ function Profile() {
             >
               Delete Profile
             </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<RestartAlt />}
+              onClick={handleReset}
+              sx={{ ml: 2 }}
+            >
+              Reset Progress
+            </Button>
           </Paper>
 
           <ConfirmationDialog
@@ -416,6 +465,16 @@ function Profile() {
             onConfirm={handleDeleteConfirmation}
             title={"Delete Profile"}
             message={"Are you sure you want to delete your profile?"}
+          />
+
+          <ConfirmationDialog
+            open={resetDialogOpen}
+            onClose={() => setResetDialogOpen(false)}
+            onConfirm={handleResetConfirmation}
+            title={"Reset Progress"}
+            message={
+              "Are you sure you want to reset your progress? This will delete all your reviews and reset your XP to 0. This action cannot be undone."
+            }
           />
         </Container>
       </Fade>
