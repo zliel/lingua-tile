@@ -116,8 +116,12 @@ function Profile() {
       queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
       queryClient.invalidateQueries({ queryKey: ["lessons", authData?.token] });
       queryClient.invalidateQueries({ queryKey: ["reviews", authData?.token] });
-      queryClient.invalidateQueries({ queryKey: ["reviewHistory", authData?.token] });
-      queryClient.invalidateQueries({ queryKey: ["activity", authData?.token] });
+      queryClient.invalidateQueries({
+        queryKey: ["reviewHistory", authData?.token],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["activity", authData?.token],
+      });
       setResetDialogOpen(false);
     },
     onError: (error) => {
@@ -213,7 +217,6 @@ function Profile() {
     setDialogOpen(false);
   };
 
-
   const handleResetConfirmation = async () => {
     resetMutation.mutate();
   };
@@ -221,7 +224,6 @@ function Profile() {
   const handleReset = () => {
     setResetDialogOpen(true);
   };
-
 
   // Manage the animation in-between loading and loaded
   useEffect(() => {
@@ -265,9 +267,9 @@ function Profile() {
             sx={{
               display:
                 isLoading ||
-                  isFetchingReviews ||
-                  isFetchingActivity ||
-                  isFetchingReviewHistory
+                isFetchingReviews ||
+                isFetchingActivity ||
+                isFetchingReviewHistory
                   ? "block"
                   : "none",
             }}
