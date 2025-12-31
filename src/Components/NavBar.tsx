@@ -14,6 +14,7 @@ import {
   Stack,
   Switch,
   Toolbar,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -22,7 +23,9 @@ import DarkMode from "@mui/icons-material/DarkMode";
 import LightMode from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import CloudOff from "@mui/icons-material/CloudOff";
 import { useAuth } from "../Contexts/AuthContext";
+import { useOffline } from "../Contexts/OfflineContext";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import StreakCounter from "./StreakCounter";
@@ -48,6 +51,7 @@ function NavBar() {
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const { isOnline } = useOffline();
 
   const { data: user } = useQuery({
     queryKey: ["user", authData?.token],
@@ -201,7 +205,18 @@ function NavBar() {
           </Link>
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Stack direction={"row"} alignItems={"center"}>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          {!isOnline && (
+            <Tooltip title="You are offline">
+              <Icon sx={{ color: theme.palette.error.main }} title="Offline">
+                <CloudOff />
+              </Icon>
+            </Tooltip>
+          )}
           {authData?.isLoggedIn && user && (
             <StreakCounter streak={user.current_streak || 0} />
           )}
@@ -212,7 +227,6 @@ function NavBar() {
             onChange={() => setMode(mode === "light" ? "dark" : "light")}
             color={"default"}
             checked={mode === "dark"}
-            sx={{ mt: 0.7 }}
           />
           <Icon sx={{ mr: 1.5 }}>
             <DarkMode />
