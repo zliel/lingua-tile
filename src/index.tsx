@@ -5,13 +5,17 @@ import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { registerSW } from "virtual:pwa-register";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "./Components/ErrorFallback";
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 const queryClient = new QueryClient();
 root.render(
   <QueryClientProvider client={queryClient}>
-    <App />
-    {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <App />
+      {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+    </ErrorBoundary>
   </QueryClientProvider>,
 );
 
