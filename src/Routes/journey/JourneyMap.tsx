@@ -246,7 +246,7 @@ const JourneyMap = () => {
 
             {/* Nodes Layer - Note the absolute positioning */}
             {allRows.map((row) => (
-              <Box key={row.index}>
+              <Box key={(row.index ?? "") + row.offsetY}>
                 {/* Section Heading */}
                 {row.sectionStartTitle && (
                   <Box
