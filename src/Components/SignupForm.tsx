@@ -12,51 +12,24 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
 import { useNavigate } from "react-router";
-
-const errorMsgMap: Record<string, string> = {
-  length: "Password must be between 8 and 64 characters long",
-  validChars:
-    "Password must only include letters, numbers, special characters, and spaces",
-  lowercase: "Password must include at least one lowercase letter",
-  uppercase: "Password must include at least one uppercase letter",
-  number: "Password must include at least one number",
-  specialChar: "Password must include at least one special character",
-  match: "Passwords do not match",
-};
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { SignupSchema, SignupSchemaType } from "@/Schemas/auth";
 
 export const SignupForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
 
-  const isValidPassword = () => {
-    const conditions = {
-      length: password.length >= 8 && password.length <= 64,
-      validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(
-        password,
-      ),
-      lowercase: /[a-z]/.test(password),
-      uppercase: /[A-Z]/.test(password),
-      number: /[0-9]/.test(password),
-      specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-      match: password === confirmPassword,
-    };
-
-    for (const [key, isValid] of Object.entries(conditions)) {
-      if (!isValid) {
-        showSnackbar(errorMsgMap[key], "error");
-        return false;
-      }
-    }
-
-    return true;
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupSchemaType>({
+    resolver: zodResolver(SignupSchema),
+  });
 
   const signupMutation = useMutation({
     mutationFn: (newUser: NewUser) =>
@@ -79,16 +52,10 @@ export const SignupForm = () => {
     },
   });
 
-  const handleSignup = () => {
-    if (!isValidPassword()) {
-      return;
-    } else if (username === "") {
-      showSnackbar("Please enter a username", "error");
-      return;
-    }
-
-    signupMutation.mutate({ username: username, password: password });
+  const onSubmit = (data: SignupSchemaType) => {
+    signupMutation.mutate({ username: data.username, password: data.password });
   };
+
   return (
     <Card
       elevation={1}
@@ -102,10 +69,7 @@ export const SignupForm = () => {
     >
       <CardContent>
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSignup();
-          }}
+          onSubmit={handleSubmit(onSubmit)}
           style={{ width: "100%" }}
         >
           <Grid
@@ -119,46 +83,52 @@ export const SignupForm = () => {
                 Sign Up
               </Typography>
             </Grid>
-            <Grid>
+            <Grid style={{ width: "100%" }}>
               <TextField
                 label={"Username"}
                 variant={"outlined"}
                 fullWidth
-                onChange={(e) => setUsername(e.target.value)}
+                {...register("username")}
+                error={!!errors.username}
+                helperText={errors.username?.message}
                 required
               />
             </Grid>
-            <Grid>
+            <Grid style={{ width: "100%" }}>
               <TextField
                 label={"Password"}
                 type={"password"}
                 variant={"outlined"}
                 color={"secondary"}
                 fullWidth
-                onChange={(e) => setPassword(e.target.value)}
+                {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password?.message}
                 required
               />
             </Grid>
-            <Grid>
+            <Grid style={{ width: "100%" }}>
               <TextField
                 label={"Confirm Password"}
                 type={"password"}
                 variant={"outlined"}
                 color={"secondary"}
                 fullWidth
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                {...register("confirmPassword")}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
                 required
               />
             </Grid>
             <Grid>
               <Button
-                loading={signupMutation.isPending}
+                disabled={signupMutation.isPending}
                 variant={"contained"}
                 color={"primary"}
                 type="submit"
                 size="large"
               >
-                Login
+                {signupMutation.isPending ? "Signing up..." : "Sign Up"}
               </Button>
             </Grid>
           </Grid>
