@@ -73,7 +73,7 @@ function Login() {
         display: "flex",
         justifyContent: "center",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Card
@@ -96,17 +96,14 @@ function Login() {
           </Typography>
         </Box>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{ width: "100%" }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
           <Grid
             container
             direction={"column"}
             spacing={3}
             alignItems={"center"}
           >
-            <Grid style={{ width: '100%' }}>
+            <Grid style={{ width: "100%" }}>
               <TextField
                 label="Username"
                 variant="outlined"
@@ -116,7 +113,7 @@ function Login() {
                 helperText={errors.username?.message}
               />
             </Grid>
-            <Grid style={{ width: '100%' }}>
+            <Grid style={{ width: "100%" }}>
               <TextField
                 label="Password"
                 type="password"
@@ -127,7 +124,7 @@ function Login() {
                 helperText={errors.password?.message}
               />
             </Grid>
-            <Grid style={{ width: '100%' }}>
+            <Grid style={{ width: "100%" }}>
               <Button
                 type="submit"
                 variant="contained"
@@ -167,8 +164,8 @@ function Login() {
             </Link>
           </Typography>
         </Box>
-      </Card >
-    </Box >
+      </Card>
+    </Box>
   );
 }
 

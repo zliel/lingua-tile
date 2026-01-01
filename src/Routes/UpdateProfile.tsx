@@ -134,8 +134,8 @@ function UpdateProfile() {
     const payload = {
       ...user,
       username: data.username,
-      password: data.password || undefined // Only send password if it's set
-    }
+      password: data.password || undefined, // Only send password if it's set
+    };
     updateMutation.mutate(payload);
   };
 
@@ -244,7 +244,9 @@ function UpdateProfile() {
               fullWidth
               {...register("username")}
               error={!!errors.username}
-              helperText={errors.username?.message || `Current: ${user.username}`}
+              helperText={
+                errors.username?.message || `Current: ${user.username}`
+              }
             />
 
             <Divider sx={{ my: 1 }}>
