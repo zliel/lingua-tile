@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import {
   Alert,
   Box,
@@ -18,15 +18,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { UpdateProfileSchema, UpdateProfileSchemaType } from "../Schemas/auth";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") || "",
-  );
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
 
@@ -46,7 +44,6 @@ function UpdateProfile() {
         },
       );
 
-      setUsername(response.data.username);
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn,
@@ -68,8 +65,32 @@ function UpdateProfile() {
     }
   }
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateProfileSchemaType>({
+    resolver: zodResolver(UpdateProfileSchema),
+    defaultValues: {
+      username: user?.username || "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user.username,
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [user, reset]);
+
   const updateMutation = useMutation({
-    mutationFn: async (updatedUser) => {
+    mutationFn: async (updatedUser: UpdateProfileSchemaType) => {
       await axios.put(
         `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
         updatedUser,
@@ -109,51 +130,13 @@ function UpdateProfile() {
     }
   }
 
-  const isValidPassword = () => {
-    const conditions = {
-      length: password.length >= 8 && password.length <= 64,
-      validChars: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]*$/.test(
-        password,
-      ),
-      lowercase: /[a-z]/.test(password),
-      uppercase: /[A-Z]/.test(password),
-      number: /[0-9]/.test(password),
-      specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-      match: password === confirmPassword,
+  const onSubmit = (data: UpdateProfileSchemaType) => {
+    const payload = {
+      ...user,
+      username: data.username,
+      password: data.password || undefined, // Only send password if it's set
     };
-
-    const messages: Record<string, string> = {
-      length: "Password must be between 8 and 64 characters long",
-      validChars:
-        "Password must only include letters, numbers, special characters, and spaces",
-      lowercase: "Password must include at least one lowercase letter",
-      uppercase: "Password must include at least one uppercase letter",
-      number: "Password must include at least one number",
-      specialChar: "Password must include at least one special character",
-      match: "Passwords do not match",
-    };
-
-    for (const [key, isValid] of Object.entries(conditions)) {
-      if (!isValid) {
-        showSnackbar(messages[key], "error");
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handleSave = async () => {
-    if (password !== "") {
-      if (!isValidPassword()) {
-        return;
-      }
-
-      user.password = password;
-    }
-
-    const updatedUser = { ...user, username, password: password || undefined };
-    updateMutation.mutate(updatedUser);
+    updateMutation.mutate(payload);
   };
 
   if (!authData?.isLoggedIn) {
@@ -253,20 +236,17 @@ function UpdateProfile() {
           Update your account information below.
         </Typography>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSave();
-          }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3}>
             <TextField
               label="Username"
               variant="outlined"
               fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              helperText={`Current: ${user.username}`}
+              {...register("username")}
+              error={!!errors.username}
+              helperText={
+                errors.username?.message || `Current: ${user.username}`
+              }
             />
 
             <Divider sx={{ my: 1 }}>
@@ -280,16 +260,18 @@ function UpdateProfile() {
               type="password"
               variant="outlined"
               fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
             />
             <TextField
               label="Confirm New Password"
               type="password"
               variant="outlined"
               fullWidth
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              {...register("confirmPassword")}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
             />
 
             <Alert severity="warning" sx={{ borderRadius: 2 }}>

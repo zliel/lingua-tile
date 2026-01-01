@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.2.2",
     "@mui/icons-material": "^7.3.5",
     "@mui/lab": "^7.0.0-beta.16",
     "@mui/material": "^7.3.5",
@@ -27,6 +28,7 @@
     "react-calendar-heatmap": "^1.10.0",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.1",
+    "react-hook-form": "^7.69.0",
     "react-ios-pwa-prompt": "^2.0.6",
     "react-router": "^6.30.1",
     "react-router-dom": "^6.30.1",
@@ -37,7 +39,8 @@
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4",
     "wanakana": "^5.3.1",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "zod": "^4.3.3"
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.84.2",
