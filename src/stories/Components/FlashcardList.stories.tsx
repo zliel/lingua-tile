@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import FlashcardList from '@/Components/FlashcardList';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthContext from '@/Contexts/AuthContext';
-import { SnackbarContext } from '@/Contexts/SnackbarContext';
+import SnackbarContext from '@/Contexts/SnackbarContext';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import fn from '@storybook/addon-vitest';
