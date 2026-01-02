@@ -9,7 +9,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
-    "module": "NodeNext",
+    "module": "ESNext",
     "lib": [
       "ES2022",
       "DOM",
@@ -22,7 +22,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     /* Bundler mode */
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "noEmit": true,
     /* Linting */
     "skipLibCheck": true,
