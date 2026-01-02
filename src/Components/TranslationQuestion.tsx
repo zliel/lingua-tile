@@ -150,6 +150,10 @@ const TranslationQuestion = ({
     }
   };
 
+  const handleReorder = (newOrder: { id: string; text: string }[]) => {
+    setSelectedWords(newOrder);
+  };
+
   const toggleMode = () => {
     setMode((prev) => (prev === "keyboard" ? "word_bank" : "keyboard"));
     setUserAnswer("");
@@ -350,6 +354,7 @@ const TranslationQuestion = ({
                 availableWords={availableWords}
                 selectedWords={selectedWords}
                 onWordClick={handleWordClick}
+                onReorder={handleReorder}
                 isCorrect={isCorrect ?? null}
                 showFurigana={showFurigana}
               />
