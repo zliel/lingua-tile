@@ -77,12 +77,13 @@ const WordTileContent = ({
         boxShadow: isSelected
           ? `0 4px 12px ${theme.palette.primary.main}40`
           : "0 2px 4px rgba(0,0,0,0.05)",
-        border: `1px solid ${isSelected
-          ? theme.palette.primary.main
-          : theme.palette.mode === "dark"
-            ? "rgba(255,255,255,0.1)"
-            : "rgba(0,0,0,0.05)"
-          }`,
+        border: `1px solid ${
+          isSelected
+            ? theme.palette.primary.main
+            : theme.palette.mode === "dark"
+              ? "rgba(255,255,255,0.1)"
+              : "rgba(0,0,0,0.05)"
+        }`,
         fontWeight: 500,
         userSelect: "none",
         cursor: isOverlay ? "grabbing" : disabled ? "default" : "pointer",
@@ -316,7 +317,7 @@ const WordBank: React.FC<WordBankProps> = ({
               {activeWord ? (
                 <WordTileContent
                   word={activeWord}
-                  onClick={() => { }}
+                  onClick={() => {}}
                   isSelected={true}
                   disabled={false}
                   showFurigana={showFurigana}
