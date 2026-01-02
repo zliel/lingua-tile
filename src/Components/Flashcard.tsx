@@ -102,24 +102,26 @@ const Flashcard = ({
         <Box
           sx={{
             position: "relative",
+            display: "flex",
+            flexDirection: "column",
             flexGrow: 1,
             width: "100%",
             perspective: "1000px",
-            display: "flex",
             alignItems: "center",
+            p: 2,
           }}
         >
           <Box
             className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
             onClick={handleShowTranslation}
-            sx={{ height: "100%", width: "100%" }}
+            sx={{ height: "100%", width: "100%", textAlign: "center" }}
           >
             {/* Front Side */}
             <CardContent className="flashcard-front" sx={{ display: isFlipped ? "none" : "", p: 0 }}>
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "1.25rem" : "2rem",
+                  fontSize: isMobile ? "1.25rem" : "2.25rem",
                   fontWeight: 500,
                   color: theme.palette.text.primary,
                 }}
@@ -133,7 +135,7 @@ const Flashcard = ({
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "1.25rem" : "2rem",
+                  fontSize: isMobile ? "1.25rem" : "2.25rem",
                   fontWeight: 400,
                   color: theme.palette.text.primary,
                 }}
@@ -145,8 +147,6 @@ const Flashcard = ({
           <Typography
             variant="caption"
             sx={{
-              position: "absolute",
-              bottom: 16,
               width: "100%",
               textAlign: "center",
               opacity: 0.6,
