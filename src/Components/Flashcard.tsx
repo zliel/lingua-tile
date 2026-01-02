@@ -88,9 +88,8 @@ const Flashcard = ({
           boxShadow: isDarkMode
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${
-            isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
-          }`,
+          border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
+            }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             transform: isMobile ? "none" : "translateY(-5px)",
@@ -106,6 +105,8 @@ const Flashcard = ({
             flexGrow: 1,
             width: "100%",
             perspective: "1000px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <Box
@@ -114,11 +115,11 @@ const Flashcard = ({
             sx={{ height: "100%", width: "100%" }}
           >
             {/* Front Side */}
-            <CardContent className="flashcard-front">
+            <CardContent className="flashcard-front" sx={{ display: isFlipped ? "none" : "", p: 0 }}>
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "2.5rem" : "4rem",
+                  fontSize: isMobile ? "1.25rem" : "2rem",
                   fontWeight: 500,
                   color: theme.palette.text.primary,
                 }}
@@ -128,11 +129,11 @@ const Flashcard = ({
             </CardContent>
 
             {/* Back Side */}
-            <CardContent className="flashcard-back">
+            <CardContent className="flashcard-back" sx={{ display: isFlipped ? "" : "none", p: 0 }}>
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "2rem" : "3rem",
+                  fontSize: isMobile ? "1.25rem" : "2rem",
                   fontWeight: 400,
                   color: theme.palette.text.primary,
                 }}
