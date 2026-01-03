@@ -103,22 +103,29 @@ const Flashcard = ({
         <Box
           sx={{
             position: "relative",
+            display: "flex",
+            flexDirection: "column",
             flexGrow: 1,
             width: "100%",
             perspective: "1000px",
+            alignItems: "center",
+            p: 2,
           }}
         >
           <Box
             className={`flashcard-content ${isFlipped ? "flipped" : ""}`}
             onClick={handleShowTranslation}
-            sx={{ height: "100%", width: "100%" }}
+            sx={{ height: "100%", width: "100%", textAlign: "center" }}
           >
             {/* Front Side */}
-            <CardContent className="flashcard-front">
+            <CardContent
+              className="flashcard-front"
+              sx={{ display: isFlipped ? "none" : "", p: 0 }}
+            >
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "2.5rem" : "4rem",
+                  fontSize: isMobile ? "1.25rem" : "2.25rem",
                   fontWeight: 500,
                   color: theme.palette.text.primary,
                 }}
@@ -128,11 +135,14 @@ const Flashcard = ({
             </CardContent>
 
             {/* Back Side */}
-            <CardContent className="flashcard-back">
+            <CardContent
+              className="flashcard-back"
+              sx={{ display: isFlipped ? "" : "none", p: 0 }}
+            >
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "2rem" : "3rem",
+                  fontSize: isMobile ? "1.25rem" : "2.25rem",
                   fontWeight: 400,
                   color: theme.palette.text.primary,
                 }}
@@ -144,8 +154,6 @@ const Flashcard = ({
           <Typography
             variant="caption"
             sx={{
-              position: "absolute",
-              bottom: 16,
               width: "100%",
               textAlign: "center",
               opacity: 0.6,

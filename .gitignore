@@ -10,6 +10,7 @@
 
 # production
 /dist
+/dev-dist
 
 # misc
 .DS_Store
@@ -24,3 +25,6 @@ yarn-error.log*
 
 # environment variables
 .env
+
+*storybook.log
+storybook-static

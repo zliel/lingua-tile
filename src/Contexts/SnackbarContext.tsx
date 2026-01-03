@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 type SnackBarSeverity = "error" | "warning" | "info" | "success";
 
-const SnackbarContext = createContext<{
+export const SnackbarContext = createContext<{
   showSnackbar: (
     message: string,
     severity?: SnackBarSeverity,
@@ -79,3 +79,5 @@ export const SnackbarProvider = ({
     </SnackbarContext.Provider>
   );
 };
+
+export default SnackbarContext;

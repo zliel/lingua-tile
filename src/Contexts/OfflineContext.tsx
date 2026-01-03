@@ -217,3 +217,5 @@ export const OfflineProvider = ({
     </OfflineContext.Provider>
   );
 };
+
+export default OfflineContext;

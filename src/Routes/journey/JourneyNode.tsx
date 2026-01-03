@@ -71,7 +71,7 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
     <>
       <Button
         variant="contained"
-        color={color}
+        color={color as any}
         onClick={handleClick}
         sx={{
           borderRadius: 4,
@@ -292,7 +292,7 @@ export const JourneyNode = ({ lesson, review, pending }: JourneyNodeProps) => {
 
           <Button
             variant="contained"
-            color={color}
+            color={color as any}
             fullWidth
             startIcon={<PlayArrowIcon />}
             onClick={() => {
