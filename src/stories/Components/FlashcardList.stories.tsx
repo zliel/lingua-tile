@@ -56,8 +56,6 @@ const meta = {
   },
   decorators: [
     (Story) => {
-      // Apply mock adapter
-      const originalAdapter = axios.defaults.adapter;
       axios.defaults.adapter = mockAdapter;
 
       return (
