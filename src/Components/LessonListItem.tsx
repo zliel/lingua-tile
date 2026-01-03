@@ -207,7 +207,7 @@ export const LessonListItem = ({
 
       <Button
         variant="contained"
-        color={color}
+        color={color as any}
         onClick={() => {
           onLessonStart(lesson);
           navigate(
