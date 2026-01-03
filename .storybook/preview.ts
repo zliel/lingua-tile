@@ -2,6 +2,8 @@ import type { Preview } from '@storybook/react-vite'
 
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { withThemeFromJSXProvider } from '@storybook/addon-themes';
+import '../src/index.css';
+import '../src/App.css';
 
 /* TODO: update import for your custom Material UI themes */
 import { theme } from '../src/theme';
