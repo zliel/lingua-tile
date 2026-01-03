@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { XpSummary } from '@/Components//XpSummary';
-import fn from '@storybook/addon-vitest';
+import type { Meta, StoryObj } from "@storybook/react";
+import { XpSummary } from "@/Components//XpSummary";
+import fn from "@storybook/addon-vitest";
 
 const meta = {
-  title: 'Components/XpSummary',
+  title: "Components/XpSummary",
   component: XpSummary,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    handleContinue: { action: 'continue' }
+    handleContinue: { action: "continue" },
   },
 } satisfies Meta<typeof XpSummary>;
 
@@ -26,7 +26,7 @@ export const LessonCompleteFirstTime: Story = {
       new_level: 5,
       leveled_up: false,
     },
-    handleContinue: fn()
+    handleContinue: fn(),
   },
 };
 
@@ -39,9 +39,9 @@ export const LessonReview: Story = {
       new_level: 5,
       leveled_up: false,
     },
-    handleContinue: fn()
-  }
-}
+    handleContinue: fn(),
+  },
+};
 
 // Level Up Event
 export const LevelUp: Story = {
@@ -52,7 +52,6 @@ export const LevelUp: Story = {
       new_level: 6,
       leveled_up: true,
     },
-    handleContinue: fn()
+    handleContinue: fn(),
   },
 };
-

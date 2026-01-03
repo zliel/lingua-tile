@@ -27,10 +27,10 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => { },
+  addToQueue: () => {},
   isPending: () => false,
-  sync: async () => { },
-  clearQueue: () => { },
+  sync: async () => {},
+  clearQueue: () => {},
 });
 
 export const useOffline = () => useContext(OfflineContext);

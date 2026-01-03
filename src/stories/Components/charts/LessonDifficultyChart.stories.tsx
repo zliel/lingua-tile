@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { LessonDifficultyChart } from '@/Components/charts/LessonDifficultyChart';
-import AuthContext from '@/Contexts/AuthContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { Meta, StoryObj } from "@storybook/react";
+import { LessonDifficultyChart } from "@/Components/charts/LessonDifficultyChart";
+import AuthContext from "@/Contexts/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
@@ -12,17 +12,19 @@ const mockReviews = Array.from({ length: 50 }, (_, i) => ({
 }));
 
 const meta = {
-  title: 'Components/Charts/LessonDifficultyChart',
+  title: "Components/Charts/LessonDifficultyChart",
   component: LessonDifficultyChart,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={{ authData: { token: 'mock-token' } } as any}>
-          <div style={{ width: '600px' }}>
+        <AuthContext.Provider
+          value={{ authData: { token: "mock-token" } } as any}
+        >
+          <div style={{ width: "600px" }}>
             <Story />
           </div>
         </AuthContext.Provider>
@@ -39,4 +41,3 @@ export const Default: Story = {
     reviews: mockReviews as any[],
   },
 };
-

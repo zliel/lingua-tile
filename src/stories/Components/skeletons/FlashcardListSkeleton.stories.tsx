@@ -1,17 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import FlashcardListSkeleton from '@/Components/skeletons/FlashcardListSkeleton';
+import type { Meta, StoryObj } from "@storybook/react";
+import FlashcardListSkeleton from "@/Components/skeletons/FlashcardListSkeleton";
 
 const meta = {
-  title: 'Components/Skeletons/FlashcardListSkeleton',
+  title: "Components/Skeletons/FlashcardListSkeleton",
   component: FlashcardListSkeleton,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 } satisfies Meta<typeof FlashcardListSkeleton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-

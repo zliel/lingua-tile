@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import WordBank from '@/Components/WordBank';
+import type { Meta, StoryObj } from "@storybook/react";
+import WordBank from "@/Components/WordBank";
 
-const fn = () => { };
+const fn = () => {};
 
 const meta = {
-  title: 'Components/WordBank',
+  title: "Components/WordBank",
   component: WordBank,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    onWordClick: { action: 'word clicked' },
-    onReorder: { action: 'reordered' },
+    onWordClick: { action: "word clicked" },
+    onReorder: { action: "reordered" },
   },
   args: {
     onWordClick: fn(),
@@ -26,10 +26,10 @@ type Story = StoryObj<typeof meta>;
 export const Empty: Story = {
   args: {
     availableWords: [
-      { id: '1', text: '私(わたし)' },
-      { id: '2', text: 'は' },
-      { id: '3', text: '学生(がくせい)' },
-      { id: '4', text: 'です' },
+      { id: "1", text: "私(わたし)" },
+      { id: "2", text: "は" },
+      { id: "3", text: "学生(がくせい)" },
+      { id: "4", text: "です" },
     ],
     selectedWords: [],
     isCorrect: null,
@@ -40,12 +40,12 @@ export const Empty: Story = {
 export const PartiallyFilled: Story = {
   args: {
     availableWords: [
-      { id: '3', text: '学生(がくせい)' },
-      { id: '4', text: 'です' },
+      { id: "3", text: "学生(がくせい)" },
+      { id: "4", text: "です" },
     ],
     selectedWords: [
-      { id: '1', text: '私(わたし)' },
-      { id: '2', text: 'は' },
+      { id: "1", text: "私(わたし)" },
+      { id: "2", text: "は" },
     ],
     isCorrect: null,
     showFurigana: true,
@@ -55,19 +55,24 @@ export const PartiallyFilled: Story = {
 export const Correct: Story = {
   args: {
     availableWords: [],
-    selectedWords: [{
-      "id": "1",
-      "text": "私(わたし)"
-    }, {
-      "id": "2",
-      "text": "は"
-    }, {
-      "id": "3",
-      "text": "学生(がくせい)"
-    }, {
-      "id": "4",
-      "text": "です"
-    }],
+    selectedWords: [
+      {
+        id: "1",
+        text: "私(わたし)",
+      },
+      {
+        id: "2",
+        text: "は",
+      },
+      {
+        id: "3",
+        text: "学生(がくせい)",
+      },
+      {
+        id: "4",
+        text: "です",
+      },
+    ],
     isCorrect: true,
     showFurigana: true,
   },
@@ -77,13 +82,12 @@ export const Incorrect: Story = {
   args: {
     availableWords: [],
     selectedWords: [
-      { id: '1', text: '私(わたし)' },
-      { id: '2', text: 'は' },
-      { id: '4', text: 'です' },
-      { id: '3', text: '学生(がくせい)' },
+      { id: "1", text: "私(わたし)" },
+      { id: "2", text: "は" },
+      { id: "4", text: "です" },
+      { id: "3", text: "学生(がくせい)" },
     ],
     isCorrect: false,
     showFurigana: true,
   },
 };
-

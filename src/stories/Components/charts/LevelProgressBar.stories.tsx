@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import LevelProgressBar from '@/Components/charts/LevelProgressBar';
+import type { Meta, StoryObj } from "@storybook/react";
+import LevelProgressBar from "@/Components/charts/LevelProgressBar";
 
 const meta = {
-  title: 'Components/Charts/LevelProgressBar',
+  title: "Components/Charts/LevelProgressBar",
   component: LevelProgressBar,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    level: { control: 'number' },
-    xp: { control: 'number' },
+    level: { control: "number" },
+    xp: { control: "number" },
   },
 } satisfies Meta<typeof LevelProgressBar>;
 
@@ -37,4 +37,3 @@ export const ZeroProgress: Story = {
     xp: 0,
   },
 };
-

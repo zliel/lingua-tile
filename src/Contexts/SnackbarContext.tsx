@@ -11,7 +11,7 @@ export const SnackbarContext = createContext<{
     duration?: number,
   ) => void;
 }>({
-  showSnackbar: () => { },
+  showSnackbar: () => {},
 });
 
 export const useSnackbar = () => useContext(SnackbarContext);

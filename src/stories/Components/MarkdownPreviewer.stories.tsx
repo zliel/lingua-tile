@@ -1,25 +1,31 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import MarkdownPreviewer from '@/Components/MarkdownPreviewer';
-import { useState } from 'react';
+import type { Meta, StoryObj } from "@storybook/react";
+import MarkdownPreviewer from "@/Components/MarkdownPreviewer";
+import { useState } from "react";
 
 const meta = {
-  title: 'Components/MarkdownPreviewer',
+  title: "Components/MarkdownPreviewer",
   component: MarkdownPreviewer,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
   decorators: [
     // A black background is required because both the text and default background are white
     // for this component
     (Story) => (
-      <div style={{ backgroundColor: '#1e1e1e', padding: '20px', borderRadius: '8px' }}>
+      <div
+        style={{
+          backgroundColor: "#1e1e1e",
+          padding: "20px",
+          borderRadius: "8px",
+        }}
+      >
         <Story />
       </div>
-    )
+    ),
   ],
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    value: { control: 'text' },
+    value: { control: "text" },
   },
 } satisfies Meta<typeof MarkdownPreviewer>;
 
@@ -40,7 +46,8 @@ const Template = (args: any) => {
 export const Default: Story = {
   render: Template,
   args: {
-    value: '# Hello World\n\nStart typing **markdown** here to see the preview on the right!',
+    value:
+      "# Hello World\n\nStart typing **markdown** here to see the preview on the right!",
   },
 };
 
@@ -59,6 +66,6 @@ export const ComplexMarkdown: Story = {
 \`\`\`javascript
 console.log("Konnichiwa");
 \`\`\`
-`
-  }
-}
+`,
+  },
+};

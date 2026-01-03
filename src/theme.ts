@@ -3,16 +3,14 @@ import { createTheme, ColorSystemOptions, Theme } from "@mui/material";
 const purpleBase = "#8c00cc";
 const greenBase = "#00c800";
 
-
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
   interface Palette {
-    grammar: Palette['primary'];
+    grammar: Palette["primary"];
   }
   interface PaletteOptions {
-    grammar?: PaletteOptions['primary'];
+    grammar?: PaletteOptions["primary"];
   }
 }
-
 
 const palette: ColorSystemOptions = {
   palette: {
@@ -45,4 +43,3 @@ export const theme: Theme = createTheme({
   //   fontFamily: "var(--japanese-font-family)",
   // },
 });
-

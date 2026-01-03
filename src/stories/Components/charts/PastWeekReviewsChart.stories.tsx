@@ -1,34 +1,36 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { PastWeekReviewsChart } from '@/Components/charts/PastWeekReviewsChart';
-import AuthContext from '@/Contexts/AuthContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import dayjs from 'dayjs';
+import type { Meta, StoryObj } from "@storybook/react";
+import { PastWeekReviewsChart } from "@/Components/charts/PastWeekReviewsChart";
+import AuthContext from "@/Contexts/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import dayjs from "dayjs";
 
 const queryClient = new QueryClient();
 
 const today = dayjs();
 const mockReviews = [
-  { review_date: today.format('YYYY-MM-DD') },
-  { review_date: today.format('YYYY-MM-DD') },
-  { review_date: today.subtract(1, 'day').format('YYYY-MM-DD') },
-  { review_date: today.subtract(3, 'day').format('YYYY-MM-DD') },
-  { review_date: today.subtract(3, 'day').format('YYYY-MM-DD') },
-  { review_date: today.subtract(3, 'day').format('YYYY-MM-DD') },
-  { review_date: today.subtract(5, 'day').format('YYYY-MM-DD') },
+  { review_date: today.format("YYYY-MM-DD") },
+  { review_date: today.format("YYYY-MM-DD") },
+  { review_date: today.subtract(1, "day").format("YYYY-MM-DD") },
+  { review_date: today.subtract(3, "day").format("YYYY-MM-DD") },
+  { review_date: today.subtract(3, "day").format("YYYY-MM-DD") },
+  { review_date: today.subtract(3, "day").format("YYYY-MM-DD") },
+  { review_date: today.subtract(5, "day").format("YYYY-MM-DD") },
 ];
 
 const meta = {
-  title: 'Components/Charts/PastWeekReviewsChart',
+  title: "Components/Charts/PastWeekReviewsChart",
   component: PastWeekReviewsChart,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={{ authData: { token: 'mock-token' } } as any}>
-          <div style={{ width: '600px' }}>
+        <AuthContext.Provider
+          value={{ authData: { token: "mock-token" } } as any}
+        >
+          <div style={{ width: "600px" }}>
             <Story />
           </div>
         </AuthContext.Provider>
@@ -45,4 +47,3 @@ export const Default: Story = {
     reviews: mockReviews as any[],
   },
 };
-

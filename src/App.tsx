@@ -1,15 +1,11 @@
 import "./App.css";
-import {
-  CssBaseline,
-  ThemeProvider,
-  useColorScheme,
-} from "@mui/material";
+import { CssBaseline, ThemeProvider, useColorScheme } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "./Contexts/SnackbarContext";
 import { AuthProvider } from "./Contexts/AuthContext";
 import { OfflineProvider } from "./Contexts/OfflineContext";
 import { AppRoutes } from "./Routes/AppRoutes";
-import { theme } from "./theme"
+import { theme } from "./theme";
 
 function App() {
   const { mode, setMode } = useColorScheme();

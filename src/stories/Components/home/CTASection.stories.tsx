@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { CTASection } from '@/Components/home/CTASection';
-import AuthContext from '@/Contexts/AuthContext';
-import { MemoryRouter } from 'react-router-dom';
+import type { Meta, StoryObj } from "@storybook/react";
+import { CTASection } from "@/Components/home/CTASection";
+import AuthContext from "@/Contexts/AuthContext";
+import { MemoryRouter } from "react-router-dom";
 
 const meta = {
-  title: 'Components/Home/CTASection',
+  title: "Components/Home/CTASection",
   component: CTASection,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <MemoryRouter>
@@ -41,4 +41,3 @@ export const LoggedIn: Story = {
     ),
   ],
 };
-

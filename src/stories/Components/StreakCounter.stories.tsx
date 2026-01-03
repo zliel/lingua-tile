@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import StreakCounter from '@/Components/StreakCounter';
+import type { Meta, StoryObj } from "@storybook/react";
+import StreakCounter from "@/Components/StreakCounter";
 
 const meta = {
-  title: 'Components/StreakCounter',
+  title: "Components/StreakCounter",
   component: StreakCounter,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    streak: { control: { type: 'number', min: 0 } },
-    loading: { control: 'boolean' },
+    streak: { control: { type: "number", min: 0 } },
+    loading: { control: "boolean" },
   },
 } satisfies Meta<typeof StreakCounter>;
 

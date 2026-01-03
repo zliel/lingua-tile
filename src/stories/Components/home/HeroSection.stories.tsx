@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { HeroSection } from '@/Components/home/HeroSection';
-import AuthContext from '@/Contexts/AuthContext';
-import { MemoryRouter } from 'react-router-dom';
+import type { Meta, StoryObj } from "@storybook/react";
+import { HeroSection } from "@/Components/home/HeroSection";
+import AuthContext from "@/Contexts/AuthContext";
+import { MemoryRouter } from "react-router-dom";
 
 const meta = {
-  title: 'Components/Home/HeroSection',
+  title: "Components/Home/HeroSection",
   component: HeroSection,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   decorators: [
     (Story) => (
       <MemoryRouter>

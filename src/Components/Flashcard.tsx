@@ -88,8 +88,9 @@ const Flashcard = ({
           boxShadow: isDarkMode
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
-            }`,
+          border: `1px solid ${
+            isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
+          }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             transform: isMobile ? "none" : "translateY(-5px)",
@@ -117,7 +118,10 @@ const Flashcard = ({
             sx={{ height: "100%", width: "100%", textAlign: "center" }}
           >
             {/* Front Side */}
-            <CardContent className="flashcard-front" sx={{ display: isFlipped ? "none" : "", p: 0 }}>
+            <CardContent
+              className="flashcard-front"
+              sx={{ display: isFlipped ? "none" : "", p: 0 }}
+            >
               <Typography
                 component="div"
                 sx={{
@@ -131,7 +135,10 @@ const Flashcard = ({
             </CardContent>
 
             {/* Back Side */}
-            <CardContent className="flashcard-back" sx={{ display: isFlipped ? "" : "none", p: 0 }}>
+            <CardContent
+              className="flashcard-back"
+              sx={{ display: isFlipped ? "" : "none", p: 0 }}
+            >
               <Typography
                 component="div"
                 sx={{

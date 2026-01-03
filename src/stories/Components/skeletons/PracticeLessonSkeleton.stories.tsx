@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import PracticeLessonSkeleton from '@/Components/skeletons/PracticeLessonSkeleton';
+import type { Meta, StoryObj } from "@storybook/react";
+import PracticeLessonSkeleton from "@/Components/skeletons/PracticeLessonSkeleton";
 
 const meta = {
-  title: 'Components/Skeletons/PracticeLessonSkeleton',
+  title: "Components/Skeletons/PracticeLessonSkeleton",
   component: PracticeLessonSkeleton,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 } satisfies Meta<typeof PracticeLessonSkeleton>;
 
 export default meta;

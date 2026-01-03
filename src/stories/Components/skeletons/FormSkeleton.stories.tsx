@@ -1,18 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import FormSkeleton from '@/Components/skeletons/FormSkeleton';
+import type { Meta, StoryObj } from "@storybook/react";
+import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 
 const meta = {
-  title: 'Components/Skeletons/FormSkeleton',
+  title: "Components/Skeletons/FormSkeleton",
   component: FormSkeleton,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    fields: { control: 'number' },
-    buttons: { control: 'number' },
-    title: { control: 'boolean' },
-    width: { control: 'number' },
+    fields: { control: "number" },
+    buttons: { control: "number" },
+    title: { control: "boolean" },
+    width: { control: "number" },
   },
 } satisfies Meta<typeof FormSkeleton>;
 
@@ -28,4 +28,3 @@ export const ComplexForm: Story = {
     width: 500,
   },
 };
-

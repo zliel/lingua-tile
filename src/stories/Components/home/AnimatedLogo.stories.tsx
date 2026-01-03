@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import AnimatedLogo from '@/Components/home/AnimatedLogo';
+import type { Meta, StoryObj } from "@storybook/react";
+import AnimatedLogo from "@/Components/home/AnimatedLogo";
 
 const meta = {
-  title: 'Components/Home/AnimatedLogo',
+  title: "Components/Home/AnimatedLogo",
   component: AnimatedLogo,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    size: { control: { type: 'range', min: 100, max: 500, step: 10 } },
+    size: { control: { type: "range", min: 100, max: 500, step: 10 } },
   },
 } satisfies Meta<typeof AnimatedLogo>;
 
@@ -33,4 +33,3 @@ export const Large: Story = {
     size: 400,
   },
 };
-
