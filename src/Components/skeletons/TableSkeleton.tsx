@@ -17,7 +17,7 @@ export const TableSkeleton = ({
 }) => {
   return (
     <TableContainer
-      sx={{ maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
+      sx={{ minWidth: "400px", maxWidth: "90%", borderRadius: 2, border: `1px solid` }}
     >
       <Table>
         <TableHead>
