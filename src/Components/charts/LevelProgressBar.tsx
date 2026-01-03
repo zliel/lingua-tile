@@ -13,7 +13,7 @@ const LevelProgressBar = ({ level, xp }: LevelProgressBarProps) => {
 
   return (
     <Box sx={{ width: "100%", maxWidth: 400, mt: 2, mx: "auto" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1, mb: 0.5 }}>
         <Typography variant="body2" fontWeight="bold">
           Level {level}
         </Typography>
