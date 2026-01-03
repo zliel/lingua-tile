@@ -6,6 +6,11 @@
     "prettier.config.js",
     "vite.config.js"
   ],
+  "exclude": [
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/stories/**/*"
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
