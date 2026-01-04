@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import fn from "@storybook/addon-vitest";
 import ReviewModal from "@/Components/ReviewModal";
+import AuthContext from "@/Contexts/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 
@@ -22,6 +24,8 @@ axios.post = async (url) => {
   return { data: {} };
 };
 
+const queryClient = new QueryClient();
+
 const meta = {
   title: "Components/ReviewModal",
   component: ReviewModal,
@@ -30,9 +34,24 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
+      <AuthContext.Provider
+        value={{
+          authData: {
+            token: "mock- token",
+            isLoggedIn: true,
+            user: { name: "Test User" },
+          },
+          setAuthData: fn(),
+          login: fn(),
+          logout: fn(),
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <Story />
+          </MemoryRouter>
+        </QueryClientProvider>
+      </AuthContext.Provider>
     ),
   ],
   tags: ["autodocs"],

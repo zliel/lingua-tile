@@ -69,45 +69,31 @@ export default defineConfig({
       },
     }),
   ],
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "mui-markdown",
+      "@storybook/addon-a11y/preview",
+      "@storybook/react-vite",
+      "@mui/material",
+      "@storybook/addon-themes",
+      "workbox-precaching",
+      "workbox-core",
+    ],
+  },
   resolve: {
     alias: {
       "@/": "/src/",
     },
   },
   test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./src/setupTests.ts",
-    css: true,
-    reporters: ["verbose"],
-    coverage: {
-      reporter: ["text", "json", "html"],
-      include: ["src/**/*"],
-      exclude: [],
-    },
     projects: [
       {
-        extends: true,
-        plugins: [
-          // The plugin will run tests for the stories defined in your Storybook config
-          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-          storybookTest({
-            configDir: path.join(dirname, ".storybook"),
-          }),
-        ],
         test: {
-          name: "storybook",
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: playwright({}),
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
-          },
-          setupFiles: [".storybook/vitest.setup.ts"],
+          name: "unit",
+          include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+          environment: "jsdom",
         },
       },
       {
@@ -117,6 +103,7 @@ export default defineConfig({
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({
             configDir: path.join(dirname, ".storybook"),
+            storybookScript: "storybook dev -p 6006 --no-open",
           }),
         ],
         test: {
