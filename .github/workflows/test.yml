@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Run Unit Tests
-        run: npx vitest run --project=unit
+        run: npm run test -- --project=unit
 
   storybook-test:
     runs-on: ubuntu-latest
@@ -41,4 +41,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Storybook Tests
-        run: npx vitest run --project=storybook
+        run: npm run test -- --project=storybook
