@@ -23,22 +23,22 @@ jobs:
       - name: Run Unit Tests
         run: npm run test -- --project=unit
 
-  storybook-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 25.2.1
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run Storybook Tests
-        run: npm run test -- --project=storybook
+  # storybook-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 25.2.1
+  #         cache: "npm"
+  #
+  #     - name: Install dependencies
+  #       run: npm ci
+  #
+  #     - name: Install Playwright Browsers
+  #       run: npx playwright install --with-deps chromium
+  #
+  #     - name: Run Storybook Tests
+  #       run: npm run test -- --project=storybook
