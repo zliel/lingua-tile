@@ -104,9 +104,27 @@ export default defineConfig({
         test: {
           name: "unit",
           include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
+          exclude: ["src/**/*.int.test.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/setupTests.ts"]
         },
+      },
+      {
+        extends: true,
+        test: {
+          name: "integration",
+          include: ["src/**/*.int.test.{ts,tsx}"],
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [
+              {
+                browser: "chromium",
+              },
+            ],
+          },
+        }
       },
       {
         extends: true,
