@@ -103,6 +103,7 @@ export default defineConfig({
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({
             configDir: path.join(dirname, ".storybook"),
+            storybookScript: "storybook dev -p 6006 --no-open"
           }),
         ],
         test: {
