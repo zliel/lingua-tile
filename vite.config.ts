@@ -103,8 +103,9 @@ export default defineConfig({
         extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+          include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
           environment: "jsdom",
+          setupFiles: ["./src/setupTests.ts"]
         },
       },
       {
