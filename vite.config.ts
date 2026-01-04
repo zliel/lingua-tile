@@ -73,6 +73,7 @@ export default defineConfig({
     include: [
       "react",
       "react-dom",
+      "react-router",
       "mui-markdown",
       "@storybook/addon-a11y/preview",
       "@storybook/react-vite",
@@ -80,16 +81,26 @@ export default defineConfig({
       "@storybook/addon-themes",
       "workbox-precaching",
       "workbox-core",
+      "vitest-browser-react",
+      "@mui/icons-material/HelpOutline",
+      "vitest-browser-react",
+      "react-router",
+      "axios",
+      "react-hook-form",
+      "@hookform/resolvers/zod",
+      "zod",
+      "canvas-confetti",
     ],
   },
   resolve: {
     alias: {
-      "@/": "/src/",
+      "@": path.resolve(dirname, "./src"),
     },
   },
   test: {
     projects: [
       {
+        extends: true,
         test: {
           name: "unit",
           include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
