@@ -72,7 +72,6 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest",
-    "test-storybook": "vitest --project=storybook",
     "test:coverage": "vitest run --coverage --watch=false",
     "lint": "npx prettier --check . && npx eslint .",
     "storybook": "storybook dev -p 6006",
