@@ -24,7 +24,7 @@ axios.post = async (url) => {
   return { data: {} };
 };
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 const meta = {
   title: "Components/ReviewModal",
@@ -51,7 +51,7 @@ const meta = {
             <Story />
           </MemoryRouter>
         </QueryClientProvider>
-      </AuthContext.Provider >
+      </AuthContext.Provider>
     ),
   ],
   tags: ["autodocs"],

@@ -79,7 +79,7 @@ export default defineConfig({
       "@mui/material",
       "@storybook/addon-themes",
       "workbox-precaching",
-      "workbox-core"
+      "workbox-core",
     ],
   },
   resolve: {
@@ -103,7 +103,7 @@ export default defineConfig({
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({
             configDir: path.join(dirname, ".storybook"),
-            storybookScript: "storybook dev -p 6006 --no-open"
+            storybookScript: "storybook dev -p 6006 --no-open",
           }),
         ],
         test: {
