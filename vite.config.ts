@@ -114,6 +114,13 @@ export default defineConfig({
         test: {
           name: "integration",
           include: ["src/**/*.int.test.{ts,tsx}"],
+          deps: {
+            optimizer: {
+              client: {
+                enabled: true,
+              }
+            }
+          },
           browser: {
             enabled: true,
             headless: true,
@@ -138,6 +145,13 @@ export default defineConfig({
         ],
         test: {
           name: "storybook",
+          deps: {
+            optimizer: {
+              client: {
+                enabled: true,
+              }
+            }
+          },
           browser: {
             enabled: true,
             headless: true,
