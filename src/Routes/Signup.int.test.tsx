@@ -1,5 +1,5 @@
 import { render } from "vitest-browser-react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import Signup from "./Signup";
 import { MemoryRouter } from "react-router-dom";
@@ -47,6 +47,10 @@ const createWrapper = () => {
 };
 
 describe("Signup Component Integration", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders page content and signup form", async () => {
     const Wrapper = createWrapper();
     render(<Signup />, { wrapper: Wrapper });
@@ -66,15 +70,15 @@ describe("Signup Component Integration", () => {
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "NewUser");
-    await userEvent.fill(page.getByLabelText("Password"), "password123");
-    await userEvent.fill(page.getByLabelText("Confirm Password"), "password123");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "Password1!");
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 
     // Expect API call
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/api/users/signup"),
-      { username: "NewUser", password: "password123" }
+      { username: "NewUser", password: "Password1!" }
     );
   });
 
@@ -83,13 +87,14 @@ describe("Signup Component Integration", () => {
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "NewUser");
-    await userEvent.fill(page.getByLabelText("Password"), "password123");
-    await userEvent.fill(page.getByLabelText("Confirm Password"), "mismatch");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "mismatch");
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 
     // Check for validation error - Zod or manual check usually shows helper text
-    await expect.element(page.getByText(/Passwords don't match/i)).toBeVisible();
+    await expect.element(page.getByText("Passwords do not match")).toBeVisible();
+
 
     // Ensure API was NOT called
     expect(axios.post).not.toHaveBeenCalled();
@@ -108,8 +113,8 @@ describe("Signup Component Integration", () => {
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "ExistingUser");
-    await userEvent.fill(page.getByLabelText("Password"), "password123");
-    await userEvent.fill(page.getByLabelText("Confirm Password"), "password123");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
+    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "Password1!");
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 
