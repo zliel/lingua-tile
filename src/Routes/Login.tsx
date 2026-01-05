@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import { useOffline } from "../Contexts/OfflineContext";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import { useOffline } from "@/Contexts/OfflineContext";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { LoginSchema, LoginSchemaType } from "../Schemas/auth";
+import { LoginSchema, LoginSchemaType } from "@/Schemas/auth";
 import { Link as RouterLink } from "react-router-dom";
 
 function Login() {

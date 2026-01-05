@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import TranslationQuestion from "../Components/TranslationQuestion";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import TranslationQuestion from "@/Components/TranslationQuestion";
 import "./PracticeLesson.css";
-import ReviewModal from "../Components/ReviewModal";
+import ReviewModal from "@/Components/ReviewModal";
 import PracticeLessonSkeleton from "@/Components/skeletons/PracticeLessonSkeleton";
 
 const PracticeLesson = () => {

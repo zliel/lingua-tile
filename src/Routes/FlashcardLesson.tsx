@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import FlashcardsList from "../Components/FlashcardList";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import FlashcardsList from "@/Components/FlashcardList";
 
 const FlashcardLesson = () => {
   const { lessonId } = useParams();

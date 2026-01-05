@@ -8,7 +8,7 @@ import {
   Fade,
 } from "@mui/material";
 import Download from "@mui/icons-material/Download";
-import { usePWAInstall } from "../hooks/usePWAInstall";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 const PWAInstallPrompt = () => {
   const { isInstallable, promptInstall, dismissPrompt } = usePWAInstall();

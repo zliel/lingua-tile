@@ -1,6 +1,6 @@
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import NewLessonForm from "../Components/admin/NewLessonForm";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import NewLessonForm from "@/Components/admin/NewLessonForm";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLessons, useSections } from "@/hooks/useLessons";

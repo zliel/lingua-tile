@@ -1,7 +1,7 @@
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "@/Contexts/AuthContext";
 import { useLessons, useSections } from "@/hooks/useLessons";
 import { Box, Typography } from "@mui/material";
-import NewSectionForm from "../Components/admin/NewSectionForm";
+import NewSectionForm from "@/Components/admin/NewSectionForm";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { SectionTable } from "@/Components/admin/SectionTable";

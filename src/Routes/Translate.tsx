@@ -1,5 +1,5 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import TranslationForm from "../Components/TranslationForm";
+import TranslationForm from "@/Components/TranslationForm";
 
 function Translate() {
   const theme = useTheme();

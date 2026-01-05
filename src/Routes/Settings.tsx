@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import { usePushSubscription } from "../hooks/usePushSubscription";
+import { usePushSubscription } from "@/hooks/usePushSubscription";
 
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

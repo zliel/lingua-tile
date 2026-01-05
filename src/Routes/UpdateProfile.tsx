@@ -16,11 +16,11 @@ import ArrowBack from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "../Contexts/SnackbarContext";
-import { useAuth } from "../Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
+import { useAuth } from "@/Contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { UpdateProfileSchema, UpdateProfileSchemaType } from "../Schemas/auth";
+import { UpdateProfileSchema, UpdateProfileSchemaType } from "@/Schemas/auth";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();

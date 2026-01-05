@@ -11,11 +11,11 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
 import dayjs from "dayjs";
-import { LessonListItem } from "../Components/LessonListItem";
-import { LessonListSkeleton } from "../Components/LessonListSkeleton";
+import { LessonListItem } from "@/Components/LessonListItem";
+import { LessonListSkeleton } from "@/Components/LessonListSkeleton";
 import { Lesson, Review, ReviewStats } from "@/types/lessons";
 import { Section } from "@/types/sections";
 import { useOfflineData } from "@/hooks/useOfflineData";
