@@ -236,7 +236,7 @@ function NavBar() {
               <Skeleton variant="circular" width={40} height={40} />
             ) : authData?.isLoggedIn ? (
               <>
-                <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
+                <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }} aria-label="avatar">
                   <Avatar
                     sx={{
                       backgroundColor: theme.palette.secondary.main,
