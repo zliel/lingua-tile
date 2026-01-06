@@ -27,7 +27,11 @@ const createWrapper = () => {
   });
 
   const mockAuth = {
-    authData: { isLoggedIn: true, token: "mock-token", user: { id: "1", username: "admin" } },
+    authData: {
+      isLoggedIn: true,
+      token: "mock-token",
+      user: { id: "1", username: "admin" },
+    },
     authIsLoading: false,
   };
 
@@ -48,9 +52,7 @@ const createWrapper = () => {
   );
 };
 
-const mockLessons = [
-  { _id: "l1", title: "Lesson 1", section_id: "s1" },
-];
+const mockLessons = [{ _id: "l1", title: "Lesson 1", section_id: "s1" }];
 const mockSections = [
   { _id: "s1", name: "Section 1", order_index: 0, lesson_ids: [] },
   { _id: "s2", name: "Section 2", order_index: 1, lesson_ids: [] },
@@ -62,7 +64,7 @@ describe("AdminSectionTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminSectionTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
@@ -70,8 +72,10 @@ describe("AdminSectionTable Integration", () => {
 
   it("renders sections and form", async () => {
     (axios.get as any).mockImplementation((url: string) => {
-      if (url.includes("/api/lessons/all")) return Promise.resolve({ data: mockLessons });
-      if (url.includes("/api/sections/all")) return Promise.resolve({ data: mockSections });
+      if (url.includes("/api/lessons/all"))
+        return Promise.resolve({ data: mockLessons });
+      if (url.includes("/api/sections/all"))
+        return Promise.resolve({ data: mockSections });
       return Promise.resolve({ data: [] });
     });
 
@@ -81,7 +85,9 @@ describe("AdminSectionTable Integration", () => {
     await expect.element(page.getByText("Section 1")).toBeVisible();
     await expect.element(page.getByText("Section 2")).toBeVisible();
     // Check for Add Section form/button
-    await expect.element(page.getByRole("button", { name: "Add Section" })).toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Add Section" }))
+      .toBeVisible();
   });
 
   it("handles error state", async () => {
@@ -91,4 +97,3 @@ describe("AdminSectionTable Integration", () => {
     await expect.element(page.getByText("Failed to fetch data")).toBeVisible();
   });
 });
-

@@ -11,7 +11,7 @@ const theme = createTheme();
 
 // Mock AnimatedLogo to avoid canvas issues in test environment or complex rendering
 vi.mock("@/Components/home/AnimatedLogo", () => ({
-  default: () => <div data-testid="animated-logo">Logo</div>
+  default: () => <div data-testid="animated-logo">Logo</div>,
 }));
 
 const createWrapper = (isLoggedIn: boolean = false) => {
@@ -24,7 +24,7 @@ const createWrapper = (isLoggedIn: boolean = false) => {
       username: isLoggedIn ? "TestUser" : "",
       token: isLoggedIn ? "token" : "",
       isLoggedIn: isLoggedIn,
-      isAdmin: false
+      isAdmin: false,
     },
     authIsLoading: false,
   };
@@ -46,15 +46,21 @@ describe("Home Component Integration", () => {
     render(<Home />, { wrapper: Wrapper });
 
     // Hero Section
-    await expect.element(page.getByText("Master Japanese with LinguaTile")).toBeVisible();
+    await expect
+      .element(page.getByText("Master Japanese with LinguaTile"))
+      .toBeVisible();
     await expect.element(page.getByText("Start Learning Now")).toBeVisible();
 
     // Info Section
-    await expect.element(page.getByText("Why Choose LinguaTile?")).toBeVisible();
+    await expect
+      .element(page.getByText("Why Choose LinguaTile?"))
+      .toBeVisible();
     await expect.element(page.getByText("Structured Lessons")).toBeVisible();
 
     // CTA Section
-    await expect.element(page.getByText("Ready to start your journey?")).toBeVisible();
+    await expect
+      .element(page.getByText("Ready to start your journey?"))
+      .toBeVisible();
     await expect.element(page.getByText("Create Free Account")).toBeVisible();
   });
 
@@ -62,9 +68,10 @@ describe("Home Component Integration", () => {
     const Wrapper = createWrapper(true);
     render(<Home />, { wrapper: Wrapper });
 
-    await expect.element(page.getByText("Master Japanese with LinguaTile")).toBeVisible();
+    await expect
+      .element(page.getByText("Master Japanese with LinguaTile"))
+      .toBeVisible();
     // CTA button text changes when logged in
     await expect.element(page.getByText("View Lessons")).toBeVisible();
   });
 });
-

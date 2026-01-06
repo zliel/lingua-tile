@@ -11,24 +11,24 @@ import axios from "axios";
 
 // Mock charts and heavy components
 vi.mock("@/Components/charts/PastWeekReviewsChart", () => ({
-  PastWeekReviewsChart: () => <div>Past Week Chart</div>
+  PastWeekReviewsChart: () => <div>Past Week Chart</div>,
 }));
 vi.mock("@/Components/charts/LessonDifficultyChart", () => ({
-  LessonDifficultyChart: () => <div>Difficulty Chart</div>
+  LessonDifficultyChart: () => <div>Difficulty Chart</div>,
 }));
 vi.mock("@/Components/charts/ActivityHeatmap", () => ({
-  ActivityHeatmap: () => <div>Activity Heatmap</div>
+  ActivityHeatmap: () => <div>Activity Heatmap</div>,
 }));
 vi.mock("@/Components/profile/ProfileHeader", () => ({
-  ProfileHeader: ({ user }: any) => <div>Header: {user?.username}</div>
+  ProfileHeader: ({ user }: any) => <div>Header: {user?.username}</div>,
 }));
 vi.mock("framer-motion", async () => {
   const actual = await vi.importActual("framer-motion");
   return {
     ...actual,
     motion: {
-      div: ({ children, style }: any) => <div style={style}>{children}</div>
-    }
+      div: ({ children, style }: any) => <div style={style}>{children}</div>,
+    },
   };
 });
 vi.mock("axios", () => ({
@@ -38,7 +38,7 @@ vi.mock("axios", () => ({
     isAxiosError: () => false,
   },
 }));
-// Mock hooks 
+// Mock hooks
 vi.mock("@/hooks/useLessons", () => ({
   useReviews: () => ({ data: [], isLoading: false }),
   useReviewHistory: () => ({ data: [], isLoading: false }),
@@ -56,7 +56,7 @@ const createWrapper = () => {
       username: "TestUser",
       token: "token",
       isLoggedIn: true,
-      isAdmin: false
+      isAdmin: false,
     },
     logout: vi.fn(),
   };
@@ -81,7 +81,7 @@ const createWrapper = () => {
 describe("Profile Component Integration", () => {
   it("renders profile data", async () => {
     (axios.get as any).mockResolvedValue({
-      data: { _id: "u1", username: "TestUser" }
+      data: { _id: "u1", username: "TestUser" },
     });
 
     const Wrapper = createWrapper();
@@ -94,15 +94,18 @@ describe("Profile Component Integration", () => {
 
   it("opens delete dialog on click", async () => {
     (axios.get as any).mockResolvedValue({
-      data: { _id: "u1", username: "TestUser" }
+      data: { _id: "u1", username: "TestUser" },
     });
 
     const Wrapper = createWrapper();
     render(<Profile />, { wrapper: Wrapper });
 
-    await userEvent.click(page.getByRole("button", { name: /Delete Profile/i }));
+    await userEvent.click(
+      page.getByRole("button", { name: /Delete Profile/i }),
+    );
 
-    await expect.element(page.getByText("Are you sure you want to delete your profile?")).toBeVisible();
+    await expect
+      .element(page.getByText("Are you sure you want to delete your profile?"))
+      .toBeVisible();
   });
 });
-

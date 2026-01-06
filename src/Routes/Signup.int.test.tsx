@@ -70,15 +70,21 @@ describe("Signup Component Integration", () => {
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "NewUser");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "Password1!");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "Password1!",
+    );
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 
     // Expect API call
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/api/users/signup"),
-      { username: "NewUser", password: "Password1!" }
+      { username: "NewUser", password: "Password1!" },
     );
   });
 
@@ -87,14 +93,21 @@ describe("Signup Component Integration", () => {
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "NewUser");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "mismatch");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "mismatch",
+    );
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 
     // Check for validation error - Zod or manual check usually shows helper text
-    await expect.element(page.getByText("Passwords do not match")).toBeVisible();
-
+    await expect
+      .element(page.getByText("Passwords do not match"))
+      .toBeVisible();
 
     // Ensure API was NOT called
     expect(axios.post).not.toHaveBeenCalled();
@@ -103,18 +116,24 @@ describe("Signup Component Integration", () => {
   it("handles existing username error", async () => {
     (axios.post as any).mockRejectedValue({
       isAxiosError: true,
-      response: { status: 400, data: { detail: "Username already exists" } }
+      response: { status: 400, data: { detail: "Username already exists" } },
     });
     // We also need to mock isAxiosError implementation for the fail case since we mocked the default export object
-    (axios.isAxiosError as any) = (payload: any) => payload?.isAxiosError === true;
-
+    (axios.isAxiosError as any) = (payload: any) =>
+      payload?.isAxiosError === true;
 
     const Wrapper = createWrapper();
     render(<Signup />, { wrapper: Wrapper });
 
     await userEvent.fill(page.getByLabelText("Username"), "ExistingUser");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Password', exact: true }), "Password1!");
-    await userEvent.fill(page.getByRole('textbox', { name: 'Confirm Password', exact: true }), "Password1!");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "Password1!",
+    );
 
     await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
 

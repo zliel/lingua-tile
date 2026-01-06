@@ -27,7 +27,11 @@ const createWrapper = () => {
   });
 
   const mockAuth = {
-    authData: { isLoggedIn: true, token: "mock-token", user: { id: "1", username: "admin" } },
+    authData: {
+      isLoggedIn: true,
+      token: "mock-token",
+      user: { id: "1", username: "admin" },
+    },
     authIsLoading: false,
   };
 
@@ -49,12 +53,24 @@ const createWrapper = () => {
 };
 
 const mockLessons = [
-  { _id: "l1", title: "Intro to Japanese", category: "flashcards", section_id: "s1", sentences: [], card_ids: [] },
-  { _id: "l2", title: "Hiragana Basics", category: "practice", section_id: "s1", sentences: [], card_ids: [] },
+  {
+    _id: "l1",
+    title: "Intro to Japanese",
+    category: "flashcards",
+    section_id: "s1",
+    sentences: [],
+    card_ids: [],
+  },
+  {
+    _id: "l2",
+    title: "Hiragana Basics",
+    category: "practice",
+    section_id: "s1",
+    sentences: [],
+    card_ids: [],
+  },
 ];
-const mockSections = [
-  { _id: "s1", name: "Section 1" },
-];
+const mockSections = [{ _id: "s1", name: "Section 1" }];
 const mockCards = [
   { _id: "c1", front_text: "A", back_text: "Ah", lesson_ids: ["l1"] },
 ];
@@ -65,7 +81,7 @@ describe("AdminLessonTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminLessonTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
@@ -73,9 +89,12 @@ describe("AdminLessonTable Integration", () => {
 
   it("renders lessons and form", async () => {
     (axios.get as any).mockImplementation((url: string) => {
-      if (url.includes("/api/lessons/all")) return Promise.resolve({ data: mockLessons });
-      if (url.includes("/api/sections/all")) return Promise.resolve({ data: mockSections });
-      if (url.includes("/api/cards/all")) return Promise.resolve({ data: mockCards });
+      if (url.includes("/api/lessons/all"))
+        return Promise.resolve({ data: mockLessons });
+      if (url.includes("/api/sections/all"))
+        return Promise.resolve({ data: mockSections });
+      if (url.includes("/api/cards/all"))
+        return Promise.resolve({ data: mockCards });
       return Promise.resolve({ data: [] });
     });
 
@@ -84,7 +103,9 @@ describe("AdminLessonTable Integration", () => {
 
     await expect.element(page.getByText("Intro to Japanese")).toBeVisible();
     await expect.element(page.getByText("Hiragana Basics")).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Add Lesson" })).toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Add Lesson" }))
+      .toBeVisible();
   });
 
   it("handles error state", async () => {
@@ -96,13 +117,18 @@ describe("AdminLessonTable Integration", () => {
 
   it("allows adding a new lesson", async () => {
     (axios.get as any).mockImplementation((url: string) => {
-      if (url.includes("/api/lessons/all")) return Promise.resolve({ data: [] });
-      if (url.includes("/api/sections/all")) return Promise.resolve({ data: mockSections });
-      if (url.includes("/api/cards/all")) return Promise.resolve({ data: mockCards });
+      if (url.includes("/api/lessons/all"))
+        return Promise.resolve({ data: [] });
+      if (url.includes("/api/sections/all"))
+        return Promise.resolve({ data: mockSections });
+      if (url.includes("/api/cards/all"))
+        return Promise.resolve({ data: mockCards });
       return Promise.resolve({ data: [] });
     });
 
-    (axios.post as any).mockResolvedValue({ data: { _id: "l3", title: "New Lesson" } });
+    (axios.post as any).mockResolvedValue({
+      data: { _id: "l3", title: "New Lesson" },
+    });
 
     const Wrapper = createWrapper();
     render(<AdminLessonTable />, { wrapper: Wrapper });
@@ -114,7 +140,7 @@ describe("AdminLessonTable Integration", () => {
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/api/lessons/create"),
       expect.objectContaining({ title: "New Lesson" }),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });

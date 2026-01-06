@@ -42,15 +42,15 @@ describe("UpdateProfile Component Integration", () => {
 
     // Mock current user fetch
     (axios.get as any).mockResolvedValue({
-      data: { _id: "123", username: "CurrentUsername" }
+      data: { _id: "123", username: "CurrentUsername" },
     });
 
     render(<UpdateProfile />, { wrapper: Wrapper });
 
     // Check if username field is populated (might take a moment for useQuery)
-    await expect.poll(() =>
-      page.getByLabelText(/^Username/i).element().value
-    ).toBe("CurrentUsername");
+    await expect
+      .poll(() => page.getByLabelText(/^Username/i).element().value)
+      .toBe("CurrentUsername");
   });
 
   it("updates profile successfully", async () => {
@@ -59,16 +59,16 @@ describe("UpdateProfile Component Integration", () => {
     const Wrapper = createWrapper(mockShowSnackbar, mockLogout);
 
     (axios.get as any).mockResolvedValue({
-      data: { _id: "123", username: "CurrentUsername" }
+      data: { _id: "123", username: "CurrentUsername" },
     });
     (axios.put as any).mockResolvedValue({});
 
     render(<UpdateProfile />, { wrapper: Wrapper });
 
     // Wait for data load
-    await expect.poll(() =>
-      page.getByLabelText(/^Username/i).element().value
-    ).toBe("CurrentUsername");
+    await expect
+      .poll(() => page.getByLabelText(/^Username/i).element().value)
+      .toBe("CurrentUsername");
 
     // Change username
     const input = page.getByLabelText(/^Username/i);
@@ -77,9 +77,13 @@ describe("UpdateProfile Component Integration", () => {
 
     await userEvent.click(page.getByRole("button", { name: /Save Changes/i }));
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
-    expect(mockShowSnackbar).toHaveBeenCalledWith("Profile updated successfully", "success");
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Profile updated successfully",
+      "success",
+    );
     expect(mockLogout).toHaveBeenCalled();
   });
 });
-

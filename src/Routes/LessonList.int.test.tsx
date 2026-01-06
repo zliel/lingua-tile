@@ -16,7 +16,7 @@ vi.mock("@/Components/LessonListItem", () => ({
     <div data-testid={`lesson-item-${lesson._id}`}>
       {lesson.title} - {lesson.category || "flashcards"}
     </div>
-  )
+  ),
 }));
 
 // Mock hooks to control data
@@ -29,7 +29,6 @@ vi.mock("@/hooks/useLessons", () => ({
   useSections: () => mockUseSections(),
   useReviews: () => mockUseReviews(),
 }));
-
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -83,9 +82,27 @@ describe("LessonList Component Integration", () => {
     ];
 
     const lessons = [
-      { _id: "l1", title: "Lesson 1", section_id: "s1", order_index: 0, category: "flashcards" },
-      { _id: "l2", title: "Lesson 2", section_id: "s1", order_index: 1, category: "flashcards" },
-      { _id: "l3", title: "Lesson 3", section_id: "s2", order_index: 0, category: "grammar" }
+      {
+        _id: "l1",
+        title: "Lesson 1",
+        section_id: "s1",
+        order_index: 0,
+        category: "flashcards",
+      },
+      {
+        _id: "l2",
+        title: "Lesson 2",
+        section_id: "s1",
+        order_index: 1,
+        category: "flashcards",
+      },
+      {
+        _id: "l3",
+        title: "Lesson 3",
+        section_id: "s2",
+        order_index: 0,
+        category: "grammar",
+      },
     ];
 
     mockUseLessons.mockReturnValue({ isLoading: false, data: lessons });
@@ -103,17 +120,22 @@ describe("LessonList Component Integration", () => {
     await expect.element(page.getByTestId("lesson-item-l1")).toBeVisible();
     await expect.element(page.getByText("Lesson 1")).toBeVisible();
     await expect.element(page.getByText("Lesson 3")).toBeVisible();
-
   });
 
   it("renders error state", async () => {
     mockUseLessons.mockReturnValue({ isLoading: false, isError: true });
-    mockUseSections.mockReturnValue({ isLoading: false, isError: false, data: [] });
+    mockUseSections.mockReturnValue({
+      isLoading: false,
+      isError: false,
+      data: [],
+    });
     mockUseReviews.mockReturnValue({ isLoading: false, data: [] });
 
     const Wrapper = createWrapper();
     render(<LessonList />, { wrapper: Wrapper });
 
-    await expect.element(page.getByText("Error loading lessons.")).toBeVisible();
+    await expect
+      .element(page.getByText("Error loading lessons."))
+      .toBeVisible();
   });
 });

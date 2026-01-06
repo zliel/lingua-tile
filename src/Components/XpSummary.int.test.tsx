@@ -11,7 +11,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 
 // Mock LevelProgressBar as it might have its own logic
 vi.mock("./charts/LevelProgressBar", () => ({
-  default: () => <div data-testid="level-progress-bar">Progress Bar</div>
+  default: () => <div data-testid="level-progress-bar">Progress Bar</div>,
 }));
 
 describe("XpSummary Component Integration", () => {
@@ -20,9 +20,9 @@ describe("XpSummary Component Integration", () => {
       xp_gained: 20,
       new_xp: 1500,
       new_level: 5,
-      leveled_up: false
+      leveled_up: false,
     },
-    handleContinue: vi.fn()
+    handleContinue: vi.fn(),
   };
 
   it("displays XP gained", async () => {
@@ -39,8 +39,8 @@ describe("XpSummary Component Integration", () => {
       summaryData: {
         ...defaultProps.summaryData,
         leveled_up: true,
-        new_level: 6
-      }
+        new_level: 6,
+      },
     };
     render(<XpSummary {...props} />, { wrapper: Wrapper });
 
@@ -50,7 +50,9 @@ describe("XpSummary Component Integration", () => {
 
   it("calls handleContinue on button click", async () => {
     const onContinue = vi.fn();
-    render(<XpSummary {...defaultProps} handleContinue={onContinue} />, { wrapper: Wrapper });
+    render(<XpSummary {...defaultProps} handleContinue={onContinue} />, {
+      wrapper: Wrapper,
+    });
 
     await userEvent.click(page.getByRole("button", { name: /Continue/i }));
     expect(onContinue).toHaveBeenCalled();

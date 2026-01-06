@@ -27,7 +27,11 @@ const createWrapper = () => {
   });
 
   const mockAuth = {
-    authData: { isLoggedIn: true, token: "mock-token", user: { id: "1", username: "admin" } },
+    authData: {
+      isLoggedIn: true,
+      token: "mock-token",
+      user: { id: "1", username: "admin" },
+    },
     authIsLoading: false,
   };
 
@@ -59,7 +63,7 @@ describe("AdminUserTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminUserTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
@@ -67,7 +71,8 @@ describe("AdminUserTable Integration", () => {
 
   it("renders users", async () => {
     (axios.get as any).mockImplementation((url: string) => {
-      if (url.includes("/api/users/admin/all")) return Promise.resolve({ data: mockUsers });
+      if (url.includes("/api/users/admin/all"))
+        return Promise.resolve({ data: mockUsers });
       return Promise.resolve({ data: [] });
     });
 
@@ -86,4 +91,3 @@ describe("AdminUserTable Integration", () => {
     await expect.element(page.getByText("Error loading users.")).toBeVisible();
   });
 });
-

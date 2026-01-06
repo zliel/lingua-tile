@@ -16,7 +16,9 @@ const createWrapper = (mockShowSnackbar: any) => {
   });
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <SnackbarContext.Provider value={{ showSnackbar: mockShowSnackbar } as any}>
+      <SnackbarContext.Provider
+        value={{ showSnackbar: mockShowSnackbar } as any}
+      >
         <MemoryRouter>{children}</MemoryRouter>
       </SnackbarContext.Provider>
     </QueryClientProvider>
@@ -36,12 +38,20 @@ describe("SignupForm Component Integration", () => {
     // Need to be specific because confirm password also has "Password" in label potentially or placeholder
     // In SignupForm.tsx: label={"Password"} and label={"Confirm Password"}
     await userEvent.type(page.getByLabelText(/^Password/i), "Password123!");
-    await userEvent.type(page.getByLabelText(/Confirm Password/i), "Password123!");
+    await userEvent.type(
+      page.getByLabelText(/Confirm Password/i),
+      "Password123!",
+    );
 
     await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
-    expect(mockShowSnackbar).toHaveBeenCalledWith("Account created successfully", "success");
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Account created successfully",
+      "success",
+    );
   });
 
   it("validates password mismatch", async () => {
@@ -56,7 +66,9 @@ describe("SignupForm Component Integration", () => {
 
     await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
 
-    await expect.element(page.getByText(/Passwords do not match/i)).toBeVisible();
+    await expect
+      .element(page.getByText(/Passwords do not match/i))
+      .toBeVisible();
     expect(mockShowSnackbar).not.toHaveBeenCalled();
   });
 
@@ -67,9 +79,9 @@ describe("SignupForm Component Integration", () => {
     const errorResponse = {
       response: {
         status: 400,
-        data: { detail: "Username already exists" }
+        data: { detail: "Username already exists" },
       },
-      isAxiosError: true
+      isAxiosError: true,
     };
     (axios.post as any).mockRejectedValue(errorResponse);
     (axios.isAxiosError as any).mockReturnValue(true);
@@ -78,11 +90,19 @@ describe("SignupForm Component Integration", () => {
 
     await userEvent.type(page.getByLabelText(/^Username/i), "existinguser");
     await userEvent.type(page.getByLabelText(/^Password/i), "Password123!");
-    await userEvent.type(page.getByLabelText(/Confirm Password/i), "Password123!");
+    await userEvent.type(
+      page.getByLabelText(/Confirm Password/i),
+      "Password123!",
+    );
 
     await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
-    expect(mockShowSnackbar).toHaveBeenCalledWith("Username already exists", "error");
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Username already exists",
+      "error",
+    );
   });
 });

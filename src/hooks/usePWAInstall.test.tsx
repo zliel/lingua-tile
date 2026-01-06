@@ -15,7 +15,7 @@ describe("usePWAInstall Hook", () => {
     // @ts-ignore
     event.prompt = () => Promise.resolve();
     // @ts-ignore
-    event.userChoice = Promise.resolve({ outcome: 'accepted' });
+    event.userChoice = Promise.resolve({ outcome: "accepted" });
 
     act(() => {
       window.dispatchEvent(event);
@@ -31,11 +31,10 @@ describe("usePWAInstall Hook", () => {
     // @ts-ignore
     const event: any = new Event("beforeinstallprompt");
     event.prompt = mockPrompt;
-    event.userChoice = Promise.resolve({ outcome: 'accepted' });
+    event.userChoice = Promise.resolve({ outcome: "accepted" });
 
     // Spy on prompt
-    const promptSpy = vi.spyOn(event, 'prompt');
-
+    const promptSpy = vi.spyOn(event, "prompt");
 
     act(() => {
       window.dispatchEvent(event);
@@ -49,4 +48,3 @@ describe("usePWAInstall Hook", () => {
     expect(result.current.isInstallable).toBe(false);
   });
 });
-

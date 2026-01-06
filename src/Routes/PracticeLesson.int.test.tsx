@@ -21,11 +21,13 @@ vi.mock("axios", () => ({
 
 // Mock child components
 vi.mock("../Components/TranslationQuestion", () => ({
-  default: () => <div data-testid="translation-question">TranslationQuestion (Mock)</div>
+  default: () => (
+    <div data-testid="translation-question">TranslationQuestion (Mock)</div>
+  ),
 }));
 
 vi.mock("../Components/ReviewModal", () => ({
-  default: () => <div data-testid="review-modal">ReviewModal (Mock)</div>
+  default: () => <div data-testid="review-modal">ReviewModal (Mock)</div>,
 }));
 
 const createWrapper = () => {
@@ -64,23 +66,27 @@ describe("PracticeLesson Component Integration", () => {
     (axios.get as any).mockResolvedValue({
       data: {
         title: "Practice Lesson",
-        sentences: [{ id: 1, original: "test", trans: "translated" }]
-      }
+        sentences: [{ id: 1, original: "test", trans: "translated" }],
+      },
     });
 
     const Wrapper = createWrapper();
     render(<PracticeLesson />, { wrapper: Wrapper });
 
     await expect.element(page.getByText("Practice Lesson")).toBeVisible();
-    await expect.element(page.getByText("TranslationQuestion (Mock)")).toBeVisible();
+    await expect
+      .element(page.getByText("TranslationQuestion (Mock)"))
+      .toBeVisible();
   });
 
   it("handles loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<PracticeLesson />, { wrapper: Wrapper });
 
-    await expect.element(page.getByText("Practice Lesson")).not.toBeInTheDocument();
+    await expect
+      .element(page.getByText("Practice Lesson"))
+      .not.toBeInTheDocument();
   });
 });

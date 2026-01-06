@@ -12,7 +12,11 @@ import axios from "axios";
 // Mock axios
 vi.mock("axios");
 
-const createWrapper = (mockShowSnackbar: any, mockLogin: any, mockClearQueue: any) => {
+const createWrapper = (
+  mockShowSnackbar: any,
+  mockLogin: any,
+  mockClearQueue: any,
+) => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -20,7 +24,9 @@ const createWrapper = (mockShowSnackbar: any, mockLogin: any, mockClearQueue: an
     <QueryClientProvider client={queryClient}>
       <AuthContext.Provider value={{ login: mockLogin } as any}>
         <OfflineContext.Provider value={{ clearQueue: mockClearQueue } as any}>
-          <SnackbarContext.Provider value={{ showSnackbar: mockShowSnackbar } as any}>
+          <SnackbarContext.Provider
+            value={{ showSnackbar: mockShowSnackbar } as any}
+          >
             <MemoryRouter>{children}</MemoryRouter>
           </SnackbarContext.Provider>
         </OfflineContext.Provider>
@@ -49,8 +55,13 @@ describe("Login Component Integration", () => {
     await userEvent.click(page.getByRole("button", { name: /Sign In/i }));
 
     // Verify success
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
-    expect(mockShowSnackbar).toHaveBeenCalledWith("Login successful", "success");
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      "Login successful",
+      "success",
+    );
     expect(mockLogin).toHaveBeenCalled();
   });
 
@@ -63,13 +74,12 @@ describe("Login Component Integration", () => {
     // Mock axios error
     const errorResponse = {
       response: {
-        data: { message: "Invalid credentials" }
+        data: { message: "Invalid credentials" },
       },
-      isAxiosError: true
+      isAxiosError: true,
     };
     (axios.post as any).mockRejectedValue(errorResponse);
     (axios.isAxiosError as any).mockReturnValue(true);
-
 
     render(<Login />, { wrapper: Wrapper });
 
@@ -77,8 +87,12 @@ describe("Login Component Integration", () => {
     await userEvent.type(page.getByLabelText(/Password/i), "wrongpass");
     await userEvent.click(page.getByRole("button", { name: /Sign In/i }));
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
-    expect(mockShowSnackbar).toHaveBeenCalledWith(expect.stringContaining("Login failed"), "error");
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
+    expect(mockShowSnackbar).toHaveBeenCalledWith(
+      expect.stringContaining("Login failed"),
+      "error",
+    );
   });
 });
-

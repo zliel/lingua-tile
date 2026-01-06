@@ -38,7 +38,7 @@ describe("useLessons Hook", () => {
       expect.stringContaining("/api/lessons/all"),
       {
         headers: { Authorization: "Bearer mock-token" },
-      }
+      },
     );
   });
 
@@ -77,4 +77,3 @@ describe("useLessons Hook", () => {
     expect(result.current.data).toEqual(mockSections);
   });
 });
-

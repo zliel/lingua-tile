@@ -11,11 +11,13 @@ describe("About Component Integration", () => {
     render(
       <ThemeProvider theme={theme}>
         <About />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     // Hero (this one uses exact because "LinguaTile" is used multiple times)
-    await expect.element(page.getByText("LinguaTile", { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByText("LinguaTile", { exact: true }))
+      .toBeVisible();
 
     // Sections
     await expect.element(page.getByText("Why?")).toBeVisible();
@@ -29,4 +31,3 @@ describe("About Component Integration", () => {
     await expect.element(page.getByText("FastAPI")).toBeVisible();
   });
 });
-

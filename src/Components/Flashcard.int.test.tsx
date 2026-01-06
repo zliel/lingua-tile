@@ -21,4 +21,3 @@ describe("Flashcard Component Integration", () => {
     await expect.element(page.getByText("Hello")).toBeVisible();
   });
 });
-

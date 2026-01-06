@@ -20,12 +20,14 @@ vi.mock("axios", () => ({
 }));
 
 vi.mock("mui-markdown", () => ({
-  MuiMarkdown: ({ children }: any) => <div data-testid="markdown-content">{children}</div>,
+  MuiMarkdown: ({ children }: any) => (
+    <div data-testid="markdown-content">{children}</div>
+  ),
   getOverrides: () => ({}),
 }));
 
 vi.mock("../Components/ReviewModal", () => ({
-  default: () => <div data-testid="review-modal">ReviewModal (Mock)</div>
+  default: () => <div data-testid="review-modal">ReviewModal (Mock)</div>,
 }));
 
 const createWrapper = (isLoggedIn: boolean = true) => {
@@ -64,8 +66,8 @@ describe("GrammarLesson Component Integration", () => {
     (axios.get as any).mockResolvedValue({
       data: {
         title: "Grammar Lesson",
-        content: "# Markdown Header\nSome content"
-      }
+        content: "# Markdown Header\nSome content",
+      },
     });
 
     const Wrapper = createWrapper(true);
@@ -82,12 +84,13 @@ describe("GrammarLesson Component Integration", () => {
   });
 
   it("handles loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper(true);
     render(<GrammarLesson />, { wrapper: Wrapper });
 
-    await expect.element(page.getByTestId("markdown-content")).not.toBeInTheDocument();
+    await expect
+      .element(page.getByTestId("markdown-content"))
+      .not.toBeInTheDocument();
   });
 });
-

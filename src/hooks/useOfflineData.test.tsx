@@ -58,14 +58,18 @@ describe("useOfflineData Hook", () => {
 
     await result.current.downloadSection("section-1");
 
-    await waitFor(() => expect(result.current.downloadingSections["section-1"]).toBe(false));
+    await waitFor(() =>
+      expect(result.current.downloadingSections["section-1"]).toBe(false),
+    );
     expect(axios.get).toHaveBeenCalledWith(
       expect.stringContaining("/api/sections/section-1/download"),
-      expect.objectContaining({ headers: { Authorization: "Bearer mock-token" } })
+      expect.objectContaining({
+        headers: { Authorization: "Bearer mock-token" },
+      }),
     );
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "Downloaded 1 lessons for offline use.",
-      "success"
+      "success",
     );
   });
 
@@ -80,9 +84,11 @@ describe("useOfflineData Hook", () => {
 
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "Failed to download lessons.",
-      "error"
+      "error",
     );
-    await waitFor(() => expect(result.current.downloadingSections["section-1"]).toBe(false));
+    await waitFor(() =>
+      expect(result.current.downloadingSections["section-1"]).toBe(false),
+    );
   });
 
   it("warns if offline when trying to download", async () => {
@@ -100,7 +106,7 @@ describe("useOfflineData Hook", () => {
     expect(axios.get).not.toHaveBeenCalled();
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "You must be online to download lessons.",
-      "error"
+      "error",
     );
   });
 });

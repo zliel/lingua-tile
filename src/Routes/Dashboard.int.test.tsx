@@ -18,13 +18,19 @@ vi.mock("@/hooks/usePushSubscription", () => ({
 
 // Mock charts to avoid complex rendering in tests
 vi.mock("@/Components/charts/PastWeekReviewsChart", () => ({
-  PastWeekReviewsChart: () => <div data-testid="past-week-chart">Past Week Chart</div>,
+  PastWeekReviewsChart: () => (
+    <div data-testid="past-week-chart">Past Week Chart</div>
+  ),
 }));
 vi.mock("@/Components/charts/ProjectedReviewsChart", () => ({
-  ProjectedReviewsChart: () => <div data-testid="projected-chart">Projected Chart</div>,
+  ProjectedReviewsChart: () => (
+    <div data-testid="projected-chart">Projected Chart</div>
+  ),
 }));
 vi.mock("@/Components/charts/LessonProgressChart", () => ({
-  LessonProgressChart: () => <div data-testid="lesson-progress-chart">Lesson Progress Chart</div>,
+  LessonProgressChart: () => (
+    <div data-testid="lesson-progress-chart">Lesson Progress Chart</div>
+  ),
 }));
 
 // Mock axios for useQuery hooks used in Dashboard (useReviews, useReviewHistory, etc.)
@@ -47,7 +53,9 @@ vi.mock("@/hooks/useLessons", () => ({
 // Mock User query which is inline in Dashboard
 vi.mock("axios", () => ({
   default: {
-    get: vi.fn().mockResolvedValue({ data: { username: "TestUser", timezone: "UTC" } }),
+    get: vi
+      .fn()
+      .mockResolvedValue({ data: { username: "TestUser", timezone: "UTC" } }),
     put: vi.fn().mockResolvedValue({}),
     isAxiosError: () => false,
   },
@@ -81,7 +89,9 @@ describe("Dashboard Component Integration", () => {
     const Wrapper = createWrapper();
     render(<Dashboard />, { wrapper: Wrapper });
 
-    await expect.element(page.getByText(/Welcome back, TestUser!/i)).toBeVisible();
+    await expect
+      .element(page.getByText(/Welcome back, TestUser!/i))
+      .toBeVisible();
   });
 
   it("renders all charts", async () => {
@@ -90,14 +100,17 @@ describe("Dashboard Component Integration", () => {
 
     await expect.element(page.getByTestId("past-week-chart")).toBeVisible();
     await expect.element(page.getByTestId("projected-chart")).toBeVisible();
-    await expect.element(page.getByTestId("lesson-progress-chart")).toBeVisible();
+    await expect
+      .element(page.getByTestId("lesson-progress-chart"))
+      .toBeVisible();
   });
 
   it("renders go to lessons button", async () => {
     const Wrapper = createWrapper();
     render(<Dashboard />, { wrapper: Wrapper });
 
-    await expect.element(page.getByRole("button", { name: /Go To Lessons/i })).toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: /Go To Lessons/i }))
+      .toBeVisible();
   });
 });
-

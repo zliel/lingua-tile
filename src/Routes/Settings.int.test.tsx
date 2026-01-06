@@ -37,7 +37,7 @@ const createWrapper = () => {
       username: "TestUser",
       token: "token",
       isLoggedIn: true,
-      isAdmin: false
+      isAdmin: false,
     },
   };
 
@@ -55,7 +55,7 @@ const createWrapper = () => {
 describe("Settings Component Integration", () => {
   it("renders settings options", async () => {
     (axios.get as any).mockResolvedValue({
-      data: { _id: "u1", learning_mode: "list" }
+      data: { _id: "u1", learning_mode: "list" },
     });
 
     const Wrapper = createWrapper();
@@ -67,7 +67,7 @@ describe("Settings Component Integration", () => {
 
   it("toggles learning mode", async () => {
     (axios.get as any).mockResolvedValue({
-      data: { _id: "u1", learning_mode: "list" }
+      data: { _id: "u1", learning_mode: "list" },
     });
     (axios.put as any).mockResolvedValue({});
 
@@ -87,8 +87,7 @@ describe("Settings Component Integration", () => {
     expect(axios.put).toHaveBeenCalledWith(
       expect.stringContaining("/api/users/update/u1"),
       { learning_mode: "map" },
-      expect.anything()
+      expect.anything(),
     );
   });
 });
-

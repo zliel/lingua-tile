@@ -10,7 +10,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // Mock StreakCounter to avoid extra data fetching/issues
 vi.mock("./StreakCounter", () => ({
-  default: ({ streak }: any) => <div data-testid="streak-counter">Streak: {streak}</div>
+  default: ({ streak }: any) => (
+    <div data-testid="streak-counter">Streak: {streak}</div>
+  ),
 }));
 
 const theme = createTheme();
@@ -28,7 +30,7 @@ const createWrapper = (isLoggedIn: boolean = false) => {
       username: isLoggedIn ? "TestUser" : "",
       token: isLoggedIn ? "token" : "",
       isLoggedIn: isLoggedIn,
-      isAdmin: false
+      isAdmin: false,
     },
     authIsLoading: false,
     logout: vi.fn(),

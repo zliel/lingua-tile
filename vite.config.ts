@@ -114,7 +114,7 @@ export default defineConfig({
           include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
           exclude: ["src/**/*.int.test.{ts,tsx}"],
           environment: "jsdom",
-          setupFiles: ["./src/setupTests.ts"]
+          setupFiles: ["./src/setupTests.ts"],
         },
       },
       {
@@ -126,8 +126,8 @@ export default defineConfig({
             optimizer: {
               client: {
                 enabled: true,
-              }
-            }
+              },
+            },
           },
           browser: {
             enabled: true,
@@ -139,7 +139,7 @@ export default defineConfig({
               },
             ],
           },
-        }
+        },
       },
       {
         extends: true,
@@ -157,8 +157,8 @@ export default defineConfig({
             optimizer: {
               client: {
                 enabled: true,
-              }
-            }
+              },
+            },
           },
           browser: {
             enabled: true,

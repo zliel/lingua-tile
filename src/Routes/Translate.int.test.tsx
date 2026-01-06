@@ -48,6 +48,12 @@ describe("Translate Component Integration", () => {
     // Check for content from TranslationForm
     (axios.get as any).mockResolvedValue({ data: {} });
     await expect.element(page.getByText("Translate Text")).toBeVisible();
-    await expect.element(page.getByText("Enter text below to translate between English and Japanese.")).toBeVisible();
+    await expect
+      .element(
+        page.getByText(
+          "Enter text below to translate between English and Japanese.",
+        ),
+      )
+      .toBeVisible();
   });
 });

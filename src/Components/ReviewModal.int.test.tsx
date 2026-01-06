@@ -32,11 +32,13 @@ describe("ReviewModal Integration", () => {
     vi.clearAllMocks();
   });
 
-  const createWrapper = () => ({ children }: { children: React.ReactNode }) => (
-    <ThemeProvider theme={theme}>
-      <MemoryRouter>{children}</MemoryRouter>
-    </ThemeProvider>
-  );
+  const createWrapper =
+    () =>
+    ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider theme={theme}>
+        <MemoryRouter>{children}</MemoryRouter>
+      </ThemeProvider>
+    );
 
   it("renders rating options when open", async () => {
     (useLessonReview as any).mockReturnValue({
@@ -44,14 +46,26 @@ describe("ReviewModal Integration", () => {
     });
 
     const Wrapper = createWrapper();
-    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, { wrapper: Wrapper });
+    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, {
+      wrapper: Wrapper,
+    });
 
     await expect.element(page.getByText("Lesson Complete!")).toBeVisible();
-    await expect.element(page.getByText("How would you rate your performance?")).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Again" })).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Hard" })).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Good" })).toBeVisible();
-    await expect.element(page.getByRole("button", { name: "Easy" })).toBeVisible();
+    await expect
+      .element(page.getByText("How would you rate your performance?"))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Again" }))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Hard" }))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Good" }))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: "Easy" }))
+      .toBeVisible();
   });
 
   it("calls handlePerformanceReview when a rating is selected", async () => {
@@ -61,7 +75,9 @@ describe("ReviewModal Integration", () => {
     });
 
     const Wrapper = createWrapper();
-    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, { wrapper: Wrapper });
+    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, {
+      wrapper: Wrapper,
+    });
 
     // Click "Easy" (value 4)
     await userEvent.click(page.getByRole("button", { name: "Easy" }));
@@ -70,15 +86,19 @@ describe("ReviewModal Integration", () => {
   });
 
   it("shows loading state when triggered via hook/state interaction", async () => {
-    let capturedSetLoading: (loading: boolean) => void = () => { };
+    let capturedSetLoading: (loading: boolean) => void = () => {};
 
-    (useLessonReview as any).mockImplementation((_id: string, _setOpen: any, setLoading: any) => {
-      capturedSetLoading = setLoading;
-      return { handlePerformanceReview: vi.fn() };
-    });
+    (useLessonReview as any).mockImplementation(
+      (_id: string, _setOpen: any, setLoading: any) => {
+        capturedSetLoading = setLoading;
+        return { handlePerformanceReview: vi.fn() };
+      },
+    );
 
     const Wrapper = createWrapper();
-    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, { wrapper: Wrapper });
+    render(<ReviewModal open={true} setOpen={vi.fn()} lessonId="lesson123" />, {
+      wrapper: Wrapper,
+    });
 
     // Simulate looading start (e.g. hook does this when mutation starts)
     await vi.waitUntil(() => capturedSetLoading !== undefined);
@@ -89,18 +109,27 @@ describe("ReviewModal Integration", () => {
   });
 
   it("transitions to XpSummary and Confetti when review completes", async () => {
-    (useLessonReview as any).mockImplementation((_id: string, _setOpen: any, _setLoading: any, onComplete: any) => {
-      return {
-        handlePerformanceReview: () => {
-          // Simulate completion immediately
-          onComplete({ leveled_up: true, xp_gained: 100, new_level: 5, new_xp: 50 });
-        }
-      };
-    });
+    (useLessonReview as any).mockImplementation(
+      (_id: string, _setOpen: any, _setLoading: any, onComplete: any) => {
+        return {
+          handlePerformanceReview: () => {
+            // Simulate completion immediately
+            onComplete({
+              leveled_up: true,
+              xp_gained: 100,
+              new_level: 5,
+              new_xp: 50,
+            });
+          },
+        };
+      },
+    );
 
     const setOpen = vi.fn();
     const Wrapper = createWrapper();
-    render(<ReviewModal open={true} setOpen={setOpen} lessonId="lesson123" />, { wrapper: Wrapper });
+    render(<ReviewModal open={true} setOpen={setOpen} lessonId="lesson123" />, {
+      wrapper: Wrapper,
+    });
 
     // Click "Good"
     await userEvent.click(page.getByRole("button", { name: "Good" }));

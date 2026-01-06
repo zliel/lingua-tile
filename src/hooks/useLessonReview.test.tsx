@@ -70,17 +70,19 @@ describe("useLessonReview Hook", () => {
         useLessonReview("lesson-123", mockSetModalOpen, mockSetModalLoading),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await result.current.handlePerformanceReview(3);
 
     await waitFor(() => expect(mockSetModalLoading).toHaveBeenCalledWith(true));
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
-    await waitFor(() => expect(mockShowSnackbar).toHaveBeenCalledWith(
-      "Lesson marked as complete",
-      "success"
-    ));
+    await waitFor(() =>
+      expect(mockShowSnackbar).toHaveBeenCalledWith(
+        "Lesson marked as complete",
+        "success",
+      ),
+    );
     expect(mockSetModalOpen).toHaveBeenCalledWith(false);
   });
 
@@ -96,7 +98,7 @@ describe("useLessonReview Hook", () => {
         useLessonReview("lesson-123", mockSetModalOpen, mockSetModalLoading),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await result.current.handlePerformanceReview(3);
@@ -110,11 +112,11 @@ describe("useLessonReview Hook", () => {
         lesson_id: "lesson-123",
         overall_performance: 3,
         username: "testuser",
-      })
+      }),
     );
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "Saved offline. Will sync when online.",
-      "success"
+      "success",
     );
   });
 
@@ -136,7 +138,7 @@ describe("useLessonReview Hook", () => {
         useLessonReview("lesson-123", mockSetModalOpen, mockSetModalLoading),
       {
         wrapper: createWrapper(),
-      }
+      },
     );
 
     await result.current.handlePerformanceReview(2);
@@ -144,8 +146,7 @@ describe("useLessonReview Hook", () => {
     await waitFor(() => expect(mockAddToQueue).toHaveBeenCalled());
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "Saved offline. Will sync when online.",
-      "success"
+      "success",
     );
   });
 });
-

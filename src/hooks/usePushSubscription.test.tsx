@@ -28,8 +28,12 @@ describe("usePushSubscription Hook", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.spyOn(AuthContext, "useAuth").mockReturnValue({ authData: mockAuthData } as any);
-    vi.spyOn(SnackbarContext, "useSnackbar").mockReturnValue({ showSnackbar: mockShowSnackbar });
+    vi.spyOn(AuthContext, "useAuth").mockReturnValue({
+      authData: mockAuthData,
+    } as any);
+    vi.spyOn(SnackbarContext, "useSnackbar").mockReturnValue({
+      showSnackbar: mockShowSnackbar,
+    });
 
     // @ts-ignore
     global.Notification = {
@@ -48,8 +52,7 @@ describe("usePushSubscription Hook", () => {
     // Mock window.atob for VAPID key helper IF logic uses it
     // The logic uses it: urlBase64ToUint8Array -> window.atob
     // JSDOM provides atob, so we might just need to ensure the key we provide is valid base64
-    // "BAPP" is 4 chars, which is valid base64. 
-
+    // "BAPP" is 4 chars, which is valid base64.
   });
 
   afterEach(() => {
@@ -73,7 +76,7 @@ describe("usePushSubscription Hook", () => {
     (axios.get as Mock).mockResolvedValueOnce({ data: { publicKey: "BAPP" } });
 
     mockSubscribe.mockResolvedValue({
-      toJSON: () => ({ endpoint: "new-endpoint" })
+      toJSON: () => ({ endpoint: "new-endpoint" }),
     });
     (axios.post as Mock).mockResolvedValueOnce({});
 
@@ -90,7 +93,7 @@ describe("usePushSubscription Hook", () => {
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/subscribe"),
       { endpoint: "new-endpoint" },
-      expect.anything()
+      expect.anything(),
     );
     expect(result.current.isSubscribed).toBe(true);
   });
@@ -113,7 +116,7 @@ describe("usePushSubscription Hook", () => {
   it("unsubscribes successfully", async () => {
     mockGetSubscription.mockResolvedValue({
       unsubscribe: mockUnsubscribe,
-      endpoint: "test-endpoint"
+      endpoint: "test-endpoint",
     });
     (axios.post as Mock).mockResolvedValueOnce({});
 
@@ -130,9 +133,8 @@ describe("usePushSubscription Hook", () => {
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/unsubscribe"),
       { endpoint: "test-endpoint" },
-      expect.anything()
+      expect.anything(),
     );
     expect(result.current.isSubscribed).toBe(false);
   });
 });
-

@@ -45,7 +45,7 @@ describe("useAppBadge Hook", () => {
     });
 
     // Mock global console error to keep output clean during expected errors
-    vi.spyOn(console, 'error').mockImplementation(() => { });
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -54,7 +54,6 @@ describe("useAppBadge Hook", () => {
     // @ts-ignore
     delete navigator.clearAppBadge;
   });
-
 
   it("sets app badge with overdue count", async () => {
     const today = new Date();
@@ -66,7 +65,7 @@ describe("useAppBadge Hook", () => {
     const mockReviews = [
       { next_review: yesterday.toISOString() }, // Overdue
       { next_review: yesterday.toISOString() }, // Overdue
-      { next_review: tomorrow.toISOString() },  // Not overdue
+      { next_review: tomorrow.toISOString() }, // Not overdue
     ];
 
     (axios.get as Mock).mockResolvedValueOnce({ data: mockReviews });
@@ -100,11 +99,11 @@ describe("useAppBadge Hook", () => {
     });
 
     // Should not throw and should not call axios (enabled check handles this in hook actually)
-    // But if enabled check failed, logic inside useEffect handles it too. 
+    // But if enabled check failed, logic inside useEffect handles it too.
     // Hook actually disables query if setAppBadge is missing.
 
     // Wait a tick
-    await waitFor(() => { });
+    await waitFor(() => {});
 
     expect(mockSetAppBadge).not.toHaveBeenCalled();
   });

@@ -43,4 +43,3 @@ describe("KanaKeyboard Component", () => {
     expect(handleChange).toHaveBeenCalled();
   });
 });
-

@@ -16,14 +16,18 @@ describe("StreakCounter Component Integration", () => {
 
     await expect.element(page.getByText("5")).toBeVisible();
     // Fire icon is rendered as an SVG, we can check for its presence
-    await expect.element(page.getByTestId("LocalFireDepartmentIcon")).toBeVisible();
+    await expect
+      .element(page.getByTestId("LocalFireDepartmentIcon"))
+      .toBeVisible();
   });
 
   it("renders zero streak with disabled color", async () => {
     render(<StreakCounter streak={0} />, { wrapper: Wrapper });
 
     await expect.element(page.getByText("0")).toBeVisible();
-    await expect.element(page.getByTestId("LocalFireDepartmentIcon")).toBeVisible();
+    await expect
+      .element(page.getByTestId("LocalFireDepartmentIcon"))
+      .toBeVisible();
   });
 
   it("renders tooltip on hover", async () => {
@@ -34,7 +38,10 @@ describe("StreakCounter Component Integration", () => {
   });
 
   it("renders nothing when loading", async () => {
-    const renderResult = await render(<StreakCounter streak={5} loading={true} />, { wrapper: Wrapper });
+    const renderResult = await render(
+      <StreakCounter streak={5} loading={true} />,
+      { wrapper: Wrapper },
+    );
 
     await expect.element(page.getByText("5")).not.toBeInTheDocument();
 

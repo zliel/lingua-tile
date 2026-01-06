@@ -25,7 +25,7 @@ describe("Layout Component", () => {
     render(
       <MemoryRouter>
         <Layout />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId("mock-navbar")).toBeInTheDocument();
     expect(screen.getByTestId("mock-background")).toBeInTheDocument();
@@ -36,13 +36,15 @@ describe("Layout Component", () => {
       <MemoryRouter initialEntries={["/test"]}>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/test" element={<div data-testid="test-content">Page Content</div>} />
+            <Route
+              path="/test"
+              element={<div data-testid="test-content">Page Content</div>}
+            />
           </Route>
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId("test-content")).toBeInTheDocument();
     expect(screen.getByText("Page Content")).toBeInTheDocument();
   });
 });
-

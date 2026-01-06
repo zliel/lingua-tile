@@ -14,9 +14,12 @@ vi.mock("axios");
 
 // Mock ReviewModal to avoid its complexity
 vi.mock("./ReviewModal", () => ({
-  default: ({ open, setOpen }: any) => (
-    open ? <div data-testid="review-modal">ReviewModal Open <button onClick={() => setOpen(false)}>Close</button></div> : null
-  )
+  default: ({ open, setOpen }: any) =>
+    open ? (
+      <div data-testid="review-modal">
+        ReviewModal Open <button onClick={() => setOpen(false)}>Close</button>
+      </div>
+    ) : null,
 }));
 
 // Mock Flashcard to simplify interaction
@@ -28,7 +31,7 @@ vi.mock("./Flashcard", () => ({
       <button onClick={onNextCard}>Next</button>
       <button onClick={onPreviousCard}>Prev</button>
     </div>
-  )
+  ),
 }));
 
 const mockLesson = {
@@ -37,12 +40,12 @@ const mockLesson = {
   section_id: "sec1",
   order_index: 0,
   card_ids: ["c1", "c2"],
-  sentences: []
+  sentences: [],
 };
 
 const mockCards = [
   { id: "c1", front_text: "Hello", back_text: "Hola" },
-  { id: "c2", front_text: "World", back_text: "Mundo" }
+  { id: "c2", front_text: "World", back_text: "Mundo" },
 ];
 
 describe("FlashcardList Integration", () => {
@@ -57,30 +60,41 @@ describe("FlashcardList Integration", () => {
     });
   });
 
-  const createWrapper = (isLoggedIn = true) => ({ children }: { children: React.ReactNode }) => (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={{
-          authData: { isLoggedIn, token: "token", username: "user", isAdmin: false },
-          login: vi.fn(),
-          logout: vi.fn(),
-          authIsLoading: false,
-          checkAdmin: vi.fn()
-        }}>
-          <SnackbarContext.Provider value={{ showSnackbar: vi.fn() }}>
-            {children}
-          </SnackbarContext.Provider>
-        </AuthContext.Provider>
-      </QueryClientProvider>
-    </ThemeProvider>
-  );
+  const createWrapper =
+    (isLoggedIn = true) =>
+    ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider theme={theme}>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider
+            value={{
+              authData: {
+                isLoggedIn,
+                token: "token",
+                username: "user",
+                isAdmin: false,
+              },
+              login: vi.fn(),
+              logout: vi.fn(),
+              authIsLoading: false,
+              checkAdmin: vi.fn(),
+            }}
+          >
+            <SnackbarContext.Provider value={{ showSnackbar: vi.fn() }}>
+              {children}
+            </SnackbarContext.Provider>
+          </AuthContext.Provider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    );
 
   it("renders flashcards and navigates through them", async () => {
     (axios.post as any).mockResolvedValue({ data: mockCards });
     (axios.get as any).mockResolvedValue({ data: null }); // Review status
 
     const Wrapper = createWrapper();
-    render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, { wrapper: Wrapper });
+    render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, {
+      wrapper: Wrapper,
+    });
 
     // Wait for loading to finish
     await expect.element(page.getByText("Front: Hello")).toBeVisible();
@@ -99,7 +113,9 @@ describe("FlashcardList Integration", () => {
     (axios.get as any).mockResolvedValue({ data: null });
 
     const Wrapper = createWrapper();
-    render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, { wrapper: Wrapper });
+    render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, {
+      wrapper: Wrapper,
+    });
 
     // Card 1
     await expect.element(page.getByText("Front: Hello")).toBeVisible();
@@ -113,4 +129,3 @@ describe("FlashcardList Integration", () => {
     await expect.element(page.getByTestId("review-modal")).toBeVisible();
   });
 });
-

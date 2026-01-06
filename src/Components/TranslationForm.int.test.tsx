@@ -15,7 +15,7 @@ describe("TranslationForm Component", () => {
   it("updates source text and triggers translation", async () => {
     // Setup mock response
     (axios.get as any).mockResolvedValue({
-      data: { translatedText: "テスト" }
+      data: { translatedText: "テスト" },
     });
     render(<TranslationForm />);
 
@@ -25,6 +25,8 @@ describe("TranslationForm Component", () => {
 
     await expect.element(srcInput).toHaveValue("World");
 
-    await expect.element(page.getByLabelText("Translated Text")).toHaveValue("テスト");
+    await expect
+      .element(page.getByLabelText("Translated Text"))
+      .toHaveValue("テスト");
   });
 });

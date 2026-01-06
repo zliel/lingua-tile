@@ -11,15 +11,13 @@ describe("WordBank Integration", () => {
     { id: "w1", text: "word1" },
     { id: "w2", text: "word2" },
   ];
-  const mockSelectedWords = [
-    { id: "w3", text: "word3" },
-  ];
+  const mockSelectedWords = [{ id: "w3", text: "word3" }];
 
-  const createWrapper = () => ({ children }: { children: React.ReactNode }) => (
-    <ThemeProvider theme={theme}>
-      {children}
-    </ThemeProvider>
-  );
+  const createWrapper =
+    () =>
+    ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    );
 
   it("renders available and selected words", async () => {
     const Wrapper = createWrapper();
@@ -29,7 +27,8 @@ describe("WordBank Integration", () => {
         selectedWords={mockSelectedWords}
         onWordClick={vi.fn()}
         isCorrect={null}
-      />, { wrapper: Wrapper }
+      />,
+      { wrapper: Wrapper },
     );
 
     await expect.element(page.getByText("word1")).toBeVisible();
@@ -46,11 +45,15 @@ describe("WordBank Integration", () => {
         selectedWords={[]}
         onWordClick={onWordClick}
         isCorrect={null}
-      />, { wrapper: Wrapper }
+      />,
+      { wrapper: Wrapper },
     );
 
     await userEvent.click(page.getByText("word1"));
-    expect(onWordClick).toHaveBeenCalledWith(expect.objectContaining({ text: "word1" }), true);
+    expect(onWordClick).toHaveBeenCalledWith(
+      expect.objectContaining({ text: "word1" }),
+      true,
+    );
   });
 
   it("calls onWordClick with false when selected word is clicked", async () => {
@@ -62,11 +65,15 @@ describe("WordBank Integration", () => {
         selectedWords={mockSelectedWords}
         onWordClick={onWordClick}
         isCorrect={null}
-      />, { wrapper: Wrapper }
+      />,
+      { wrapper: Wrapper },
     );
 
     await userEvent.click(page.getByText("word3"));
-    expect(onWordClick).toHaveBeenCalledWith(expect.objectContaining({ text: "word3" }), false);
+    expect(onWordClick).toHaveBeenCalledWith(
+      expect.objectContaining({ text: "word3" }),
+      false,
+    );
   });
 
   it("does not call onWordClick when isCorrect is set (disabled)", async () => {
@@ -78,11 +85,11 @@ describe("WordBank Integration", () => {
         selectedWords={[]}
         onWordClick={onWordClick}
         isCorrect={true}
-      />, { wrapper: Wrapper }
+      />,
+      { wrapper: Wrapper },
     );
 
     await userEvent.click(page.getByText("word1"));
     expect(onWordClick).not.toHaveBeenCalled();
   });
 });
-

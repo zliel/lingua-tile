@@ -12,7 +12,9 @@ const createWrapper = (mockShowSnackbar: any) => {
   });
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <SnackbarContext.Provider value={{ showSnackbar: mockShowSnackbar } as any}>
+      <SnackbarContext.Provider
+        value={{ showSnackbar: mockShowSnackbar } as any}
+      >
         <MemoryRouter>{children}</MemoryRouter>
       </SnackbarContext.Provider>
     </QueryClientProvider>
@@ -48,7 +50,9 @@ describe("TranslationQuestion Component Integration", () => {
     await userEvent.click(checkButton);
 
     // Check for success feedback via polling
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
     expect(mockShowSnackbar).toHaveBeenCalledWith("Correct!", "success", 500);
   });
 
@@ -67,7 +71,9 @@ describe("TranslationQuestion Component Integration", () => {
     const checkButton = page.getByRole("button", { name: /check/i });
     await userEvent.click(checkButton);
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
     expect(mockShowSnackbar).toHaveBeenCalledWith("Correct!", "success", 500);
   });
 
@@ -86,7 +92,9 @@ describe("TranslationQuestion Component Integration", () => {
     const checkButton = page.getByRole("button", { name: /check/i });
     await userEvent.click(checkButton);
 
-    await expect.poll(() => mockShowSnackbar.mock.calls.length).toBeGreaterThan(0);
+    await expect
+      .poll(() => mockShowSnackbar.mock.calls.length)
+      .toBeGreaterThan(0);
     expect(mockShowSnackbar).toHaveBeenCalledWith("Incorrect", "error");
   });
 });

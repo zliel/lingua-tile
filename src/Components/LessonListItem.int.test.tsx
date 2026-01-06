@@ -37,7 +37,7 @@ describe("LessonListItem Component Integration", () => {
     section_id: "section1",
     is_active: true,
     order_index: 0,
-    card_ids: []
+    card_ids: [],
   };
 
   it("displays lesson title and creates start button", async () => {
@@ -50,11 +50,15 @@ describe("LessonListItem Component Integration", () => {
         review={null}
         onLessonStart={onLessonStart}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
-    await expect.element(page.getByText("Introduction to Hiragana")).toBeVisible();
-    await expect.element(page.getByRole("button", { name: /Start Lesson/i })).toBeVisible();
+    await expect
+      .element(page.getByText("Introduction to Hiragana"))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole("button", { name: /Start Lesson/i }))
+      .toBeVisible();
   });
 
   it("displays overdue status when applicable", async () => {
@@ -67,7 +71,7 @@ describe("LessonListItem Component Integration", () => {
         review={reviewStats}
         onLessonStart={vi.fn()}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     await expect.element(page.getByText("Overdue")).toBeVisible();
@@ -83,11 +87,10 @@ describe("LessonListItem Component Integration", () => {
         review={null}
         onLessonStart={onLessonStart}
       />,
-      { wrapper: Wrapper }
+      { wrapper: Wrapper },
     );
 
     await userEvent.click(page.getByRole("button", { name: /Start Lesson/i }));
     expect(onLessonStart).toHaveBeenCalledWith(mockLesson);
   });
 });
-

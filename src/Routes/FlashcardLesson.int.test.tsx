@@ -21,7 +21,7 @@ vi.mock("axios", () => ({
 
 // Mock child component
 vi.mock("../Components/FlashcardList", () => ({
-  default: () => <div data-testid="flashcard-list">FlashcardsList (Mock)</div>
+  default: () => <div data-testid="flashcard-list">FlashcardsList (Mock)</div>,
 }));
 
 const createWrapper = () => {
@@ -58,7 +58,7 @@ const createWrapper = () => {
 describe("FlashcardLesson Component Integration", () => {
   it("renders lesson title and flashcard list", async () => {
     (axios.get as any).mockResolvedValue({
-      data: { title: "Test Lesson", cards: [] }
+      data: { title: "Test Lesson", cards: [] },
     });
 
     const Wrapper = createWrapper();
@@ -71,7 +71,7 @@ describe("FlashcardLesson Component Integration", () => {
 
   it("handles loading state", async () => {
     // Delay response to show loading state
-    (axios.get as any).mockImplementation(() => new Promise(() => { }));
+    (axios.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<FlashcardLesson />, { wrapper: Wrapper });
@@ -79,4 +79,3 @@ describe("FlashcardLesson Component Integration", () => {
     await expect.element(page.getByText("Loading lesson...")).toBeVisible();
   });
 });
-
