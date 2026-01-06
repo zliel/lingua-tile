@@ -49,6 +49,7 @@ describe("UpdateProfile Component Integration", () => {
 
     // Check if username field is populated (might take a moment for useQuery)
     await expect
+      // @ts-ignore
       .poll(() => page.getByLabelText(/^Username/i).element().value)
       .toBe("CurrentUsername");
   });
@@ -67,6 +68,7 @@ describe("UpdateProfile Component Integration", () => {
 
     // Wait for data load
     await expect
+      // @ts-ignore
       .poll(() => page.getByLabelText(/^Username/i).element().value)
       .toBe("CurrentUsername");
 

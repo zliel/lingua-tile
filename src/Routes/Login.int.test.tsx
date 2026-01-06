@@ -38,7 +38,7 @@ const createWrapper = (
 describe("Login Component Integration", () => {
   it("handles successful login", async () => {
     const mockShowSnackbar = vi.fn();
-    const mockLogin = vi.fn((data, callback) => callback());
+    const mockLogin = vi.fn((_data, callback) => callback());
     const mockClearQueue = vi.fn();
     const Wrapper = createWrapper(mockShowSnackbar, mockLogin, mockClearQueue);
 
