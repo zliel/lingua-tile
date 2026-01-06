@@ -60,5 +60,5 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run Storybook Tests
+      - name: Run Integration Tests
         run: npm run test -- --project=integration
