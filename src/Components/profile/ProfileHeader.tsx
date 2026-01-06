@@ -10,7 +10,7 @@ import {
   Button,
   useTheme,
 } from "@mui/material";
-import LevelProgressBar from "../charts/LevelProgressBar";
+import LevelProgressBar from "@/Components/charts/LevelProgressBar";
 import { User } from "@/types/users";
 
 export const ProfileHeader = ({

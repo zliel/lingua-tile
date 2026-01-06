@@ -65,7 +65,8 @@
     "jsdom": "^27.2.0",
     "playwright": "^1.57.0",
     "storybook": "^10.1.11",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.10",
+    "vitest-browser-react": "^2.0.2"
   },
   "scripts": {
     "start": "vite dev",

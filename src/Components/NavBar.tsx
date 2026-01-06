@@ -24,8 +24,8 @@ import LightMode from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import CloudOff from "@mui/icons-material/CloudOff";
-import { useAuth } from "../Contexts/AuthContext";
-import { useOffline } from "../Contexts/OfflineContext";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useOffline } from "@/Contexts/OfflineContext";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import StreakCounter from "./StreakCounter";
@@ -236,7 +236,11 @@ function NavBar() {
               <Skeleton variant="circular" width={40} height={40} />
             ) : authData?.isLoggedIn ? (
               <>
-                <IconButton onClick={handleProfileMenuOpen} sx={{ mt: 0.5 }}>
+                <IconButton
+                  onClick={handleProfileMenuOpen}
+                  sx={{ mt: 0.5 }}
+                  aria-label="avatar"
+                >
                   <Avatar
                     sx={{
                       backgroundColor: theme.palette.secondary.main,

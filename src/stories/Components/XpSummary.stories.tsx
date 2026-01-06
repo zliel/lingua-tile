@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { XpSummary } from "@/Components//XpSummary";
+import { XpSummary } from "@/Components/XpSummary";
 import fn from "@storybook/addon-vitest";
 
 const meta = {

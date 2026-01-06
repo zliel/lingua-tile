@@ -13,10 +13,10 @@ import {
 } from "@mui/material";
 import Done from "@mui/icons-material/Done";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Theme, useTheme } from "@mui/material/styles";
-import ReviewModal from "../Components/ReviewModal";
+import ReviewModal from "@/Components/ReviewModal";
 import GrammarLessonSkeleton from "@/Components/skeletons/GrammarLessonSkeleton";
 
 const GrammarLesson = () => {

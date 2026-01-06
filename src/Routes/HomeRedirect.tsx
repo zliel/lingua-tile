@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "@/Contexts/AuthContext";
 import Home from "./Home";
 export const HomeRedirect = () => {
   const { authData, authIsLoading } = useAuth();

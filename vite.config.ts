@@ -73,27 +73,79 @@ export default defineConfig({
     include: [
       "react",
       "react-dom",
+      "react-router",
+      "react-router-dom",
       "mui-markdown",
       "@storybook/addon-a11y/preview",
       "@storybook/react-vite",
       "@mui/material",
+      "@mui/material/styles",
+      "@mui/icons-material",
+      "@mui/icons-material/Close",
+      "@mui/icons-material/FlipCameraAndroid",
+      "@mui/icons-material/ArrowForward",
+      "@mui/icons-material/HelpOutline",
+      "@mui/icons-material/Analytics",
+      "@mui/icons-material/LibraryBooks",
+      "@mui/icons-material/Download",
+      "@mui/x-data-grid",
       "@storybook/addon-themes",
       "workbox-precaching",
       "workbox-core",
+      "vitest-browser-react",
+      "axios",
+      "canvas-confetti",
+      "@tanstack/react-query",
+      "framer-motion",
+      "react-swipeable",
+      "react-hook-form",
+      "@hookform/resolvers/zod",
+      "zod",
+      "react-dom/client",
+      "react-error-boundary",
+      "workbox-window",
+      "react-ios-pwa-prompt",
     ],
   },
   resolve: {
     alias: {
-      "@/": "/src/",
+      "@": path.resolve(dirname, "./src"),
     },
   },
   test: {
     projects: [
       {
+        extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+          include: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
+          exclude: ["src/**/*.int.test.{ts,tsx}"],
           environment: "jsdom",
+          setupFiles: ["./src/setupTests.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "integration",
+          include: ["src/**/*.int.test.{ts,tsx}"],
+          deps: {
+            optimizer: {
+              client: {
+                enabled: true,
+              },
+            },
+          },
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [
+              {
+                browser: "chromium",
+              },
+            ],
+          },
         },
       },
       {
@@ -108,6 +160,13 @@ export default defineConfig({
         ],
         test: {
           name: "storybook",
+          deps: {
+            optimizer: {
+              client: {
+                enabled: true,
+              },
+            },
+          },
           browser: {
             enabled: true,
             headless: true,

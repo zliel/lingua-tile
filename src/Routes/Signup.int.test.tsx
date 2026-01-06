@@ -1,0 +1,143 @@
+import { render } from "vitest-browser-react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { page, userEvent } from "vitest/browser";
+import Signup from "./Signup";
+import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AuthContext from "../Contexts/AuthContext";
+import SnackbarContext from "../Contexts/SnackbarContext";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import axios from "axios";
+
+const theme = createTheme();
+
+// Mock axios to prevent network calls
+vi.mock("axios", () => ({
+  default: {
+    post: vi.fn(),
+    isAxiosError: () => false,
+  },
+}));
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  const mockAuth = {
+    authData: { isLoggedIn: false },
+    authIsLoading: false,
+  };
+
+  const mockSnackbar = {
+    showSnackbar: vi.fn(),
+  };
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={mockAuth as any}>
+        <SnackbarContext.Provider value={mockSnackbar}>
+          <ThemeProvider theme={theme}>
+            <MemoryRouter>{children}</MemoryRouter>
+          </ThemeProvider>
+        </SnackbarContext.Provider>
+      </AuthContext.Provider>
+    </QueryClientProvider>
+  );
+};
+
+describe("Signup Component Integration", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("renders page content and signup form", async () => {
+    const Wrapper = createWrapper();
+    render(<Signup />, { wrapper: Wrapper });
+
+    // Check for static text from Signup page
+    await expect.element(page.getByText("Take the First Step!")).toBeVisible();
+
+    // Check for content from SignupForm (Header)
+    await expect.element(page.getByText("Sign Up").first()).toBeVisible();
+    // Check for form fields
+    await expect.element(page.getByLabelText("Username")).toBeVisible();
+  });
+  it("handles successful signup", async () => {
+    (axios.post as any).mockResolvedValue({});
+
+    const Wrapper = createWrapper();
+    render(<Signup />, { wrapper: Wrapper });
+
+    await userEvent.fill(page.getByLabelText("Username"), "NewUser");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "Password1!",
+    );
+
+    await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
+
+    // Expect API call
+    expect(axios.post).toHaveBeenCalledWith(
+      expect.stringContaining("/api/users/signup"),
+      { username: "NewUser", password: "Password1!" },
+    );
+  });
+
+  it("validates password mismatch", async () => {
+    const Wrapper = createWrapper();
+    render(<Signup />, { wrapper: Wrapper });
+
+    await userEvent.fill(page.getByLabelText("Username"), "NewUser");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "mismatch",
+    );
+
+    await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
+
+    // Check for validation error - Zod or manual check usually shows helper text
+    await expect
+      .element(page.getByText("Passwords do not match"))
+      .toBeVisible();
+
+    // Ensure API was NOT called
+    expect(axios.post).not.toHaveBeenCalled();
+  });
+
+  it("handles existing username error", async () => {
+    (axios.post as any).mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 400, data: { detail: "Username already exists" } },
+    });
+    // We also need to mock isAxiosError implementation for the fail case since we mocked the default export object
+    (axios.isAxiosError as any) = (payload: any) =>
+      payload?.isAxiosError === true;
+
+    const Wrapper = createWrapper();
+    render(<Signup />, { wrapper: Wrapper });
+
+    await userEvent.fill(page.getByLabelText("Username"), "ExistingUser");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      "Password1!",
+    );
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Confirm Password", exact: true }),
+      "Password1!",
+    );
+
+    await userEvent.click(page.getByRole("button", { name: "Sign Up" }));
+
+    // Should call API
+    expect(axios.post).toHaveBeenCalled();
+  });
+});

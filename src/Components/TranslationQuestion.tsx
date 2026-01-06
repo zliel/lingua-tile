@@ -10,9 +10,9 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import { checkAnswer as checkAnswerUtil } from "../utils/answerUtils";
+import { checkAnswer as checkAnswerUtil } from "@/utils/answerUtils";
 import WordBank from "./WordBank";
-import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 
 interface Sentence {

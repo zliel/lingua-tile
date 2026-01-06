@@ -15,7 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import confetti from "canvas-confetti";
-import useLessonReview from "../hooks/useLessonReview";
+import useLessonReview from "@/hooks/useLessonReview";
 import { useNavigate } from "react-router";
 import { XpSummary } from "./XpSummary";
 

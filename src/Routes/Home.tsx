@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "@/Contexts/AuthContext";
 import { fetchLessons, fetchReviews, fetchSections } from "@/hooks/useLessons";
 import { useEffect } from "react";
 import { HeroSection } from "@/Components/home/HeroSection";

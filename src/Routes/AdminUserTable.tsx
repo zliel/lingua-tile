@@ -1,4 +1,4 @@
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "@/Contexts/AuthContext";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";

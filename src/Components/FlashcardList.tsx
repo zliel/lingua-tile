@@ -8,8 +8,8 @@ import {
   Zoom,
   useMediaQuery,
 } from "@mui/material";
-import { useAuth } from "../Contexts/AuthContext";
-import { useSnackbar } from "../Contexts/SnackbarContext";
+import { useAuth } from "@/Contexts/AuthContext";
+import { useSnackbar } from "@/Contexts/SnackbarContext";
 import Flashcard from "./Flashcard";
 import { useTheme } from "@mui/material/styles";
 import ReviewModal from "./ReviewModal";
