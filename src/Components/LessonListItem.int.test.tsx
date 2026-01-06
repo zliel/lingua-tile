@@ -34,7 +34,6 @@ describe("LessonListItem Component Integration", () => {
     _id: "lesson1",
     title: "Introduction to Hiragana",
     category: "flashcards",
-    description: "Learn basic characters",
     section_id: "section1",
     is_active: true,
     order_index: 0,
