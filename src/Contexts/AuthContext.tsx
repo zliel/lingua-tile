@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const login = (
+  const login = useCallback((
     data: { token: string; username: string },
     callback?: () => void,
   ) => {
@@ -56,9 +56,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setTimeout(() => {
       if (callback) callback();
     }, 350);
-  };
+  }, [queryClient]);
 
-  const logout = (callback?: () => void) => {
+  const logout = useCallback((callback?: () => void) => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     queryClient.setQueryData(["authState"], {
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       username: "",
     });
     if (callback) callback();
-  };
+  }, [queryClient]);
 
   const fetchAuthState = async (): Promise<AuthData> => {
     const token = localStorage.getItem("token");

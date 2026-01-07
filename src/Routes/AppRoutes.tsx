@@ -7,6 +7,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import { HomeRedirect } from "./HomeRedirect";
 import PageSkeleton from "@/Components/skeletons/PageSkeleton";
+import SSOCallback from "./SSOCallback";
 
 const Dashboard = lazy(() => import("./Dashboard"));
 const LessonList = lazy(() => import("./LessonList"));
@@ -183,6 +184,7 @@ export const AppRoutes = () => {
       children: [
         { path: "/login", element: <Login /> },
         { path: "/signup", element: <Signup /> },
+        { path: "/sso-callback", element: <SSOCallback /> },
       ],
     },
   ]);
