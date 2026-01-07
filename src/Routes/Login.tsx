@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Card,
+  Divider,
   Grid,
   Link,
   TextField,
@@ -10,6 +11,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/Contexts/AuthContext";
@@ -134,6 +136,21 @@ function Login() {
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? "Signing in..." : "Sign In"}
+              </Button>
+            </Grid>
+
+            <Grid style={{ width: "100%" }}>
+              <Divider sx={{ my: 2 }}>OR</Divider>
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                startIcon={<GoogleIcon />}
+                onClick={() => {
+                  window.location.href = `${import.meta.env.VITE_APP_API_BASE}/api/auth/login/google`;
+                }}
+              >
+                Sign in with Google
               </Button>
             </Grid>
 

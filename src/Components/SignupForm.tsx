@@ -4,12 +4,14 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
   Grid,
   TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router";
@@ -53,7 +55,7 @@ export const SignupForm = () => {
   });
 
   const onSubmit = (data: SignupSchemaType) => {
-    signupMutation.mutate({ username: data.username, password: data.password });
+    signupMutation.mutate({ username: data.username, password: data.password, email: data.email });
   };
 
   return (
@@ -117,6 +119,19 @@ export const SignupForm = () => {
                 required
               />
             </Grid>
+            <Grid style={{ width: "100%" }}>
+              <TextField
+                label={"Email"}
+                type={"email"}
+                variant={"outlined"}
+                color={"secondary"}
+                fullWidth
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                required
+              />
+            </Grid>
             <Grid>
               <Button
                 disabled={signupMutation.isPending}
@@ -126,6 +141,20 @@ export const SignupForm = () => {
                 size="large"
               >
                 {signupMutation.isPending ? "Signing up..." : "Sign Up"}
+              </Button>
+            </Grid>
+            <Grid style={{ width: "100%" }}>
+              <Divider sx={{ my: 2 }}>OR</Divider>
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                startIcon={<GoogleIcon />}
+                onClick={() => {
+                  window.location.href = `${import.meta.env.VITE_APP_API_BASE}/api/auth/login/google`;
+                }}
+              >
+                Sign up with Google
               </Button>
             </Grid>
           </Grid>
