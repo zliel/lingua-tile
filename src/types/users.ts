@@ -3,6 +3,7 @@ export type Role = "admin" | "user";
 export interface User {
   _id: string;
   username: string;
+  email: string;
   roles: Role[];
   completedLessons?: string[];
   current_streak?: number;
@@ -14,6 +15,7 @@ export interface User {
 export interface NewUser {
   username: string;
   password: string;
+  email: string;
   roles?: Role[];
   completedLessons?: string[];
 }

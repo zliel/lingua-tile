@@ -23,6 +23,7 @@ export const UpdateProfileSchema = z
   .object({
     username: z.string().min(1, "Username is required"),
     password: z.union([PasswordSchema, z.literal("")]).optional(),
+    email: z.email("Invalid email address").optional(),
     confirmPassword: z.string().optional(),
   })
   .refine(
@@ -45,6 +46,7 @@ export const SignupSchema = z
     username: z.string().min(1, "Username is required"),
     password: PasswordSchema,
     confirmPassword: z.string(),
+    email: z.string().email("Invalid email address"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
