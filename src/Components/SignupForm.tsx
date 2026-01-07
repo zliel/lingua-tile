@@ -55,7 +55,11 @@ export const SignupForm = () => {
   });
 
   const onSubmit = (data: SignupSchemaType) => {
-    signupMutation.mutate({ username: data.username, password: data.password, email: data.email });
+    signupMutation.mutate({
+      username: data.username,
+      password: data.password,
+      email: data.email,
+    });
   };
 
   return (

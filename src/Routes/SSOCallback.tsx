@@ -13,17 +13,29 @@ function SSOCallback() {
     const username = searchParams.get("username");
 
     if (token) {
-      login({
-        token,
-        username: username || "",
-      }, () => navigate("/dashboard"));
+      login(
+        {
+          token,
+          username: username || "",
+        },
+        () => navigate("/dashboard"),
+      );
     } else {
       navigate("/login");
     }
   }, [searchParams, login, navigate]);
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: 2 }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
       <CircularProgress />
       <Typography>Logging you in...</Typography>
     </Box>
@@ -31,4 +43,3 @@ function SSOCallback() {
 }
 
 export default SSOCallback;
-
