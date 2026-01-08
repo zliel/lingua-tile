@@ -4,11 +4,15 @@ import { JourneyNode } from "./JourneyNode";
 import { JourneySkeleton } from "@/Components/skeletons/JourneyMapSkeleton";
 import { motion, AnimatePresence, Variants, Transition } from "framer-motion";
 import { useOffline } from "@/Contexts/OfflineContext";
+import { useOfflineData } from "@/hooks/useOfflineData";
+import { IconButton, CircularProgress } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const JourneyMap = () => {
   const { journeyRows, extraRows, isLoading, getLessonReviewStatus } =
     useJourneyData();
   const { isPending } = useOffline();
+  const { downloadSection, downloadingSections } = useOfflineData();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -259,7 +263,8 @@ const JourneyMap = () => {
                       width: 150,
                       textAlign: "right",
                       pr: 2,
-                      display: { xs: "none", sm: "block" },
+                      display: { xs: "none", sm: "flex" },
+                      alignItems: "center",
                     }}
                   >
                     <Typography
@@ -269,6 +274,25 @@ const JourneyMap = () => {
                     >
                       {row.sectionStartTitle}
                     </Typography>
+
+                    {row.sectionId && (
+                      <IconButton
+                        onClick={() => {
+                          if (row.sectionId) {
+                            downloadSection(row.sectionId);
+                          }
+                        }}
+                        disabled={downloadingSections[row.sectionId]}
+                        size="small"
+                        sx={{ ml: 1, verticalAlign: "middle" }}
+                      >
+                        {downloadingSections[row.sectionId] ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <DownloadIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    )}
                   </Box>
                 )}
 

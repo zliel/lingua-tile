@@ -4,6 +4,8 @@ import { page } from "vitest/browser";
 import JourneyMap from "./JourneyMap";
 import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AuthContext from "@/Contexts/AuthContext";
 
 const theme = createTheme();
 
@@ -56,11 +58,27 @@ vi.mock("framer-motion", async () => {
 
 describe("JourneyMap Component Integration", () => {
   it("renders journey nodes and sections", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    const mockAuth = {
+      authData: {
+        isLoggedIn: true,
+        token: "mock-token",
+        user: { id: "1", username: "admin" },
+      },
+      authIsLoading: false,
+    };
     render(
       <ThemeProvider theme={theme}>
-        <MemoryRouter>
-          <JourneyMap />
-        </MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider value={mockAuth as any}>
+            <MemoryRouter>
+              <JourneyMap />
+            </MemoryRouter>
+          </AuthContext.Provider>
+        </QueryClientProvider>
       </ThemeProvider>,
     );
 
