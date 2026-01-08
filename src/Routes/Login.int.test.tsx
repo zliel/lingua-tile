@@ -52,7 +52,9 @@ describe("Login Component Integration", () => {
     await userEvent.type(page.getByLabelText(/Password/i), "password123");
 
     // Click login
-    await userEvent.click(page.getByRole('button', { name: 'Sign In', exact: true }));
+    await userEvent.click(
+      page.getByRole("button", { name: "Sign In", exact: true }),
+    );
 
     // Verify success
     await expect
@@ -85,7 +87,9 @@ describe("Login Component Integration", () => {
 
     await userEvent.type(page.getByLabelText(/Username/i), "testuser");
     await userEvent.type(page.getByLabelText(/Password/i), "wrongpass");
-    await userEvent.click(page.getByRole('button', { name: 'Sign In', exact: true }));
+    await userEvent.click(
+      page.getByRole("button", { name: "Sign In", exact: true }),
+    );
 
     await expect
       .poll(() => mockShowSnackbar.mock.calls.length)

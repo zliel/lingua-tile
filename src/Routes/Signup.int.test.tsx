@@ -85,12 +85,14 @@ describe("Signup Component Integration", () => {
       "test@test.com",
     );
 
-    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
+    await userEvent.click(
+      page.getByRole("button", { name: "Sign Up", exact: true }),
+    );
 
     // Expect API call
     expect(axios.post).toHaveBeenCalledWith(
       expect.stringContaining("/api/users/signup"),
-      { username: "NewUser", password: "Password1!", email: "test@test.com" }
+      { username: "NewUser", password: "Password1!", email: "test@test.com" },
     );
   });
 
@@ -113,7 +115,9 @@ describe("Signup Component Integration", () => {
       "test@test.com",
     );
 
-    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
+    await userEvent.click(
+      page.getByRole("button", { name: "Sign Up", exact: true }),
+    );
     // Check for validation error - Zod or manual check usually shows helper text
     await expect
       .element(page.getByText("Passwords do not match"))
@@ -145,14 +149,14 @@ describe("Signup Component Integration", () => {
       "Password1!",
     );
 
-
-
     await userEvent.fill(
       page.getByRole("textbox", { name: "Email", exact: true }),
       "test@test.com",
     );
 
-    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
+    await userEvent.click(
+      page.getByRole("button", { name: "Sign Up", exact: true }),
+    );
 
     // Should call API
     expect(axios.post).toHaveBeenCalled();
