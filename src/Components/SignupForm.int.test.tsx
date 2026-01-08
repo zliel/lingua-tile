@@ -43,7 +43,13 @@ describe("SignupForm Component Integration", () => {
       "Password123!",
     );
 
-    await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
+
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+      "test@test.com",
+    );
+
+    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
 
     await expect
       .poll(() => mockShowSnackbar.mock.calls.length)
@@ -63,8 +69,12 @@ describe("SignupForm Component Integration", () => {
     await userEvent.type(page.getByLabelText(/^Username/i), "newuser");
     await userEvent.type(page.getByLabelText(/^Password/i), "Password123!");
     await userEvent.type(page.getByLabelText(/Confirm Password/i), "mismatch");
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+      "test@test.com",
+    );
 
-    await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
+    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
 
     await expect
       .element(page.getByText(/Passwords do not match/i))
@@ -95,7 +105,13 @@ describe("SignupForm Component Integration", () => {
       "Password123!",
     );
 
-    await userEvent.click(page.getByRole("button", { name: /Sign Up/i }));
+
+    await userEvent.fill(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+      "test@test.com",
+    );
+
+    await userEvent.click(page.getByRole('button', { name: 'Sign Up', exact: true }));
 
     await expect
       .poll(() => mockShowSnackbar.mock.calls.length)
