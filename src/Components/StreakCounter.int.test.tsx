@@ -33,7 +33,7 @@ describe("StreakCounter Component Integration", () => {
   it("renders tooltip on hover", async () => {
     render(<StreakCounter streak={3} />, { wrapper: Wrapper });
 
-    await userEvent.hover(page.getByText("3"));
+    await userEvent.hover(page.getByRole("heading", { name: "3" }));
     await expect.element(page.getByText("Daily Streak: 3 days")).toBeVisible();
   });
 

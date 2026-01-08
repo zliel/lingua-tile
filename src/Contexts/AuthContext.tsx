@@ -37,38 +37,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  const login = (
-    data: { token: string; username: string },
-    callback?: () => void,
-  ) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("username", data.username);
-    queryClient.invalidateQueries({ queryKey: ["authState"] });
-    // While this will be overwritten when the refetch finishes, this will
-    // allow users to see the logged-in state immediately.
-    queryClient.setQueryData(["authState"], {
-      isLoggedIn: true,
-      isAdmin: false,
-      token: data.token,
-      username: data.username,
-    });
+  const login = useCallback(
+    (data: { token: string; username: string }, callback?: () => void) => {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.username);
+      queryClient.invalidateQueries({ queryKey: ["authState"] });
+      // While this will be overwritten when the refetch finishes, this will
+      // allow users to see the logged-in state immediately.
+      queryClient.setQueryData(["authState"], {
+        isLoggedIn: true,
+        isAdmin: false,
+        token: data.token,
+        username: data.username,
+      });
 
-    setTimeout(() => {
+      setTimeout(() => {
+        if (callback) callback();
+      }, 350);
+    },
+    [queryClient],
+  );
+
+  const logout = useCallback(
+    (callback?: () => void) => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      queryClient.setQueryData(["authState"], {
+        isLoggedIn: false,
+        isAdmin: false,
+        token: "",
+        username: "",
+      });
       if (callback) callback();
-    }, 350);
-  };
-
-  const logout = (callback?: () => void) => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    queryClient.setQueryData(["authState"], {
-      isLoggedIn: false,
-      isAdmin: false,
-      token: "",
-      username: "",
-    });
-    if (callback) callback();
-  };
+    },
+    [queryClient],
+  );
 
   const fetchAuthState = async (): Promise<AuthData> => {
     const token = localStorage.getItem("token");

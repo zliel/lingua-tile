@@ -22,8 +22,8 @@ function Signup() {
     <Box
       sx={{
         height: "90vh",
-        py: 2,
-        px: 8,
+        py: 1,
+        px: isMobile ? 2 : 4,
         display: "flex",
         justifyContent: "center",
       }}
@@ -32,7 +32,7 @@ function Signup() {
         container
         sx={{
           width: "100%",
-          height: "50%",
+          height: "80%",
           mb: isMobile ? 4 : 0,
         }}
       >
@@ -42,7 +42,7 @@ function Signup() {
           sx={{
             display: "flex",
             flexDirection: "column",
-            p: isMobile ? 2 : 6,
+            p: isMobile ? 2 : 4,
           }}
         >
           <Typography
@@ -103,8 +103,9 @@ function Signup() {
           size={{ xs: 12, sm: 6 }}
           sx={{
             display: "flex",
+            width: "100%",
             justifyContent: "center",
-            p: isMobile ? 0 : 6,
+            p: isMobile ? 0 : 4,
             mb: isMobile ? 4 : 0,
           }}
         >
