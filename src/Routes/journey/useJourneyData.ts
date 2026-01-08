@@ -10,6 +10,7 @@ export interface JourneyRow {
   lessons: Lesson[];
   offsetY: number;
   sectionStartTitle?: string;
+  sectionId?: string;
 }
 
 export const useJourneyData = () => {
@@ -91,6 +92,7 @@ export const useJourneyData = () => {
             lessons: rowLessons,
             offsetY: currentY,
             sectionStartTitle: sectionTitle,
+            sectionId: currentSectionId,
           });
           currentY += ROW_HEIGHT;
         });
