@@ -50,6 +50,28 @@ export const useOfflineData = () => {
     [authData, queryClient],
   );
 
+  const prefetchLessonComponents = async (lessons: Lesson[]) => {
+    const categories = new Set(lessons.map((l) => l.category));
+    const promises: Promise<any>[] = [];
+
+    if (categories.has("flashcards")) {
+      promises.push(import("../Routes/FlashcardLesson"));
+    }
+    if (categories.has("practice")) {
+      promises.push(import("../Routes/PracticeLesson"));
+    }
+    if (categories.has("grammar")) {
+      promises.push(import("../Routes/GrammarLesson"));
+    }
+
+    try {
+      await Promise.all(promises);
+      console.log("Prefetched lesson components:", Array.from(categories));
+    } catch (e) {
+      console.error("Failed to prefetch lesson components", e);
+    }
+  };
+
   const downloadSection = useCallback(
     async (sectionId: string) => {
       if (!navigator.onLine) {
@@ -61,6 +83,21 @@ export const useOfflineData = () => {
 
       try {
         const count = await fetchSectionData(sectionId);
+
+        // After data is fetched, prefetch the code chunks
+        // We find the lessons in the cache that match the section ID
+        const queries = queryClient.getQueriesData({ queryKey: ["lesson"] });
+
+        // Since fetchSectionData puts them in cache, we can just look at all lessons in cache
+        // and filter by sectionId.
+        const relevantLessons = queries
+          .map(([_, data]) => data as Lesson)
+          .filter((l) => l.section_id === sectionId);
+
+        if (relevantLessons.length > 0) {
+          prefetchLessonComponents(relevantLessons);
+        }
+
         showSnackbar(`Downloaded ${count} lessons for offline use.`, "success");
       } catch (error) {
         console.error(error);
@@ -69,7 +106,7 @@ export const useOfflineData = () => {
         setDownloadingSections((prev) => ({ ...prev, [sectionId]: false }));
       }
     },
-    [fetchSectionData, showSnackbar],
+    [fetchSectionData, showSnackbar, queryClient],
   );
 
   const prefetchActiveSection = useCallback(
