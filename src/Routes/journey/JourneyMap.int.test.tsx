@@ -58,7 +58,6 @@ vi.mock("framer-motion", async () => {
 
 describe("JourneyMap Component Integration", () => {
   it("renders journey nodes and sections", async () => {
-
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
