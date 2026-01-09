@@ -159,7 +159,12 @@ export const SignupForm = () => {
               }}
             >
               <Divider sx={{ my: 2, width: "100%" }}>OR</Divider>
-              <button className="gsi-material-button">
+              <button
+                className="gsi-material-button"
+                onClick={() => {
+                  window.location.href = `${import.meta.env.VITE_APP_API_BASE}/api/auth/login/google`;
+                }}
+              >
                 <div className="gsi-material-button-state"></div>
                 <div className="gsi-material-button-content-wrapper">
                   <div className="gsi-material-button-icon">
