@@ -139,6 +139,24 @@ function Login() {
               </Button>
             </Grid>
 
+            <Grid style={{ width: "100%", textAlign: "right" }}>
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                underline="hover"
+                color="primary"
+                variant="body2"
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+
+                }}
+              >
+                Forgot Password?
+              </Link>
+            </Grid>
+
             <Grid
               style={{
                 width: "100%",
