@@ -168,6 +168,7 @@ function Login() {
               <Divider sx={{ my: 2, width: "100%" }}>OR</Divider>
               <button
                 className="gsi-material-button"
+                type="button"
                 onClick={() => {
                   window.location.href = `${import.meta.env.VITE_APP_API_BASE}/api/auth/login/google`;
                 }}
