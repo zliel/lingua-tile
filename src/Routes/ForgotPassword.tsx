@@ -30,7 +30,7 @@ export const ForgotPassword = () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/forgot-password`,
-        { email }
+        { email },
       );
 
       setMessage(res.data.message);

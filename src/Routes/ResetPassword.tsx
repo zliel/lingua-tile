@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useSearchParams, useNavigate, Link as RouterLink } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  Link as RouterLink,
+} from "react-router-dom";
 import {
   Box,
   Button,
@@ -44,7 +48,7 @@ export const ResetPassword = () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_APP_API_BASE}/api/auth/reset-password`,
-        { token, new_password: password }
+        { token, new_password: password },
       );
 
       setMessage(res.data.message);
@@ -63,8 +67,12 @@ export const ResetPassword = () => {
   if (!token) {
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
-        <Typography variant="h6" color="error">Invalid Reset Link</Typography>
-        <Link component={RouterLink} to="/login">Go to Login</Link>
+        <Typography variant="h6" color="error">
+          Invalid Reset Link
+        </Typography>
+        <Link component={RouterLink} to="/login">
+          Go to Login
+        </Link>
       </Box>
     );
   }

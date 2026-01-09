@@ -150,7 +150,6 @@ function Login() {
                   width: "100%",
                   display: "flex",
                   justifyContent: "center",
-
                 }}
               >
                 Forgot Password?
