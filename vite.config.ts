@@ -2,6 +2,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
 import path from "node:path";
@@ -18,6 +19,11 @@ export default defineConfig({
   base: "/",
   plugins: [
     react(),
+    visualizer({
+      filename: "stats.html",
+      gzipSize: true,
+      brotliSize: true,
+    }),
     VitePWA({
       registerType: "autoUpdate",
       strategies: "injectManifest",
@@ -110,6 +116,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-mui": ["@mui/material", "@mui/icons-material", "@mui/lab"],
+          "vendor-utils": ["axios", "dayjs", "zod", "framer-motion"],
+        },
+      },
     },
   },
   test: {
