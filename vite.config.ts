@@ -118,6 +118,17 @@ export default defineConfig({
       "@": path.resolve(dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-mui": ["@mui/material", "@mui/icons-material", "@mui/lab"],
+          "vendor-utils": ["axios", "dayjs", "zod", "framer-motion"],
+        },
+      },
+    },
+  },
   test: {
     projects: [
       {
