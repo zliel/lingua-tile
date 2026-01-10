@@ -46,6 +46,7 @@ const Dashboard = () => {
       !isSubscribed &&
       !(
         "serviceWorker" in navigator &&
+        window.Notification &&
         window.Notification?.permission === "denied"
       ) &&
       !localStorage.getItem("notification_prompt_dismissed")
