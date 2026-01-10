@@ -30,24 +30,24 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
         </Typography>
 
         {/* Only show error details in development */}
-        {import.meta.env.VITE_DEV && (
-          <Box
-            component="pre"
-            sx={{
-              p: 2,
-              bgcolor: "grey.100",
-              color: "error.dark",
-              borderRadius: 1,
-              overflow: "auto",
-              maxWidth: "100%",
-              textAlign: "left",
-              fontSize: "0.875rem",
-              width: "100%",
-            }}
-          >
-            {error.message}
-          </Box>
-        )}
+        {/* {import.meta.env.VITE_DEV && ( */}
+        <Box
+          component="pre"
+          sx={{
+            p: 2,
+            bgcolor: "grey.100",
+            color: "error.dark",
+            borderRadius: 1,
+            overflow: "auto",
+            maxWidth: "100%",
+            textAlign: "left",
+            fontSize: "0.875rem",
+            width: "100%",
+          }}
+        >
+          {error.message}
+        </Box>
+        {/*)}*/}
 
         <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
           <Button
