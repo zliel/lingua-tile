@@ -22,7 +22,7 @@ export const usePushSubscription = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>(
-    Notification.permission,
+    window.Notification?.permission || "default",
   );
 
   const checkSubscriptionStatus = useCallback(async () => {
@@ -32,7 +32,7 @@ export const usePushSubscription = () => {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       setIsSubscribed(!!subscription);
-      setPermission(Notification.permission);
+      setPermission(window.Notification?.permission || "default");
     } catch (error) {
       console.error("Error checking subscription status:", error);
     }
@@ -50,7 +50,12 @@ export const usePushSubscription = () => {
         return false;
       }
 
-      const permissionResult = await Notification.requestPermission();
+      if (!window.Notification) {
+        showSnackbar("Notifications not supported", "error");
+        return false;
+      }
+
+      const permissionResult = await window.Notification.requestPermission();
       setPermission(permissionResult);
 
       if (permissionResult !== "granted") {
