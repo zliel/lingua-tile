@@ -44,7 +44,10 @@ const Dashboard = () => {
       authData?.isLoggedIn &&
       !isSubscriptionLoading &&
       !isSubscribed &&
-      !("serviceWorker" in navigator && window.Notification?.permission === "denied") &&
+      !(
+        "serviceWorker" in navigator &&
+        window.Notification?.permission === "denied"
+      ) &&
       !localStorage.getItem("notification_prompt_dismissed")
     ) {
       // Small delay to ensure UI is settled
