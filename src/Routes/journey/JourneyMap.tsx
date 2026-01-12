@@ -88,7 +88,6 @@ const JourneyMap = () => {
       transition: {
         when: "beforeChildren",
         staggerChildren: 0.1,
-        delayChildren: 0.3,
       },
     },
   };
