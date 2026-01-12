@@ -212,7 +212,7 @@ function NavBar() {
         >
           {!isOnline && (
             <Tooltip title="You are offline">
-              <Icon sx={{ color: theme.palette.error.main }} title="Offline">
+              <Icon sx={{ color: theme.palette.error.main, mr: 1.5 }} title="Offline">
                 <CloudOff />
               </Icon>
             </Tooltip>
