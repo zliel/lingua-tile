@@ -337,7 +337,6 @@ const JourneyMap = () => {
                         )}
                       </IconButton>
                     )}
-
                   </Box>
                 )}
 
