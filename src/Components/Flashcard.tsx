@@ -125,7 +125,7 @@ const Flashcard = ({
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "1.25rem" : "2.25rem",
+                  fontSize: isMobile ? "2rem" : "2.25rem",
                   fontWeight: 500,
                   color: theme.palette.text.primary,
                 }}
@@ -142,7 +142,7 @@ const Flashcard = ({
               <Typography
                 component="div"
                 sx={{
-                  fontSize: isMobile ? "1.25rem" : "2.25rem",
+                  fontSize: isMobile ? "2rem" : "2.25rem",
                   fontWeight: 400,
                   color: theme.palette.text.primary,
                 }}

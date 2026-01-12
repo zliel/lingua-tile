@@ -88,7 +88,6 @@ const JourneyMap = () => {
       transition: {
         when: "beforeChildren",
         staggerChildren: 0.1,
-        delayChildren: 0.3,
       },
     },
   };
@@ -307,7 +306,9 @@ const JourneyMap = () => {
                       left: "50%",
                       width: "100%",
                       textAlign: "center",
-                      display: { xs: "block", sm: "none" },
+                      display: { xs: "flex", sm: "none" },
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Typography
@@ -317,6 +318,25 @@ const JourneyMap = () => {
                     >
                       {row.sectionStartTitle}
                     </Typography>
+
+                    {row.sectionId && (
+                      <IconButton
+                        onClick={() => {
+                          if (row.sectionId) {
+                            downloadSection(row.sectionId);
+                          }
+                        }}
+                        disabled={downloadingSections[row.sectionId]}
+                        size="small"
+                        sx={{ ml: 1, verticalAlign: "middle" }}
+                      >
+                        {downloadingSections[row.sectionId] ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <DownloadIcon fontSize="small" />
+                        )}
+                      </IconButton>
+                    )}
                   </Box>
                 )}
 
