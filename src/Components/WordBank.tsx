@@ -64,7 +64,7 @@ const WordTileContent = ({
       onClick={() => !disabled && onClick()}
       sx={{
         px: 1.5,
-        py: showFurigana ? 2 : 1,
+        py: showFurigana ? 1.5 : 1,
         borderRadius: "8px",
         backgroundColor: isSelected
           ? theme.palette.primary.main
@@ -89,8 +89,7 @@ const WordTileContent = ({
         cursor: isOverlay ? "grabbing" : disabled ? "default" : "pointer",
         transition: "transform 0.1s ease, box-shadow 0.1s ease",
         height: "fit-content",
-        width: "max-content",
-        minWidth: 32,
+        minWidth: "max-content",
         "&:hover": {
           transform: disabled || isOverlay ? "none" : "translateY(-2px)",
           boxShadow: disabled
@@ -338,13 +337,14 @@ const WordBank: React.FC<WordBankProps> = ({
             flexWrap: "wrap",
             gap: 1,
             justifyContent: "center",
-            p: 2,
+            alignContent: "center",
+            p: 1,
             borderRadius: 4,
             backgroundColor:
               theme.palette.mode === "dark"
                 ? "rgba(0,0,0,0.2)"
                 : "rgba(0,0,0,0.03)",
-            minHeight: 100,
+            minHeight: 76,
           }}
         >
           {availableWords.map((word) => (

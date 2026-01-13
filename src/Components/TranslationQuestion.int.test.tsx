@@ -62,11 +62,11 @@ describe("TranslationQuestion Component Integration", () => {
 
     render(<TranslationQuestion {...defaultProps} />, { wrapper: Wrapper });
 
-    await userEvent.click(page.getByText("This", { exact: true }));
-    await userEvent.click(page.getByText("is", { exact: true }));
-    await userEvent.click(page.getByText("a", { exact: true }));
-    await userEvent.click(page.getByText("test", { exact: true }));
-    await userEvent.click(page.getByText("sentence", { exact: true }));
+    await userEvent.click(page.getByText("This").nth(2));
+    await userEvent.click(page.getByText("is").nth(4));
+    await userEvent.click(page.getByText("a").nth(5));
+    await userEvent.click(page.getByText("test").nth(1));
+    await userEvent.click(page.getByText("sentence").nth(2));
 
     const checkButton = page.getByRole("button", { name: /check/i });
     await userEvent.click(checkButton);
