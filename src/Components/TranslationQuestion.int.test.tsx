@@ -62,7 +62,7 @@ describe("TranslationQuestion Component Integration", () => {
 
     render(<TranslationQuestion {...defaultProps} />, { wrapper: Wrapper });
 
-    await userEvent.click(page.getByText('This').nth(2));
+    await userEvent.click(page.getByText("This").nth(2));
     await userEvent.click(page.getByText("is", { exact: true }));
     await userEvent.click(page.getByText("a", { exact: true }));
     await userEvent.click(page.getByText("test", { exact: true }));
