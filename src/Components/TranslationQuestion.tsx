@@ -232,10 +232,11 @@ const TranslationQuestion = ({
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${theme.palette.mode === "dark"
-          ? "rgba(255, 255, 255, 0.1)"
-          : "rgba(255, 255, 255, 0.4)"
-          }`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+        }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           transform: isMobile ? "none" : "translateY(-5px)",
@@ -280,9 +281,9 @@ const TranslationQuestion = ({
           }}
         >
           {sentence.words &&
-            /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(
-              sentence.full_sentence,
-            ) ? (
+          /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(
+            sentence.full_sentence,
+          ) ? (
             <Box
               sx={{
                 display: "flex",
