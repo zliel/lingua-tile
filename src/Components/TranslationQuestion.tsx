@@ -220,8 +220,8 @@ const TranslationQuestion = ({
         m: isMobile ? 1 : 2,
         mb: 1,
         p: 0,
-        minWidth: isMobile ? "80%" : "40vw",
-        maxWidth: isMobile ? "100%" : "600px",
+        minWidth: isMobile ? "80vw" : "50vw",
+        maxWidth: isMobile ? "90vw" : "50vw",
         backgroundColor:
           theme.palette.mode === "dark"
             ? "rgba(30, 30, 30, 0.8)"
@@ -232,11 +232,10 @@ const TranslationQuestion = ({
           theme.palette.mode === "dark"
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(255, 255, 255, 0.4)"
-        }`,
+        border: `1px solid ${theme.palette.mode === "dark"
+          ? "rgba(255, 255, 255, 0.1)"
+          : "rgba(255, 255, 255, 0.4)"
+          }`,
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
           transform: isMobile ? "none" : "translateY(-5px)",
@@ -249,7 +248,7 @@ const TranslationQuestion = ({
     >
       <Box
         sx={{
-          p: isMobile ? 3 : 5,
+          p: isMobile ? 2 : 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
