@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { checkAnswer as checkAnswerUtil } from "@/utils/answerUtils";
 import WordBank from "./WordBank";
+import FuriganaWord from "./FuriganaWord";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { useTheme } from "@mui/material/styles";
 
@@ -279,7 +280,25 @@ const TranslationQuestion = ({
             fontSize: isMobile ? "1.5rem" : "2rem",
           }}
         >
-          {sentence.full_sentence}
+          {sentence.words &&
+            /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(
+              sentence.full_sentence,
+            ) ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}
+            >
+              {sentence.words.map((word, index) => (
+                <FuriganaWord key={`${word}-${index}`} text={word} />
+              ))}
+            </Box>
+          ) : (
+            sentence.full_sentence
+          )}
         </Typography>
 
         <Box
