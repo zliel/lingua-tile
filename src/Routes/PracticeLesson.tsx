@@ -1,8 +1,16 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, LinearProgress, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import {
+  Box,
+  LinearProgress,
+  Typography,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import TranslationQuestion from "@/Components/TranslationQuestion";
@@ -18,6 +26,8 @@ const PracticeLesson = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [animationClass, setAnimationClass] = useState<string>("slide-in");
   const nodeRef = useRef(null);
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const {
     data: lesson,
@@ -78,10 +88,23 @@ const PracticeLesson = () => {
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
-        mt: 4,
-        pb: 8,
+        mt: isMobile ? 1 : 2,
+        pb: 0.5,
+        scrollMarginTop: 100,
       }}
     >
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          pl: 2,
+        }}
+      >
+        <IconButton onClick={() => navigate("/learn")}>
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
       <Typography variant={"h4"} gutterBottom>
         {lesson.title}
       </Typography>
@@ -96,7 +119,7 @@ const PracticeLesson = () => {
         sx={{
           width: "90%",
           maxWidth: 600,
-          mt: 3,
+          mt: isMobile ? 1 : 2,
           display: "flex",
           alignItems: "center",
           gap: 2,
