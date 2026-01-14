@@ -10,9 +10,11 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
+  IconButton,
 } from "@mui/material";
 import Done from "@mui/icons-material/Done";
-import { useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Theme, useTheme } from "@mui/material/styles";
@@ -26,6 +28,7 @@ const GrammarLesson = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
 
   const {
     data: lesson,
@@ -55,102 +58,117 @@ const GrammarLesson = () => {
   }
 
   return (
-    <Card
-      sx={{
-        width: "85%",
-        margin: "auto",
-        mt: 4,
-        mb: 8,
-        p: 0,
-        backgroundColor:
-          theme.palette.mode === "dark"
-            ? "rgba(30, 30, 30, 0.8)"
-            : "rgba(255, 255, 255, 0.8)",
-        backdropFilter: "blur(10px)",
-        borderRadius: 4,
-        boxShadow:
-          theme.palette.mode === "dark"
-            ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
-            : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-        border: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(255, 255, 255, 0.4)"
-        }`,
-        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        "&:hover": {
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? "0 12px 40px 0 rgba(0, 0, 0, 0.6)"
-              : "0 12px 40px 0 rgba(31, 38, 135, 0.2)",
-        },
-      }}
-    >
+    <Box sx={{ minHeight: "100vh", pt: 2 }}>
       <Box
         sx={{
-          p: isMobile ? 3 : 5,
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          justifyContent: "flex-start",
+          pl: 2,
         }}
       >
-        <MuiMarkdown
-          hideLineNumbers
-          overrides={getMarkdownOverrides(isMobile, theme)}
-        >
-          {lesson.content}
-        </MuiMarkdown>
-        {/* NOTE: Tooltip and disabled button when user is not logged in */}
-        <Tooltip
-          title={
-            !authData?.isLoggedIn ? (
-              <Typography>
-                You must be logged in to finish the lesson.
-              </Typography>
-            ) : (
-              <Typography>Finish Lesson</Typography>
-            )
-          }
-          placement={isMobile ? "top" : "right"}
-          arrow
-        >
-          <span>
-            <Button
-              sx={{
-                mt: 4,
-                mb: 2,
-                px: 4,
-                py: 1.5,
-                borderRadius: 3,
-                fontSize: "1.1rem",
-                fontWeight: "bold",
-                textTransform: "none",
-                display: "flex",
-                alignItems: "center",
-              }}
-              variant={"contained"}
-              color="primary"
-              disabled={!authData?.isLoggedIn}
-              onClick={() => {
-                if (authData?.isLoggedIn) {
-                  setModalOpen(true);
-                }
-              }}
-            >
-              Finish Lesson
-              <Icon sx={{ ml: 1, display: "flex", alignItems: "center" }}>
-                <Done />
-              </Icon>
-            </Button>
-          </span>
-        </Tooltip>
-        <ReviewModal
-          open={modalOpen}
-          setOpen={setModalOpen}
-          lessonId={lessonId || ""}
-        />
+        <IconButton onClick={() => navigate("/learn")}>
+          <ArrowBackIcon />
+        </IconButton>
       </Box>
-    </Card>
+
+      <Card
+        sx={{
+          width: "85%",
+          margin: "auto",
+          mt: 2,
+          mb: 8,
+          p: 0,
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? "rgba(30, 30, 30, 0.8)"
+              : "rgba(255, 255, 255, 0.8)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 4,
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
+              : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+          border: `1px solid ${
+            theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(255, 255, 255, 0.4)"
+          }`,
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? "0 12px 40px 0 rgba(0, 0, 0, 0.6)"
+                : "0 12px 40px 0 rgba(31, 38, 135, 0.2)",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            p: isMobile ? 3 : 5,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <MuiMarkdown
+            hideLineNumbers
+            overrides={getMarkdownOverrides(isMobile, theme)}
+          >
+            {lesson.content}
+          </MuiMarkdown>
+          {/* NOTE: Tooltip and disabled button when user is not logged in */}
+          <Tooltip
+            title={
+              !authData?.isLoggedIn ? (
+                <Typography>
+                  You must be logged in to finish the lesson.
+                </Typography>
+              ) : (
+                <Typography>Finish Lesson</Typography>
+              )
+            }
+            placement={isMobile ? "top" : "right"}
+            arrow
+          >
+            <span>
+              <Button
+                sx={{
+                  mt: 4,
+                  mb: 2,
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: 3,
+                  fontSize: "1.1rem",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                variant={"contained"}
+                color="primary"
+                disabled={!authData?.isLoggedIn}
+                onClick={() => {
+                  if (authData?.isLoggedIn) {
+                    setModalOpen(true);
+                  }
+                }}
+              >
+                Finish Lesson
+                <Icon sx={{ ml: 1, display: "flex", alignItems: "center" }}>
+                  <Done />
+                </Icon>
+              </Button>
+            </span>
+          </Tooltip>
+          <ReviewModal
+            open={modalOpen}
+            setOpen={setModalOpen}
+            lessonId={lessonId || ""}
+          />
+        </Box>
+      </Card>
+    </Box>
   );
 };
 
