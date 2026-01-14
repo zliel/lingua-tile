@@ -1,7 +1,14 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  IconButton,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import FlashcardsList from "@/Components/FlashcardList";
@@ -11,6 +18,7 @@ const FlashcardLesson = () => {
   const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
+  const navigate = useNavigate();
 
   const {
     data: lesson,
@@ -58,9 +66,21 @@ const FlashcardLesson = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        mt: 4,
+        mt: 2,
       }}
     >
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          pl: 2,
+        }}
+      >
+        <IconButton onClick={() => navigate("/learn")}>
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
       <Typography
         variant="h1"
         gutterBottom
