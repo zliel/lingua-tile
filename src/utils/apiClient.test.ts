@@ -1,13 +1,6 @@
-/**
- * @vitest-environment jsdom
- * 
- * Unit tests for the apiClient module.
- * Tests focus on verifying the wrapper functions delegate correctly to axios.
- */
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import axios, { AxiosHeaders } from "axios";
 
-// Create a mock localStorage implementation
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -28,21 +21,17 @@ const localStorageMock = (() => {
   };
 })();
 
-// Mock localStorage globally before any imports
 Object.defineProperty(global, "localStorage", {
   value: localStorageMock,
   writable: true,
 });
 
-// We need to mock axios BEFORE importing apiClient
 vi.mock("axios", async (importOriginal) => {
   const actual = await importOriginal<typeof import("axios")>();
 
-  // Initialize the callback store in the mock factory
   (globalThis as any).__test_interceptorCallbacks =
     (globalThis as any).__test_interceptorCallbacks || {};
 
-  // Create a mock axios instance with interceptors that capture callbacks
   const mockInterceptors = {
     request: {
       use: vi.fn((onFulfilled, onRejected) => {
@@ -86,10 +75,8 @@ vi.mock("axios", async (importOriginal) => {
   };
 });
 
-// Import after mocking - this triggers the module initialization
 import { api } from "./apiClient";
 
-// Get access to the mock instance
 const mockAxiosInstance = (axios.create as Mock).mock.results[0]?.value as {
   get: Mock;
   post: Mock;
@@ -97,7 +84,6 @@ const mockAxiosInstance = (axios.create as Mock).mock.results[0]?.value as {
   delete: Mock;
 };
 
-// Helper to get interceptor callbacks
 const getInterceptorCallbacks = () => (globalThis as any).__test_interceptorCallbacks as {
   requestFulfilled?: (config: any) => any;
   requestRejected?: (error: any) => any;
@@ -110,7 +96,6 @@ describe("apiClient", () => {
     vi.clearAllMocks();
     localStorageMock.clear();
 
-    // Reset mock implementations for wrapper function tests
     if (mockAxiosInstance) {
       mockAxiosInstance.get.mockResolvedValue({ data: { test: true } });
       mockAxiosInstance.post.mockResolvedValue({ data: { created: true } });
@@ -121,18 +106,14 @@ describe("apiClient", () => {
 
   describe("axios.create configuration", () => {
     it("creates an axios instance with interceptors configured", () => {
-      // The module was loaded which means axios.create was called
-      // We can verify this by checking that interceptor callbacks were captured
       const callbacks = getInterceptorCallbacks();
 
-      // If interceptors were set up, axios.create must have been called
       expect(callbacks.requestFulfilled).toBeDefined();
       expect(callbacks.responseFulfilled).toBeDefined();
       expect(callbacks.responseRejected).toBeDefined();
     });
 
     it("configures request and response interceptors correctly", () => {
-      // Verify the interceptor callbacks are functions
       const callbacks = getInterceptorCallbacks();
       expect(callbacks.requestFulfilled).toBeInstanceOf(Function);
       expect(callbacks.responseRejected).toBeInstanceOf(Function);
@@ -145,16 +126,13 @@ describe("apiClient", () => {
       const onFulfilled = callbacks.requestFulfilled;
       expect(onFulfilled).toBeDefined();
 
-      // Set up token in localStorage
       localStorageMock.setItem("token", "test-jwt-token");
 
-      // Create a mock config object
       const mockConfig = {
         headers: new AxiosHeaders(),
         url: "/api/test",
       };
 
-      // Call the interceptor
       const result = onFulfilled!(mockConfig);
 
       expect(result.headers.Authorization).toBe("Bearer test-jwt-token");
@@ -165,7 +143,6 @@ describe("apiClient", () => {
       const onFulfilled = callbacks.requestFulfilled;
       expect(onFulfilled).toBeDefined();
 
-      // Ensure no token in localStorage (cleared in beforeEach)
       const mockConfig = {
         headers: new AxiosHeaders(),
         url: "/api/test",
@@ -185,7 +162,6 @@ describe("apiClient", () => {
 
       const networkError = {
         message: "Network Error",
-        // No response property - simulates network failure
       };
 
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
@@ -261,7 +237,6 @@ describe("apiClient", () => {
 
       const response = await api.get<TestData>("/api/test");
 
-      // TypeScript should infer the correct type
       expect(response.data.id).toBe(1);
       expect(response.data.name).toBe("Test");
     });
