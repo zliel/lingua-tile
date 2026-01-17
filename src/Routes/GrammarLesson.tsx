@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { MuiMarkdown, getOverrides } from "mui-markdown";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import {
   Box,
   Button,
@@ -20,6 +19,8 @@ import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { Theme, useTheme } from "@mui/material/styles";
 import ReviewModal from "@/Components/ReviewModal";
 import GrammarLessonSkeleton from "@/Components/skeletons/GrammarLessonSkeleton";
+import { api } from "@/utils/apiClient";
+import { Lesson } from "@/types/lessons";
 
 const GrammarLesson = () => {
   const { lessonId } = useParams();
@@ -37,11 +38,8 @@ const GrammarLesson = () => {
   } = useQuery({
     queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
+      const response = await api.get<Lesson>(
+        `/api/lessons/${lessonId}`,
       );
       return response.data;
     },
@@ -89,11 +87,10 @@ const GrammarLesson = () => {
             theme.palette.mode === "dark"
               ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
               : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${
-            theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(255, 255, 255, 0.4)"
-          }`,
+          border: `1px solid ${theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.4)"
+            }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             boxShadow:
@@ -115,7 +112,7 @@ const GrammarLesson = () => {
             hideLineNumbers
             overrides={getMarkdownOverrides(isMobile, theme)}
           >
-            {lesson.content}
+            {lesson?.content}
           </MuiMarkdown>
           {/* NOTE: Tooltip and disabled button when user is not logged in */}
           <Tooltip

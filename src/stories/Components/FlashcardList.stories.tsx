@@ -5,10 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "@/Contexts/AuthContext";
 import SnackbarContext from "@/Contexts/SnackbarContext";
 import { MemoryRouter } from "react-router-dom";
-import apiClient from "@/utils/apiClient";
 import axios from "axios";
 import fn from "@storybook/addon-vitest";
-import { api } from "../../utils/apiClient";
+import { api } from "@/utils/apiClient";
 
 // Mock the apiClient module
 vi.mock("../../utils/apiClient", () => ({

@@ -16,6 +16,7 @@ import {
   useTheme,
 } from "@mui/material";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -46,9 +47,9 @@ export const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/auth/reset-password`,
-        { token, new_password: password },
+      const res = await api.post<{ message: string }>(
+        "/api/auth/reset-password",
+        { token, new_password: password }
       );
 
       setMessage(res.data.message);

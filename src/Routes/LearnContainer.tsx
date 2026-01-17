@@ -1,8 +1,9 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { lazy, Suspense } from "react";
 import PageSkeleton from "@/Components/skeletons/PageSkeleton";
+import { api } from "@/utils/apiClient";
+import { User } from "@/types/users";
 
 const JourneyMap = lazy(() => import("./journey/JourneyMap"));
 const LessonList = lazy(() => import("./LessonList"));
@@ -13,9 +14,8 @@ const LearnContainer = () => {
   const { data: user, isLoading } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        { headers: { Authorization: `Bearer ${authData?.token}` } },
+      const response = await api.get<User>(
+        "/api/users/",
       );
       return response.data;
     },

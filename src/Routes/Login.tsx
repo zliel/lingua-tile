@@ -12,6 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
@@ -41,14 +42,11 @@ function Login() {
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginSchemaType) => {
-      return axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/auth/login`,
-        credentials,
-      );
+      return api.post("/api/auth/login", credentials);
     },
     onSuccess: (response) => {
       showSnackbar("Login successful", "success");
-      login(response.data, () => navigate("/dashboard"));
+      login(response.data as { token: string; username: string }, () => navigate("/dashboard"));
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
@@ -57,7 +55,7 @@ function Login() {
           "error",
         );
       } else {
-        showSnackbar(`Login failed: ${error.message} `, "error");
+        showSnackbar(`Login failed: ${(error as Error).message} `, "error");
       }
     },
   });

@@ -12,6 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -28,8 +29,8 @@ export const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/auth/forgot-password`,
+      const res = await api.post<{ message: string }>(
+        "/api/auth/forgot-password",
         { email },
       );
 
