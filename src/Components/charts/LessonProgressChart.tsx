@@ -3,7 +3,7 @@ import { Review } from "@/types/lessons";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useIsFetching, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
   const { authData } = useAuth();
@@ -16,9 +16,7 @@ export const LessonProgressChart = ({ reviews }: { reviews: Review[] }) => {
   const { data: lessonCount, isLoading: isLoadingLessonCount } = useQuery({
     queryKey: ["lessonCount"],
     queryFn: async () => {
-      const response = await axios.get<{ total: number }>(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/total`,
-      );
+      const response = await api.get<{ total: number }>("/api/lessons/total");
       return response.data.total;
     },
   });

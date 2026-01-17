@@ -31,6 +31,8 @@ import { ProfileHeader } from "@/Components/profile/ProfileHeader";
 import { ActivityHeatmap } from "@/Components/charts/ActivityHeatmap";
 import { useReviewHistory, useReviews } from "@/hooks/useLessons";
 import { motion } from "framer-motion";
+import { api } from "@/utils/apiClient";
+import { User } from "@/types/users";
 
 function Profile() {
   const { authData, logout } = useAuth();
@@ -46,15 +48,10 @@ function Profile() {
     data: user,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<User>({
     queryKey: ["user", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+    queryFn: async (): Promise<User> => {
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn,
@@ -68,14 +65,7 @@ function Profile() {
   const { data: activityData, isLoading: isFetchingActivity } = useQuery({
     queryKey: ["activity", authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/activity`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
+      const response = await api.get<any[]>("/api/users/activity");
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn,
@@ -103,13 +93,7 @@ function Profile() {
 
   const resetMutation = useMutation({
     mutationFn: async () => {
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/reset-progress`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.post("/api/users/reset-progress");
     },
     onSuccess: () => {
       showSnackbar("Progress reset successfully", "success");
@@ -166,12 +150,7 @@ function Profile() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await axios.delete(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${user._id}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.delete(`/api/users/delete/${user?._id}`);
     },
     onSuccess: () => {
       showSnackbar("Profile deleted successfully", "success");
@@ -279,7 +258,7 @@ function Profile() {
       <Fade in={showLoaded} timeout={500} unmountOnExit>
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           {/* Header Section */}
-          <ProfileHeader user={user} handleUpdate={handleUpdate} />
+          <ProfileHeader user={user!} handleUpdate={handleUpdate} />
 
           {/* Stats Section */}
           <Grid container spacing={3} mb={4}>
@@ -404,7 +383,7 @@ function Profile() {
                     height: "100%",
                   }}
                 >
-                  <LessonDifficultyChart reviews={reviews} />
+                  <LessonDifficultyChart reviews={reviews ?? []} />
                 </Paper>
               </motion.div>
             </Grid>

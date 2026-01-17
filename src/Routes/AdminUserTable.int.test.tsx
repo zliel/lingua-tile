@@ -7,15 +7,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+// Mock the apiClient module
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
     post: vi.fn(),
+    put: vi.fn(),
     delete: vi.fn(),
-    isAxiosError: () => false,
   },
 }));
 
@@ -63,14 +63,14 @@ describe("AdminUserTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminUserTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
   });
 
   it("renders users", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/users/admin/all"))
         return Promise.resolve({ data: mockUsers });
       return Promise.resolve({ data: [] });
@@ -85,7 +85,7 @@ describe("AdminUserTable Integration", () => {
   });
 
   it("handles error state", async () => {
-    (axios.get as any).mockRejectedValue(new Error("Failed"));
+    (api.get as any).mockRejectedValue(new Error("Failed"));
     const Wrapper = createWrapper();
     render(<AdminUserTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Error loading users.")).toBeVisible();

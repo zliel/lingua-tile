@@ -7,16 +7,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
     post: vi.fn(),
-    put: vi.fn(), // If needed later
-    delete: vi.fn(), // If needed later
-    isAxiosError: () => false,
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -70,7 +68,7 @@ describe("AdminCardTable Integration", () => {
 
   it("renders loading state initially", async () => {
     // Delay resolution to show loading
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<AdminCardTable />, { wrapper: Wrapper });
@@ -79,7 +77,7 @@ describe("AdminCardTable Integration", () => {
   });
 
   it("renders cards and form after loading", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/cards/all"))
         return Promise.resolve({ data: mockCards });
       if (url.includes("/api/lessons/all"))
@@ -103,7 +101,7 @@ describe("AdminCardTable Integration", () => {
   });
 
   it("handles error state", async () => {
-    (axios.get as any).mockRejectedValue(new Error("Network Error"));
+    (api.get as any).mockRejectedValue(new Error("Network Error"));
 
     const Wrapper = createWrapper();
     render(<AdminCardTable />, { wrapper: Wrapper });
@@ -112,7 +110,7 @@ describe("AdminCardTable Integration", () => {
   });
 
   it("allows adding a new card", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/cards/all")) return Promise.resolve({ data: [] }); // Start empty
       if (url.includes("/api/lessons/all"))
         return Promise.resolve({ data: mockLessons });
@@ -121,7 +119,7 @@ describe("AdminCardTable Integration", () => {
       return Promise.resolve({ data: [] });
     });
 
-    (axios.post as any).mockResolvedValue({
+    (api.post as any).mockResolvedValue({
       data: {
         _id: "c3",
         front_text: "New",
@@ -144,13 +142,12 @@ describe("AdminCardTable Integration", () => {
     await userEvent.click(page.getByRole("button", { name: "Add Card" }));
 
     // Verify API call
-    expect(axios.post).toHaveBeenCalledWith(
-      expect.stringContaining("/api/cards/create"),
+    expect(api.post).toHaveBeenCalledWith(
+      "/api/cards/create",
       expect.objectContaining({
         front_text: "New",
         back_text: "Nuevo",
       }),
-      expect.any(Object),
     );
   });
 });

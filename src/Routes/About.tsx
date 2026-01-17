@@ -129,14 +129,14 @@ function About() {
                   </ListItem>
                   <ListItem>
                     <ListItemText
-                      primary="Rich Media Flashcards"
-                      secondary="Flaschards with images, audio, and example sentences."
+                      primary="TTS Integration for Flashcards"
+                      secondary="Hear pronunciations directly within flashcards."
                     />
                   </ListItem>
                   <ListItem>
                     <ListItemText
-                      primary="Dashboard"
-                      secondary="Track your progress and stay motivated!"
+                      primary="Badges & Achievements"
+                      secondary="Stay motivated with rewards for your progress."
                     />
                   </ListItem>
                 </List>

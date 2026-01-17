@@ -1,9 +1,10 @@
 import { useAuth } from "@/Contexts/AuthContext";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import { UserTable } from "@/Components/admin/UserTable";
+import { api } from "@/utils/apiClient";
+import { User } from "@/types/users";
 
 const AdminUserTable = () => {
   const { authData, authIsLoading } = useAuth();
@@ -16,12 +17,7 @@ const AdminUserTable = () => {
   } = useQuery({
     queryKey: ["users", token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/admin/all`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await api.get<User[]>("/api/users/admin/all");
       return response.data;
     },
     enabled: !!token,

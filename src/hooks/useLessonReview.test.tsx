@@ -2,14 +2,21 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import useLessonReview from "./useLessonReview";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { BrowserRouter } from "react-router-dom"; // For useNavigate
 import * as SnackbarContext from "@/Contexts/SnackbarContext";
 import * as AuthContext from "@/Contexts/AuthContext";
 import * as OfflineContext from "@/Contexts/OfflineContext";
 
-// Mock external dependencies
-vi.mock("axios");
+// Mock the apiClient module (not axios directly, since useLessonReview uses api from apiClient)
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 // Manual mocks for contexts
 const mockShowSnackbar = vi.fn();
@@ -63,7 +70,7 @@ describe("useLessonReview Hook", () => {
       addToQueue: mockAddToQueue,
     } as any);
 
-    (axios.post as Mock).mockResolvedValueOnce({ data: { success: true } });
+    (api.post as Mock).mockResolvedValueOnce({ data: { success: true } });
 
     const { result } = renderHook(
       () =>
@@ -73,10 +80,10 @@ describe("useLessonReview Hook", () => {
       },
     );
 
-    await result.current.handlePerformanceReview(3);
+    result.current.handlePerformanceReview(3);
 
     await waitFor(() => expect(mockSetModalLoading).toHaveBeenCalledWith(true));
-    await waitFor(() => expect(axios.post).toHaveBeenCalled());
+    await waitFor(() => expect(api.post).toHaveBeenCalled());
     await waitFor(() =>
       expect(mockShowSnackbar).toHaveBeenCalledWith(
         "Lesson marked as complete",
@@ -101,10 +108,10 @@ describe("useLessonReview Hook", () => {
       },
     );
 
-    await result.current.handlePerformanceReview(3);
+    result.current.handlePerformanceReview(3);
 
     // Should NOT call axios
-    expect(axios.post).not.toHaveBeenCalled();
+    expect(api.post).not.toHaveBeenCalled();
 
     // Should Add to Queue
     expect(mockAddToQueue).toHaveBeenCalledWith(
@@ -131,7 +138,7 @@ describe("useLessonReview Hook", () => {
     const networkError = new Error("Network Error");
     // @ts-ignore
     networkError.code = "ERR_NETWORK";
-    (axios.post as Mock).mockRejectedValueOnce(networkError);
+    (api.post as Mock).mockRejectedValueOnce(networkError);
 
     const { result } = renderHook(
       () =>
@@ -141,7 +148,7 @@ describe("useLessonReview Hook", () => {
       },
     );
 
-    await result.current.handlePerformanceReview(2);
+    result.current.handlePerformanceReview(2);
 
     await waitFor(() => expect(mockAddToQueue).toHaveBeenCalled());
     expect(mockShowSnackbar).toHaveBeenCalledWith(

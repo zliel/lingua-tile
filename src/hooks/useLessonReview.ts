@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { useAuth } from "../Contexts/AuthContext";
 import { useOffline } from "../Contexts/OfflineContext";
+import { api } from "@/utils/apiClient";
 
 const useLessonReview = (
   lessonId: string,
@@ -22,13 +22,10 @@ const useLessonReview = (
     mutationFn: async (rating: number) => {
       setModalLoading(true);
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
+        const response = await api.post<Record<string, unknown>>(
+          "/api/lessons/review",
           { lesson_id: lessonId, overall_performance: rating },
-          {
-            headers: { Authorization: `Bearer ${authData?.token}` },
-            timeout: 3000,
-          },
+          { timeout: 3000 },
         );
         return { offline: false, ...response.data };
       } catch (error: any) {

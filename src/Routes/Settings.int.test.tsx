@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 const theme = createTheme();
 
@@ -19,11 +19,12 @@ vi.mock("@/hooks/usePushSubscription", () => ({
   }),
 }));
 
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
+    post: vi.fn(),
     put: vi.fn(),
-    isAxiosError: () => false,
+    delete: vi.fn(),
   },
 }));
 
@@ -54,7 +55,7 @@ const createWrapper = () => {
 
 describe("Settings Component Integration", () => {
   it("renders settings options", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "u1", learning_mode: "list" },
     });
 
@@ -66,10 +67,10 @@ describe("Settings Component Integration", () => {
   });
 
   it("toggles learning mode", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "u1", learning_mode: "list" },
     });
-    (axios.put as any).mockResolvedValue({});
+    (api.put as any).mockResolvedValue({});
 
     const Wrapper = createWrapper();
     render(<Settings />, { wrapper: Wrapper });
@@ -84,10 +85,8 @@ describe("Settings Component Integration", () => {
     const modeSwitch = switches.all()[0];
     await userEvent.click(modeSwitch);
 
-    expect(axios.put).toHaveBeenCalledWith(
-      expect.stringContaining("/api/users/update/u1"),
-      { learning_mode: "map" },
-      expect.anything(),
-    );
+    expect(api.put).toHaveBeenCalledWith("/api/users/update/u1", {
+      learning_mode: "map",
+    });
   });
 });

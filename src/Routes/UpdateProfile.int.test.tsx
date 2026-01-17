@@ -6,10 +6,16 @@ import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "@/Contexts/AuthContext";
 import { SnackbarContext } from "@/Contexts/SnackbarContext";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
-// Mock axios
-vi.mock("axios");
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const createWrapper = (mockShowSnackbar: any, mockLogout: any) => {
   const queryClient = new QueryClient({
@@ -41,7 +47,7 @@ describe("UpdateProfile Component Integration", () => {
     const Wrapper = createWrapper(mockShowSnackbar, mockLogout);
 
     // Mock current user fetch
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "123", username: "CurrentUsername" },
     });
 
@@ -59,10 +65,10 @@ describe("UpdateProfile Component Integration", () => {
     const mockLogout = vi.fn((cb) => cb && cb());
     const Wrapper = createWrapper(mockShowSnackbar, mockLogout);
 
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "123", username: "CurrentUsername" },
     });
-    (axios.put as any).mockResolvedValue({});
+    (api.put as any).mockResolvedValue({});
 
     render(<UpdateProfile />, { wrapper: Wrapper });
 

@@ -7,15 +7,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
     post: vi.fn(),
+    put: vi.fn(),
     delete: vi.fn(),
-    isAxiosError: () => false,
   },
 }));
 
@@ -81,14 +80,14 @@ describe("AdminLessonTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminLessonTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
   });
 
   it("renders lessons and form", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/lessons/all"))
         return Promise.resolve({ data: mockLessons });
       if (url.includes("/api/sections/all"))
@@ -109,14 +108,14 @@ describe("AdminLessonTable Integration", () => {
   });
 
   it("handles error state", async () => {
-    (axios.get as any).mockRejectedValue(new Error("Failed"));
+    (api.get as any).mockRejectedValue(new Error("Failed"));
     const Wrapper = createWrapper();
     render(<AdminLessonTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Failed to fetch data")).toBeVisible();
   });
 
   it("allows adding a new lesson", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/lessons/all"))
         return Promise.resolve({ data: [] });
       if (url.includes("/api/sections/all"))
@@ -126,7 +125,7 @@ describe("AdminLessonTable Integration", () => {
       return Promise.resolve({ data: [] });
     });
 
-    (axios.post as any).mockResolvedValue({
+    (api.post as any).mockResolvedValue({
       data: { _id: "l3", title: "New Lesson" },
     });
 
@@ -137,10 +136,9 @@ describe("AdminLessonTable Integration", () => {
 
     await userEvent.click(page.getByRole("button", { name: "Add Lesson" }));
 
-    expect(axios.post).toHaveBeenCalledWith(
-      expect.stringContaining("/api/lessons/create"),
+    expect(api.post).toHaveBeenCalledWith(
+      "/api/lessons/create",
       expect.objectContaining({ title: "New Lesson" }),
-      expect.any(Object),
     );
   });
 });

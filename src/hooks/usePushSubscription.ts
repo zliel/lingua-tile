@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 
@@ -17,7 +17,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export const usePushSubscription = () => {
-  const { authData } = useAuth();
+  useAuth(); // Auth context still needed (token managed by apiClient)
   const { showSnackbar } = useSnackbar();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,8 +63,8 @@ export const usePushSubscription = () => {
         return false;
       }
 
-      const keyResponse = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/notifications/vapid-public-key`,
+      const keyResponse = await api.get<{ publicKey: string }>(
+        "/api/notifications/vapid-public-key",
       );
       const vapidPublicKey = keyResponse.data.publicKey;
 
@@ -74,13 +74,7 @@ export const usePushSubscription = () => {
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
       });
 
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/notifications/subscribe`,
-        subscription.toJSON(),
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.post("/api/notifications/subscribe", subscription.toJSON());
 
       setIsSubscribed(true);
       showSnackbar("Notifications enabled!", "success");
@@ -105,13 +99,9 @@ export const usePushSubscription = () => {
         const subscription = await registration.pushManager.getSubscription();
         if (subscription) {
           await subscription.unsubscribe();
-          await axios.post(
-            `${import.meta.env.VITE_APP_API_BASE}/api/notifications/unsubscribe`,
-            { endpoint: subscription.endpoint },
-            {
-              headers: { Authorization: `Bearer ${authData?.token}` },
-            },
-          );
+          await api.post("/api/notifications/unsubscribe", {
+            endpoint: subscription.endpoint,
+          });
         }
       }
       setIsSubscribed(false);

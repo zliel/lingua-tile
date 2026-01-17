@@ -16,7 +16,8 @@ import { usePushSubscription } from "@/hooks/usePushSubscription";
 
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
+import { User } from "@/types/users";
 
 function Settings() {
   const navigate = useNavigate();
@@ -30,10 +31,7 @@ function Settings() {
   const { data: user, isLoading: isUserLoading } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        { headers: { Authorization: `Bearer ${authData?.token}` } },
-      );
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData?.isLoggedIn && !!authData?.token,
@@ -50,11 +48,9 @@ function Settings() {
   const handleLearningModeToggle = async (newMode: string) => {
     if (!user) return;
     try {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
-        { learning_mode: newMode },
-        { headers: { Authorization: `Bearer ${authData?.token}` } },
-      );
+      await api.put(`/api/users/update/${user._id}`, {
+        learning_mode: newMode,
+      });
       queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
     } catch (error) {
       console.error("Failed to update learning mode", error);

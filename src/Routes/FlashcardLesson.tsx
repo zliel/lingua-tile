@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import {
   Box,
   Typography,
@@ -12,6 +11,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import FlashcardsList from "@/Components/FlashcardList";
+import { api } from "@/utils/apiClient";
+import { Lesson } from "@/types/lessons";
 
 const FlashcardLesson = () => {
   const { lessonId } = useParams();
@@ -27,12 +28,7 @@ const FlashcardLesson = () => {
   } = useQuery({
     queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      const response = await api.get<Lesson>(`/api/lessons/${lessonId}`);
       return response.data;
     },
     enabled: !!authData,
@@ -88,7 +84,7 @@ const FlashcardLesson = () => {
       >
         {lesson && lesson.title}
       </Typography>
-      <FlashcardsList lessonId={lessonId || ""} lesson={lesson} />
+      <FlashcardsList lessonId={lessonId || ""} lesson={lesson!} />
     </Box>
   );
 };

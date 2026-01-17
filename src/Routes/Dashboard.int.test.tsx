@@ -50,14 +50,14 @@ vi.mock("@/hooks/useLessons", () => ({
   }),
 }));
 
-// Mock User query which is inline in Dashboard
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi
       .fn()
       .mockResolvedValue({ data: { username: "TestUser", timezone: "UTC" } }),
+    post: vi.fn(),
     put: vi.fn().mockResolvedValue({}),
-    isAxiosError: () => false,
+    delete: vi.fn(),
   },
 }));
 

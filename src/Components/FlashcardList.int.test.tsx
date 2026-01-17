@@ -5,12 +5,18 @@ import FlashcardList from "./FlashcardList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "@/theme";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import AuthContext from "../Contexts/AuthContext";
 import { SnackbarContext } from "../Contexts/SnackbarContext";
 
-// Mock axios
-vi.mock("axios");
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 // Mock ReviewModal to avoid its complexity
 vi.mock("./ReviewModal", () => ({
@@ -88,8 +94,8 @@ describe("FlashcardList Integration", () => {
     );
 
   it("renders flashcards and navigates through them", async () => {
-    (axios.post as any).mockResolvedValue({ data: mockCards });
-    (axios.get as any).mockResolvedValue({ data: null }); // Review status
+    (api.post as any).mockResolvedValue({ data: mockCards });
+    (api.get as any).mockResolvedValue({ data: null }); // Review status
 
     const Wrapper = createWrapper();
     render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, {
@@ -109,8 +115,8 @@ describe("FlashcardList Integration", () => {
   });
 
   it("opens ReviewModal when finished (last card + next)", async () => {
-    (axios.post as any).mockResolvedValue({ data: mockCards });
-    (axios.get as any).mockResolvedValue({ data: null });
+    (api.post as any).mockResolvedValue({ data: mockCards });
+    (api.get as any).mockResolvedValue({ data: null });
 
     const Wrapper = createWrapper();
     render(<FlashcardList lessonId="lesson1" lesson={mockLesson} />, {

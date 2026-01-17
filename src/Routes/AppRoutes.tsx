@@ -3,6 +3,8 @@ import { useRoutes } from "react-router-dom";
 import Layout from "@/Components/Layout";
 import ProtectedRoute from "@/Components/ProtectedRoute";
 
+import LearnContainer from "./LearnContainer";
+import LessonList from "./LessonList";
 import Login from "./Login";
 import Signup from "./Signup";
 import { HomeRedirect } from "./HomeRedirect";
@@ -12,7 +14,6 @@ import { ForgotPassword } from "./ForgotPassword";
 import { ResetPassword } from "./ResetPassword";
 
 const Dashboard = lazy(() => import("./Dashboard"));
-const LessonList = lazy(() => import("./LessonList"));
 const Profile = lazy(() => import("./Profile"));
 const UpdateProfile = lazy(() => import("./UpdateProfile"));
 const FlashcardLesson = lazy(() => import("./FlashcardLesson"));
@@ -26,7 +27,6 @@ const AdminUserTable = lazy(() => import("./AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./AdminLessonTable"));
 const AdminCardTable = lazy(() => import("./AdminCardTable"));
 const JourneyMap = lazy(() => import("./journey/JourneyMap"));
-const LearnContainer = lazy(() => import("./LearnContainer"));
 
 export const AppRoutes = () => {
   return useRoutes([
@@ -73,19 +73,11 @@ export const AppRoutes = () => {
         },
         {
           path: "/learn",
-          element: (
-            <Suspense>
-              <LearnContainer />
-            </Suspense>
-          ),
+          element: <LearnContainer />,
         },
         {
           path: "/lessons",
-          element: (
-            <Suspense>
-              <LessonList />
-            </Suspense>
-          ),
+          element: <LessonList />,
         },
         {
           path: "/profile",

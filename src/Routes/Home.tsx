@@ -15,19 +15,19 @@ function Home() {
     if (authData?.token) {
       queryClient.prefetchQuery({
         queryKey: ["lessons", authData.token],
-        queryFn: () => fetchLessons(authData.token),
+        queryFn: () => fetchLessons(),
         staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
         queryKey: ["sections", authData.token],
-        queryFn: () => fetchSections(authData.token),
+        queryFn: () => fetchSections(),
         staleTime: 5 * 60 * 1000,
       });
 
       queryClient.prefetchQuery({
         queryKey: ["reviews", authData.token],
-        queryFn: () => fetchReviews(authData.token),
+        queryFn: () => fetchReviews(),
         initialData: () => {
           const token = localStorage.getItem("token");
           if (!token) {

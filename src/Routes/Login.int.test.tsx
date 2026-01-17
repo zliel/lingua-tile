@@ -7,10 +7,17 @@ import { MemoryRouter } from "react-router-dom";
 import { SnackbarContext } from "@/Contexts/SnackbarContext";
 import AuthContext from "@/Contexts/AuthContext";
 import OfflineContext from "@/Contexts/OfflineContext";
+import { api } from "@/utils/apiClient";
 import axios from "axios";
 
-// Mock axios
-vi.mock("axios");
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const createWrapper = (
   mockShowSnackbar: any,
@@ -42,8 +49,8 @@ describe("Login Component Integration", () => {
     const mockClearQueue = vi.fn();
     const Wrapper = createWrapper(mockShowSnackbar, mockLogin, mockClearQueue);
 
-    // Mock axios response
-    (axios.post as any).mockResolvedValue({ data: { token: "fake-token" } });
+    // Mock api response
+    (api.post as any).mockResolvedValue({ data: { token: "fake-token" } });
 
     render(<Login />, { wrapper: Wrapper });
 
@@ -73,15 +80,15 @@ describe("Login Component Integration", () => {
     const mockClearQueue = vi.fn();
     const Wrapper = createWrapper(mockShowSnackbar, mockLogin, mockClearQueue);
 
-    // Mock axios error
+    // Mock api error
     const errorResponse = {
       response: {
         data: { message: "Invalid credentials" },
       },
       isAxiosError: true,
     };
-    (axios.post as any).mockRejectedValue(errorResponse);
-    (axios.isAxiosError as any).mockReturnValue(true);
+    (api.post as any).mockRejectedValue(errorResponse);
+    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
 
     render(<Login />, { wrapper: Wrapper });
 

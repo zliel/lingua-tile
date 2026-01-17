@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import { SnackbarContext } from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 // Mock charts and heavy components
 vi.mock("@/Components/charts/PastWeekReviewsChart", () => ({
@@ -31,13 +31,16 @@ vi.mock("framer-motion", async () => {
     },
   };
 });
-vi.mock("axios", () => ({
-  default: {
+
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
+    post: vi.fn(),
     put: vi.fn(),
-    isAxiosError: () => false,
+    delete: vi.fn(),
   },
 }));
+
 // Mock hooks
 vi.mock("@/hooks/useLessons", () => ({
   useReviews: () => ({ data: [], isLoading: false }),
@@ -80,7 +83,7 @@ const createWrapper = () => {
 
 describe("Profile Component Integration", () => {
   it("renders profile data", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "u1", username: "TestUser" },
     });
 
@@ -93,7 +96,7 @@ describe("Profile Component Integration", () => {
   });
 
   it("opens delete dialog on click", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { _id: "u1", username: "TestUser" },
     });
 

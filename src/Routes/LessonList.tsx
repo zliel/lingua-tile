@@ -71,7 +71,7 @@ const LessonList = () => {
 
   // Helper function to get review information for a specific lesson
   const getReviewForLesson = (lessonId: string): ReviewStats | null => {
-    const review: Review = reviews?.find(
+    const review: Review | undefined = reviews?.find(
       (review: Review) => review.lesson_id === lessonId,
     );
     if (review) {

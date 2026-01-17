@@ -4,10 +4,10 @@ import AuthContext from "@/Contexts/AuthContext";
 import OfflineContext from "@/Contexts/OfflineContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 // @ts-ignore
-axios.get = async (url) => {
+api.get = async (url) => {
   if (url.includes("/api/users/")) {
     return { data: { current_streak: 12 } };
   }

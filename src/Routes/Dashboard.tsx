@@ -11,6 +11,7 @@ import {
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
@@ -23,6 +24,7 @@ import { NotificationPermissionModal } from "@/Components/NotificationPermission
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useReviewHistory, useReviews } from "@/hooks/useLessons";
+import { User } from "@/types/users";
 
 const Dashboard = () => {
   const { authData, logout } = useAuth();
@@ -75,13 +77,8 @@ const Dashboard = () => {
     isLoading: isUserLoading,
   } = useQuery({
     queryKey: ["user", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+    queryFn: async (): Promise<User> => {
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn,
@@ -135,16 +132,12 @@ const Dashboard = () => {
       const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       if (user.timezone !== browserTimezone) {
         // Update user timezone
-        axios
-          .put(
-            `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
-            { timezone: browserTimezone },
-            { headers: { Authorization: `Bearer ${authData?.token}` } },
-          )
+        api
+          .put(`/api/users/update/${user._id}`, { timezone: browserTimezone })
           .catch((err) => console.error("Failed to sync timezone", err));
       }
     }
-  }, [user, authData?.token]);
+  }, [user]);
 
   const isLoading = isUserLoading || isReviewsLoading || isReviewHistoryLoading;
 
@@ -230,7 +223,7 @@ const Dashboard = () => {
                   height: "100%",
                 }}
               >
-                <LessonProgressChart reviews={reviews} />
+                <LessonProgressChart reviews={reviews ?? []} />
               </Paper>
             </motion.div>
           </Grid>
@@ -247,7 +240,7 @@ const Dashboard = () => {
                   borderRadius: 4,
                 }}
               >
-                <ProjectedReviewsChart reviews={reviews} />
+                <ProjectedReviewsChart reviews={reviews ?? []} />
               </Paper>
             </motion.div>
           </Grid>

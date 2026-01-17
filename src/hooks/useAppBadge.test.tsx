@@ -2,11 +2,18 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, Mock, beforeEach, afterEach } from "vitest";
 import { useAppBadge } from "./useAppBadge";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import * as AuthContext from "@/Contexts/AuthContext";
 
-// Mock dependencies
-vi.mock("axios");
+// Mock the apiClient module
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -68,7 +75,7 @@ describe("useAppBadge Hook", () => {
       { next_review: tomorrow.toISOString() }, // Not overdue
     ];
 
-    (axios.get as Mock).mockResolvedValueOnce({ data: mockReviews });
+    (api.get as Mock).mockResolvedValueOnce({ data: mockReviews });
 
     renderHook(() => useAppBadge(), {
       wrapper: createWrapper(),
@@ -78,7 +85,7 @@ describe("useAppBadge Hook", () => {
   });
 
   it("clears app badge if no reviews", async () => {
-    (axios.get as Mock).mockResolvedValueOnce({ data: [] });
+    (api.get as Mock).mockResolvedValueOnce({ data: [] });
 
     renderHook(() => useAppBadge(), {
       wrapper: createWrapper(),
@@ -92,13 +99,13 @@ describe("useAppBadge Hook", () => {
     navigator.setAppBadge = undefined;
 
     const mockReviews = [{ next_review: new Date().toISOString() }];
-    (axios.get as Mock).mockResolvedValueOnce({ data: mockReviews });
+    (api.get as Mock).mockResolvedValueOnce({ data: mockReviews });
 
     renderHook(() => useAppBadge(), {
       wrapper: createWrapper(),
     });
 
-    // Should not throw and should not call axios (enabled check handles this in hook actually)
+    // Should not call api (enabled check handles this in hook)
     // But if enabled check failed, logic inside useEffect handles it too.
     // Hook actually disables query if setAppBadge is missing.
 

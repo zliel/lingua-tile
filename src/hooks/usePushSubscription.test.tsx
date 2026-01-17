@@ -1,12 +1,19 @@
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, Mock, beforeEach, afterEach } from "vitest";
 import { usePushSubscription } from "./usePushSubscription";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import * as AuthContext from "@/Contexts/AuthContext";
 import * as SnackbarContext from "@/Contexts/SnackbarContext";
 
-// Mock dependencies
-vi.mock("axios");
+// Mock the apiClient module
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 describe("usePushSubscription Hook", () => {
   const mockAuthData = { token: "mock-token" };
@@ -73,12 +80,12 @@ describe("usePushSubscription Hook", () => {
     mockGetSubscription.mockResolvedValue(null);
     // @ts-ignore
     Notification.requestPermission.mockResolvedValue("granted");
-    (axios.get as Mock).mockResolvedValueOnce({ data: { publicKey: "BAPP" } });
+    (api.get as Mock).mockResolvedValueOnce({ data: { publicKey: "BAPP" } });
 
     mockSubscribe.mockResolvedValue({
       toJSON: () => ({ endpoint: "new-endpoint" }),
     });
-    (axios.post as Mock).mockResolvedValueOnce({});
+    (api.post as Mock).mockResolvedValueOnce({});
 
     const { result } = renderHook(() => usePushSubscription());
 
@@ -90,11 +97,9 @@ describe("usePushSubscription Hook", () => {
 
     expect(Notification.requestPermission).toHaveBeenCalled();
     expect(mockSubscribe).toHaveBeenCalled();
-    expect(axios.post).toHaveBeenCalledWith(
-      expect.stringContaining("/subscribe"),
-      { endpoint: "new-endpoint" },
-      expect.anything(),
-    );
+    expect(api.post).toHaveBeenCalledWith("/api/notifications/subscribe", {
+      endpoint: "new-endpoint",
+    });
     expect(result.current.isSubscribed).toBe(true);
   });
 
@@ -118,7 +123,7 @@ describe("usePushSubscription Hook", () => {
       unsubscribe: mockUnsubscribe,
       endpoint: "test-endpoint",
     });
-    (axios.post as Mock).mockResolvedValueOnce({});
+    (api.post as Mock).mockResolvedValueOnce({});
 
     const { result } = renderHook(() => usePushSubscription());
     // Wait for initial check
@@ -130,11 +135,9 @@ describe("usePushSubscription Hook", () => {
     });
 
     expect(mockUnsubscribe).toHaveBeenCalled();
-    expect(axios.post).toHaveBeenCalledWith(
-      expect.stringContaining("/unsubscribe"),
-      { endpoint: "test-endpoint" },
-      expect.anything(),
-    );
+    expect(api.post).toHaveBeenCalledWith("/api/notifications/unsubscribe", {
+      endpoint: "test-endpoint",
+    });
     expect(result.current.isSubscribed).toBe(false);
   });
 });

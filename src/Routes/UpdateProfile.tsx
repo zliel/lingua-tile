@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
@@ -21,6 +22,7 @@ import { useAuth } from "@/Contexts/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { UpdateProfileSchema, UpdateProfileSchemaType } from "@/Schemas/auth";
+import { User } from "@/types/users";
 
 function UpdateProfile() {
   const { authData, logout } = useAuth();
@@ -32,18 +34,10 @@ function UpdateProfile() {
     data: user,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<User>({
     queryKey: ["user", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
-
+    queryFn: async (): Promise<User> => {
+      const response = await api.get<User>("/api/users");
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn,
@@ -61,7 +55,10 @@ function UpdateProfile() {
         );
       }
     } else {
-      showSnackbar(`Error: ${error?.message || "Unknown error"}`, "error");
+      showSnackbar(
+        `Error: ${(error as Error)?.message || "Unknown error"}`,
+        "error",
+      );
     }
   }
 
@@ -91,15 +88,8 @@ function UpdateProfile() {
 
   const updateMutation = useMutation({
     mutationFn: async (updatedUser: UpdateProfileSchemaType) => {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
-        updatedUser,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
+      if (!user) throw new Error("User not found");
+      await api.put(`/api/users/update/${user._id}`, updatedUser);
     },
     onSuccess: () => {
       showSnackbar("Profile updated successfully", "success");
@@ -245,7 +235,7 @@ function UpdateProfile() {
               {...register("username")}
               error={!!errors.username}
               helperText={
-                errors.username?.message || `Current: ${user.username}`
+                errors.username?.message || `Current: ${user?.username ?? ""}`
               }
             />
 

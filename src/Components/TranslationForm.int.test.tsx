@@ -2,9 +2,17 @@ import { render } from "vitest-browser-react";
 import { describe, it, expect, vi } from "vitest";
 import { userEvent, page } from "vitest/browser";
 import TranslationForm from "./TranslationForm";
-import axios from "axios";
-// Mock axios
-vi.mock("axios");
+import { api } from "@/utils/apiClient";
+
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
+
 describe("TranslationForm Component", () => {
   it("renders source and target text fields", async () => {
     render(<TranslationForm />);
@@ -14,7 +22,7 @@ describe("TranslationForm Component", () => {
   });
   it("updates source text and triggers translation", async () => {
     // Setup mock response
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { translatedText: "テスト" },
     });
     render(<TranslationForm />);

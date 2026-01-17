@@ -1,7 +1,6 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import NewLessonForm from "@/Components/admin/NewLessonForm";
-import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLessons, useSections } from "@/hooks/useLessons";
 import { Box, Typography } from "@mui/material";
@@ -9,6 +8,8 @@ import { NewLesson } from "@/types/lessons";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import { LessonTable } from "@/Components/admin/LessonTable";
+import { api } from "@/utils/apiClient";
+import { Card } from "@/types/cards";
 
 const AdminLessonTable = () => {
   const { authData } = useAuth();
@@ -34,12 +35,7 @@ const AdminLessonTable = () => {
   } = useQuery({
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      const response = await api.get<Card[]>("/api/cards/all");
 
       return response.data;
     },
@@ -48,13 +44,7 @@ const AdminLessonTable = () => {
 
   const addMutation = useMutation({
     mutationFn: async (lesson: NewLesson) => {
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/create`,
-        lesson,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.post("/api/lessons/create", lesson);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });

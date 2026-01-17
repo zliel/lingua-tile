@@ -1,6 +1,5 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
 import NewCardForm from "@/Components/admin/NewCardForm";
@@ -10,6 +9,7 @@ import { Section } from "@/types/sections";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { CardTable } from "@/Components/admin/CardTable";
+import { api } from "@/utils/apiClient";
 
 const AdminCardTable = () => {
   const { authData, authIsLoading } = useAuth();
@@ -19,15 +19,10 @@ const AdminCardTable = () => {
     data: cards = [],
     isLoading: isLoadingCards,
     isError: isErrorCards,
-  } = useQuery({
+  } = useQuery<Card[]>({
     queryKey: ["cards", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/all`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+    queryFn: async (): Promise<Card[]> => {
+      const response = await api.get<Card[]>("/api/cards/all");
 
       return response.data as Card[];
     },
@@ -46,8 +41,8 @@ const AdminCardTable = () => {
     queryKey: ["lessonGroups", authData?.token],
     queryFn: async () => {
       const [lessonsResponse, sectionsResponse] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/lessons/all`),
-        axios.get(`${import.meta.env.VITE_APP_API_BASE}/api/sections/all`),
+        api.get<Lesson[]>(`/api/lessons/all`),
+        api.get<Section[]>(`/api/sections/all`),
       ]);
 
       const lessons = lessonsResponse.data;

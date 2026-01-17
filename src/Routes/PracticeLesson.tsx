@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import {
   Box,
   LinearProgress,
@@ -17,6 +16,8 @@ import TranslationQuestion from "@/Components/TranslationQuestion";
 import "./PracticeLesson.css";
 import ReviewModal from "@/Components/ReviewModal";
 import PracticeLessonSkeleton from "@/Components/skeletons/PracticeLessonSkeleton";
+import { api } from "@/utils/apiClient";
+import { Lesson } from "@/types/lessons";
 
 const PracticeLesson = () => {
   const { lessonId } = useParams();
@@ -36,12 +37,7 @@ const PracticeLesson = () => {
   } = useQuery({
     queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/${lessonId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      const response = await api.get<Lesson>(`/api/lessons/${lessonId}`);
       return response.data;
     },
     enabled: !!authData,
@@ -51,7 +47,7 @@ const PracticeLesson = () => {
   const handleNext = () => {
     setAnimationClass("slide-out");
     setTimeout(() => {
-      if (currentSentence === lesson.sentences.length - 1) {
+      if (currentSentence === lesson!.sentences!.length - 1) {
         // NOTE: Disallows reviewing when not logged in
         if (authData?.isLoggedIn) {
           showSnackbar("Lesson complete!", "success");
@@ -65,7 +61,7 @@ const PracticeLesson = () => {
         }
       }
       setCurrentSentence((prev) =>
-        prev === lesson.sentences.length - 1 ? 0 : prev + 1,
+        prev === lesson!.sentences!.length - 1 ? 0 : prev + 1,
       );
       setAnimationClass("slide-in");
     }, 400);
@@ -106,12 +102,12 @@ const PracticeLesson = () => {
         </IconButton>
       </Box>
       <Typography variant={"h4"} gutterBottom>
-        {lesson.title}
+        {lesson?.title}
       </Typography>
       <Box ref={nodeRef} className={animationClass}>
         <TranslationQuestion
-          sentence={lesson.sentences[currentSentence]}
-          allSentences={lesson.sentences}
+          sentence={lesson?.sentences![currentSentence]!}
+          allSentences={lesson?.sentences!}
           onNext={handleNext}
         />
       </Box>
@@ -146,8 +142,8 @@ const PracticeLesson = () => {
         </Box>
         <Box sx={{ minWidth: 35 }}>
           <Typography variant="body2" color="text.secondary">
-            {modalOpen ? lesson.sentences.length : currentSentence + 1}/
-            {lesson.sentences.length}
+            {modalOpen ? lesson!.sentences!.length : currentSentence + 1}/
+            {lesson!.sentences!.length}
           </Typography>
         </Box>
       </Box>

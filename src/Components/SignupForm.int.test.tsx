@@ -5,10 +5,17 @@ import { SignupForm } from "./SignupForm";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { SnackbarContext } from "@/Contexts/SnackbarContext";
+import { api } from "@/utils/apiClient";
 import axios from "axios";
 
-// Mock axios
-vi.mock("axios");
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const createWrapper = (mockShowSnackbar: any) => {
   const queryClient = new QueryClient({
@@ -30,7 +37,7 @@ describe("SignupForm Component Integration", () => {
     const mockShowSnackbar = vi.fn();
     const Wrapper = createWrapper(mockShowSnackbar);
 
-    (axios.post as any).mockResolvedValue({ data: { success: true } });
+    (api.post as any).mockResolvedValue({ data: { success: true } });
 
     render(<SignupForm />, { wrapper: Wrapper });
 
@@ -96,8 +103,8 @@ describe("SignupForm Component Integration", () => {
       },
       isAxiosError: true,
     };
-    (axios.post as any).mockRejectedValue(errorResponse);
-    (axios.isAxiosError as any).mockReturnValue(true);
+    (api.post as any).mockRejectedValue(errorResponse);
+    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
 
     render(<SignupForm />, { wrapper: Wrapper });
 

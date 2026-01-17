@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import TranslationForm from "@/Components/TranslationForm";
-import axios from "axios";
+import { api } from "../../utils/apiClient";
 
 // @ts-ignore
-axios.get = async (url) => {
+api.get = async (url) => {
   if (url.includes("/api/translations/")) {
     await new Promise((resolve) => setTimeout(resolve, 800));
     return { data: { translatedText: "こんにちは！ (Mocked Translation)" } };
