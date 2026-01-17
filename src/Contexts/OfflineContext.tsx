@@ -6,9 +6,9 @@ import {
   useCallback,
   useRef,
 } from "react";
-import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useSnackbar } from "./SnackbarContext";
+import { api } from "@/utils/apiClient";
 
 interface ReviewData {
   lesson_id: string;
@@ -27,10 +27,10 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => {},
+  addToQueue: () => { },
   isPending: () => false,
-  sync: async () => {},
-  clearQueue: () => {},
+  sync: async () => { },
+  clearQueue: () => { },
 });
 
 export const useOffline = () => useContext(OfflineContext);
@@ -128,15 +128,12 @@ export const OfflineProvider = ({
       }
 
       try {
-        await axios.post(
-          `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review`,
+        await api.post(
+          `/api/lessons/review`,
           {
             lesson_id: review.lesson_id,
             overall_performance: review.overall_performance,
-          },
-          {
-            headers: { Authorization: `Bearer ${authData.token}` },
-          },
+          }
         );
         successCount++;
       } catch (error: any) {

@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./SnackbarContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/utils/apiClient";
 
 export interface AuthData {
   isLoggedIn: boolean;
@@ -80,11 +80,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/auth/check-admin`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+      const response = await api.get<{ isAdmin: boolean }>(
+        "/api/auth/check-admin",
       );
 
       if (response.status >= 401) {
@@ -133,11 +130,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const token = localStorage.getItem("token");
     if (token) {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/auth/check-admin`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+      const response = await api.get<{ isAdmin: boolean }>(
+        "/api/auth/check-admin",
       );
       return response.data.isAdmin;
     }
