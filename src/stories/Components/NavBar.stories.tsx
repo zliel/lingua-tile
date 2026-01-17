@@ -4,10 +4,10 @@ import AuthContext from "@/Contexts/AuthContext";
 import OfflineContext from "@/Contexts/OfflineContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 // @ts-ignore
-axios.get = async (url) => {
+api.get = async (url) => {
   if (url.includes("/api/users/")) {
     return { data: { current_streak: 12 } };
   }
@@ -52,18 +52,18 @@ const createAuthMock = (overrides: any = {}) => ({
     ...overrides.authData,
   },
   authIsLoading: false,
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
   checkAdmin: async () => false,
   ...overrides,
 });
 
 const createOfflineMock = (overrides: any = {}) => ({
   isOnline: true,
-  addToQueue: () => {},
+  addToQueue: () => { },
   isPending: () => false,
-  sync: async () => {},
-  clearQueue: () => {},
+  sync: async () => { },
+  clearQueue: () => { },
   ...overrides,
 });
 

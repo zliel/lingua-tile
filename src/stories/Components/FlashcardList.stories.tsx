@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "@/Contexts/AuthContext";
 import SnackbarContext from "@/Contexts/SnackbarContext";
 import { MemoryRouter } from "react-router-dom";
-import axios from "axios";
+import apiClient from "@/utils/apiClient";
 import fn from "@storybook/addon-vitest";
 
 // Mock data
@@ -74,7 +74,7 @@ const meta = {
   },
   decorators: [
     (Story) => {
-      axios.defaults.adapter = mockAdapter;
+      apiClient.defaults.adapter = mockAdapter;
 
       return (
         <QueryClientProvider client={queryClient}>
@@ -91,7 +91,7 @@ const meta = {
             }}
           >
             <SnackbarContext.Provider
-              value={{ showSnackbar: (msg) => console.log("Snackbar:", msg) }}
+              value={{ showSnackbar: (msg: string) => console.log("Snackbar:", msg) }}
             >
               <MemoryRouter>
                 <Story />

@@ -4,11 +4,11 @@ import ReviewModal from "@/Components/ReviewModal";
 import AuthContext from "@/Contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import axios from "axios";
+import { api } from "../../utils/apiClient";
 
 // Mock axios for useLessonReview hook
 // @ts-ignore
-axios.post = async (url) => {
+api.post = async (url) => {
   if (url.includes("/reviews")) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     // Return mock summary data designed to trigger the summary view
