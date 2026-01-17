@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import {
   Box,
   LinearProgress,
@@ -15,9 +14,10 @@ import { useTheme } from "@mui/material/styles";
 import ReviewModal from "./ReviewModal";
 import { Card } from "@/types/cards";
 import { AnimatePresence, motion } from "framer-motion";
-import { Lesson } from "@/types/lessons";
+import { Lesson, Review } from "@/types/lessons";
 import FlashcardListSkeleton from "./skeletons/FlashcardListSkeleton";
 import { useSwipeable } from "react-swipeable";
+import { api } from "@/utils/apiClient";
 
 const variants = {
   enter: (direction: "left" | "right") => ({
@@ -60,8 +60,8 @@ const FlashcardList = ({
   } = useQuery({
     queryKey: ["flashcards", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/by-ids`,
+      const response = await api.post<Card[]>(
+        "/api/cards/by-ids",
         lesson.card_ids,
       );
       return response.data;
@@ -71,11 +71,8 @@ const FlashcardList = ({
   const { data: review, isLoading: isReviewLoading } = useQuery({
     queryKey: ["review", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/review/${lessonId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
+      const response = await api.get<Review[]>(
+        `/api/lessons/review/${lessonId}`,
       );
       return response.data;
     },

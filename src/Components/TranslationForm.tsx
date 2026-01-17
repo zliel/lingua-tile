@@ -8,7 +8,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
+
+interface TranslationResponse {
+  sourceText: string;
+  sourceLanguage: string;
+  translatedText: string;
+  targetLanguage: string;
+};
 
 function TranslationForm() {
   const [srcText, setSrcText] = useState("Hello!");
@@ -23,8 +30,8 @@ function TranslationForm() {
 
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_APP_API_BASE}/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
+        const response = await api.get<TranslationResponse>(
+          `/api/translations/${srcText.replaceAll("?", "%3F")}/en/ja`,
         );
         setTranslatedText(response.data.translatedText);
       } catch (error) {

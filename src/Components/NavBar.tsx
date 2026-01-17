@@ -27,8 +27,9 @@ import CloudOff from "@mui/icons-material/CloudOff";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useOffline } from "@/Contexts/OfflineContext";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import StreakCounter from "./StreakCounter";
+import { api } from "@/utils/apiClient";
+import { User } from "@/types/users";
 
 type Page = {
   name: string;
@@ -56,9 +57,8 @@ function NavBar() {
   const { data: user } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/`,
-        { headers: { Authorization: `Bearer ${authData?.token}` } },
+      const response = await api.get<User>(
+        "/api/users/",
       );
       return response.data;
     },

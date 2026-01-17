@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -35,10 +36,7 @@ export const SignupForm = () => {
 
   const signupMutation = useMutation({
     mutationFn: (newUser: NewUser) =>
-      axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/signup`,
-        newUser,
-      ),
+      api.post("/api/users/signup", newUser),
     onSuccess: () => {
       showSnackbar("Account created successfully", "success");
       navigate("/login");
