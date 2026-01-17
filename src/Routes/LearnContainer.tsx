@@ -1,12 +1,11 @@
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { lazy, Suspense } from "react";
 import PageSkeleton from "@/Components/skeletons/PageSkeleton";
 import { api } from "@/utils/apiClient";
 import { User } from "@/types/users";
 
-const JourneyMap = lazy(() => import("./journey/JourneyMap"));
-const LessonList = lazy(() => import("./LessonList"));
+import JourneyMap from "./journey/JourneyMap";
+import LessonList from "./LessonList";
 
 const LearnContainer = () => {
   const { authData } = useAuth();
@@ -27,11 +26,7 @@ const LearnContainer = () => {
   // Default to map if not set
   const learningMode = user?.learning_mode || "map";
 
-  return (
-    <Suspense>
-      {learningMode === "list" ? <LessonList /> : <JourneyMap />}
-    </Suspense>
-  );
+  return learningMode === "list" ? <LessonList /> : <JourneyMap />;
 };
 
 export default LearnContainer;
