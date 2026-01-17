@@ -81,7 +81,7 @@ describe("PracticeLesson Component Integration", () => {
   });
 
   it("handles loading state", async () => {
-    (api.get as any).mockImplementation(() => new Promise(() => { }));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<PracticeLesson />, { wrapper: Wrapper });

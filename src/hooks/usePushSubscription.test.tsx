@@ -97,10 +97,9 @@ describe("usePushSubscription Hook", () => {
 
     expect(Notification.requestPermission).toHaveBeenCalled();
     expect(mockSubscribe).toHaveBeenCalled();
-    expect(api.post).toHaveBeenCalledWith(
-      "/api/notifications/subscribe",
-      { endpoint: "new-endpoint" }
-    );
+    expect(api.post).toHaveBeenCalledWith("/api/notifications/subscribe", {
+      endpoint: "new-endpoint",
+    });
     expect(result.current.isSubscribed).toBe(true);
   });
 
@@ -136,10 +135,9 @@ describe("usePushSubscription Hook", () => {
     });
 
     expect(mockUnsubscribe).toHaveBeenCalled();
-    expect(api.post).toHaveBeenCalledWith(
-      "/api/notifications/unsubscribe",
-      { endpoint: "test-endpoint" }
-    );
+    expect(api.post).toHaveBeenCalledWith("/api/notifications/unsubscribe", {
+      endpoint: "test-endpoint",
+    });
     expect(result.current.isSubscribed).toBe(false);
   });
 });

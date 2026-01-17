@@ -85,9 +85,8 @@ describe("Settings Component Integration", () => {
     const modeSwitch = switches.all()[0];
     await userEvent.click(modeSwitch);
 
-    expect(api.put).toHaveBeenCalledWith(
-      "/api/users/update/u1",
-      { learning_mode: "map" },
-    );
+    expect(api.put).toHaveBeenCalledWith("/api/users/update/u1", {
+      learning_mode: "map",
+    });
   });
 });

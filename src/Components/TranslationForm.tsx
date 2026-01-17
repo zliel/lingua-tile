@@ -15,7 +15,7 @@ interface TranslationResponse {
   sourceLanguage: string;
   translatedText: string;
   targetLanguage: string;
-};
+}
 
 function TranslationForm() {
   const [srcText, setSrcText] = useState("Hello!");

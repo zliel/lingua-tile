@@ -63,7 +63,7 @@ describe("AdminUserTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (api.get as any).mockImplementation(() => new Promise(() => { }));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminUserTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();

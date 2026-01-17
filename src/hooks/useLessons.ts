@@ -57,7 +57,9 @@ export const useReviews = (
 };
 
 export const fetchReviewHistory = async (): Promise<ReviewLog[]> => {
-  const response = await api.get<ReviewLog[]>("/api/lessons/reviews/history/all");
+  const response = await api.get<ReviewLog[]>(
+    "/api/lessons/reviews/history/all",
+  );
   return response.data;
 };
 

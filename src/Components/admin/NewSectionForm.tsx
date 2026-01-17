@@ -23,10 +23,7 @@ const NewSectionForm = ({ lessons }: { lessons: Lesson[] }) => {
   const addMutation = useMutation({
     mutationKey: ["addingSection"],
     mutationFn: async (section: NewSection) => {
-      await api.post(
-        "/api/sections/create",
-        section,
-      );
+      await api.post("/api/sections/create", section);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sections"] });

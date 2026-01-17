@@ -55,7 +55,10 @@ function UpdateProfile() {
         );
       }
     } else {
-      showSnackbar(`Error: ${(error as Error)?.message || "Unknown error"}`, "error");
+      showSnackbar(
+        `Error: ${(error as Error)?.message || "Unknown error"}`,
+        "error",
+      );
     }
   }
 

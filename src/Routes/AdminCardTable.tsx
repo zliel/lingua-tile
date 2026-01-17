@@ -43,7 +43,7 @@ const AdminCardTable = () => {
       const [lessonsResponse, sectionsResponse] = await Promise.all([
         api.get<Lesson[]>(`/api/lessons/all`),
         api.get<Section[]>(`/api/sections/all`),
-      ])
+      ]);
 
       const lessons = lessonsResponse.data;
       const sections = sectionsResponse.data;

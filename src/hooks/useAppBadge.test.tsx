@@ -52,7 +52,7 @@ describe("useAppBadge Hook", () => {
     });
 
     // Mock global console error to keep output clean during expected errors
-    vi.spyOn(console, "error").mockImplementation(() => { });
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -110,7 +110,7 @@ describe("useAppBadge Hook", () => {
     // Hook actually disables query if setAppBadge is missing.
 
     // Wait a tick
-    await waitFor(() => { });
+    await waitFor(() => {});
 
     expect(mockSetAppBadge).not.toHaveBeenCalled();
   });

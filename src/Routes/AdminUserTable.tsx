@@ -17,9 +17,7 @@ const AdminUserTable = () => {
   } = useQuery({
     queryKey: ["users", token],
     queryFn: async () => {
-      const response = await api.get<User[]>(
-        "/api/users/admin/all",
-      );
+      const response = await api.get<User[]>("/api/users/admin/all");
       return response.data;
     },
     enabled: !!token,

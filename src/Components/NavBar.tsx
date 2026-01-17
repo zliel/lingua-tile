@@ -57,9 +57,7 @@ function NavBar() {
   const { data: user } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await api.get<User>(
-        "/api/users/",
-      );
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData?.isLoggedIn && !!authData?.token,

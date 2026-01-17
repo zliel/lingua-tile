@@ -72,7 +72,7 @@ describe("FlashcardLesson Component Integration", () => {
 
   it("handles loading state", async () => {
     // Delay response to show loading state
-    (api.get as any).mockImplementation(() => new Promise(() => { }));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<FlashcardLesson />, { wrapper: Wrapper });

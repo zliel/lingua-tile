@@ -10,7 +10,7 @@ export interface User {
   timezone?: string;
   level?: number;
   xp?: number;
-  learning_mode?: "map" | "list"
+  learning_mode?: "map" | "list";
 }
 
 export interface NewUser {

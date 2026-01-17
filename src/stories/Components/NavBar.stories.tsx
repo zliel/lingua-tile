@@ -52,18 +52,18 @@ const createAuthMock = (overrides: any = {}) => ({
     ...overrides.authData,
   },
   authIsLoading: false,
-  login: () => { },
-  logout: () => { },
+  login: () => {},
+  logout: () => {},
   checkAdmin: async () => false,
   ...overrides,
 });
 
 const createOfflineMock = (overrides: any = {}) => ({
   isOnline: true,
-  addToQueue: () => { },
+  addToQueue: () => {},
   isPending: () => false,
-  sync: async () => { },
-  clearQueue: () => { },
+  sync: async () => {},
+  clearQueue: () => {},
   ...overrides,
 });
 

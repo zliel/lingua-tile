@@ -31,9 +31,7 @@ function Settings() {
   const { data: user, isLoading: isUserLoading } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await api.get<User>(
-        "/api/users/",
-      );
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData?.isLoggedIn && !!authData?.token,
@@ -50,10 +48,9 @@ function Settings() {
   const handleLearningModeToggle = async (newMode: string) => {
     if (!user) return;
     try {
-      await api.put(
-        `/api/users/update/${user._id}`,
-        { learning_mode: newMode },
-      );
+      await api.put(`/api/users/update/${user._id}`, {
+        learning_mode: newMode,
+      });
       queryClient.invalidateQueries({ queryKey: ["user", authData?.token] });
     } catch (error) {
       console.error("Failed to update learning mode", error);

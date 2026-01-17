@@ -27,10 +27,10 @@ interface OfflineContextType {
 
 const OfflineContext = createContext<OfflineContextType>({
   isOnline: true,
-  addToQueue: () => { },
+  addToQueue: () => {},
   isPending: () => false,
-  sync: async () => { },
-  clearQueue: () => { },
+  sync: async () => {},
+  clearQueue: () => {},
 });
 
 export const useOffline = () => useContext(OfflineContext);
@@ -128,13 +128,10 @@ export const OfflineProvider = ({
       }
 
       try {
-        await api.post(
-          `/api/lessons/review`,
-          {
-            lesson_id: review.lesson_id,
-            overall_performance: review.overall_performance,
-          }
-        );
+        await api.post(`/api/lessons/review`, {
+          lesson_id: review.lesson_id,
+          overall_performance: review.overall_performance,
+        });
         successCount++;
       } catch (error: any) {
         console.error("Failed to sync review:", error);

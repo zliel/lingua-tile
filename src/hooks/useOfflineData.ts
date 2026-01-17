@@ -17,7 +17,7 @@ export const useOfflineData = () => {
     async (sectionId: string) => {
       const token = authData?.token;
       const response = await api.get<{ lessons: Lesson[]; cards: any[] }>(
-        `/api/sections/${sectionId}/download`
+        `/api/sections/${sectionId}/download`,
       );
 
       const { lessons, cards } = response.data;

@@ -14,9 +14,7 @@ const LearnContainer = () => {
   const { data: user, isLoading } = useQuery({
     queryKey: ["user", authData?.token],
     queryFn: async () => {
-      const response = await api.get<User>(
-        "/api/users/",
-      );
+      const response = await api.get<User>("/api/users/");
       return response.data;
     },
     enabled: !!authData?.isLoggedIn && !!authData?.token,

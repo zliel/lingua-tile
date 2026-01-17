@@ -44,10 +44,7 @@ const AdminLessonTable = () => {
 
   const addMutation = useMutation({
     mutationFn: async (lesson: NewLesson) => {
-      await api.post(
-        "/api/lessons/create",
-        lesson,
-      );
+      await api.post("/api/lessons/create", lesson);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });

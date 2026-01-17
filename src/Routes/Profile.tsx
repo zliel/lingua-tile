@@ -246,9 +246,9 @@ function Profile() {
             sx={{
               display:
                 isLoading ||
-                  isFetchingReviews ||
-                  isFetchingActivity ||
-                  isFetchingReviewHistory
+                isFetchingReviews ||
+                isFetchingActivity ||
+                isFetchingReviewHistory
                   ? "block"
                   : "none",
             }}

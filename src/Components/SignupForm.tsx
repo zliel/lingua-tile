@@ -35,8 +35,7 @@ export const SignupForm = () => {
   });
 
   const signupMutation = useMutation({
-    mutationFn: (newUser: NewUser) =>
-      api.post("/api/users/signup", newUser),
+    mutationFn: (newUser: NewUser) => api.post("/api/users/signup", newUser),
     onSuccess: () => {
       showSnackbar("Account created successfully", "success");
       navigate("/login");

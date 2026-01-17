@@ -64,7 +64,7 @@ export const usePushSubscription = () => {
       }
 
       const keyResponse = await api.get<{ publicKey: string }>(
-        "/api/notifications/vapid-public-key"
+        "/api/notifications/vapid-public-key",
       );
       const vapidPublicKey = keyResponse.data.publicKey;
 
@@ -74,10 +74,7 @@ export const usePushSubscription = () => {
         applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
       });
 
-      await api.post(
-        "/api/notifications/subscribe",
-        subscription.toJSON()
-      );
+      await api.post("/api/notifications/subscribe", subscription.toJSON());
 
       setIsSubscribed(true);
       showSnackbar("Notifications enabled!", "success");
@@ -102,10 +99,9 @@ export const usePushSubscription = () => {
         const subscription = await registration.pushManager.getSubscription();
         if (subscription) {
           await subscription.unsubscribe();
-          await api.post(
-            "/api/notifications/unsubscribe",
-            { endpoint: subscription.endpoint }
-          );
+          await api.post("/api/notifications/unsubscribe", {
+            endpoint: subscription.endpoint,
+          });
         }
       }
       setIsSubscribed(false);

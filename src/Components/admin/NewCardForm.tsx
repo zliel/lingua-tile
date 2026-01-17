@@ -35,10 +35,7 @@ const NewCardForm = ({
 
   const addMutation = useMutation({
     mutationFn: async (newCard: NewCard) => {
-      await api.post(
-        "/api/cards/create",
-        newCard,
-      );
+      await api.post("/api/cards/create", newCard);
     },
     onSuccess: () => {
       showSnackbar("Card added successfully", "success");

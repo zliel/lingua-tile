@@ -68,30 +68,30 @@ describe("FlashcardList Integration", () => {
 
   const createWrapper =
     (isLoggedIn = true) =>
-      ({ children }: { children: React.ReactNode }) => (
-        <ThemeProvider theme={theme}>
-          <QueryClientProvider client={queryClient}>
-            <AuthContext.Provider
-              value={{
-                authData: {
-                  isLoggedIn,
-                  token: "token",
-                  username: "user",
-                  isAdmin: false,
-                },
-                login: vi.fn(),
-                logout: vi.fn(),
-                authIsLoading: false,
-                checkAdmin: vi.fn(),
-              }}
-            >
-              <SnackbarContext.Provider value={{ showSnackbar: vi.fn() }}>
-                {children}
-              </SnackbarContext.Provider>
-            </AuthContext.Provider>
-          </QueryClientProvider>
-        </ThemeProvider>
-      );
+    ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider theme={theme}>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider
+            value={{
+              authData: {
+                isLoggedIn,
+                token: "token",
+                username: "user",
+                isAdmin: false,
+              },
+              login: vi.fn(),
+              logout: vi.fn(),
+              authIsLoading: false,
+              checkAdmin: vi.fn(),
+            }}
+          >
+            <SnackbarContext.Provider value={{ showSnackbar: vi.fn() }}>
+              {children}
+            </SnackbarContext.Provider>
+          </AuthContext.Provider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    );
 
   it("renders flashcards and navigates through them", async () => {
     (api.post as any).mockResolvedValue({ data: mockCards });

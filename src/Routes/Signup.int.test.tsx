@@ -92,10 +92,11 @@ describe("Signup Component Integration", () => {
     );
 
     // Expect API call
-    expect(api.post).toHaveBeenCalledWith(
-      "/api/users/signup",
-      { username: "NewUser", password: "Password1!", email: "test@test.com" },
-    );
+    expect(api.post).toHaveBeenCalledWith("/api/users/signup", {
+      username: "NewUser",
+      password: "Password1!",
+      email: "test@test.com",
+    });
   });
 
   it("validates password mismatch", async () => {
@@ -137,7 +138,7 @@ describe("Signup Component Integration", () => {
     (api.post as any).mockRejectedValue(axiosError);
     // Mock isAxiosError for the error handling
     vi.spyOn(axios, "isAxiosError").mockImplementation(
-      (payload: any) => payload?.isAxiosError === true
+      (payload: any) => payload?.isAxiosError === true,
     );
 
     const Wrapper = createWrapper();

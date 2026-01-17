@@ -28,9 +28,7 @@ const FlashcardLesson = () => {
   } = useQuery({
     queryKey: ["lesson", lessonId, authData?.token],
     queryFn: async () => {
-      const response = await api.get<Lesson>(
-        `/api/lessons/${lessonId}`,
-      );
+      const response = await api.get<Lesson>(`/api/lessons/${lessonId}`);
       return response.data;
     },
     enabled: !!authData,

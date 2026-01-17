@@ -49,7 +49,7 @@ export const ResetPassword = () => {
     try {
       const res = await api.post<{ message: string }>(
         "/api/auth/reset-password",
-        { token, new_password: password }
+        { token, new_password: password },
       );
 
       setMessage(res.data.message);

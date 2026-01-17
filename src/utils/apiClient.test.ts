@@ -35,8 +35,10 @@ vi.mock("axios", async (importOriginal) => {
   const mockInterceptors = {
     request: {
       use: vi.fn((onFulfilled, onRejected) => {
-        (globalThis as any).__test_interceptorCallbacks.requestFulfilled = onFulfilled;
-        (globalThis as any).__test_interceptorCallbacks.requestRejected = onRejected;
+        (globalThis as any).__test_interceptorCallbacks.requestFulfilled =
+          onFulfilled;
+        (globalThis as any).__test_interceptorCallbacks.requestRejected =
+          onRejected;
         return 0; // Return interceptor ID
       }),
       eject: vi.fn(),
@@ -44,8 +46,10 @@ vi.mock("axios", async (importOriginal) => {
     },
     response: {
       use: vi.fn((onFulfilled, onRejected) => {
-        (globalThis as any).__test_interceptorCallbacks.responseFulfilled = onFulfilled;
-        (globalThis as any).__test_interceptorCallbacks.responseRejected = onRejected;
+        (globalThis as any).__test_interceptorCallbacks.responseFulfilled =
+          onFulfilled;
+        (globalThis as any).__test_interceptorCallbacks.responseRejected =
+          onRejected;
         return 0;
       }),
       eject: vi.fn(),
@@ -84,12 +88,13 @@ const mockAxiosInstance = (axios.create as Mock).mock.results[0]?.value as {
   delete: Mock;
 };
 
-const getInterceptorCallbacks = () => (globalThis as any).__test_interceptorCallbacks as {
-  requestFulfilled?: (config: any) => any;
-  requestRejected?: (error: any) => any;
-  responseFulfilled?: (response: any) => any;
-  responseRejected?: (error: any) => any;
-};
+const getInterceptorCallbacks = () =>
+  (globalThis as any).__test_interceptorCallbacks as {
+    requestFulfilled?: (config: any) => any;
+    requestRejected?: (error: any) => any;
+    responseFulfilled?: (response: any) => any;
+    responseRejected?: (error: any) => any;
+  };
 
 describe("apiClient", () => {
   beforeEach(() => {
@@ -164,11 +169,16 @@ describe("apiClient", () => {
         message: "Network Error",
       };
 
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       await expect(onRejected!(networkError)).rejects.toEqual(networkError);
 
-      expect(consoleSpy).toHaveBeenCalledWith("Network error:", "Network Error");
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Network error:",
+        "Network Error",
+      );
       consoleSpy.mockRestore();
     });
   });
@@ -177,7 +187,10 @@ describe("apiClient", () => {
     it("api.get calls apiClient.get with correct arguments", async () => {
       await api.get("/api/test");
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith("/api/test", undefined);
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith(
+        "/api/test",
+        undefined,
+      );
     });
 
     it("api.get passes config options", async () => {
@@ -191,7 +204,11 @@ describe("apiClient", () => {
       const data = { name: "test" };
       await api.post("/api/test", data);
 
-      expect(mockAxiosInstance.post).toHaveBeenCalledWith("/api/test", data, undefined);
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith(
+        "/api/test",
+        data,
+        undefined,
+      );
     });
 
     it("api.post passes config options", async () => {
@@ -199,27 +216,41 @@ describe("apiClient", () => {
       const config = { headers: { "X-Custom": "value" } };
       await api.post("/api/test", data, config);
 
-      expect(mockAxiosInstance.post).toHaveBeenCalledWith("/api/test", data, config);
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith(
+        "/api/test",
+        data,
+        config,
+      );
     });
 
     it("api.put calls apiClient.put with correct arguments", async () => {
       const data = { name: "updated" };
       await api.put("/api/test/1", data);
 
-      expect(mockAxiosInstance.put).toHaveBeenCalledWith("/api/test/1", data, undefined);
+      expect(mockAxiosInstance.put).toHaveBeenCalledWith(
+        "/api/test/1",
+        data,
+        undefined,
+      );
     });
 
     it("api.delete calls apiClient.delete with correct arguments", async () => {
       await api.delete("/api/test/1");
 
-      expect(mockAxiosInstance.delete).toHaveBeenCalledWith("/api/test/1", undefined);
+      expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
+        "/api/test/1",
+        undefined,
+      );
     });
 
     it("api.delete passes config options", async () => {
       const config = { params: { force: true } };
       await api.delete("/api/test/1", config);
 
-      expect(mockAxiosInstance.delete).toHaveBeenCalledWith("/api/test/1", config);
+      expect(mockAxiosInstance.delete).toHaveBeenCalledWith(
+        "/api/test/1",
+        config,
+      );
     });
   });
 

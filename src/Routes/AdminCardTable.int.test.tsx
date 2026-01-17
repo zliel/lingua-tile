@@ -68,7 +68,7 @@ describe("AdminCardTable Integration", () => {
 
   it("renders loading state initially", async () => {
     // Delay resolution to show loading
-    (api.get as any).mockImplementation(() => new Promise(() => { }));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
 
     const Wrapper = createWrapper();
     render(<AdminCardTable />, { wrapper: Wrapper });

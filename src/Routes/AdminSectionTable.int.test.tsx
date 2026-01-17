@@ -64,7 +64,7 @@ describe("AdminSectionTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (api.get as any).mockImplementation(() => new Promise(() => { }));
+    (api.get as any).mockImplementation(() => new Promise(() => {}));
     const Wrapper = createWrapper();
     render(<AdminSectionTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();

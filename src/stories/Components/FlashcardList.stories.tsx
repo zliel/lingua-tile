@@ -123,7 +123,9 @@ const meta = {
             }}
           >
             <SnackbarContext.Provider
-              value={{ showSnackbar: (msg: string) => console.log("Snackbar:", msg) }}
+              value={{
+                showSnackbar: (msg: string) => console.log("Snackbar:", msg),
+              }}
             >
               <MemoryRouter>
                 <Story />

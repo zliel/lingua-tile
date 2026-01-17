@@ -46,7 +46,9 @@ function Login() {
     },
     onSuccess: (response) => {
       showSnackbar("Login successful", "success");
-      login(response.data as { token: string; username: string }, () => navigate("/dashboard"));
+      login(response.data as { token: string; username: string }, () =>
+        navigate("/dashboard"),
+      );
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
