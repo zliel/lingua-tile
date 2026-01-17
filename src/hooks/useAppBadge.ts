@@ -1,24 +1,17 @@
 import { useEffect } from "react";
 import { useAuth } from "@/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { Review } from "@/types/lessons";
 
 export const useAppBadge = () => {
   const { authData } = useAuth();
 
   // Won't use the useReviews hook for this due to its unique requirements
-  const { data: reviews } = useQuery({
+  const { data: reviews } = useQuery<Review[]>({
     queryKey: ["reviews", authData?.token],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/reviews`,
-        {
-          headers: {
-            Authorization: `Bearer ${authData?.token}`,
-          },
-        },
-      );
+    queryFn: async (): Promise<Review[]> => {
+      const response = await api.get<Review[]>("/api/lessons/reviews");
       return response.data;
     },
     enabled: !!authData && !!authData.isLoggedIn && "setAppBadge" in navigator,

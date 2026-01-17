@@ -3,7 +3,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useSnackbar } from "../Contexts/SnackbarContext";
 import { Lesson } from "@/types/lessons";
 import { useCallback, useState } from "react";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const useOfflineData = () => {
   const queryClient = useQueryClient();
@@ -16,13 +16,8 @@ export const useOfflineData = () => {
   const fetchSectionData = useCallback(
     async (sectionId: string) => {
       const token = authData?.token;
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/${sectionId}/download`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await api.get<{ lessons: Lesson[]; cards: any[] }>(
+        `/api/sections/${sectionId}/download`
       );
 
       const { lessons, cards } = response.data;
