@@ -2,12 +2,19 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { useOfflineData } from "./useOfflineData";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import * as SnackbarContext from "@/Contexts/SnackbarContext";
 import * as AuthContext from "@/Contexts/AuthContext";
 
-// Mock dependencies
-vi.mock("axios");
+// Mock the apiClient module
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const mockShowSnackbar = vi.fn();
 
@@ -45,7 +52,7 @@ describe("useOfflineData Hook", () => {
     const mockLesson = { _id: "l1", title: "Lesson 1", category: "flashcards" };
     const mockCards = [{ _id: "c1", lesson_ids: ["l1"], front: "A" }];
 
-    (axios.get as Mock).mockResolvedValueOnce({
+    (api.get as Mock).mockResolvedValueOnce({
       data: {
         lessons: [mockLesson],
         cards: mockCards,
@@ -61,12 +68,7 @@ describe("useOfflineData Hook", () => {
     await waitFor(() =>
       expect(result.current.downloadingSections["section-1"]).toBe(false),
     );
-    expect(axios.get).toHaveBeenCalledWith(
-      expect.stringContaining("/api/sections/section-1/download"),
-      expect.objectContaining({
-        headers: { Authorization: "Bearer mock-token" },
-      }),
-    );
+    expect(api.get).toHaveBeenCalledWith("/api/sections/section-1/download");
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "Downloaded 1 lessons for offline use.",
       "success",
@@ -74,7 +76,7 @@ describe("useOfflineData Hook", () => {
   });
 
   it("fails gracefully if network error", async () => {
-    (axios.get as Mock).mockRejectedValueOnce(new Error("Network Error"));
+    (api.get as Mock).mockRejectedValueOnce(new Error("Network Error"));
 
     const { result } = renderHook(() => useOfflineData(), {
       wrapper: createWrapper(),
@@ -103,7 +105,7 @@ describe("useOfflineData Hook", () => {
 
     await result.current.downloadSection("section-1");
 
-    expect(axios.get).not.toHaveBeenCalled();
+    expect(api.get).not.toHaveBeenCalled();
     expect(mockShowSnackbar).toHaveBeenCalledWith(
       "You must be online to download lessons.",
       "error",

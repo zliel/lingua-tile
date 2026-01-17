@@ -1,11 +1,17 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, Mock } from "vitest";
+import { describe, it, expect, vi, Mock, beforeEach } from "vitest";
 import { useLessons, useSections, fetchLessons } from "./useLessons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "../utils/apiClient";
 
-// Mock axios
-vi.mock("axios");
+vi.mock("../utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -25,26 +31,24 @@ describe("useLessons Hook", () => {
     token: "mock-token",
     username: "testuser",
     isLoggedIn: true,
-    login: vi.fn(),
-    logout: vi.fn(),
+    isAdmin: false,
   };
 
-  it("fetchLessons calls axios with correct headers", async () => {
-    (axios.get as Mock).mockResolvedValueOnce({ data: [] });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    await fetchLessons("mock-token");
+  it("fetchLessons calls api.get with correct endpoint", async () => {
+    (api.get as Mock).mockResolvedValueOnce({ data: [] });
 
-    expect(axios.get).toHaveBeenCalledWith(
-      expect.stringContaining("/api/lessons/all"),
-      {
-        headers: { Authorization: "Bearer mock-token" },
-      },
-    );
+    await fetchLessons();
+
+    expect(api.get).toHaveBeenCalledWith("/api/lessons/all");
   });
 
   it("useLessons returns data on success", async () => {
     const mockData = [{ _id: "1", title: "Lesson 1" }];
-    (axios.get as Mock).mockResolvedValueOnce({ data: mockData });
+    (api.get as Mock).mockResolvedValueOnce({ data: mockData });
 
     const { result } = renderHook(() => useLessons(mockAuthData as any), {
       wrapper: createWrapper(),
@@ -56,7 +60,7 @@ describe("useLessons Hook", () => {
   });
 
   it("useLessons handles errors", async () => {
-    (axios.get as Mock).mockRejectedValueOnce(new Error("Network Error"));
+    (api.get as Mock).mockRejectedValueOnce(new Error("Network Error"));
 
     const { result } = renderHook(() => useLessons(mockAuthData as any), {
       wrapper: createWrapper(),
@@ -67,7 +71,7 @@ describe("useLessons Hook", () => {
 
   it("useSections fetches sections correctly", async () => {
     const mockSections = [{ _id: "s1", name: "Section 1" }];
-    (axios.get as Mock).mockResolvedValueOnce({ data: mockSections });
+    (api.get as Mock).mockResolvedValueOnce({ data: mockSections });
 
     const { result } = renderHook(() => useSections(mockAuthData as any), {
       wrapper: createWrapper(),
