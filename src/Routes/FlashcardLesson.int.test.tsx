@@ -7,15 +7,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 const theme = createTheme();
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
-    isAxiosError: () => false,
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -57,7 +58,7 @@ const createWrapper = () => {
 
 describe("FlashcardLesson Component Integration", () => {
   it("renders lesson title and flashcard list", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: { title: "Test Lesson", cards: [] },
     });
 
@@ -71,7 +72,7 @@ describe("FlashcardLesson Component Integration", () => {
 
   it("handles loading state", async () => {
     // Delay response to show loading state
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => { }));
 
     const Wrapper = createWrapper();
     render(<FlashcardLesson />, { wrapper: Wrapper });

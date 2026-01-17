@@ -7,15 +7,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+// Mock the apiClient module
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
     post: vi.fn(),
+    put: vi.fn(),
     delete: vi.fn(),
-    isAxiosError: () => false,
   },
 }));
 
@@ -64,14 +64,14 @@ describe("AdminSectionTable Integration", () => {
   });
 
   it("renders loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => { }));
     const Wrapper = createWrapper();
     render(<AdminSectionTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Loading...")).toBeVisible();
   });
 
   it("renders sections and form", async () => {
-    (axios.get as any).mockImplementation((url: string) => {
+    (api.get as any).mockImplementation((url: string) => {
       if (url.includes("/api/lessons/all"))
         return Promise.resolve({ data: mockLessons });
       if (url.includes("/api/sections/all"))
@@ -91,7 +91,7 @@ describe("AdminSectionTable Integration", () => {
   });
 
   it("handles error state", async () => {
-    (axios.get as any).mockRejectedValue(new Error("Failed"));
+    (api.get as any).mockRejectedValue(new Error("Failed"));
     const Wrapper = createWrapper();
     render(<AdminSectionTable />, { wrapper: Wrapper });
     await expect.element(page.getByText("Failed to fetch data")).toBeVisible();

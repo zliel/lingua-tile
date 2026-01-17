@@ -7,15 +7,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { api } from "@/utils/apiClient";
 import axios from "axios";
 
 const theme = createTheme();
 
-// Mock axios to prevent network calls
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
     post: vi.fn(),
-    isAxiosError: () => false,
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -64,7 +66,7 @@ describe("Signup Component Integration", () => {
     await expect.element(page.getByLabelText("Username")).toBeVisible();
   });
   it("handles successful signup", async () => {
-    (axios.post as any).mockResolvedValue({});
+    (api.post as any).mockResolvedValue({});
 
     const Wrapper = createWrapper();
     render(<Signup />, { wrapper: Wrapper });
@@ -90,8 +92,8 @@ describe("Signup Component Integration", () => {
     );
 
     // Expect API call
-    expect(axios.post).toHaveBeenCalledWith(
-      expect.stringContaining("/api/users/signup"),
+    expect(api.post).toHaveBeenCalledWith(
+      "/api/users/signup",
       { username: "NewUser", password: "Password1!", email: "test@test.com" },
     );
   });
@@ -124,17 +126,19 @@ describe("Signup Component Integration", () => {
       .toBeVisible();
 
     // Ensure API was NOT called
-    expect(axios.post).not.toHaveBeenCalled();
+    expect(api.post).not.toHaveBeenCalled();
   });
 
   it("handles existing username error", async () => {
-    (axios.post as any).mockRejectedValue({
+    const axiosError = {
       isAxiosError: true,
       response: { status: 400, data: { detail: "Username already exists" } },
-    });
-    // We also need to mock isAxiosError implementation for the fail case since we mocked the default export object
-    (axios.isAxiosError as any) = (payload: any) =>
-      payload?.isAxiosError === true;
+    };
+    (api.post as any).mockRejectedValue(axiosError);
+    // Mock isAxiosError for the error handling
+    vi.spyOn(axios, "isAxiosError").mockImplementation(
+      (payload: any) => payload?.isAxiosError === true
+    );
 
     const Wrapper = createWrapper();
     render(<Signup />, { wrapper: Wrapper });
@@ -159,6 +163,6 @@ describe("Signup Component Integration", () => {
     );
 
     // Should call API
-    expect(axios.post).toHaveBeenCalled();
+    expect(api.post).toHaveBeenCalled();
   });
 });

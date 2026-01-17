@@ -6,15 +6,16 @@ import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AuthContext from "../Contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 const theme = createTheme();
 
-// Mock axios since TranslationForm uses it
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
-    isAxiosError: () => false,
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -46,7 +47,7 @@ describe("Translate Component Integration", () => {
     render(<Translate />, { wrapper: Wrapper });
 
     // Check for content from TranslationForm
-    (axios.get as any).mockResolvedValue({ data: {} });
+    (api.get as any).mockResolvedValue({ data: {} });
     await expect.element(page.getByText("Translate Text")).toBeVisible();
     await expect
       .element(

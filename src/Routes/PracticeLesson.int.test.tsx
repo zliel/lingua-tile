@@ -7,15 +7,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "../Contexts/AuthContext";
 import SnackbarContext from "../Contexts/SnackbarContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 const theme = createTheme();
 
-// Mock axios
-vi.mock("axios", () => ({
-  default: {
+vi.mock("@/utils/apiClient", () => ({
+  api: {
     get: vi.fn(),
-    isAxiosError: () => false,
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -63,7 +64,7 @@ const createWrapper = () => {
 
 describe("PracticeLesson Component Integration", () => {
   it("renders lesson title and question", async () => {
-    (axios.get as any).mockResolvedValue({
+    (api.get as any).mockResolvedValue({
       data: {
         title: "Practice Lesson",
         sentences: [{ id: 1, original: "test", trans: "translated" }],
@@ -80,7 +81,7 @@ describe("PracticeLesson Component Integration", () => {
   });
 
   it("handles loading state", async () => {
-    (axios.get as any).mockImplementation(() => new Promise(() => {}));
+    (api.get as any).mockImplementation(() => new Promise(() => { }));
 
     const Wrapper = createWrapper();
     render(<PracticeLesson />, { wrapper: Wrapper });
