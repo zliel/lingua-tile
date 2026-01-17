@@ -9,7 +9,7 @@ import { Section } from "@/types/sections";
 import { TableSkeleton } from "@/Components/skeletons/TableSkeleton";
 import FormSkeleton from "@/Components/skeletons/FormSkeleton";
 import { CardTable } from "@/Components/admin/CardTable";
-import api from "@/utils/apiClient";
+import { api } from "@/utils/apiClient";
 
 const AdminCardTable = () => {
   const { authData, authIsLoading } = useAuth();
