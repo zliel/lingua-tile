@@ -1,17 +1,50 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { vi } from "vitest";
 import FlashcardList from "@/Components/FlashcardList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthContext from "@/Contexts/AuthContext";
 import SnackbarContext from "@/Contexts/SnackbarContext";
 import { MemoryRouter } from "react-router-dom";
 import apiClient from "@/utils/apiClient";
+import axios from "axios";
 import fn from "@storybook/addon-vitest";
+import { api } from "../../utils/apiClient";
 
-// Mock data
+// Mock the apiClient module
+vi.mock("../../utils/apiClient", () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
+
+// Mock ReviewModal to avoid its complexity
+vi.mock("./ReviewModal", () => ({
+  default: ({ open, setOpen }: any) =>
+    open ? (
+      <div data-testid="review-modal">
+        ReviewModal Open <button onClick={() => setOpen(false)}>Close</button>
+      </div>
+    ) : null,
+}));
+
+// Mock Flashcard to simplify interaction
+vi.mock("./Flashcard", () => ({
+  default: ({ frontText, backText, onNextCard, onPreviousCard }: any) => (
+    <div data-testid="flashcard">
+      <p>Front: {frontText}</p>
+      <p>Back: {backText}</p>
+      <button onClick={onNextCard}>Next</button>
+      <button onClick={onPreviousCard}>Prev</button>
+    </div>
+  ),
+}));
+
 const mockLesson = {
   _id: "lesson1",
   title: "Basic Hiragana",
-  description: "Learn the first 5 characters",
   category: "flashcards",
   card_ids: ["1", "2", "3"],
   created_at: "2023-01-01",
@@ -74,7 +107,7 @@ const meta = {
   },
   decorators: [
     (Story) => {
-      apiClient.defaults.adapter = mockAdapter;
+      axios.defaults.adapter = mockAdapter;
 
       return (
         <QueryClientProvider client={queryClient}>
