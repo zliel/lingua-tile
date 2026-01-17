@@ -9,7 +9,7 @@ import {
 } from "@mui/x-data-grid";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { Card } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
@@ -33,13 +33,7 @@ export const CardTable = ({
 
   const updateMutation = useMutation({
     mutationFn: async (card: Card) => {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/update/${card._id}`,
-        card,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.put(`/api/cards/update/${card._id}`, card);
     },
     onSuccess: () => {
       showSnackbar("Card updated successfully", "success");
@@ -52,12 +46,7 @@ export const CardTable = ({
 
   const deleteMutation = useMutation({
     mutationFn: async (cardId: string) => {
-      await axios.delete(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/delete/${cardId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.delete(`/api/cards/delete/${cardId}`);
     },
     onSuccess: () => {
       showSnackbar("Card deleted successfully", "success");

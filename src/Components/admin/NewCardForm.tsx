@@ -11,9 +11,9 @@ import { NewCard } from "@/types/cards";
 import { Lesson } from "@/types/lessons";
 import { Section } from "@/types/sections";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
 import { useAuth } from "@/Contexts/AuthContext";
+import { api } from "@/utils/apiClient";
 
 const NewCardForm = ({
   lessons,
@@ -35,12 +35,9 @@ const NewCardForm = ({
 
   const addMutation = useMutation({
     mutationFn: async (newCard: NewCard) => {
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/cards/create`,
+      await api.post(
+        "/api/cards/create",
         newCard,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
       );
     },
     onSuccess: () => {

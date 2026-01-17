@@ -9,12 +9,10 @@ import {
 import { Lesson } from "@/types/lessons";
 import { NewSection } from "@/types/sections";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useAuth } from "@/Contexts/AuthContext";
 import { useSnackbar } from "@/Contexts/SnackbarContext";
+import { api } from "@/utils/apiClient";
 
 const NewSectionForm = ({ lessons }: { lessons: Lesson[] }) => {
-  const { authData } = useAuth();
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [newSection, setNewSection] = useState<NewSection>({
@@ -25,12 +23,9 @@ const NewSectionForm = ({ lessons }: { lessons: Lesson[] }) => {
   const addMutation = useMutation({
     mutationKey: ["addingSection"],
     mutationFn: async (section: NewSection) => {
-      await axios.post(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/create`,
+      await api.post(
+        "/api/sections/create",
         section,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
       );
     },
     onSuccess: () => {

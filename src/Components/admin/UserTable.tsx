@@ -10,7 +10,7 @@ import {
 } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const UserTable = ({ users }: { users: User[] }) => {
   const { authData } = useAuth();
@@ -19,14 +19,7 @@ export const UserTable = ({ users }: { users: User[] }) => {
 
   const updateMutation = useMutation({
     mutationFn: async (user: User) => {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/update/${user._id}`,
-        user,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
-
+      await api.put(`/api/users/update/${user._id}`, user);
       return user;
     },
     onSuccess: (user: User) => {
@@ -47,12 +40,7 @@ export const UserTable = ({ users }: { users: User[] }) => {
 
   const deleteMutation = useMutation({
     mutationFn: async (userId: string) => {
-      await axios.delete(
-        `${import.meta.env.VITE_APP_API_BASE}/api/users/delete/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.delete(`/api/users/delete/${userId}`);
     },
     onSuccess: () => {
       showSnackbar("User deleted successfully", "success");

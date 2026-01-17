@@ -17,7 +17,7 @@ import {
   useQueryClient,
   useIsFetching,
 } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 
 export const SectionTable = ({
   lessons,
@@ -26,38 +26,27 @@ export const SectionTable = ({
   lessons: Lesson[];
   sections: Section[];
 }) => {
-  const { authData } = useAuth();
+  useAuth(); // Auth context still needed for token invalidation
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const isFetchingSections = useIsFetching({ queryKey: ["sections"] }) > 0;
 
   const updateMutation = useMutation({
     mutationFn: async (editedSection: Section) => {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/update/${editedSection._id}`,
-        editedSection,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.put(`/api/sections/update/${editedSection._id}`, editedSection);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Section updated successfully", "success");
     },
-    onError: () => {
-      showSnackbar("Failed to update section", "error");
+    onError: (error) => {
+      showSnackbar(`Failed to update section: ${error.message}`, "error");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (sectionId: string) => {
-      await axios.delete(
-        `${import.meta.env.VITE_APP_API_BASE}/api/sections/delete/${sectionId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.delete(`/api/sections/delete/${sectionId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sections"] });

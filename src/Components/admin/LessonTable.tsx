@@ -17,7 +17,7 @@ import {
   useQueryClient,
   useIsFetching,
 } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "@/utils/apiClient";
 import { Card } from "@/types/cards";
 
 const categoryColumnVisibility: Record<string, GridColumnVisibilityModel> = {
@@ -36,7 +36,7 @@ export const LessonTable = ({
   lessons: Lesson[];
   sections: Section[];
 }) => {
-  const { authData } = useAuth();
+  useAuth();
   const isFetchingSections = useIsFetching({ queryKey: ["sections"] }) > 0;
   const { showSnackbar } = useSnackbar();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -49,13 +49,7 @@ export const LessonTable = ({
 
   const updateMutation = useMutation({
     mutationFn: async (editedLesson: Lesson) => {
-      await axios.put(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/update/${editedLesson._id}`,
-        editedLesson,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.put(`/api/lessons/update/${editedLesson._id}`, editedLesson);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
@@ -68,12 +62,7 @@ export const LessonTable = ({
 
   const deleteMutation = useMutation({
     mutationFn: async (lessonId: string) => {
-      await axios.delete(
-        `${import.meta.env.VITE_APP_API_BASE}/api/lessons/delete/${lessonId}`,
-        {
-          headers: { Authorization: `Bearer ${authData?.token}` },
-        },
-      );
+      await api.delete(`/api/lessons/delete/${lessonId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
