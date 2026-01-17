@@ -24,7 +24,7 @@ export const useJourneyData = () => {
 
   // Helper function to get whether the review is overdue
   const getLessonReviewStatus = (lessonId: string): ReviewStats | null => {
-    const review: Review = reviews?.find(
+    const review: Review | undefined = reviews?.find(
       (r: Review) => r.lesson_id === lessonId,
     );
     if (!review) return null;
