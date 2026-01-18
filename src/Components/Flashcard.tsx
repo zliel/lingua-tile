@@ -11,11 +11,15 @@ import {
 import { useTheme } from "@mui/material/styles";
 import FlipCameraAndroid from "@mui/icons-material/FlipCameraAndroid";
 import ArrowForward from "@mui/icons-material/ArrowForward";
+import Check from "@mui/icons-material/Check";
 import "./Flashcard.css";
+import ArrowBack from "@mui/icons-material/ArrowBack";
 
 interface FlashcardProps {
   frontText: string;
   backText: string;
+  isFirstCard?: boolean;
+  isLastCard?: boolean;
   onNextCard: () => void;
   onPreviousCard: () => void;
 }
@@ -23,6 +27,8 @@ interface FlashcardProps {
 const Flashcard = ({
   frontText,
   backText,
+  isFirstCard = false,
+  isLastCard = false,
   onNextCard,
   onPreviousCard,
 }: FlashcardProps) => {
@@ -88,9 +94,8 @@ const Flashcard = ({
           boxShadow: isDarkMode
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${
-            isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.4)"
-          }`,
+          border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"
+            }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             transform: isMobile ? "none" : "translateY(-5px)",
@@ -179,6 +184,28 @@ const Flashcard = ({
               : "rgba(0, 0, 0, 0.02)",
           }}
         >
+          {!isFirstCard && (
+            <Tooltip title="Previous Card (Left Arrow)">
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePreviousCard();
+                }}
+                size="large"
+                sx={{
+                  bgcolor: theme.palette.grey[600],
+                  color: theme.palette.common.white,
+                  "&:hover": {
+                    bgcolor: theme.palette.grey[700],
+                  },
+                  width: 56,
+                  height: 56,
+                }}
+              >
+                <ArrowBack fontSize="medium" />
+              </IconButton>
+            </Tooltip>
+          )}
           <Tooltip title="Flip Card (Space)">
             <IconButton
               onClick={(e) => {
@@ -200,7 +227,8 @@ const Flashcard = ({
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Next Card (Enter / Right Arrow)">
+          {/* Make it so there's a check mark for final swipe? */}
+          <Tooltip title={isLastCard ? "Complete Lesson (Enter)" : "Next Card (Enter / Right Arrow)"}>
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
@@ -217,7 +245,7 @@ const Flashcard = ({
                 height: 56,
               }}
             >
-              <ArrowForward fontSize="medium" />
+              {isLastCard ? <Check fontSize="medium" /> : <ArrowForward fontSize="medium" />}
             </IconButton>
           </Tooltip>
         </Box>
