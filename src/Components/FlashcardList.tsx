@@ -192,6 +192,7 @@ const FlashcardList = ({
           display: "grid",
           gridTemplateAreas: '"card"',
           width: "auto",
+          padding: 1,
           justifyItems: "center",
         }}
       >
@@ -217,6 +218,8 @@ const FlashcardList = ({
             <Flashcard
               frontText={currentCard?.front_text}
               backText={currentCard?.back_text}
+              isFirstCard={currentCardIndex === 0}
+              isLastCard={currentCardIndex === shuffledFlashcards.length - 1}
               onNextCard={handleNextCard}
               onPreviousCard={handlePreviousCard}
             />
