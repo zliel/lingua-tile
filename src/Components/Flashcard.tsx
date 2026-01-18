@@ -94,8 +94,9 @@ const Flashcard = ({
           boxShadow: isDarkMode
             ? "0 8px 32px 0 rgba(0, 0, 0, 0.5)"
             : "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-          border: `1px solid ${isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"
-            }`,
+          border: `1px solid ${
+            isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"
+          }`,
           transition: "transform 0.3s ease, box-shadow 0.3s ease",
           "&:hover": {
             transform: isMobile ? "none" : "translateY(-5px)",
@@ -228,7 +229,13 @@ const Flashcard = ({
           </Tooltip>
 
           {/* Make it so there's a check mark for final swipe? */}
-          <Tooltip title={isLastCard ? "Complete Lesson (Enter)" : "Next Card (Enter / Right Arrow)"}>
+          <Tooltip
+            title={
+              isLastCard
+                ? "Complete Lesson (Enter)"
+                : "Next Card (Enter / Right Arrow)"
+            }
+          >
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
@@ -245,7 +252,11 @@ const Flashcard = ({
                 height: 56,
               }}
             >
-              {isLastCard ? <Check fontSize="medium" /> : <ArrowForward fontSize="medium" />}
+              {isLastCard ? (
+                <Check fontSize="medium" />
+              ) : (
+                <ArrowForward fontSize="medium" />
+              )}
             </IconButton>
           </Tooltip>
         </Box>
