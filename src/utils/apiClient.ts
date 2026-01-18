@@ -29,12 +29,15 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const { status } = error.response;
-
-    if (status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
+    // Future global error handling could be done, maybe logging people out
+    // The only issue is that fetching reviews when not logged in returns 401,
+    // So the user gets redirected to login page
+    // const { status } = error.response;
+    //
+    // if (status === 401) {
+    //   localStorage.removeItem("token");
+    //   window.location.href = "/login";
+    // }
 
     return Promise.reject(error);
   },

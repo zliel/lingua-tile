@@ -57,10 +57,9 @@ const GrammarLesson = () => {
     <Box sx={{ minHeight: "100vh", pt: 2 }}>
       <Box
         sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-start",
-          pl: 2,
+          position: "absolute",
+          top: isMobile ? 55 : 74,
+          left: isMobile ? 4 : 16,
         }}
       >
         <IconButton onClick={() => navigate("/learn")}>
@@ -101,7 +100,7 @@ const GrammarLesson = () => {
       >
         <Box
           sx={{
-            p: isMobile ? 3 : 5,
+            p: isMobile ? 2 : 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
