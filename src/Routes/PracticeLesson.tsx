@@ -91,10 +91,9 @@ const PracticeLesson = () => {
     >
       <Box
         sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-start",
-          pl: 2,
+          position: "absolute",
+          top: isMobile ? 65 : 74,
+          left: isMobile ? 10 : 16,
         }}
       >
         <IconButton onClick={() => navigate("/learn")}>
