@@ -12,15 +12,11 @@ import {
   Button,
   Chip,
   CircularProgress,
-  FormControl,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   ListItemText,
-  MenuItem,
   Paper,
-  Select,
   TextField,
   Tooltip,
   Typography,
@@ -37,7 +33,7 @@ import {
   Close,
 } from "@mui/icons-material";
 import { Section } from "@/types/sections";
-import { Lesson, LessonCategory } from "@/types/lessons";
+import { Lesson, NewLesson } from "@/types/lessons";
 import { Card } from "@/types/cards";
 import LessonEditModal from "@/Components/admin/LessonEditModal";
 
@@ -50,14 +46,13 @@ const CurriculumDashboard = () => {
   const [editingLesson, setEditingLesson] = useState<string | null>(null);
   const [editingSectionName, setEditingSectionName] = useState("");
   const [editingLessonTitle, setEditingLessonTitle] = useState("");
-
+  // State for inline adding
   const [addingSectionName, setAddingSectionName] = useState("");
-  const [addingLessonToSection, setAddingLessonToSection] = useState<string | null>(null);
-  const [addingLessonTitle, setAddingLessonTitle] = useState("");
-  const [addingLessonCategory, setAddingLessonCategory] = useState<LessonCategory>("flashcards");
 
-  // State for lesson content editing modal
+  // State for lesson modal (create + edit)
+  const [lessonModalOpen, setLessonModalOpen] = useState(false);
   const [editingLessonContent, setEditingLessonContent] = useState<Lesson | null>(null);
+  const [defaultSectionForNewLesson, setDefaultSectionForNewLesson] = useState<string | undefined>(undefined);
 
   const { data: sections = [], isLoading: isLoadingSections } = useSections(authData);
   const { data: lessons = [], isLoading: isLoadingLessons } = useLessons(authData);
@@ -129,16 +124,15 @@ const CurriculumDashboard = () => {
   });
 
   const createLessonMutation = useMutation({
-    mutationFn: async ({ title, section_id, category }: { title: string; section_id?: string; category: LessonCategory }) => {
-      await api.post("/api/lessons/create", { title, section_id, category });
+    mutationFn: async (newLesson: NewLesson) => {
+      await api.post("/api/lessons/create", newLesson);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
       queryClient.invalidateQueries({ queryKey: ["sections"] });
       showSnackbar("Lesson created", "success");
-      setAddingLessonToSection(null);
-      setAddingLessonTitle("");
-      setAddingLessonCategory("flashcards");
+      setLessonModalOpen(false);
+      setDefaultSectionForNewLesson(undefined);
     },
     onError: () => showSnackbar("Failed to create lesson", "error"),
   });
@@ -227,10 +221,17 @@ const CurriculumDashboard = () => {
     }
   };
 
-  const handleAddLesson = (sectionId?: string) => {
-    if (addingLessonTitle.trim()) {
-      createLessonMutation.mutate({ title: addingLessonTitle, section_id: sectionId, category: addingLessonCategory });
-    }
+  // Open create lesson modal with optional section pre-selected
+  const handleOpenCreateLesson = (sectionId?: string) => {
+    setDefaultSectionForNewLesson(sectionId);
+    setEditingLessonContent(null);
+    setLessonModalOpen(true);
+  };
+
+  // Open edit lesson modal
+  const handleOpenEditLesson = (lesson: Lesson) => {
+    setEditingLessonContent(lesson);
+    setLessonModalOpen(true);
   };
 
   if (isLoadingSections || isLoadingLessons || isLoadingCards || authIsLoading) {
@@ -341,56 +342,21 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
-                    onEditContent={() => setEditingLessonContent(lesson)}
+                    onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
             </List>
 
             {/* Add lesson to section */}
-            {addingLessonToSection === section._id ? (
-              <Box sx={{ display: "flex", gap: 1, mt: 1, pl: 2, alignItems: "center" }}>
-                <TextField
-                  size="small"
-                  label="Lesson Title"
-                  value={addingLessonTitle}
-                  onChange={(e) => setAddingLessonTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddLesson(section._id);
-                    if (e.key === "Escape") setAddingLessonToSection(null);
-                  }}
-                  autoFocus
-                  sx={{ flexGrow: 1 }}
-                />
-                <FormControl size="small" sx={{ minWidth: 120 }}>
-                  <InputLabel>Category</InputLabel>
-                  <Select
-                    value={addingLessonCategory}
-                    label="Category"
-                    onChange={(e) => setAddingLessonCategory(e.target.value as LessonCategory)}
-                  >
-                    <MenuItem value="flashcards">Flashcards</MenuItem>
-                    <MenuItem value="grammar">Grammar</MenuItem>
-                    <MenuItem value="practice">Practice</MenuItem>
-                  </Select>
-                </FormControl>
-                <IconButton onClick={() => handleAddLesson(section._id)}>
-                  <Check color="success" />
-                </IconButton>
-                <IconButton onClick={() => setAddingLessonToSection(null)}>
-                  <Close />
-                </IconButton>
-              </Box>
-            ) : (
-              <Button
-                size="small"
-                startIcon={<Add />}
-                onClick={() => setAddingLessonToSection(section._id)}
-                sx={{ ml: 2 }}
-              >
-                Add Lesson
-              </Button>
-            )}
+            <Button
+              size="small"
+              startIcon={<Add />}
+              onClick={() => handleOpenCreateLesson(section._id)}
+              sx={{ ml: 2 }}
+            >
+              Add Lesson
+            </Button>
           </AccordionDetails>
         </Accordion>
       ))}
@@ -429,7 +395,7 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
-                    onEditContent={() => setEditingLessonContent(lesson)}
+                    onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
@@ -437,13 +403,20 @@ const CurriculumDashboard = () => {
           </AccordionDetails>
         </Accordion>
       )}
-      {/* Lesson Edit Modal */}
+      {/* Lesson Create/Edit Modal */}
       <LessonEditModal
-        open={editingLessonContent !== null}
-        onClose={() => setEditingLessonContent(null)}
+        open={lessonModalOpen}
+        onClose={() => {
+          setLessonModalOpen(false);
+          setEditingLessonContent(null);
+          setDefaultSectionForNewLesson(undefined);
+        }}
         lesson={editingLessonContent}
+        sections={sections}
+        defaultSectionId={defaultSectionForNewLesson}
         onSave={(id, updates) => updateLessonContentMutation.mutate({ id, updates })}
-        isSaving={updateLessonContentMutation.isPending}
+        onCreate={(newLesson) => createLessonMutation.mutate(newLesson)}
+        isSaving={updateLessonContentMutation.isPending || createLessonMutation.isPending}
       />
     </Box>
   );
