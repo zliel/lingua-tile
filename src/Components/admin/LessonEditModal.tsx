@@ -80,12 +80,13 @@ export const LessonEditModal = ({
         section_id: sectionId || undefined,
         order_index: defaultOrderIndex,
         content: category === "grammar" ? content : undefined,
-        sentences: category === "practice"
-          ? sentences.map((s) => ({
-            ...s,
-            words: s.full_sentence.split(/\s+/).filter(Boolean),
-          }))
-          : undefined,
+        sentences:
+          category === "practice"
+            ? sentences.map((s) => ({
+                ...s,
+                words: s.full_sentence.split(/\s+/).filter(Boolean),
+              }))
+            : undefined,
       };
       onCreate(newLesson);
     } else if (lesson) {
@@ -111,14 +112,21 @@ export const LessonEditModal = ({
     setSentences(updated);
   };
 
-  const handleAnswerChange = (sentenceIndex: number, answerIndex: number, value: string) => {
+  const handleAnswerChange = (
+    sentenceIndex: number,
+    answerIndex: number,
+    value: string,
+  ) => {
     const updated = [...sentences];
     updated[sentenceIndex].possible_answers[answerIndex] = value;
     setSentences(updated);
   };
 
   const addSentence = () => {
-    setSentences([...sentences, { full_sentence: "", possible_answers: [""], words: [] }]);
+    setSentences([
+      ...sentences,
+      { full_sentence: "", possible_answers: [""], words: [] },
+    ]);
   };
 
   const removeSentence = (index: number) => {
@@ -133,16 +141,14 @@ export const LessonEditModal = ({
 
   const removeAnswer = (sentenceIndex: number, answerIndex: number) => {
     const updated = [...sentences];
-    updated[sentenceIndex].possible_answers = updated[sentenceIndex].possible_answers.filter(
-      (_, i) => i !== answerIndex
-    );
+    updated[sentenceIndex].possible_answers = updated[
+      sentenceIndex
+    ].possible_answers.filter((_, i) => i !== answerIndex);
     setSentences(updated);
   };
 
   const currentCategory = isCreateMode ? category : lesson?.category;
-  const canSave = isCreateMode
-    ? title.trim() !== ""
-    : true; // All lesson types can save (at minimum for section changes)
+  const canSave = isCreateMode ? title.trim() !== "" : true; // All lesson types can save (at minimum for section changes)
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
@@ -169,7 +175,9 @@ export const LessonEditModal = ({
               >
                 <MenuItem value="">None (Ungrouped)</MenuItem>
                 {sections.map((s) => (
-                  <MenuItem key={s._id} value={s._id}>{s.name}</MenuItem>
+                  <MenuItem key={s._id} value={s._id}>
+                    {s.name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -193,7 +201,9 @@ export const LessonEditModal = ({
                 <Select
                   value={category}
                   label="Category"
-                  onChange={(e) => setCategory(e.target.value as LessonCategory)}
+                  onChange={(e) =>
+                    setCategory(e.target.value as LessonCategory)
+                  }
                 >
                   <MenuItem value="flashcards">Flashcards</MenuItem>
                   <MenuItem value="grammar">Grammar</MenuItem>
@@ -231,11 +241,17 @@ export const LessonEditModal = ({
                     <TextField
                       label="Japanese Sentence"
                       value={sentence.full_sentence}
-                      onChange={(e) => handleSentenceChange(sIndex, e.target.value)}
+                      onChange={(e) =>
+                        handleSentenceChange(sIndex, e.target.value)
+                      }
                       fullWidth
                       sx={{ mb: 2 }}
                     />
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 1 }}
+                    >
                       Possible Answers:
                     </Typography>
                     {sentence.possible_answers.map((answer, aIndex) => (
@@ -244,7 +260,9 @@ export const LessonEditModal = ({
                           size="small"
                           label={`Answer ${aIndex + 1}`}
                           value={answer}
-                          onChange={(e) => handleAnswerChange(sIndex, aIndex, e.target.value)}
+                          onChange={(e) =>
+                            handleAnswerChange(sIndex, aIndex, e.target.value)
+                          }
                           sx={{ flex: 1 }}
                         />
                         <IconButton
@@ -294,8 +312,7 @@ export const LessonEditModal = ({
           <Typography color="text.secondary">
             {isCreateMode
               ? "After creating this lesson, you can add cards using the inline card creator in the dashboard."
-              : "You can change the section above. Cards are managed inline in the dashboard."
-            }
+              : "You can change the section above. Cards are managed inline in the dashboard."}
           </Typography>
         )}
       </DialogContent>
@@ -307,7 +324,11 @@ export const LessonEditModal = ({
           onClick={handleSave}
           disabled={isSaving || !canSave}
         >
-          {isSaving ? "Saving..." : isCreateMode ? "Create Lesson" : "Save Changes"}
+          {isSaving
+            ? "Saving..."
+            : isCreateMode
+              ? "Create Lesson"
+              : "Save Changes"}
         </Button>
       </DialogActions>
     </Dialog>

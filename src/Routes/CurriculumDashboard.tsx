@@ -51,11 +51,16 @@ const CurriculumDashboard = () => {
 
   // State for lesson modal (create + edit)
   const [lessonModalOpen, setLessonModalOpen] = useState(false);
-  const [editingLessonContent, setEditingLessonContent] = useState<Lesson | null>(null);
-  const [defaultSectionForNewLesson, setDefaultSectionForNewLesson] = useState<string | undefined>(undefined);
+  const [editingLessonContent, setEditingLessonContent] =
+    useState<Lesson | null>(null);
+  const [defaultSectionForNewLesson, setDefaultSectionForNewLesson] = useState<
+    string | undefined
+  >(undefined);
 
-  const { data: sections = [], isLoading: isLoadingSections } = useSections(authData);
-  const { data: lessons = [], isLoading: isLoadingLessons } = useLessons(authData);
+  const { data: sections = [], isLoading: isLoadingSections } =
+    useSections(authData);
+  const { data: lessons = [], isLoading: isLoadingLessons } =
+    useLessons(authData);
   const { data: cards = [], isLoading: isLoadingCards } = useQuery({
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
@@ -101,7 +106,15 @@ const CurriculumDashboard = () => {
   });
 
   const updateLessonMutation = useMutation({
-    mutationFn: async ({ id, title, order_index }: { id: string; title?: string; order_index?: number }) => {
+    mutationFn: async ({
+      id,
+      title,
+      order_index,
+    }: {
+      id: string;
+      title?: string;
+      order_index?: number;
+    }) => {
       const updates: { title?: string; order_index?: number } = {};
       if (title !== undefined) updates.title = title;
       if (order_index !== undefined) updates.order_index = order_index;
@@ -141,8 +154,18 @@ const CurriculumDashboard = () => {
   });
 
   const createCardMutation = useMutation({
-    mutationFn: async ({ front_text, back_text, lesson_id }: { front_text: string; back_text: string; lesson_id: string }) => {
-      await api.post("/api/cards/create-bulk", [{ front_text, back_text, lesson_ids: [lesson_id] }]);
+    mutationFn: async ({
+      front_text,
+      back_text,
+      lesson_id,
+    }: {
+      front_text: string;
+      back_text: string;
+      lesson_id: string;
+    }) => {
+      await api.post("/api/cards/create-bulk", [
+        { front_text, back_text, lesson_ids: [lesson_id] },
+      ]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cards"] });
@@ -152,7 +175,15 @@ const CurriculumDashboard = () => {
   });
 
   const updateCardMutation = useMutation({
-    mutationFn: async ({ id, front_text, back_text }: { id: string; front_text: string; back_text: string }) => {
+    mutationFn: async ({
+      id,
+      front_text,
+      back_text,
+    }: {
+      id: string;
+      front_text: string;
+      back_text: string;
+    }) => {
       await api.put(`/api/cards/update/${id}`, { front_text, back_text });
     },
     onSuccess: () => {
@@ -174,7 +205,13 @@ const CurriculumDashboard = () => {
   });
 
   const updateLessonContentMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Lesson> }) => {
+    mutationFn: async ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<Lesson>;
+    }) => {
       await api.put(`/api/lessons/update/${id}`, updates);
     },
     onSuccess: () => {
@@ -200,10 +237,14 @@ const CurriculumDashboard = () => {
 
   const getCategoryColor = (category?: string) => {
     switch (category?.toLowerCase()) {
-      case "grammar": return "grammar";
-      case "flashcards": return "primary";
-      case "practice": return "secondary";
-      default: return "default";
+      case "grammar":
+        return "grammar";
+      case "flashcards":
+        return "primary";
+      case "practice":
+        return "secondary";
+      default:
+        return "default";
     }
   };
 
@@ -211,7 +252,10 @@ const CurriculumDashboard = () => {
     const sectionLessons = sectionId
       ? getLessonsForSection(sectionId)
       : getUngroupedLessons();
-    const maxOrder = sectionLessons.reduce((max, l) => Math.max(max, l.order_index ?? 0), 0);
+    const maxOrder = sectionLessons.reduce(
+      (max, l) => Math.max(max, l.order_index ?? 0),
+      0,
+    );
     return maxOrder + 1;
   };
 
@@ -268,7 +312,12 @@ const CurriculumDashboard = () => {
     setLessonModalOpen(true);
   };
 
-  if (isLoadingSections || isLoadingLessons || isLoadingCards || authIsLoading) {
+  if (
+    isLoadingSections ||
+    isLoadingLessons ||
+    isLoadingCards ||
+    authIsLoading
+  ) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
         <CircularProgress />
@@ -277,7 +326,7 @@ const CurriculumDashboard = () => {
   }
 
   const sortedSections = [...sections].sort(
-    (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
+    (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
   );
 
   return (
@@ -287,7 +336,9 @@ const CurriculumDashboard = () => {
       </Typography>
 
       {/* Add Section Form */}
-      <Paper sx={{ p: 2, mb: 3, display: "flex", gap: 2, alignItems: "center" }}>
+      <Paper
+        sx={{ p: 2, mb: 3, display: "flex", gap: 2, alignItems: "center" }}
+      >
         <TextField
           size="small"
           label="New Section Name"
@@ -300,7 +351,9 @@ const CurriculumDashboard = () => {
           variant="contained"
           startIcon={<Add />}
           onClick={handleAddSection}
-          disabled={!addingSectionName.trim() || createSectionMutation.isPending}
+          disabled={
+            !addingSectionName.trim() || createSectionMutation.isPending
+          }
         >
           Add Section
         </Button>
@@ -310,7 +363,14 @@ const CurriculumDashboard = () => {
       {sortedSections.map((section) => (
         <Accordion key={section._id} defaultExpanded sx={{ mb: 1 }}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                width: "100%",
+              }}
+            >
               <Folder color="primary" />
               {editingSection === section._id ? (
                 <>
@@ -327,10 +387,22 @@ const CurriculumDashboard = () => {
                     autoFocus
                     sx={{ flexGrow: 1 }}
                   />
-                  <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleSaveSection(section._id); }}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSaveSection(section._id);
+                    }}
+                  >
                     <Check color="success" />
                   </IconButton>
-                  <IconButton size="small" onClick={(e) => { e.stopPropagation(); setEditingSection(null); }}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingSection(null);
+                    }}
+                  >
                     <Close />
                   </IconButton>
                 </>
@@ -345,12 +417,24 @@ const CurriculumDashboard = () => {
                     sx={{ mr: 1 }}
                   />
                   <Tooltip title="Edit">
-                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleEditSection(section); }}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditSection(section);
+                      }}
+                    >
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
-                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleDeleteSection(section._id); }}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteSection(section._id);
+                      }}
+                    >
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   </Tooltip>
@@ -374,11 +458,24 @@ const CurriculumDashboard = () => {
                     onSave={() => handleSaveLesson(lesson._id)}
                     onCancel={() => setEditingLesson(null)}
                     onDelete={() => handleDeleteLesson(lesson._id)}
-                    onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
+                    onAddCard={(front_text, back_text) =>
+                      createCardMutation.mutate({
+                        front_text,
+                        back_text,
+                        lesson_id: lesson._id,
+                      })
+                    }
                     isAddingCard={createCardMutation.isPending}
-                    onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
+                    onUpdateCard={(id, front_text, back_text) =>
+                      updateCardMutation.mutate({ id, front_text, back_text })
+                    }
                     onDeleteCard={(id) => deleteCardMutation.mutate(id)}
-                    onUpdateOrder={(order) => updateLessonMutation.mutate({ id: lesson._id, order_index: order })}
+                    onUpdateOrder={(order) =>
+                      updateLessonMutation.mutate({
+                        id: lesson._id,
+                        order_index: order,
+                      })
+                    }
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -430,11 +527,24 @@ const CurriculumDashboard = () => {
                     onSave={() => handleSaveLesson(lesson._id)}
                     onCancel={() => setEditingLesson(null)}
                     onDelete={() => handleDeleteLesson(lesson._id)}
-                    onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
+                    onAddCard={(front_text, back_text) =>
+                      createCardMutation.mutate({
+                        front_text,
+                        back_text,
+                        lesson_id: lesson._id,
+                      })
+                    }
                     isAddingCard={createCardMutation.isPending}
-                    onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
+                    onUpdateCard={(id, front_text, back_text) =>
+                      updateCardMutation.mutate({ id, front_text, back_text })
+                    }
                     onDeleteCard={(id) => deleteCardMutation.mutate(id)}
-                    onUpdateOrder={(order) => updateLessonMutation.mutate({ id: lesson._id, order_index: order })}
+                    onUpdateOrder={(order) =>
+                      updateLessonMutation.mutate({
+                        id: lesson._id,
+                        order_index: order,
+                      })
+                    }
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -455,9 +565,14 @@ const CurriculumDashboard = () => {
         sections={sections}
         defaultSectionId={defaultSectionForNewLesson}
         defaultOrderIndex={getNextOrderIndex(defaultSectionForNewLesson)}
-        onSave={(id, updates) => updateLessonContentMutation.mutate({ id, updates })}
+        onSave={(id, updates) =>
+          updateLessonContentMutation.mutate({ id, updates })
+        }
         onCreate={(newLesson) => createLessonMutation.mutate(newLesson)}
-        isSaving={updateLessonContentMutation.isPending || createLessonMutation.isPending}
+        isSaving={
+          updateLessonContentMutation.isPending ||
+          createLessonMutation.isPending
+        }
       />
     </Box>
   );
@@ -480,7 +595,9 @@ interface LessonItemProps {
   onDeleteCard: (id: string) => void;
   onUpdateOrder: (order: number) => void;
   onEditContent: () => void;
-  getCategoryColor: (category?: string) => "primary" | "secondary" | "grammar" | "default";
+  getCategoryColor: (
+    category?: string,
+  ) => "primary" | "secondary" | "grammar" | "default";
 }
 
 const LessonItem = ({
@@ -532,7 +649,11 @@ const LessonItem = ({
 
   const handleSaveCard = () => {
     if (editingCardId && editingCardFront.trim() && editingCardBack.trim()) {
-      onUpdateCard(editingCardId, editingCardFront.trim(), editingCardBack.trim());
+      onUpdateCard(
+        editingCardId,
+        editingCardFront.trim(),
+        editingCardBack.trim(),
+      );
       setEditingCardId(null);
     }
   };
@@ -579,7 +700,7 @@ const LessonItem = ({
           slotProps={{
             htmlInput: {
               min: 0,
-            }
+            },
           }}
           sx={{ width: 50, mr: 1, "& input": { p: 0.5 } }}
         />
@@ -608,7 +729,10 @@ const LessonItem = ({
           <>
             <ListItemText
               primary={lesson.title}
-              secondary={lesson.content?.slice(0, 60) + (lesson.content && lesson.content.length > 60 ? "..." : "")}
+              secondary={
+                lesson.content?.slice(0, 60) +
+                (lesson.content && lesson.content.length > 60 ? "..." : "")
+              }
             />
             {lesson.category && (
               <Chip
@@ -631,7 +755,8 @@ const LessonItem = ({
                 />
               </Tooltip>
             )}
-            {(lesson.category === "grammar" || lesson.category === "practice") && (
+            {(lesson.category === "grammar" ||
+              lesson.category === "practice") && (
               <Tooltip title="Edit Content">
                 <IconButton size="small" onClick={onEditContent}>
                   <Description fontSize="small" color="primary" />
@@ -662,11 +787,13 @@ const LessonItem = ({
       {/* Expandable cards grid - only for flashcard lessons */}
       {lesson.category === "flashcards" && expanded && (
         <Box sx={{ pl: 4, pt: 1 }}>
-          <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 0.5,
-          }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 0.5,
+            }}
+          >
             {cards.map((card) => (
               <Box
                 key={card._id}
@@ -706,7 +833,13 @@ const LessonItem = ({
                       }}
                       fullWidth
                     />
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        gap: 0.5,
+                      }}
+                    >
                       <IconButton size="small" onClick={handleSaveCard}>
                         <Check fontSize="small" color="success" />
                       </IconButton>
@@ -717,19 +850,39 @@ const LessonItem = ({
                   </>
                 ) : (
                   <>
-                    <Typography variant="body2" sx={{ fontWeight: 500, minWidth: 0 }} noWrap>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 500, minWidth: 0 }}
+                      noWrap
+                    >
                       {card.front_text}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mx: 0.5 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mx: 0.5 }}
+                    >
                       →
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1, minWidth: 0 }} noWrap>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ flex: 1, minWidth: 0 }}
+                      noWrap
+                    >
                       {card.back_text}
                     </Typography>
-                    <IconButton size="small" onClick={() => handleStartEditCard(card)} sx={{ ml: "auto" }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleStartEditCard(card)}
+                      sx={{ ml: "auto" }}
+                    >
                       <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" onClick={() => handleDeleteCard(card._id)}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDeleteCard(card._id)}
+                    >
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   </>
@@ -763,10 +916,19 @@ const LessonItem = ({
                 }}
                 sx={{ flex: 1 }}
               />
-              <IconButton size="small" onClick={handleAddCard} disabled={isAddingCard || !newCardFront.trim() || !newCardBack.trim()}>
+              <IconButton
+                size="small"
+                onClick={handleAddCard}
+                disabled={
+                  isAddingCard || !newCardFront.trim() || !newCardBack.trim()
+                }
+              >
                 <Check color="success" />
               </IconButton>
-              <IconButton size="small" onClick={() => setShowAddCardForm(false)}>
+              <IconButton
+                size="small"
+                onClick={() => setShowAddCardForm(false)}
+              >
                 <Close />
               </IconButton>
             </Box>
