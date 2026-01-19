@@ -101,8 +101,11 @@ const CurriculumDashboard = () => {
   });
 
   const updateLessonMutation = useMutation({
-    mutationFn: async ({ id, title }: { id: string; title: string }) => {
-      await api.put(`/api/lessons/update/${id}`, { title });
+    mutationFn: async ({ id, title, order_index }: { id: string; title?: string; order_index?: number }) => {
+      const updates: { title?: string; order_index?: number } = {};
+      if (title !== undefined) updates.title = title;
+      if (order_index !== undefined) updates.order_index = order_index;
+      await api.put(`/api/lessons/update/${id}`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
@@ -202,6 +205,14 @@ const CurriculumDashboard = () => {
       case "practice": return "secondary";
       default: return "default";
     }
+  };
+
+  const getNextOrderIndex = (sectionId?: string): number => {
+    const sectionLessons = sectionId
+      ? getLessonsForSection(sectionId)
+      : getUngroupedLessons();
+    const maxOrder = sectionLessons.reduce((max, l) => Math.max(max, l.order_index ?? 0), 0);
+    return maxOrder + 1;
   };
 
   const handleEditSection = (section: Section) => {
@@ -367,6 +378,7 @@ const CurriculumDashboard = () => {
                     isAddingCard={createCardMutation.isPending}
                     onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
                     onDeleteCard={(id) => deleteCardMutation.mutate(id)}
+                    onUpdateOrder={(order) => updateLessonMutation.mutate({ id: lesson._id, order_index: order })}
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -422,6 +434,7 @@ const CurriculumDashboard = () => {
                     isAddingCard={createCardMutation.isPending}
                     onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
                     onDeleteCard={(id) => deleteCardMutation.mutate(id)}
+                    onUpdateOrder={(order) => updateLessonMutation.mutate({ id: lesson._id, order_index: order })}
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -441,6 +454,7 @@ const CurriculumDashboard = () => {
         lesson={editingLessonContent}
         sections={sections}
         defaultSectionId={defaultSectionForNewLesson}
+        defaultOrderIndex={getNextOrderIndex(defaultSectionForNewLesson)}
         onSave={(id, updates) => updateLessonContentMutation.mutate({ id, updates })}
         onCreate={(newLesson) => createLessonMutation.mutate(newLesson)}
         isSaving={updateLessonContentMutation.isPending || createLessonMutation.isPending}
@@ -464,6 +478,7 @@ interface LessonItemProps {
   isAddingCard: boolean;
   onUpdateCard: (id: string, front_text: string, back_text: string) => void;
   onDeleteCard: (id: string) => void;
+  onUpdateOrder: (order: number) => void;
   onEditContent: () => void;
   getCategoryColor: (category?: string) => "primary" | "secondary" | "grammar" | "default";
 }
@@ -482,6 +497,7 @@ const LessonItem = ({
   isAddingCard,
   onUpdateCard,
   onDeleteCard,
+  onUpdateOrder,
   onEditContent,
   getCategoryColor,
 }: LessonItemProps) => {
@@ -489,6 +505,9 @@ const LessonItem = ({
   const [showAddCardForm, setShowAddCardForm] = useState(false);
   const [newCardFront, setNewCardFront] = useState("");
   const [newCardBack, setNewCardBack] = useState("");
+
+  // Order editing state
+  const [orderValue, setOrderValue] = useState(String(lesson.order_index ?? 0));
 
   // Card editing state
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
@@ -528,6 +547,13 @@ const LessonItem = ({
     }
   };
 
+  const handleSaveOrder = () => {
+    const newOrder = parseInt(orderValue, 10);
+    if (!isNaN(newOrder) && newOrder !== (lesson.order_index ?? 0)) {
+      onUpdateOrder(newOrder);
+    }
+  };
+
   return (
     <Box sx={{ mb: 1 }}>
       <ListItem
@@ -538,6 +564,25 @@ const LessonItem = ({
           borderColor: "divider",
         }}
       >
+        {/* Order input */}
+        <TextField
+          type="number"
+          value={orderValue}
+          onChange={(e) => setOrderValue(e.target.value)}
+          onBlur={handleSaveOrder}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSaveOrder();
+              (e.target as HTMLInputElement).blur();
+            }
+          }}
+          slotProps={{
+            htmlInput: {
+              min: 0,
+            }
+          }}
+          sx={{ width: 50, mr: 1, "& input": { p: 0.5 } }}
+        />
         <Description sx={{ mr: 1.5, color: "text.secondary" }} />
         {isEditing ? (
           <>
