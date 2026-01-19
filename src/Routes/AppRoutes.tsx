@@ -27,6 +27,7 @@ const AdminUserTable = lazy(() => import("./AdminUserTable"));
 const AdminLessonTable = lazy(() => import("./AdminLessonTable"));
 const AdminCardTable = lazy(() => import("./AdminCardTable"));
 const JourneyMap = lazy(() => import("./journey/JourneyMap"));
+const CurriculumDashboard = lazy(() => import("./CurriculumDashboard"));
 
 export const AppRoutes = () => {
   return useRoutes([
@@ -167,6 +168,16 @@ export const AppRoutes = () => {
             <ProtectedRoute isAdminPage={true}>
               <Suspense>
                 <AdminSectionTable />
+              </Suspense>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/curriculum",
+          element: (
+            <ProtectedRoute isAdminPage={true}>
+              <Suspense fallback={<PageSkeleton />}>
+                <CurriculumDashboard />
               </Suspense>
             </ProtectedRoute>
           ),
