@@ -9,19 +9,27 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import { Add, Close, Delete } from "@mui/icons-material";
 import MarkdownPreviewer from "@/Components/MarkdownPreviewer";
-import { Lesson, Sentence } from "@/types/lessons";
+import { Lesson, LessonCategory, NewLesson, Sentence } from "@/types/lessons";
+import { Section } from "@/types/sections";
 
 interface LessonEditModalProps {
   open: boolean;
   onClose: () => void;
-  lesson: Lesson | null;
+  lesson: Lesson | null; // null = create mode
+  sections?: Section[];
+  defaultSectionId?: string;
   onSave: (lessonId: string, updates: Partial<Lesson>) => void;
+  onCreate?: (newLesson: NewLesson) => void;
   isSaving: boolean;
 }
 
@@ -29,33 +37,64 @@ export const LessonEditModal = ({
   open,
   onClose,
   lesson,
+  sections = [],
+  defaultSectionId,
   onSave,
+  onCreate,
   isSaving,
 }: LessonEditModalProps) => {
+  const isCreateMode = lesson === null;
+
   // Local state for editing
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState<LessonCategory>("flashcards");
+  const [sectionId, setSectionId] = useState<string>("");
   const [content, setContent] = useState("");
   const [sentences, setSentences] = useState<Sentence[]>([]);
 
-  // Reset state when lesson changes
+  // Reset state when lesson changes or modal opens
   useEffect(() => {
     if (lesson) {
+      setTitle(lesson.title);
+      setCategory(lesson.category || "flashcards");
+      setSectionId(lesson.section_id || "");
       setContent(lesson.content || "");
       setSentences(lesson.sentences || []);
+    } else {
+      // Create mode
+      setTitle("");
+      setCategory("flashcards");
+      setSectionId(defaultSectionId || "");
+      setContent("");
+      setSentences([]);
     }
-  }, [lesson]);
+  }, [lesson, defaultSectionId, open]);
 
   const handleSave = () => {
-    if (!lesson) return;
-
-    if (lesson.category === "grammar") {
-      onSave(lesson._id, { content });
-    } else if (lesson.category === "practice") {
-      // Auto-generate words from full_sentence for each sentence
-      const sentencesWithWords = sentences.map((s) => ({
-        ...s,
-        words: s.full_sentence.split(/\s+/).filter(Boolean),
-      }));
-      onSave(lesson._id, { sentences: sentencesWithWords });
+    if (isCreateMode && onCreate) {
+      const newLesson: NewLesson = {
+        title,
+        category,
+        section_id: sectionId || undefined,
+        content: category === "grammar" ? content : undefined,
+        sentences: category === "practice"
+          ? sentences.map((s) => ({
+            ...s,
+            words: s.full_sentence.split(/\s+/).filter(Boolean),
+          }))
+          : undefined,
+      };
+      onCreate(newLesson);
+    } else if (lesson) {
+      if (lesson.category === "grammar") {
+        onSave(lesson._id, { content });
+      } else if (lesson.category === "practice") {
+        const sentencesWithWords = sentences.map((s) => ({
+          ...s,
+          words: s.full_sentence.split(/\s+/).filter(Boolean),
+        }));
+        onSave(lesson._id, { sentences: sentencesWithWords });
+      }
     }
   };
 
@@ -94,12 +133,15 @@ export const LessonEditModal = ({
     setSentences(updated);
   };
 
-  if (!lesson) return null;
+  const currentCategory = isCreateMode ? category : lesson?.category;
+  const canSave = isCreateMode
+    ? title.trim() !== ""
+    : currentCategory !== "flashcards";
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <DialogTitle>
-        Edit: {lesson.title}
+        {isCreateMode ? "Create New Lesson" : `Edit: ${lesson?.title}`}
         <IconButton
           onClick={onClose}
           sx={{ position: "absolute", right: 8, top: 8 }}
@@ -109,7 +151,51 @@ export const LessonEditModal = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        {lesson.category === "grammar" && (
+        {/* Create mode: show title, category, section fields */}
+        {isCreateMode && (
+          <Box sx={{ mb: 3 }}>
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+              <TextField
+                label="Lesson Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                sx={{ flex: 1 }}
+                autoFocus
+                required
+              />
+              <FormControl sx={{ minWidth: 150 }}>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={category}
+                  label="Category"
+                  onChange={(e) => setCategory(e.target.value as LessonCategory)}
+                >
+                  <MenuItem value="flashcards">Flashcards</MenuItem>
+                  <MenuItem value="grammar">Grammar</MenuItem>
+                  <MenuItem value="practice">Practice</MenuItem>
+                </Select>
+              </FormControl>
+              {sections.length > 0 && (
+                <FormControl sx={{ minWidth: 150 }}>
+                  <InputLabel>Section</InputLabel>
+                  <Select
+                    value={sectionId}
+                    label="Section"
+                    onChange={(e) => setSectionId(e.target.value)}
+                  >
+                    <MenuItem value="">None (Ungrouped)</MenuItem>
+                    {sections.map((s) => (
+                      <MenuItem key={s._id} value={s._id}>{s.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </Box>
+          </Box>
+        )}
+
+        {/* Grammar content editor */}
+        {currentCategory === "grammar" && (
           <Box>
             <Typography variant="subtitle1" gutterBottom>
               Markdown Content
@@ -121,7 +207,8 @@ export const LessonEditModal = ({
           </Box>
         )}
 
-        {lesson.category === "practice" && (
+        {/* Practice sentences editor */}
+        {currentCategory === "practice" && (
           <Box>
             <Typography variant="subtitle1" gutterBottom>
               Practice Sentences ({sentences.length})
@@ -192,9 +279,13 @@ export const LessonEditModal = ({
           </Box>
         )}
 
-        {lesson.category === "flashcards" && (
+        {/* Flashcards info */}
+        {currentCategory === "flashcards" && (
           <Typography color="text.secondary">
-            Use the inline card creation in the dashboard to manage flashcards.
+            {isCreateMode
+              ? "After creating this lesson, you can add cards using the inline card creator in the dashboard."
+              : "Use the inline card creation in the dashboard to manage flashcards."
+            }
           </Typography>
         )}
       </DialogContent>
@@ -204,9 +295,9 @@ export const LessonEditModal = ({
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={isSaving || lesson.category === "flashcards"}
+          disabled={isSaving || !canSave}
         >
-          {isSaving ? "Saving..." : "Save Changes"}
+          {isSaving ? "Saving..." : isCreateMode ? "Create Lesson" : "Save Changes"}
         </Button>
       </DialogActions>
     </Dialog>
@@ -214,4 +305,3 @@ export const LessonEditModal = ({
 };
 
 export default LessonEditModal;
-
