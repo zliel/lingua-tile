@@ -12,11 +12,15 @@ import {
   Button,
   Chip,
   CircularProgress,
+  FormControl,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Tooltip,
   Typography,
@@ -33,7 +37,7 @@ import {
   Close,
 } from "@mui/icons-material";
 import { Section } from "@/types/sections";
-import { Lesson } from "@/types/lessons";
+import { Lesson, LessonCategory } from "@/types/lessons";
 import { Card } from "@/types/cards";
 
 const CurriculumDashboard = () => {
@@ -41,24 +45,18 @@ const CurriculumDashboard = () => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
-  // State for inline editing
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [editingLesson, setEditingLesson] = useState<string | null>(null);
   const [editingSectionName, setEditingSectionName] = useState("");
   const [editingLessonTitle, setEditingLessonTitle] = useState("");
 
-  // State for inline adding
   const [addingSectionName, setAddingSectionName] = useState("");
-  const [addingLessonToSection, setAddingLessonToSection] = useState<
-    string | null
-  >(null);
+  const [addingLessonToSection, setAddingLessonToSection] = useState<string | null>(null);
   const [addingLessonTitle, setAddingLessonTitle] = useState("");
+  const [addingLessonCategory, setAddingLessonCategory] = useState<LessonCategory>("flashcards");
 
-  // Fetch all data
-  const { data: sections = [], isLoading: isLoadingSections } =
-    useSections(authData);
-  const { data: lessons = [], isLoading: isLoadingLessons } =
-    useLessons(authData);
+  const { data: sections = [], isLoading: isLoadingSections } = useSections(authData);
+  const { data: lessons = [], isLoading: isLoadingLessons } = useLessons(authData);
   const { data: cards = [], isLoading: isLoadingCards } = useQuery({
     queryKey: ["cards", authData?.token],
     queryFn: async () => {
@@ -68,7 +66,6 @@ const CurriculumDashboard = () => {
     enabled: !!authData,
   });
 
-  // Mutations
   const updateSectionMutation = useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
       await api.put(`/api/sections/update/${id}`, { name });
@@ -128,14 +125,8 @@ const CurriculumDashboard = () => {
   });
 
   const createLessonMutation = useMutation({
-    mutationFn: async ({
-      title,
-      section_id,
-    }: {
-      title: string;
-      section_id?: string;
-    }) => {
-      await api.post("/api/lessons/create", { title, section_id });
+    mutationFn: async ({ title, section_id, category }: { title: string; section_id?: string; category: LessonCategory }) => {
+      await api.post("/api/lessons/create", { title, section_id, category });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
@@ -143,11 +134,22 @@ const CurriculumDashboard = () => {
       showSnackbar("Lesson created", "success");
       setAddingLessonToSection(null);
       setAddingLessonTitle("");
+      setAddingLessonCategory("flashcards");
     },
     onError: () => showSnackbar("Failed to create lesson", "error"),
   });
 
-  // Helper functions
+  const createCardMutation = useMutation({
+    mutationFn: async ({ front_text, back_text, lesson_id }: { front_text: string; back_text: string; lesson_id: string }) => {
+      await api.post("/api/cards/create-bulk", [{ front_text, back_text, lesson_ids: [lesson_id] }]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      showSnackbar("Card created", "success");
+    },
+    onError: () => showSnackbar("Failed to create card", "error"),
+  });
+
   const getLessonsForSection = (sectionId: string): Lesson[] => {
     return lessons.filter((l) => l.section_id === sectionId);
   };
@@ -162,18 +164,13 @@ const CurriculumDashboard = () => {
 
   const getCategoryColor = (category?: string) => {
     switch (category?.toLowerCase()) {
-      case "grammar":
-        return "primary";
-      case "flashcards":
-        return "secondary";
-      case "practice":
-        return "success";
-      default:
-        return "default";
+      case "grammar": return "grammar";
+      case "flashcards": return "primary";
+      case "practice": return "secondary";
+      default: return "default";
     }
   };
 
-  // Event handlers
   const handleEditSection = (section: Section) => {
     setEditingSection(section._id);
     setEditingSectionName(section.name);
@@ -216,20 +213,11 @@ const CurriculumDashboard = () => {
 
   const handleAddLesson = (sectionId?: string) => {
     if (addingLessonTitle.trim()) {
-      createLessonMutation.mutate({
-        title: addingLessonTitle,
-        section_id: sectionId,
-      });
+      createLessonMutation.mutate({ title: addingLessonTitle, section_id: sectionId, category: addingLessonCategory });
     }
   };
 
-  // Loading state
-  if (
-    isLoadingSections ||
-    isLoadingLessons ||
-    isLoadingCards ||
-    authIsLoading
-  ) {
+  if (isLoadingSections || isLoadingLessons || isLoadingCards || authIsLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
         <CircularProgress />
@@ -237,9 +225,8 @@ const CurriculumDashboard = () => {
     );
   }
 
-  // Sort sections by order_index
   const sortedSections = [...sections].sort(
-    (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
+    (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
   );
 
   return (
@@ -249,9 +236,7 @@ const CurriculumDashboard = () => {
       </Typography>
 
       {/* Add Section Form */}
-      <Paper
-        sx={{ p: 2, mb: 3, display: "flex", gap: 2, alignItems: "center" }}
-      >
+      <Paper sx={{ p: 2, mb: 3, display: "flex", gap: 2, alignItems: "center" }}>
         <TextField
           size="small"
           label="New Section Name"
@@ -264,9 +249,7 @@ const CurriculumDashboard = () => {
           variant="contained"
           startIcon={<Add />}
           onClick={handleAddSection}
-          disabled={
-            !addingSectionName.trim() || createSectionMutation.isPending
-          }
+          disabled={!addingSectionName.trim() || createSectionMutation.isPending}
         >
           Add Section
         </Button>
@@ -276,14 +259,7 @@ const CurriculumDashboard = () => {
       {sortedSections.map((section) => (
         <Accordion key={section._id} defaultExpanded sx={{ mb: 1 }}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                width: "100%",
-              }}
-            >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
               <Folder color="primary" />
               {editingSection === section._id ? (
                 <>
@@ -300,22 +276,10 @@ const CurriculumDashboard = () => {
                     autoFocus
                     sx={{ flexGrow: 1 }}
                   />
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSaveSection(section._id);
-                    }}
-                  >
+                  <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleSaveSection(section._id); }}>
                     <Check color="success" />
                   </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditingSection(null);
-                    }}
-                  >
+                  <IconButton size="small" onClick={(e) => { e.stopPropagation(); setEditingSection(null); }}>
                     <Close />
                   </IconButton>
                 </>
@@ -330,24 +294,12 @@ const CurriculumDashboard = () => {
                     sx={{ mr: 1 }}
                   />
                   <Tooltip title="Edit">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditSection(section);
-                      }}
-                    >
+                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleEditSection(section); }}>
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteSection(section._id);
-                      }}
-                    >
+                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleDeleteSection(section._id); }}>
                       <Delete fontSize="small" color="error" />
                     </IconButton>
                   </Tooltip>
@@ -371,6 +323,8 @@ const CurriculumDashboard = () => {
                     onSave={() => handleSaveLesson(lesson._id)}
                     onCancel={() => setEditingLesson(null)}
                     onDelete={() => handleDeleteLesson(lesson._id)}
+                    onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
+                    isAddingCard={createCardMutation.isPending}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
@@ -378,7 +332,7 @@ const CurriculumDashboard = () => {
 
             {/* Add lesson to section */}
             {addingLessonToSection === section._id ? (
-              <Box sx={{ display: "flex", gap: 1, mt: 1, pl: 2 }}>
+              <Box sx={{ display: "flex", gap: 1, mt: 1, pl: 2, alignItems: "center" }}>
                 <TextField
                   size="small"
                   label="Lesson Title"
@@ -391,6 +345,18 @@ const CurriculumDashboard = () => {
                   autoFocus
                   sx={{ flexGrow: 1 }}
                 />
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    value={addingLessonCategory}
+                    label="Category"
+                    onChange={(e) => setAddingLessonCategory(e.target.value as LessonCategory)}
+                  >
+                    <MenuItem value="flashcards">Flashcards</MenuItem>
+                    <MenuItem value="grammar">Grammar</MenuItem>
+                    <MenuItem value="practice">Practice</MenuItem>
+                  </Select>
+                </FormControl>
                 <IconButton onClick={() => handleAddLesson(section._id)}>
                   <Check color="success" />
                 </IconButton>
@@ -444,6 +410,8 @@ const CurriculumDashboard = () => {
                     onSave={() => handleSaveLesson(lesson._id)}
                     onCancel={() => setEditingLesson(null)}
                     onDelete={() => handleDeleteLesson(lesson._id)}
+                    onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
+                    isAddingCard={createCardMutation.isPending}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
@@ -466,9 +434,9 @@ interface LessonItemProps {
   onSave: () => void;
   onCancel: () => void;
   onDelete: () => void;
-  getCategoryColor: (
-    category?: string,
-  ) => "primary" | "secondary" | "success" | "default";
+  onAddCard: (front_text: string, back_text: string) => void;
+  isAddingCard: boolean;
+  getCategoryColor: (category?: string) => "primary" | "secondary" | "grammar" | "default";
 }
 
 const LessonItem = ({
@@ -481,9 +449,24 @@ const LessonItem = ({
   onSave,
   onCancel,
   onDelete,
+  onAddCard,
+  isAddingCard,
   getCategoryColor,
 }: LessonItemProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [showAddCardForm, setShowAddCardForm] = useState(false);
+  const [newCardFront, setNewCardFront] = useState("");
+  const [newCardBack, setNewCardBack] = useState("");
+
+  const handleAddCard = () => {
+    if (newCardFront.trim() && newCardBack.trim()) {
+      onAddCard(newCardFront.trim(), newCardBack.trim());
+      setNewCardFront("");
+      setNewCardBack("");
+      setShowAddCardForm(false);
+      setExpanded(true);
+    }
+  };
 
   return (
     <Box sx={{ mb: 1 }}>
@@ -520,20 +503,18 @@ const LessonItem = ({
           <>
             <ListItemText
               primary={lesson.title}
-              secondary={
-                lesson.content?.slice(0, 60) +
-                (lesson.content && lesson.content.length > 60 ? "..." : "")
-              }
+              secondary={lesson.content?.slice(0, 60) + (lesson.content && lesson.content.length > 60 ? "..." : "")}
             />
             {lesson.category && (
               <Chip
                 label={lesson.category}
                 size="small"
+                // @ts-ignore
                 color={getCategoryColor(lesson.category)}
                 sx={{ mr: 1 }}
               />
             )}
-            {cards.length > 0 && (
+            {lesson.category === "flashcards" && (
               <Tooltip title="View cards">
                 <Chip
                   icon={<Style fontSize="small" />}
@@ -559,8 +540,8 @@ const LessonItem = ({
         )}
       </ListItem>
 
-      {/* Expandable cards list */}
-      {expanded && cards.length > 0 && (
+      {/* Expandable cards list - only for flashcard lessons */}
+      {lesson.category === "flashcards" && expanded && (
         <Box sx={{ pl: 4, pt: 1 }}>
           {cards.map((card) => (
             <Box
@@ -585,6 +566,49 @@ const LessonItem = ({
               </Typography>
             </Box>
           ))}
+
+          {/* Add Card Form */}
+          {showAddCardForm ? (
+            <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
+              <TextField
+                size="small"
+                label="Front"
+                value={newCardFront}
+                onChange={(e) => setNewCardFront(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowAddCardForm(false);
+                }}
+                autoFocus
+                sx={{ flex: 1 }}
+              />
+              <TextField
+                size="small"
+                label="Back"
+                value={newCardBack}
+                onChange={(e) => setNewCardBack(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddCard();
+                  if (e.key === "Escape") setShowAddCardForm(false);
+                }}
+                sx={{ flex: 1 }}
+              />
+              <IconButton size="small" onClick={handleAddCard} disabled={isAddingCard || !newCardFront.trim() || !newCardBack.trim()}>
+                <Check color="success" />
+              </IconButton>
+              <IconButton size="small" onClick={() => setShowAddCardForm(false)}>
+                <Close />
+              </IconButton>
+            </Box>
+          ) : (
+            <Button
+              size="small"
+              startIcon={<Add />}
+              onClick={() => setShowAddCardForm(true)}
+              sx={{ mt: 1 }}
+            >
+              Add Card
+            </Button>
+          )}
         </Box>
       )}
     </Box>
