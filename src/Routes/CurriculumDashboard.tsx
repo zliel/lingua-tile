@@ -39,6 +39,7 @@ import {
 import { Section } from "@/types/sections";
 import { Lesson, LessonCategory } from "@/types/lessons";
 import { Card } from "@/types/cards";
+import LessonEditModal from "@/Components/admin/LessonEditModal";
 
 const CurriculumDashboard = () => {
   const { authData, authIsLoading } = useAuth();
@@ -54,6 +55,9 @@ const CurriculumDashboard = () => {
   const [addingLessonToSection, setAddingLessonToSection] = useState<string | null>(null);
   const [addingLessonTitle, setAddingLessonTitle] = useState("");
   const [addingLessonCategory, setAddingLessonCategory] = useState<LessonCategory>("flashcards");
+
+  // State for lesson content editing modal
+  const [editingLessonContent, setEditingLessonContent] = useState<Lesson | null>(null);
 
   const { data: sections = [], isLoading: isLoadingSections } = useSections(authData);
   const { data: lessons = [], isLoading: isLoadingLessons } = useLessons(authData);
@@ -148,6 +152,18 @@ const CurriculumDashboard = () => {
       showSnackbar("Card created", "success");
     },
     onError: () => showSnackbar("Failed to create card", "error"),
+  });
+
+  const updateLessonContentMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Lesson> }) => {
+      await api.put(`/api/lessons/update/${id}`, updates);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lessons"] });
+      showSnackbar("Lesson updated", "success");
+      setEditingLessonContent(null);
+    },
+    onError: () => showSnackbar("Failed to update lesson", "error"),
   });
 
   const getLessonsForSection = (sectionId: string): Lesson[] => {
@@ -325,6 +341,7 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
+                    onEditContent={() => setEditingLessonContent(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
@@ -412,6 +429,7 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
+                    onEditContent={() => setEditingLessonContent(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
                 ))}
@@ -419,6 +437,14 @@ const CurriculumDashboard = () => {
           </AccordionDetails>
         </Accordion>
       )}
+      {/* Lesson Edit Modal */}
+      <LessonEditModal
+        open={editingLessonContent !== null}
+        onClose={() => setEditingLessonContent(null)}
+        lesson={editingLessonContent}
+        onSave={(id, updates) => updateLessonContentMutation.mutate({ id, updates })}
+        isSaving={updateLessonContentMutation.isPending}
+      />
     </Box>
   );
 };
@@ -436,6 +462,7 @@ interface LessonItemProps {
   onDelete: () => void;
   onAddCard: (front_text: string, back_text: string) => void;
   isAddingCard: boolean;
+  onEditContent: () => void;
   getCategoryColor: (category?: string) => "primary" | "secondary" | "grammar" | "default";
 }
 
@@ -451,6 +478,7 @@ const LessonItem = ({
   onDelete,
   onAddCard,
   isAddingCard,
+  onEditContent,
   getCategoryColor,
 }: LessonItemProps) => {
   const [expanded, setExpanded] = useState(false);
@@ -526,7 +554,14 @@ const LessonItem = ({
                 />
               </Tooltip>
             )}
-            <Tooltip title="Edit">
+            {(lesson.category === "grammar" || lesson.category === "practice") && (
+              <Tooltip title="Edit Content">
+                <IconButton size="small" onClick={onEditContent}>
+                  <Description fontSize="small" color="primary" />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Edit Title">
               <IconButton size="small" onClick={onEdit}>
                 <Edit fontSize="small" />
               </IconButton>
