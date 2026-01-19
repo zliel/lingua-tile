@@ -28,6 +28,7 @@ interface LessonEditModalProps {
   lesson: Lesson | null; // null = create mode
   sections?: Section[];
   defaultSectionId?: string;
+  defaultOrderIndex?: number;
   onSave: (lessonId: string, updates: Partial<Lesson>) => void;
   onCreate?: (newLesson: NewLesson) => void;
   isSaving: boolean;
@@ -39,6 +40,7 @@ export const LessonEditModal = ({
   lesson,
   sections = [],
   defaultSectionId,
+  defaultOrderIndex,
   onSave,
   onCreate,
   isSaving,
@@ -76,6 +78,7 @@ export const LessonEditModal = ({
         title,
         category,
         section_id: sectionId || undefined,
+        order_index: defaultOrderIndex,
         content: category === "grammar" ? content : undefined,
         sentences: category === "practice"
           ? sentences.map((s) => ({
