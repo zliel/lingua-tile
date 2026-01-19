@@ -86,15 +86,18 @@ export const LessonEditModal = ({
       };
       onCreate(newLesson);
     } else if (lesson) {
+      const updates: Partial<Lesson> = {
+        section_id: sectionId || undefined,
+      };
       if (lesson.category === "grammar") {
-        onSave(lesson._id, { content });
+        updates.content = content;
       } else if (lesson.category === "practice") {
-        const sentencesWithWords = sentences.map((s) => ({
+        updates.sentences = sentences.map((s) => ({
           ...s,
           words: s.full_sentence.split(/\s+/).filter(Boolean),
         }));
-        onSave(lesson._id, { sentences: sentencesWithWords });
       }
+      onSave(lesson._id, updates);
     }
   };
 
@@ -136,7 +139,7 @@ export const LessonEditModal = ({
   const currentCategory = isCreateMode ? category : lesson?.category;
   const canSave = isCreateMode
     ? title.trim() !== ""
-    : currentCategory !== "flashcards";
+    : true; // All lesson types can save (at minimum for section changes)
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
@@ -151,7 +154,26 @@ export const LessonEditModal = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        {/* Create mode: show title, category, section fields */}
+        {/* Section selector - shown in both modes */}
+        {sections.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Section</InputLabel>
+              <Select
+                value={sectionId}
+                label="Section"
+                onChange={(e) => setSectionId(e.target.value)}
+              >
+                <MenuItem value="">None (Ungrouped)</MenuItem>
+                {sections.map((s) => (
+                  <MenuItem key={s._id} value={s._id}>{s.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
+
+        {/* Create mode: show title, category fields */}
         {isCreateMode && (
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
@@ -175,21 +197,6 @@ export const LessonEditModal = ({
                   <MenuItem value="practice">Practice</MenuItem>
                 </Select>
               </FormControl>
-              {sections.length > 0 && (
-                <FormControl sx={{ minWidth: 150 }}>
-                  <InputLabel>Section</InputLabel>
-                  <Select
-                    value={sectionId}
-                    label="Section"
-                    onChange={(e) => setSectionId(e.target.value)}
-                  >
-                    <MenuItem value="">None (Ungrouped)</MenuItem>
-                    {sections.map((s) => (
-                      <MenuItem key={s._id} value={s._id}>{s.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
             </Box>
           </Box>
         )}
@@ -284,7 +291,7 @@ export const LessonEditModal = ({
           <Typography color="text.secondary">
             {isCreateMode
               ? "After creating this lesson, you can add cards using the inline card creator in the dashboard."
-              : "Use the inline card creation in the dashboard to manage flashcards."
+              : "You can change the section above. Cards are managed inline in the dashboard."
             }
           </Typography>
         )}

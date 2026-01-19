@@ -148,6 +148,28 @@ const CurriculumDashboard = () => {
     onError: () => showSnackbar("Failed to create card", "error"),
   });
 
+  const updateCardMutation = useMutation({
+    mutationFn: async ({ id, front_text, back_text }: { id: string; front_text: string; back_text: string }) => {
+      await api.put(`/api/cards/update/${id}`, { front_text, back_text });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      showSnackbar("Card updated", "success");
+    },
+    onError: () => showSnackbar("Failed to update card", "error"),
+  });
+
+  const deleteCardMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/api/cards/delete/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      showSnackbar("Card deleted", "success");
+    },
+    onError: () => showSnackbar("Failed to delete card", "error"),
+  });
+
   const updateLessonContentMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<Lesson> }) => {
       await api.put(`/api/lessons/update/${id}`, updates);
@@ -155,6 +177,7 @@ const CurriculumDashboard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lessons"] });
       showSnackbar("Lesson updated", "success");
+      setLessonModalOpen(false);
       setEditingLessonContent(null);
     },
     onError: () => showSnackbar("Failed to update lesson", "error"),
@@ -342,6 +365,8 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
+                    onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
+                    onDeleteCard={(id) => deleteCardMutation.mutate(id)}
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -395,6 +420,8 @@ const CurriculumDashboard = () => {
                     onDelete={() => handleDeleteLesson(lesson._id)}
                     onAddCard={(front_text, back_text) => createCardMutation.mutate({ front_text, back_text, lesson_id: lesson._id })}
                     isAddingCard={createCardMutation.isPending}
+                    onUpdateCard={(id, front_text, back_text) => updateCardMutation.mutate({ id, front_text, back_text })}
+                    onDeleteCard={(id) => deleteCardMutation.mutate(id)}
                     onEditContent={() => handleOpenEditLesson(lesson)}
                     getCategoryColor={getCategoryColor}
                   />
@@ -435,6 +462,8 @@ interface LessonItemProps {
   onDelete: () => void;
   onAddCard: (front_text: string, back_text: string) => void;
   isAddingCard: boolean;
+  onUpdateCard: (id: string, front_text: string, back_text: string) => void;
+  onDeleteCard: (id: string) => void;
   onEditContent: () => void;
   getCategoryColor: (category?: string) => "primary" | "secondary" | "grammar" | "default";
 }
@@ -451,6 +480,8 @@ const LessonItem = ({
   onDelete,
   onAddCard,
   isAddingCard,
+  onUpdateCard,
+  onDeleteCard,
   onEditContent,
   getCategoryColor,
 }: LessonItemProps) => {
@@ -459,6 +490,11 @@ const LessonItem = ({
   const [newCardFront, setNewCardFront] = useState("");
   const [newCardBack, setNewCardBack] = useState("");
 
+  // Card editing state
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [editingCardFront, setEditingCardFront] = useState("");
+  const [editingCardBack, setEditingCardBack] = useState("");
+
   const handleAddCard = () => {
     if (newCardFront.trim() && newCardBack.trim()) {
       onAddCard(newCardFront.trim(), newCardBack.trim());
@@ -466,6 +502,29 @@ const LessonItem = ({
       setNewCardBack("");
       setShowAddCardForm(false);
       setExpanded(true);
+    }
+  };
+
+  const handleStartEditCard = (card: Card) => {
+    setEditingCardId(card._id);
+    setEditingCardFront(card.front_text);
+    setEditingCardBack(card.back_text);
+  };
+
+  const handleSaveCard = () => {
+    if (editingCardId && editingCardFront.trim() && editingCardBack.trim()) {
+      onUpdateCard(editingCardId, editingCardFront.trim(), editingCardBack.trim());
+      setEditingCardId(null);
+    }
+  };
+
+  const handleCancelEditCard = () => {
+    setEditingCardId(null);
+  };
+
+  const handleDeleteCard = (cardId: string) => {
+    if (window.confirm("Delete this card?")) {
+      onDeleteCard(cardId);
     }
   };
 
@@ -534,6 +593,13 @@ const LessonItem = ({
                 </IconButton>
               </Tooltip>
             )}
+            {lesson.category === "flashcards" && (
+              <Tooltip title="Edit Section">
+                <IconButton size="small" onClick={onEditContent}>
+                  <Description fontSize="small" color="primary" />
+                </IconButton>
+              </Tooltip>
+            )}
             <Tooltip title="Edit Title">
               <IconButton size="small" onClick={onEdit}>
                 <Edit fontSize="small" />
@@ -548,32 +614,84 @@ const LessonItem = ({
         )}
       </ListItem>
 
-      {/* Expandable cards list - only for flashcard lessons */}
+      {/* Expandable cards grid - only for flashcard lessons */}
       {lesson.category === "flashcards" && expanded && (
         <Box sx={{ pl: 4, pt: 1 }}>
-          {cards.map((card) => (
-            <Box
-              key={card._id}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                py: 0.5,
-                px: 1,
-                bgcolor: "action.hover",
-                borderRadius: 0.5,
-                mb: 0.5,
-              }}
-            >
-              <Style fontSize="small" color="disabled" />
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                {card.front_text}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                → {card.back_text}
-              </Typography>
-            </Box>
-          ))}
+          <Box sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: 0.5,
+          }}>
+            {cards.map((card) => (
+              <Box
+                key={card._id}
+                sx={{
+                  display: "flex",
+                  flexDirection: editingCardId === card._id ? "column" : "row",
+                  alignItems: editingCardId === card._id ? "stretch" : "center",
+                  gap: editingCardId === card._id ? 1 : 0.5,
+                  py: 0.5,
+                  px: 1,
+                  bgcolor: "action.hover",
+                  borderRadius: 0.5,
+                }}
+              >
+                {editingCardId === card._id ? (
+                  <>
+                    <TextField
+                      size="small"
+                      label="Front"
+                      value={editingCardFront}
+                      onChange={(e) => setEditingCardFront(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSaveCard();
+                        if (e.key === "Escape") handleCancelEditCard();
+                      }}
+                      autoFocus
+                      fullWidth
+                    />
+                    <TextField
+                      size="small"
+                      label="Back"
+                      value={editingCardBack}
+                      onChange={(e) => setEditingCardBack(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSaveCard();
+                        if (e.key === "Escape") handleCancelEditCard();
+                      }}
+                      fullWidth
+                    />
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 0.5 }}>
+                      <IconButton size="small" onClick={handleSaveCard}>
+                        <Check fontSize="small" color="success" />
+                      </IconButton>
+                      <IconButton size="small" onClick={handleCancelEditCard}>
+                        <Close fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="body2" sx={{ fontWeight: 500, minWidth: 0 }} noWrap>
+                      {card.front_text}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mx: 0.5 }}>
+                      →
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ flex: 1, minWidth: 0 }} noWrap>
+                      {card.back_text}
+                    </Typography>
+                    <IconButton size="small" onClick={() => handleStartEditCard(card)} sx={{ ml: "auto" }}>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" onClick={() => handleDeleteCard(card._id)}>
+                      <Delete fontSize="small" color="error" />
+                    </IconButton>
+                  </>
+                )}
+              </Box>
+            ))}
+          </Box>
 
           {/* Add Card Form */}
           {showAddCardForm ? (
