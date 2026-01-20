@@ -47,9 +47,15 @@ export const useJourneyData = () => {
     let lastSectionId = "";
 
     const processListToRows = (list: Lesson[], targetArray: JourneyRow[]) => {
-      const sorted = [...list].sort(
-        (a, b) => (a.order_index || 0) - (b.order_index || 0),
-      );
+      const sorted = [...list].sort((a, b) => {
+        const orderA = a.order_index || 0;
+        const orderB = b.order_index || 0;
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+        return a.title.localeCompare(b.title);
+      });
+
       const grouped = new Map<number, Lesson[]>();
 
       sorted.forEach((lesson) => {
