@@ -52,7 +52,7 @@ const ProtectedRoute = ({
         return navigate("/login");
       }
     }
-  }, [isError, isLoading, isAdmin, navigate, showSnackbar]);
+  }, [isError, isLoading, authIsLoading, isAdmin, navigate, showSnackbar]);
 
   if (authIsLoading || isLoading) {
     return null;
