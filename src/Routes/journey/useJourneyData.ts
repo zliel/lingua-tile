@@ -56,7 +56,6 @@ export const useJourneyData = () => {
         return a.title.localeCompare(b.title);
       });
 
-
       const grouped = new Map<number, Lesson[]>();
 
       sorted.forEach((lesson) => {
