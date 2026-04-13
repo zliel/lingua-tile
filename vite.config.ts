@@ -3,6 +3,7 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 import { visualizer } from "rollup-plugin-visualizer";
+import faroUploader from "@grafana/faro-rollup-plugin";
 
 // https://vitejs.dev/config/
 import path from "node:path";
@@ -19,6 +20,14 @@ export default defineConfig({
   base: "/",
   plugins: [
     react(),
+    faroUploader({
+      appName: process.env.VITE_FARO_APP_NAME as string,
+      endpoint: process.env.VITE_FARO_API_ENDPOINT as string,
+      appId: process.env.VITE_FARO_APP_ID as string,
+      stackId: process.env.VITE_FARO_STACK_ID as string,
+      apiKey: process.env.VITE_FARO_API_KEY as string,
+      gzipContents: true,
+    }),
     visualizer({
       filename: "stats.html",
       gzipSize: true,
@@ -119,6 +128,7 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
