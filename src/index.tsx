@@ -1,12 +1,22 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
-// import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { registerSW } from "virtual:pwa-register";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./Components/ErrorFallback";
+import { initializeFaro } from "@grafana/faro-react";
+
+initializeFaro({
+  url: import.meta.env.VITE_FARO_URL,
+  app: {
+    name: import.meta.env.VITE_FARO_APP_NAME || "lingua-tile-web",
+  },
+  sessionTracking: {
+    enabled: true,
+    samplingRate: 1.0,
+  },
+});
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 const queryClient = new QueryClient();
@@ -18,11 +28,6 @@ root.render(
     </ErrorBoundary>
   </QueryClientProvider>,
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
 
 registerSW({
   // onNeedRefresh() {
