@@ -5,7 +5,6 @@ import { VitePWA } from "vite-plugin-pwa";
 import { visualizer } from "rollup-plugin-visualizer";
 import faroUploader from "@grafana/faro-rollup-plugin";
 
-
 // https://vitejs.dev/config/
 import path from "node:path";
 import { fileURLToPath } from "node:url";
